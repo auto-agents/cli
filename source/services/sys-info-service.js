@@ -98,4 +98,18 @@ export default class SysInfoService {
 
 		return this
 	}
+
+	dump() {
+		const o = this.ctx.components.output
+		o.newLine()
+		o.appendComment(this.cpuCount + ' cores of ' + this.cpu)
+		o.appendComment('total ram: ' + this.ramAmount + ' | free ram: ' + this.availableRam)
+		o.appendComment('machine: ' + this.machine)
+		if (this.disksSummary.length > 0) {
+			o.appendComment('disks:')
+			this.disksSummary.forEach(r => o.appendComment(r))
+		}
+		o.appendComment('user name: ' + this.username)
+		o.newLine()
+	}
 }

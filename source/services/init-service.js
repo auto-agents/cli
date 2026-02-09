@@ -77,16 +77,6 @@ export default class InitService {
 	#gatherComputerInfos() {
 		const sys = new SysInfoService(this.ctx).run()
 		this.ctx.components.sysInfo = sys
-		const o = this.app.output
-		o.newLine()
-		o.appendComment(sys.cpuCount + ' cores of ' + sys.cpu)
-		o.appendComment('total ram: ' + sys.ramAmount + ' | free ram: ' + sys.availableRam)
-		o.appendComment('machine: ' + sys.machine)
-		if (sys.disksSummary.length > 0) {
-			o.appendComment('disks:')
-			sys.disksSummary.forEach(r => o.appendComment(r))
-		}
-		o.appendComment('user name: ' + sys.username)
-		o.newLine()
+		sys.dump()
 	}
 }

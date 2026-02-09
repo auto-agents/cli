@@ -39,6 +39,11 @@ export default function config(cli) {
 					names: ['c', 'clear'],
 					description: 'clear output',
 					file: 'clear-console-command.js'
+				},
+				{
+					names: ['si', 'sysinfo'],
+					description: 'show system info',
+					file: 'sysinfo-command.js'
 				}
 			]
 		},

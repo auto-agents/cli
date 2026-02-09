@@ -103,7 +103,7 @@ export default class AppController {
 		if (inp[0] == this.ctx.cli.commandPrefix) {
 			if (inp.length > 1)
 				// run command
-				this.event.emit(RunCommandEvent, inp.substring(1))
+				this.event.emit(RunCommandEvent, inp.substring(1).trim())
 		}
 		else {
 			// run dialog
