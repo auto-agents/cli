@@ -16,6 +16,8 @@
 </tr>
 </table>
 
+---
+
 The **CLI tool** makes it possible to interact with the `Auto Agents` functionnalities
 
 - provides a rich user UX CLI powered by:
