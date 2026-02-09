@@ -1,1 +1,1 @@
-bun run source/cli.js --name "zeubi la mouche"
+bun run source/cli.js
