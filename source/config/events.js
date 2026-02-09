@@ -1,0 +1,14 @@
+export const OutputUpdatedEvent = 'OutputUpdatedEvent'
+export const InputExecutedEvent = 'InputExecutedEvent'
+export const AppInitializedEvent = 'AppInitializedEvent'
+export const LayoutResizedEvent = 'LayoutResizedEvent'
+// this event name is to be completed with source gauge key
+export const GaugeSourceUpdatedEvent = 'GaugeSourceUpdatedEvent-'
+
+export const InputSubmitedEvent = 'InputSubmitedEvent'
+export const CommandInputStartedEvent = 'CommandInputStartedEvent'
+export const InputAddedEvent = 'InputAddedEvent'
+export const RunCommandEvent = 'RunCommandEvent'
+export const CommandNotFoundEvent = 'CommandNotFoundEvent'
+export const CommandFileNotFoundEvent = 'CommandFileNotFoundEvent'
+export const CommandModuleLoadErrorEvent = 'CommandModuleLoadErrorEvent'
