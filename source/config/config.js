@@ -14,6 +14,10 @@ export default function config(cli) {
 			title: title,
 			subtitle: subtitle
 		},
+		paths: {
+			agents: '../agents',
+			modules: '../modules'
+		},
 		cli: {
 			commandPrefix: '/',
 			commandPrompt: ' >',
