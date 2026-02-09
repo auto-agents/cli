@@ -1,5 +1,4 @@
 import cfonts from 'cfonts'
-import chalk from 'chalk'
 
 const longInterval = 4000
 
@@ -173,6 +172,13 @@ export default function config(cli) {
 		texts: {
 			dialog: {
 				hello: 'Hello %username%, what can i do for you today?'
+			}
+		},
+		modules: {
+			speech: {
+				enabled: true,
+				browserStartCommand: 'edge',
+				startCommand: 'speak'
 			}
 		}
 	};
