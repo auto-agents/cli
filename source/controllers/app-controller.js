@@ -69,8 +69,8 @@ export default class AppController {
 		this.timeService.run()
 	}
 
-	run() {
-		this.init.run()
+	async run() {
+		await this.init.run()
 	}
 
 	heartbeatTick() {
@@ -86,9 +86,8 @@ export default class AppController {
 
 	error(message) {
 		const o = this.output
-		const col = chalk.hex(this.ctx.theme.errorColor)
 		o.newLine()
-		o.appendLine(col(message))
+		o.appendLine(o.error(message))
 	}
 
 	appInitialized() {

@@ -101,4 +101,12 @@ export default class OutputController {
 	cleanupStr(str) {
 		return str.trim().replace('\r\n', '\n')
 	}
+
+	error(str) {
+		return chalk.hex(this.ctx.theme.errorColor)(str)
+	}
+
+	warning(str) {
+		return chalk.hex(this.ctx.theme.warningColor)(str)
+	}
 }

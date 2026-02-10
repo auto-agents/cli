@@ -31,4 +31,4 @@ render(<App ctx={ctx} />/*, {
 
 // app start from this point
 
-app.run()
+await app.run()

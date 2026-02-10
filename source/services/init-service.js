@@ -6,6 +6,8 @@ import SpinnerService from './spinner-service.js';
 import ActionSequenceController from '../controllers/action-sequence-controller.js';
 import { AppInitializedEvent } from '../config/events.js';
 import SysInfoService from './sys-info-service.js';
+import ModuleController from '../controllers/module-controller.js';
+import OutputContext from '../data/output-context.js';
 
 export default class InitService {
 
@@ -30,13 +32,13 @@ export default class InitService {
 	}
 
 	// performs inits steps
-	run() {
+	async run() {
 		setTimeout(
-			() => this.#runInternal(),
+			async () => await this.#runInternal(),
 			500)
 	}
 
-	#runInternal() {
+	async #runInternal() {
 		const mg = '    '
 
 		this.hatActionController = new ActionController(
@@ -48,8 +50,12 @@ export default class InitService {
 
 		const actions = [
 			{
-				func: () => this.#gatherComputerInfos(),
+				func: async () => this.#gatherComputerInfos(),
 				uiFunc: this.spinner.newSpinner(mg + '- gathering system informations', cliSpinners.sand)
+			},
+			{
+				func: async () => this.#initModules(this.#getOutputContext(mg)),
+				uiFunc: this.spinner.newSpinner(mg + '- initializing modules', cliSpinners.sand)
 			}
 		]
 		const actionSeq = actions.map((e, _) => {
@@ -60,23 +66,33 @@ export default class InitService {
 			)
 		})
 
-		new ActionSequenceController(
+		await new ActionSequenceController(
 			this.ctx,
 			actionSeq,
 			() => this.#initEnded()
 		).run()
 	}
 
-	#initEnded() {
+	async #initEnded() {
 		this.redirectConsole()
 		this.hatActionController.uiFunc.stop()
+		this.app.output.newLine()
 		this.app.output.appendLine('• cli ready ' + chalk.hex('#00FF00').underline('✔'))
 		this.app.event.emit(AppInitializedEvent)
 	}
 
-	#gatherComputerInfos() {
+	async #gatherComputerInfos() {
 		const sys = new SysInfoService(this.ctx).run()
 		this.ctx.components.sysInfo = sys
 		sys.dump()
+	}
+
+	async #initModules(outputContext) {
+		const mc = await new ModuleController(this.ctx, outputContext).run()
+		this.ctx.components.moduleController = mc
+	}
+
+	#getOutputContext(margin) {
+		return new OutputContext(this.ctx, this.app.output, margin)
 	}
 }

@@ -71,6 +71,7 @@ export default function config(cli) {
 				userDialogColor: '#4499FF',
 				systemDialogColor: '#44BB99'
 			},
+			warningColor: '#FF7700',
 			errorColor: '#FF0000',
 			console: {
 				stderrColor: '#FF0000',
@@ -176,9 +177,33 @@ export default function config(cli) {
 		},
 		modules: {
 			speech: {
+				file: 'speech-module.js',
 				enabled: true,
-				browserStartCommand: 'edge',
-				startCommand: 'speak'
+				config: {
+					apiKey: "change-me",
+					platform: "windows",
+					browser: "edge",
+					maxLogLines: 15,
+					port: 3310,
+					browsers: {
+						chrome: {
+							runCommand: {
+								windows: "cmd /c start \"\" chrome \"{url}\"",
+								linux: "google-chrome-stable \"{url}\"",
+								mac: "open -a \"Google Chrome\" \"{url}\""
+							},
+							preferredVoices: []
+						},
+						edge: {
+							runCommand: {
+								windows: "cmd /c start \"\" msedge \"{url}\"",
+								linux: "microsoft-edge \"{url}\"",
+								mac: "open -a \"Microsoft Edge\" \"{url}\""
+							},
+							preferredVoices: []
+						}
+					}
+				}
 			}
 		}
 	};
