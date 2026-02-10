@@ -9,6 +9,7 @@ import {
 	CommandNotFoundEvent,
 	CommandFileNotFoundEvent,
 	CommandModuleLoadErrorEvent,
+	CommandArgsCountErrorEvent,
 	AppInitializedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
@@ -60,6 +61,7 @@ export default class AppController {
 			.on(CommandNotFoundEvent, arg => this.error('command not found: ' + arg[0]))
 			.on(CommandFileNotFoundEvent, arg => this.error('command file not found: ' + arg[0]))
 			.on(CommandModuleLoadErrorEvent, arg => this.error('command load module error: ' + arg[0]))
+			.on(CommandArgsCountErrorEvent, arg => this.error(`command args count mismatch: expected ${arg[0].args?.length || 0}`))
 			.on(AppInitializedEvent, () => this.appInitialized())
 
 		this.heartbeatSecondInterval = setInterval(

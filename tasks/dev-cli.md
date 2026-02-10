@@ -75,3 +75,13 @@ add a blank line after the last file entry, and add a summary line that indicate
 ```text
 the run() method of this command must output the current path that is stored in the property `cli.currentPath` in the app context (this.ctx). The path must be outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
 ```
+
+### command: `cd`
+
+```js
+{
+    names: ['cd'],
+    description: 'change the current path',
+    args: ['<path>'],
+    file: 'pwd-command.js'
+}

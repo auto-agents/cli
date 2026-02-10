@@ -1,6 +1,12 @@
 import { existsSync } from "fs";
 import { join } from 'path';
-import { CommandModuleLoadErrorEvent, CommandFileNotFoundEvent, CommandNotFoundEvent, RunCommandEvent } from "../config/events"
+import {
+	CommandModuleLoadErrorEvent,
+	CommandFileNotFoundEvent,
+	CommandNotFoundEvent,
+	CommandArgsCountErrorEvent,
+	RunCommandEvent
+} from "../config/events"
 
 export default class CommandController {
 
@@ -9,7 +15,19 @@ export default class CommandController {
 		ctx.components.event.on(RunCommandEvent, args => this.runCommand(...args))
 	}
 
-	runCommand(com) {
+	runCommand(arg) {
+
+		// extract com args if any
+		arg = arg.trim()
+		const i = arg.indexOf(' ')
+		var com = ''
+		var args = null
+		if (i > -1) {
+			com = arg.substring(0, i)
+			args = arg.substring(i + 1).trim()
+		} else {
+			com = arg
+		}
 
 		const e = this.ctx.components.event
 		const coms = this.ctx.cli.commands
@@ -19,6 +37,13 @@ export default class CommandController {
 			return
 		}
 		const comd = tcom[0]
+
+		// checks args
+		if (args && !comd.args) {
+			e.emit(CommandArgsCountErrorEvent, comd)
+			return
+		}
+
 		const path = join(process.cwd(), 'source', 'commands', comd.file);
 		if (!existsSync(path)) {
 			e.emit(CommandFileNotFoundEvent, path)
