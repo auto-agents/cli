@@ -49,6 +49,19 @@ export default function config(cli) {
 					names: ['pwd'],
 					description: 'output current path',
 					file: 'pwd-command.js'
+				},
+				{
+					names: ['cd'],
+					description: 'set current path',
+					args: ['path'],
+					argsDesc: {
+						path: {
+							type: 'string',
+							required: true,
+							description: 'the path to set as current path'
+						}
+					},
+					file: 'cd-command.js'
 				}
 			],
 			currentPath: process.cwd()
@@ -140,11 +153,11 @@ export default function config(cli) {
 						value: ''
 					},
 					openAPIChat: {
-						key: 'OpenAPI chat srv',
+						key: 'OpenAPI chat',
 						value: ''
 					},
 					openAPIAgents: {
-						key: 'OpenAPI agents srv',
+						key: 'OpenAPI agents',
 						value: ''
 					}
 				}
@@ -230,7 +243,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: "windows",

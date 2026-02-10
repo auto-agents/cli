@@ -78,10 +78,21 @@ the run() method of this command must output the current path that is stored in 
 
 ### command: `cd`
 
+```text
+implements the command `cd` as described below:
+```
 ```js
 {
     names: ['cd'],
     description: 'change the current path',
-    args: ['<path>'],
-    file: 'pwd-command.js'
+    args: ['path'],
+    file: 'cd-command.js'
 }
+```
+```text
+the run() method of this command must change the current path that is stored in the property `cli.currentPath` in the app context (this.ctx). The path must be changed to the path that is provided as the first element of the arguments array that is passed to the run() method.
+
+the command cd must check if the path exists before to change it and display an explicit error message (with the new builded path value, coz it can change if specified by . or .. )
+
+fix so that '.' goes to the process path and '..' go one path level up related to current path
+```

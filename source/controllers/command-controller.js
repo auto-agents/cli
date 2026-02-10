@@ -7,6 +7,7 @@ import {
 	CommandArgsCountErrorEvent,
 	RunCommandEvent
 } from "../config/events"
+import { split } from 'shellwords'
 
 export default class CommandController {
 
@@ -19,15 +20,10 @@ export default class CommandController {
 
 		// extract com args if any
 		arg = arg.trim()
-		const i = arg.indexOf(' ')
-		var com = ''
-		var args = null
-		if (i > -1) {
-			com = arg.substring(0, i)
-			args = arg.substring(i + 1).trim()
-		} else {
-			com = arg
-		}
+		const parsed = split(arg)
+		const com = parsed[0]
+		const args = parsed.slice(1)
+		this.ctx.cli.lastCommandArgs = args
 
 		const e = this.ctx.components.event
 		const coms = this.ctx.cli.commands
@@ -39,7 +35,7 @@ export default class CommandController {
 		const comd = tcom[0]
 
 		// checks args
-		if (args && !comd.args) {
+		if (args.length > 0 && !comd.args) {
 			e.emit(CommandArgsCountErrorEvent, comd)
 			return
 		}
@@ -57,7 +53,7 @@ export default class CommandController {
 		try {
 			const module = require(path)
 			const o = new module.default(this.ctx)
-			o.run()
+			o.run(args)
 		} catch (err) {
 			e.emit(CommandModuleLoadErrorEvent, cn + ` (${err})`)
 			return

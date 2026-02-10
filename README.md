@@ -25,6 +25,7 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[Ink](https://github.com/vadimdemedes/ink?tab=readme-ov-file#static)** the **`REACT for CLI`** framework
   - **[chalk](https://github.com/chalk/chalk)** the *Terminal string styling done right* library
   - **[cfonts](https://github.com/dominikwilkowski/cfonts)** the library for *lovely ANSI fonts in the console*
+  - **[shellwords](https://github.com/andrewrumpf/shellwords)** the library for *parsing command line arguments*
 
 *notice: this tool has been initially 100% hand coded*
 

@@ -11,12 +11,22 @@ The command description is defined by a `javascript object` structured as below:
 {
     names: ["name1", "name2", ...],
     description: "description",
+    args: ["arg1", "arg2", ...],
+    argsDesc: {
+            arg1: {
+                type: 'string',
+                required: true,
+                description: 'description'
+            }, ...
+        }
     file: "file.js"
 }
 ```
 where:
 - the names property is an array that list the names of the command (without the prefix character), that can have multiple names
 - the description property is a string that describe the command in human language
+- the args property is an array that list the arguments of the command if any, it can be ommited if the command does not have any arguments
+- the argsDesc property is an object that describe the arguments of the command if any, it can be ommited if the command does not have any arguments. It indicatges a type name for each argument, a boolean indicating if the argument is required, and a description of the argument in human language
 - the file property is a string that define the path of the command file, relative to the commands implementations folder: `cli/commands`
 
 for example, the command that terminate the `CLI tool` is described as below:
@@ -39,7 +49,7 @@ for example, the command `exit` is implemented in the file `exit-command.js` and
 
 - the class has a constructor method that is called with the app context as parameter. this parameter is named `ctx` and is used to initialize the class property `ctx` by the class object constructor
 
-- the class has a `run` method that is called when the command is executed. this method is used to execute the command implementation
+- the class has a `run` method that is called when the command is executed. this method is used to execute the command implementation. This method can take an array of arguments if the command has arguments
 
 for example, the command `exit` that is implemented in the file `exit-command.js` has this implementation:
 ```js
@@ -51,6 +61,20 @@ export default class ExitCommand {
 
 	run() {
 		process.exit()
+	}
+}
+```
+
+for example, the command `cd` that is implemented in the file `cd-command.js` has this implementation:
+```js
+export default class CdCommand {
+
+	constructor(ctx) {
+		this.ctx = ctx
+	}
+
+	run(args) {
+		this.ctx.cli.currentPath = args[0]
 	}
 }
 ```
