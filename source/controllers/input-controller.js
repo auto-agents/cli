@@ -27,21 +27,51 @@ export default class InputController {
 
 	#InputAddedEvent(inp) {
 		if (!this.commandHelperOpened) return
-		if (inp.length == 0) this.#hideCommands()
+		console.log(inp)
+		if (inp.length == 0) {
+			this.#hideCommands()
+			return
+		}
+		this.#hideCommands()
+		this.#showCommands(inp.substring(1))
 	}
 
-	#showCommands() {
+	#showCommands(inp) {
 		this.commandHelperOpened = true
 		const o = this.ctx.components.output
 		const p = this.ctx.cli.commandPrefix
 		const cs = ', '
-		const col = chalk.hex(this.ctx.theme.commandsListColor)
+		const col = chalk.hex(this.ctx.theme.help.commandsListColor)
 		this.commandHelperStartPosition = o.newLine()
 		o.appendLine(chalk.underline(chalk.italic(col('commands:'))))
+		o.newLine()
+		const n = 16
+		const addLine = s => {
+			this.commandHelperEndPosition = o.appendLine(s)
+		}
+
+		const argsCol = chalk.hex(this.ctx.theme.help.commandsListArgsColor)
 		this.ctx.cli.commands.forEach(e => {
-			var s = e.names.map(n => p + n).join(cs).padEnd(16)
-			s += e.description
-			this.commandHelperEndPosition = o.appendLine(col(s))
+
+			if (e.names.some(n => n.startsWith(inp))) {
+
+				var s = e.names.map(n => p + n).join(cs).padEnd(n)
+				s += e.description
+				addLine(col(s))
+
+				if (e.args && e.args.length > 0) {
+					s = argsCol(
+						' '.repeat(n)
+						+ (e.args.map(arg => '<' + arg + '> '
+							+ ' : ' + e.argsDesc[arg].type
+							+ (e.argsDesc[arg].required ? ' (required)' : '')
+							+ (e.argsDesc[arg].description ? ' - ' + e.argsDesc[arg].description : '')
+						).join(' '))
+						+ ' '
+					)
+					addLine(s)
+				}
+			}
 		});
 	}
 

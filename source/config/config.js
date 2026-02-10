@@ -86,7 +86,10 @@ export default function config(cli) {
 				color: '#999999',
 				margin: 6
 			},
-			commandsListColor: '#00FF00',
+			help: {
+				commandsListColor: '#00FF00',
+				commandsListArgsColor: '#00BB55'
+			},
 			dialog: {
 				userDialogColor: '#4499FF',
 				systemDialogColor: '#44BB99'

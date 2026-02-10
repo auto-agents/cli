@@ -67,6 +67,21 @@ export default class ExitCommand {
 
 for example, the command `cd` that is implemented in the file `cd-command.js` has this implementation:
 ```js
+{
+    names: ['cd'],
+    description: 'set current path',
+    args: ['path'],
+    argsDesc: {
+        path: {
+            type: 'string',
+            required: true,
+            description: 'the path to set as current path'
+        }
+    },
+    file: 'cd-command.js'
+}
+```
+```js
 export default class CdCommand {
 
 	constructor(ctx) {
