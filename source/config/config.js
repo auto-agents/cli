@@ -39,6 +39,11 @@ export default function config(cli) {
 					names: ['si', 'sysinfo'],
 					description: 'show system info',
 					file: 'sysinfo-command.js'
+				},
+				{
+					names: ['ls', 'dir'],
+					description: 'output the list of files of the current folder',
+					file: 'ls-command.js'
 				}
 			],
 			currentPath: process.cwd()
@@ -88,7 +93,18 @@ export default function config(cli) {
 					bg: '#BB5500'
 				}
 			},
-			subInitTextTitleColor: '#66AA88'
+			subInitTextTitleColor: '#66AA88',
+			ls: {
+				name: '#DDDDDD',
+				size: '#00FF00',
+				lastModified: '#99EE99',
+				permissions: '#00AAAA',
+				owner: '#FF8800',
+				group: '#88FF00',
+				type: '#0088FF',
+				links: '#FF0088',
+				folder: '#00AAFF'
+			}
 		},
 		layout: {
 			headerHeight: 15,
