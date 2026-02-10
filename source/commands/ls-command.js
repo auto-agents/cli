@@ -64,7 +64,6 @@ export default class LsCommand {
 				type: Math.max(...filesWithFormattedSizes.map(f => f.type.length), 4),
 				links: Math.max(...filesWithFormattedSizes.map(f => f.links.toString().length), 5)
 			}
-			//console.log(widths)
 
 			// Helper function to colorize text
 			const colorize = (text, color) => {
