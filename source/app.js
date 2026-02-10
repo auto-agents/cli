@@ -71,8 +71,8 @@ export default function App({ ctx }) {
 						<LeftGauge prop={ctx.data.ram.usage} ctx={ctx} />
 						<LeftGauge prop={ctx.data.app.modules.speech} ctx={ctx} />
 						<LeftGauge prop={ctx.data.app.modules.recognition} ctx={ctx} />
-						<LeftGauge prop={ctx.data.app.modules.openAPIChatServer} ctx={ctx} />
-						<LeftGauge prop={ctx.data.app.modules.openAPIAgentsServer} ctx={ctx} />
+						<LeftGauge prop={ctx.data.app.modules.openAPIChat} ctx={ctx} />
+						<LeftGauge prop={ctx.data.app.modules.openAPIAgents} ctx={ctx} />
 					</Box>
 
 					{ /* title */}

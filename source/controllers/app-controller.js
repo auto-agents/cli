@@ -34,11 +34,10 @@ export default class AppController {
 	commandController = null
 	dialog = null
 
-	constructor(ctx, cli) {
+	constructor(ctx) {
 		this.ctx = ctx
-		this.cli = cli
 
-		const { title, subtitle } = this.#getTitle(cli)
+		const { title, subtitle } = this.#getTitle()
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
@@ -77,7 +76,7 @@ export default class AppController {
 		this.timeService.run()
 	}
 
-	#getTitle(cli) {
+	#getTitle() {
 		return {
 			title: cfonts.render('  Auto Agents  ', {
 				font: 'shade',
@@ -119,21 +118,29 @@ export default class AppController {
 	}
 
 	appInitialized() {
+		// init modules gauges
 		const o = this.output
 		const e = this.event
-		this.ctx.data.app.modules.speech.value = this.ctx.components.module.speech != null ?
-			o.statusOn() : o.statusOff()
-		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.speech.key)
-		this.ctx.data.app.modules.recognition.value = this.ctx.components.module.recognition != null ?
-			o.statusOn() : o.statusOff()
-		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.recognition.key)
-		this.ctx.data.app.modules.openAPIChatServer.value = this.ctx.components.module.openAPIChatServer != null ?
-			o.statusOn() : o.statusOff()
-		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.openAPIChatServer.key)
-		this.ctx.data.app.modules.openAPIAgentsServer.value = this.ctx.components.module.openAPIAgentsServer != null ?
-			o.statusOn() : o.statusOff()
-		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.openAPIAgentsServer.key)
+		const initModuleGauge = (moduleName, gaugeName) => {
+			gaugeName ||= moduleName
+			const moduleInstance = this.ctx.components.module[moduleName]
+			const moduleSpec = this.ctx.modules[moduleName]
+			const gauge = this.ctx.data.app.modules[gaugeName]
+			gauge.value =
+				!moduleSpec ? o.statusUnavailable() : (
+					(moduleInstance && moduleSpec.enabled) ?
+						o.statusOn()
+						: (!moduleInstance && moduleSpec.enabled ?
+							o.statusUnavailable()
+							: o.statusOff()))
+			e.emitTarget(GaugeSourceUpdatedEvent, gauge.key)
+		}
+		initModuleGauge('speech')
+		initModuleGauge('recognition')
+		initModuleGauge('openAPIChat')
+		initModuleGauge('openAPIAgents')
 
+		// begin dialog
 		this.dialog.hello()
 	}
 

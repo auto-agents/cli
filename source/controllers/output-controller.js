@@ -119,4 +119,9 @@ export default class OutputController {
 		return chalk.hex(this.ctx.theme.status.offColor.text)
 			.bgHex(this.ctx.theme.status.offColor.bg).bold(' OFF ')
 	}
+
+	statusUnavailable() {
+		return chalk.hex(this.ctx.theme.status.unavailableColor.text)
+			.bgHex(this.ctx.theme.status.unavailableColor.bg).bold(' Unavailable ')
+	}
 }

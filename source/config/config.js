@@ -80,8 +80,12 @@ export default function config(cli) {
 					bg: '#00FF00'
 				},
 				offColor: {
-					text: '#FFFFFF',
-					bg: '#FF0000'
+					text: '#FF5500',
+					bg: '#666666'
+				},
+				unavailableColor: {
+					text: '#FFFF00',
+					bg: '#BB5500'
 				}
 			},
 			subInitTextTitleColor: '#66AA88'
@@ -114,11 +118,11 @@ export default function config(cli) {
 						key: 'voice recognition',
 						value: ''
 					},
-					openAPIChatServer: {
+					openAPIChat: {
 						key: 'OpenAPI chat srv',
 						value: ''
 					},
-					openAPIAgentsServer: {
+					openAPIAgents: {
 						key: 'OpenAPI agents srv',
 						value: ''
 					}
@@ -199,7 +203,7 @@ export default function config(cli) {
 		},
 		texts: {
 			dialog: {
-				hello: 'Hello %username%, what can i do for you today?'
+				hello: 'Hello professor %username%, what can i do for you today?'
 			}
 		},
 		modules: {
@@ -232,8 +236,18 @@ export default function config(cli) {
 					}
 				}
 			},
-			openAIChat: {
+			recognition: {
+				enabled: false
+			},
+			openAPIChat: {
 				file: 'open-ai-chat.js',
+				enabled: true,
+				config: {
+
+				}
+			},
+			openAPIAgents: {
+				file: 'open-ai-agents.js',
 				enabled: true,
 				config: {
 

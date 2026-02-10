@@ -35,7 +35,6 @@ export default class ModuleController {
             catch (err) {
                 o.appendLine(o.error(margin + 'module load error: ' + err))
                 o.appendLine(o.warning(margin + 'module will be disabled'))
-                module.enabled = false
             }
         }
     }
