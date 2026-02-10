@@ -8,7 +8,7 @@
 describe an implementation of a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md`. Write the result in file `cli/doc/command-implementation.md`
 ```
 
-### implement a new command
+### implement news commands
 
 #### generical prompt
 
@@ -23,7 +23,7 @@ implement a new command that can be input by user, according to the specificatio
 }
 ```
 
-#### command: `ls`
+### command: `ls`
 
 ```js
 {
@@ -42,7 +42,7 @@ output the date according to the locale
 colorize folder names with a different color from the property ls.folder
 ```
 
-##### fixes
+#### fixes
 
 ```text
 The 'perm' header text is misaligned. fix it.
@@ -57,4 +57,21 @@ add a single space character between the size and the unit
 do not indicates size when the line is a folder
 
 add the `/ ` character before the name when the line is a folder, else add the ` ` character before the name
+
+the command must output the path for which files are listed, separated by a blank line
+
+add a blank line after the last file entry, and add a summary line that indicates the number of files and folders, and the total amount of file sizes with the right unit. use the color that is defined for the size column for the size value in the summary line 
+```
+
+### command: `pwd`
+
+```js
+{
+    names: ['pwd']
+    description: 'output the current path',
+    file: 'pwd-command.js'
+}
+```
+```text
+the run() method of this command must output the current path that is stored in the property `cli.currentPath` in the app context (this.ctx). The path must be outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
 ```

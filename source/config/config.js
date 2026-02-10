@@ -44,6 +44,11 @@ export default function config(cli) {
 					names: ['ls', 'dir'],
 					description: 'output the list of files of the current folder',
 					file: 'ls-command.js'
+				},
+				{
+					names: ['pwd'],
+					description: 'output current path',
+					file: 'pwd-command.js'
 				}
 			],
 			currentPath: process.cwd()

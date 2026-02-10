@@ -15,6 +15,10 @@ export default class LsCommand {
 		output.newLine()
 
 		try {
+			// Output the current path
+			output.appendLine(currentPath)
+			output.newLine()
+
 			const files = fs.readdirSync(currentPath, { withFileTypes: true })
 			const fileStats = files.map(file => {
 				const filePath = path.join(currentPath, file.name)
@@ -92,6 +96,17 @@ export default class LsCommand {
 				const line = `${name} ${size} ${lastModified} ${permissions} ${owner} ${group} ${type} ${links}`
 				output.appendLine(line)
 			})
+
+			// Add blank line and summary
+			output.newLine()
+			const fileCount = filesWithFormattedSizes.filter(f => f.type === 'file').length
+			const folderCount = filesWithFormattedSizes.filter(f => f.type === 'dir').length
+			const totalSize = filesWithFormattedSizes
+				.filter(f => f.type === 'file')
+				.reduce((sum, f) => sum + f.size, 0)
+			const formattedTotalSize = totalSize > 0 ? formatFileSize(totalSize) : '0 B'
+			const summary = `${fileCount} file${fileCount !== 1 ? 's' : ''}, ${folderCount} folder${folderCount !== 1 ? 's' : ''} - total size: ${colorize(formattedTotalSize, theme.size)}`
+			output.appendLine(summary)
 
 		} catch (error) {
 			output.appendLine(output.error(error.message))
