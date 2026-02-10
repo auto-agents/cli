@@ -38,7 +38,6 @@ export default class DialogController {
 	}
 
 	speech(text) {
-		console.clear()
 		const f = async () => {
 			try {
 				await this.ctx.components.module.speech.speak(text)

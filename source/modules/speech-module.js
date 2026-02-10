@@ -3,6 +3,7 @@ import { existsSync } from "fs";
 import { join } from 'path';
 import ActionController from "../controllers/action-controller";
 import SpinnerService from "../services/spinner-service";
+import callAsync from "../utils/utils.js"
 
 export default class SpeechModule {
 
@@ -23,6 +24,7 @@ export default class SpeechModule {
             throw new Error('module file not found: ' + this.modulePath)
         const mod = require(this.modulePath)
         this.speech = new mod.default({ config: this.config })
+
         const runSrv = async () => {
             try {
                 await this.speech.launchServer()
@@ -30,17 +32,40 @@ export default class SpeechModule {
                 o.appendLine(o.error(margin + 'speech module server launch error: ' + err))
             }
         }
+
         const runSrvAction = new ActionController(
             this.ctx,
             runSrv,
-            this.spinner.newSpinner(margin2 + '- running speech module server', cliSpinners.sand)
+            this.spinner.newSpinner(margin2 + '- running speech module server', cliSpinners.sand),
+            async () => {
+
+                const runOpenBrowser = new ActionController(
+                    this.ctx,
+                    async () => this.openBrowser(),
+                    this.spinner.newSpinner(margin2 + '- opening browser speech SPA', cliSpinners.sand)
+                )
+                await runOpenBrowser.run()
+
+            }
         )
         await runSrvAction.run()
+
         this.ctx.components.module.speech = this
-        //console.log(this.config)
     }
 
     async speak(text) {
         await this.speech.speak({ sentence: text, voice: null, apiKey: this.config.apiKey })
+    }
+
+    openBrowser() {
+        const f = async () => {
+            try {
+                await this.speech.openBrowser()
+            } catch (err) {
+                const o = this.ctx.components.output
+                o.appendLine(o.error(err))
+            }
+        }
+        callAsync(f)
     }
 }
