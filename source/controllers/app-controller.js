@@ -1,4 +1,4 @@
-import chalk from 'chalk'
+import cfonts from 'cfonts'
 import RamService from '../services/ram-service.js';
 import TimeService from '../services/time-service.js';
 import {
@@ -34,8 +34,13 @@ export default class AppController {
 	commandController = null
 	dialog = null
 
-	constructor(ctx) {
+	constructor(ctx, cli) {
 		this.ctx = ctx
+		this.cli = cli
+
+		const { title, subtitle } = this.#getTitle(cli)
+		this.ctx.app.title = title
+		this.ctx.app.subtitle = subtitle
 
 		this.output = new OutputController(ctx)
 		this.event = new EventService(ctx)
@@ -72,6 +77,26 @@ export default class AppController {
 		this.timeService.run()
 	}
 
+	#getTitle(cli) {
+		return {
+			title: cfonts.render('  Auto Agents  ', {
+				font: 'shade',
+				/*align: 'center',*/
+				gradient: '#660000,red,yellow',
+				transitionGradient: true,
+				space: false
+			}),
+			subtitle: cfonts.render('CLI Tool v1.0 Feb 2026', {
+				font: 'console',
+				/*align: 'center',*/
+				gradient: '#FF5500,yellow',
+				transitionGradient: true,
+				lineHeight: 1,
+				space: false
+			})
+		}
+	}
+
 	async run() {
 		await this.init.run()
 	}
@@ -102,9 +127,12 @@ export default class AppController {
 		this.ctx.data.app.modules.recognition.value = this.ctx.components.module.recognition != null ?
 			o.statusOn() : o.statusOff()
 		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.recognition.key)
-		this.ctx.data.app.modules.openAPIServer.value = this.ctx.components.module.openAPIServer != null ?
+		this.ctx.data.app.modules.openAPIChatServer.value = this.ctx.components.module.openAPIChatServer != null ?
 			o.statusOn() : o.statusOff()
-		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.openAPIServer.key)
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.openAPIChatServer.key)
+		this.ctx.data.app.modules.openAPIAgentsServer.value = this.ctx.components.module.openAPIAgentsServer != null ?
+			o.statusOn() : o.statusOff()
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.openAPIAgentsServer.key)
 
 		this.dialog.hello()
 	}

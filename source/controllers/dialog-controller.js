@@ -1,5 +1,6 @@
 import chalk from "chalk"
 import callAsync from "../utils/utils.js"
+import util from "util"
 
 export default class DialogController {
 
@@ -38,6 +39,7 @@ export default class DialogController {
 	}
 
 	speech(text) {
+		text = util.stripVTControlCharacters(text)
 		const f = async () => {
 			try {
 				await this.ctx.components.module.speech.speak(text)

@@ -23,7 +23,7 @@ const ctx = config(cli)
 // ---- launch app ----
 
 console.clear()
-const app = new AppController(ctx)
+const app = new AppController(ctx, cli)
 render(<App ctx={ctx} />/*, {
 	incrementalRendering: false,
 	concurrent: false

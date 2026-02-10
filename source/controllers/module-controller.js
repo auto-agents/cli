@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
 import { join } from 'path';
+import chalk from "chalk"
 
 export default class ModuleController {
 
@@ -17,7 +18,10 @@ export default class ModuleController {
         for (const moduleName in this.ctx.modules) {
             const module = this.ctx.modules[moduleName]
             if (!module.enabled) continue
-            o.appendLine(margin + '≡ initializing module: ' + moduleName)
+
+            o.newLine()
+            o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ initializing module: ' + moduleName))
+
             const path = join(this.modulesPath, module.file)
             if (!existsSync(path)) {
                 o.appendLine(o.error(margin + 'module file not found: ' + path))

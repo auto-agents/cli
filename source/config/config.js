@@ -1,17 +1,13 @@
-import cfonts from 'cfonts'
-
 const longInterval = 4000
 
 // app context (global prop ?)
 export default function config(cli) {
 
-	const { title, subtitle } = getTitle(cli)
-
 	return {
 		app: {
 			name: cli.flags.name,
-			title: title,
-			subtitle: subtitle
+			title: null,
+			subtitle: null
 		},
 		paths: {
 			agents: '../agents',
@@ -44,7 +40,8 @@ export default function config(cli) {
 					description: 'show system info',
 					file: 'sysinfo-command.js'
 				}
-			]
+			],
+			currentPath: process.cwd()
 		},
 		theme: {
 			borderMainColor: '#777777',
@@ -86,7 +83,8 @@ export default function config(cli) {
 					text: '#FFFFFF',
 					bg: '#FF0000'
 				}
-			}
+			},
+			subInitTextTitleColor: '#66AA88'
 		},
 		layout: {
 			headerHeight: 15,
@@ -116,8 +114,12 @@ export default function config(cli) {
 						key: 'voice recognition',
 						value: ''
 					},
-					openAPIServer: {
-						key: 'OpenAPI server',
+					openAPIChatServer: {
+						key: 'OpenAPI chat srv',
+						value: ''
+					},
+					openAPIAgentsServer: {
+						key: 'OpenAPI agents srv',
 						value: ''
 					}
 				}
@@ -229,27 +231,14 @@ export default function config(cli) {
 						}
 					}
 				}
+			},
+			openAIChat: {
+				file: 'open-ai-chat.js',
+				enabled: true,
+				config: {
+
+				}
 			}
 		}
 	};
-
-	function getTitle(cli) {
-		return {
-			title: cfonts.render('  Auto Agents  ', {
-				font: 'shade',
-				/*align: 'center',*/
-				gradient: '#660000,red,yellow',
-				transitionGradient: true,
-				space: false
-			}),
-			subtitle: cfonts.render('CLI Tool v1.0 Feb 2026', {
-				font: 'console',
-				/*align: 'center',*/
-				gradient: '#FF5500,yellow',
-				transitionGradient: true,
-				lineHeight: 1,
-				space: false
-			})
-		}
-	}
 }
