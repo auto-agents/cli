@@ -78,7 +78,10 @@ export default class InitService {
 		this.hatActionController.uiFunc.stop()
 		this.app.output.newLine()
 		this.app.output.appendLine('• cli ready ' + chalk.hex('#00FF00').underline('✔'))
-		this.app.event.emit(AppInitializedEvent)
+		setTimeout(
+			() => this.app.event.emit(AppInitializedEvent),
+			500
+		)
 	}
 
 	async #gatherComputerInfos() {

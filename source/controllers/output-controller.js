@@ -109,4 +109,14 @@ export default class OutputController {
 	warning(str) {
 		return chalk.hex(this.ctx.theme.warningColor)(str)
 	}
+
+	statusOn() {
+		return chalk.hex(this.ctx.theme.status.onColor.text)
+			.bgHex(this.ctx.theme.status.onColor.bg).bold(' ON ')
+	}
+
+	statusOff() {
+		return chalk.hex(this.ctx.theme.status.offColor.text)
+			.bgHex(this.ctx.theme.status.offColor.bg).bold(' OFF ')
+	}
 }

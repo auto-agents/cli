@@ -76,6 +76,16 @@ export default function config(cli) {
 			console: {
 				stderrColor: '#FF0000',
 				stdoutColor: '#FFFF00'
+			},
+			status: {
+				onColor: {
+					text: '#FFFF00',
+					bg: '#00FF00'
+				},
+				offColor: {
+					text: '#FFFFFF',
+					bg: '#FF0000'
+				}
 			}
 		},
 		layout: {
@@ -96,6 +106,20 @@ export default function config(cli) {
 					key: 'uptime',
 					value: '',
 					interval: 1000
+				},
+				modules: {
+					speech: {
+						key: 'speech',
+						value: ''
+					},
+					recognition: {
+						key: 'voice recognition',
+						value: ''
+					},
+					openAPIServer: {
+						key: 'OpenAPI server',
+						value: ''
+					}
 				}
 			},
 			layout: {

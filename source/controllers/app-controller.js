@@ -25,11 +25,14 @@ export default class AppController {
 	ramInterval = null
 	ctx = null
 	startTime = null
-	eventService = null
+	event = null
 	ramService = null
 	timeService = null
-	initService = null
+	init = null
 	output = null
+	inputController = null
+	commandController = null
+	dialog = null
 
 	constructor(ctx) {
 		this.ctx = ctx
@@ -91,6 +94,18 @@ export default class AppController {
 	}
 
 	appInitialized() {
+		const o = this.output
+		const e = this.event
+		this.ctx.data.app.modules.speech.value = this.ctx.components.module.speech != null ?
+			o.statusOn() : o.statusOff()
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.speech.key)
+		this.ctx.data.app.modules.recognition.value = this.ctx.components.module.recognition != null ?
+			o.statusOn() : o.statusOff()
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.recognition.key)
+		this.ctx.data.app.modules.openAPIServer.value = this.ctx.components.module.openAPIServer != null ?
+			o.statusOn() : o.statusOff()
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.app.modules.openAPIServer.key)
+
 		this.dialog.hello()
 	}
 
