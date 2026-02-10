@@ -96,3 +96,29 @@ the command cd must check if the path exists before to change it and display an 
 
 fix so that '.' goes to the process path and '..' go one path level up related to current path
 ```
+
+### command: `cat`
+
+```text
+implements the command `cat` as described below:
+```
+```js
+{
+    names: ['cat'],
+    description: 'output the content of a file',
+    args: ['filePath'],
+    argsDesc: {
+        filePath: {
+            type: 'string',
+            required: true,
+            description: 'the path of the file output'
+        }
+    },
+    file: 'cat-command.js'
+}
+```
+```text
+the run() method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
+the command must check if the path exists before to change it and display an explicit error message (with the path value)
+eavh line of the file is outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
+```

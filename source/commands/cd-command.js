@@ -9,6 +9,7 @@ export default class CdCommand {
 
 	run(args) {
 		const output = this.ctx.components.output
+		output.newLine()
 
 		if (!args || args.length === 0) {
 			output.appendLine(output.error('Error: path argument is required'))
@@ -33,7 +34,6 @@ export default class CdCommand {
 		}
 
 		this.ctx.cli.currentPath = newPath
-		output.newLine()
 		output.appendLine(`Changed directory to: ${newPath}`)
 	}
 }

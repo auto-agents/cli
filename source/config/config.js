@@ -62,6 +62,19 @@ export default function config(cli) {
 						}
 					},
 					file: 'cd-command.js'
+				},
+				{
+					names: ['cat'],
+					description: 'output the content of a file',
+					args: ['filePath'],
+					argsDesc: {
+						filePath: {
+							type: 'string',
+							required: true,
+							description: 'the path of the file output'
+						}
+					},
+					file: 'cat-command.js'
 				}
 			],
 			currentPath: process.cwd()
