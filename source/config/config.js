@@ -168,7 +168,8 @@ export default function config(cli) {
 			output: null,
 			event: null,
 			dialog: null,
-			sysInfo: null
+			sysInfo: null,
+			module: null
 		},
 		texts: {
 			dialog: {
@@ -200,7 +201,7 @@ export default function config(cli) {
 								linux: "microsoft-edge \"{url}\"",
 								mac: "open -a \"Microsoft Edge\" \"{url}\""
 							},
-							preferredVoices: []
+							preferredVoices: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
 						}
 					}
 				}

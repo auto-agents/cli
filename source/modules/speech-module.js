@@ -15,7 +15,6 @@ export default class SpeechModule {
     }
 
     async init() {
-        console.log(this.config)
         const o = this.outputContext.output
         const margin = this.outputContext.margin + this.outputContext.marginBase
         const margin2 = margin + this.outputContext.marginBase
@@ -23,10 +22,10 @@ export default class SpeechModule {
         if (!existsSync(this.modulePath))
             throw new Error('module file not found: ' + this.modulePath)
         const mod = require(this.modulePath)
-        this.speechModule = new mod.default(this.config)
+        this.speech = new mod.default({ config: this.config })
         const runSrv = async () => {
             try {
-                await this.speechModule.launchServer()
+                await this.speech.launchServer()
             } catch (err) {
                 o.appendLine(o.error(margin + 'speech module server launch error: ' + err))
             }
@@ -37,5 +36,11 @@ export default class SpeechModule {
             this.spinner.newSpinner(margin2 + '- running speech module server', cliSpinners.sand)
         )
         await runSrvAction.run()
+        this.ctx.components.module.speech = this
+        //console.log(this.config)
+    }
+
+    async speak(text) {
+        await this.speech.speak({ sentence: text, voice: null, apiKey: this.config.apiKey })
     }
 }

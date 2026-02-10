@@ -8,6 +8,7 @@ export default class ModuleController {
         this.outputContext = outputContext
         this.outputContext.margin += this.outputContext.margin
         this.modulesPath = join(process.cwd(), 'source', 'modules')
+        this.ctx.components.module = this
     }
 
     async run() {

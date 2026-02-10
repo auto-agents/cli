@@ -88,8 +88,7 @@ export default class InitService {
 	}
 
 	async #initModules(outputContext) {
-		const mc = await new ModuleController(this.ctx, outputContext).run()
-		this.ctx.components.moduleController = mc
+		await new ModuleController(this.ctx, outputContext).run()
 	}
 
 	#getOutputContext(margin) {

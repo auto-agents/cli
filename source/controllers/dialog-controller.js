@@ -1,8 +1,14 @@
 import chalk from "chalk"
+import callAsync from "../utils/utils.js"
+
 export default class DialogController {
 
 	constructor(ctx) {
 		this.ctx = ctx
+	}
+
+	#isSpeechAvailable() {
+		return this.ctx.components.module.speech != null
 	}
 
 	hello() {
@@ -11,6 +17,8 @@ export default class DialogController {
 		const text = this.ctx.texts.dialog.hello
 			.replace('%username%', chalk.bold(username))
 		this.echoSystem(text)
+		if (this.#isSpeechAvailable())
+			this.speech(text)
 	}
 
 	echoUser(text) {
@@ -18,6 +26,8 @@ export default class DialogController {
 		o.newLine()
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
 		o.appendLine(this.ctx.cli.dialog.userDialogPrefix + ' ' + ucol(text))
+		if (this.#isSpeechAvailable())
+			this.speech(text)
 	}
 
 	echoSystem(text) {
@@ -25,5 +35,18 @@ export default class DialogController {
 		o.newLine()
 		const scol = chalk.hex(this.ctx.theme.dialog.systemDialogColor)
 		o.appendLine(this.ctx.cli.dialog.systemDialogPrefix + ' ' + scol(text))
+	}
+
+	speech(text) {
+		console.clear()
+		const f = async () => {
+			try {
+				await this.ctx.components.module.speech.speak(text)
+			} catch (err) {
+				const o = this.ctx.components.output
+				o.appendLine(o.error(err.stack))
+			}
+		}
+		callAsync(f)
 	}
 }
