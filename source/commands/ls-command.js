@@ -75,12 +75,12 @@ export default class LsCommand {
 			}
 
 			// Output header
-			const header = `${colorize('Name'.padEnd(widths.name), theme.name)} ${colorize('Size'.padEnd(widths.size), theme.size)} ${colorize('Last Modified'.padEnd(widths.lastModified), theme.lastModified)} ${colorize('Permissions'.padEnd(widths.permissions), theme.permissions)} ${colorize('Owner'.padEnd(widths.owner), theme.owner)} ${colorize('Group'.padEnd(widths.group), theme.group)} ${colorize('Type'.padEnd(widths.type), theme.type)} ${colorize('Links'.padEnd(widths.links), theme.links)}`
+			const header = `${colorize('Name'.padEnd(widths.name), theme.name)} ${colorize('Size'.padEnd(widths.size), theme.size)} ${colorize('Last Modified'.padEnd(widths.lastModified), theme.lastModified)} ${colorize('Perm'.padEnd(widths.permissions), theme.permissions)} ${colorize('Owner'.padEnd(widths.owner), theme.owner)} ${colorize('Group'.padEnd(widths.group), theme.group)} ${colorize('Type'.padEnd(widths.type), theme.type)} ${colorize('Links'.padEnd(widths.links), theme.links)}`
 			output.appendLine(chalk.italic(header))
 
 			// Output row separator
 			const separator = '-'.repeat(widths.name) + ' ' + '-'.repeat(widths.size) + ' ' + '-'.repeat(widths.lastModified) + ' ' + '-'.repeat(widths.permissions) + ' ' + '-'.repeat(widths.owner) + ' ' + '-'.repeat(widths.group) + ' ' + '-'.repeat(widths.type) + ' ' + '-'.repeat(widths.links)
-			output.appendLine(separator)
+			output.appendLine(separator.trim())
 
 			// Output file entries
 			filesWithFormattedSizes.forEach(file => {
@@ -94,7 +94,7 @@ export default class LsCommand {
 				const links = colorize(file.links.toString().padEnd(widths.links), theme.links)
 
 				const line = `${name} ${size} ${lastModified} ${permissions} ${owner} ${group} ${type} ${links}`
-				output.appendLine(line)
+				output.appendLine(line.trim())
 			})
 
 			// Add blank line and summary
