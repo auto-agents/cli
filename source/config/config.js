@@ -26,7 +26,7 @@ export default function config(cli) {
 			},
 			commands: [
 				{
-					names: ['e', 'exit'],
+					names: ['x', 'exit'],
 					description: 'exit the cli tool',
 					file: 'exit-command.js'
 				},
