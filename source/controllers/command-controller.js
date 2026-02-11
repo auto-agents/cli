@@ -13,10 +13,10 @@ export default class CommandController {
 
 	constructor(ctx) {
 		this.ctx = ctx
-		ctx.components.event.on(RunCommandEvent, args => this.runCommand(...args))
+		ctx.components.event.on(RunCommandEvent, async args => this.runCommand(...args))
 	}
 
-	runCommand(arg) {
+	async runCommand(arg) {
 
 		// extract com args if any
 		arg = arg.trim()
@@ -51,7 +51,8 @@ export default class CommandController {
 			.join('')
 
 		try {
-			const module = require(path)
+			//const module = require(path)
+			const module = await import(path)
 			const o = new module.default(this.ctx)
 			o.run(args)
 		} catch (err) {

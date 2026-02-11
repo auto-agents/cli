@@ -11,7 +11,8 @@ export default function config(cli) {
 		},
 		paths: {
 			agents: '../agents',
-			modules: '../modules'
+			modules: '../modules',
+			tmp: 'tmp'
 		},
 		cli: {
 			commandPrefix: '/',
@@ -259,7 +260,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: "windows",

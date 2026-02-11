@@ -1,9 +1,30 @@
-import { existsSync, readFileSync } from 'fs'
+import { existsSync, readFileSync, createWriteStream, writeFileSync } from 'fs'
+import { join } from 'path'
+import SyntaxHighlight from 'ink-syntax-highlight';
+import { render } from 'ink';
 
 export default class CatCommand {
 
 	constructor(ctx) {
 		this.ctx = ctx
+	}
+
+	tmpFile() {
+		const tmpDir = join(process.cwd(),
+			this.ctx.paths.tmp)
+		var exists = true
+		var name = null
+		var path = null
+		while (exists) {
+			name = 'tmp-' + Math.floor(Math.random() * 1000000)
+			exists = existsSync(join(tmpDir, name))
+		}
+		path = join(tmpDir, name)
+		return {
+			name: name,
+			folder: tmpDir,
+			path: path
+		}
 	}
 
 	run(args) {
@@ -26,12 +47,35 @@ export default class CatCommand {
 		try {
 			// Read file content
 			const content = readFileSync(filePath, 'utf8')
+				.replace("\r\n", '\n')
 
-			// Output each line on a new line
-			const lines = content.split('\n')
-			lines.forEach(line => {
-				output.appendLine(line)
+			const tmpFile = this.tmpFile().path
+			const wstream =
+				createWriteStream(tmpFile)
+
+			// language="markdown"
+			const i = render(
+				<SyntaxHighlight
+					code={content}
+
+				/>, {
+				stdout: wstream
 			})
+
+			// sync way not found
+			setTimeout(() => {
+				const outp = readFileSync(tmpFile, 'utf8')
+					.replace("\r\n", '\n')
+					.replace("[G", '')
+				const lines = outp.split('\n')
+				lines.forEach(line => {
+					output.appendLine(line)
+				})
+
+				output.appendLine(`lines count: ${lines.length}`)
+				output.appendLine(output.warning(tmpFile))
+
+			}, 100)
 
 		} catch (error) {
 			output.appendLine(output.error(`Error reading file '${filePath}': ${error.message}`))

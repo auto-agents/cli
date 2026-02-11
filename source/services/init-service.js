@@ -18,6 +18,7 @@ export default class InitService {
 	}
 
 	redirectConsole() {
+		//return
 		this.restore = patchConsole((stream, data) => {
 			if (!data) return
 			data = data.trim()

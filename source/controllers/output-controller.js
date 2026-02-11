@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import util from "util"
 import {
 	OutputUpdatedEvent
 } from '../config/events.js'
