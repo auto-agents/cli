@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, createWriteStream, writeFileSync } from 'fs'
-import { join } from 'path'
+import path from 'path'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import { render } from 'ink';
 
@@ -10,20 +10,21 @@ export default class CatCommand {
 	}
 
 	tmpFile() {
-		const tmpDir = join(process.cwd(),
+		const tmpDir = path.join(
+			process.cwd(),
 			this.ctx.paths.tmp)
 		var exists = true
 		var name = null
-		var path = null
+		var fpath = null
 		while (exists) {
 			name = 'tmp-' + Math.floor(Math.random() * 1000000)
-			exists = existsSync(join(tmpDir, name))
+			exists = existsSync(path.join(tmpDir, name))
 		}
-		path = join(tmpDir, name)
+		fpath = path.join(tmpDir, name)
 		return {
 			name: name,
 			folder: tmpDir,
-			path: path
+			path: fpath
 		}
 	}
 
@@ -36,7 +37,9 @@ export default class CatCommand {
 			return
 		}
 
-		const filePath = args[0]
+		var filePath = args[0]
+		var filePath = path.isAbsolute(filePath) ? filePath
+			: path.join(this.ctx.cli.currentPath, filePath)
 
 		// Check if file exists
 		if (!existsSync(filePath)) {
@@ -50,14 +53,12 @@ export default class CatCommand {
 				.replace("\r\n", '\n')
 
 			const tmpFile = this.tmpFile().path
-			const wstream =
-				createWriteStream(tmpFile)
+			const wstream = createWriteStream(tmpFile)
 
 			// language="markdown"
 			const i = render(
 				<SyntaxHighlight
 					code={content}
-
 				/>, {
 				stdout: wstream
 			})
