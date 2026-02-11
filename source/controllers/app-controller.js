@@ -10,7 +10,9 @@ import {
 	CommandFileNotFoundEvent,
 	CommandModuleLoadErrorEvent,
 	CommandArgsCountErrorEvent,
-	AppInitializedEvent
+	AppInitializedEvent,
+	OutputUpdatedEvent,
+	HelpOutputUpdatedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -46,16 +48,18 @@ export default class AppController {
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
-		this.output = new OutputController(ctx, 'this.ctx.cli.output')
+		this.output = new OutputController(ctx, 'this.ctx.cli.output', OutputUpdatedEvent)
+		this.helpOutput = new OutputController(ctx, 'this.ctx.cli.helpOutput', HelpOutputUpdatedEvent)
 		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.boxOutput')
 
 		this.event = new EventService(ctx)
 		this.init = new InitService(ctx, this, this.boxOutput)
 		ctx.components.output = this.output
+		ctx.components.helpOutput = this.helpOutput
 		ctx.components.boxOutput = this.boxOutput
 		ctx.components.app = this
 		ctx.components.event = this.event
-		this.inputController = new InputController(ctx, this.boxOutput)
+		this.inputController = new InputController(ctx, this.helpOutput)
 		this.commandController = new CommandController(ctx)
 		this.dialog = new DialogController(ctx, this.output)
 		ctx.components.dialog = this.dialog

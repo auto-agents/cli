@@ -28,6 +28,9 @@ export default function config(cli) {
 				rows: [],
 				scrollY: 0
 			},
+			helpOutput: {
+				rows: []
+			},
 			output: {
 				rows: []
 			},
@@ -89,6 +92,7 @@ export default function config(cli) {
 		theme: {
 			borderMainColor: '#777777',
 			borderSecondaryColor: '#777777',
+			borderHelpBoxColor: '#00AA00',
 			borderStyle: 'round',
 			gaugeTextColor: '#FFFFFF',
 			gaugeBorderColor: '#AAAAAA',

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { LayoutResizedEvent, OutputUpdatedEvent } from '../config/events';
+import { LayoutResizedEvent } from '../config/events';
 
-const Output = ({ ctx, source, }) => {
+const Output = ({ ctx, source, updateEventName, borderStyle = null, borderColor = null, marginTop = 0 }) => {
 
 	const o = eval(source)
 
@@ -20,7 +20,7 @@ const Output = ({ ctx, source, }) => {
 			setText(buildText())
 		}
 		ctx.components.event.on(
-			OutputUpdatedEvent,
+			updateEventName,
 			listener
 		)
 		ctx.components.event.on(
@@ -29,7 +29,7 @@ const Output = ({ ctx, source, }) => {
 		)
 		return () => {
 			ctx.components.event.off(
-				OutputUpdatedEvent,
+				updateEventName,
 				listener
 			)
 			ctx.components.event.off(
@@ -39,11 +39,18 @@ const Output = ({ ctx, source, }) => {
 		}
 	}, [])
 
-	return (
-		<Box flexGrow={1}>
-			<Text>{text}</Text>
-		</Box>
-	);
+	if (o.rows.length > 0 && borderStyle && borderColor)
+		return (
+			<Box flexGrow={1} marginTop={marginTop} borderStyle={borderStyle} borderColor={borderColor}>
+				<Text>{text}</Text>
+			</Box>
+		);
+	else
+		return (
+			<Box>
+				<Text>{text}</Text>
+			</Box>
+		);
 };
 
 export default Output

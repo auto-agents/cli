@@ -42,8 +42,8 @@ export default class InputController {
 		const p = this.ctx.cli.commandPrefix
 		const cs = ', '
 		const col = chalk.hex(this.ctx.theme.help.commandsListColor)
-		this.commandHelperStartPosition = o.newLine()
-		o.appendLine(chalk.underline(chalk.italic(col('commands:'))))
+		this.commandHelperStartPosition =
+			o.appendLine(chalk.underline(chalk.italic(col('commands:'))))
 		this.commandHelperEndPosition = o.newLine()
 		const n = 16
 		const addLine = s => {
@@ -85,10 +85,11 @@ export default class InputController {
 		if (!this.commandHelperStartPosition || !this.commandHelperEndPosition)
 			return
 
-		this.output.removeLines(
+		/*this.output.removeLines(
 			this.commandHelperStartPosition.y0,
 			this.commandHelperEndPosition.y1
-		)
+		)**/
+		this.output.clear()
 		this.commandHelperStartPosition
 			= this.commandHelperEndPosition = null
 	}

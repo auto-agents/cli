@@ -1,20 +1,19 @@
-import {
-	OutputUpdatedEvent
-} from '../config/events.js'
-
 export default class OutputController {
 
-	constructor(ctx, source) {
+	constructor(ctx, source, updateEventName) {
 		this.ctx = ctx
 		this.source = source
+		this.updateEventName = updateEventName
 	}
 
 	#getSource() {
 		return eval(this.source)
 	}
 
-	clear() {
+	clear(skipViewUpdate = false) {
 		this.#getSource().rows = []
+		if (!skipViewUpdate)
+			this.ctx.components.event.emit(this.updateEventName)
 	}
 
 	appendLine(str, leftMargin = 0, skipViewUpdate = false) {
@@ -30,7 +29,7 @@ export default class OutputController {
 			rows[0] += '\n' + str
 
 		if (!skipViewUpdate)
-			this.ctx.components.event.emit(OutputUpdatedEvent)
+			this.ctx.components.event.emit(this.updateEventName)
 
 		return {
 			y0: y0,

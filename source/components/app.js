@@ -142,12 +142,20 @@ export default function App({ ctx }) {
 			{ /* static output */}
 
 			<Box>
-				<Output ctx={ctx} source="ctx.cli.output" />
+				<Output ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" />
 			</Box>
 
 			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
 
-			{<Prompter ctx={ctx} />}
+			<Box marginTop={1}>
+				<Prompter ctx={ctx} />
+			</Box>
+
+			{ /* help output */}
+
+			<Box>
+				<Output ctx={ctx} source="ctx.cli.helpOutput" updateEventName="HelpOutputUpdatedEvent" borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderHelpBoxColor} marginTop={1} />
+			</Box>
 
 		</Box>
 	);
