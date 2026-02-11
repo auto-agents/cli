@@ -35,3 +35,5 @@ console.log('c moi qui décide du rendering')
 // app start from this point
 
 await app.run()
+
+console.log('ici existe')
