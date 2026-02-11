@@ -23,6 +23,12 @@ export default class OutputController {
 		const y0 = 0
 		const y1 = 1
 
+		const rows = this.#getSource().rows
+		if (rows.length == 0)
+			rows.push(str)
+		else
+			rows[0] += '\n' + str
+
 		if (!skipViewUpdate)
 			this.ctx.components.event.emit(OutputUpdatedEvent)
 

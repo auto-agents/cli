@@ -47,7 +47,7 @@ export default class AppController {
 		this.ctx.app.subtitle = subtitle
 
 		this.output = new OutputController(ctx, 'this.ctx.cli.output')
-		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.output')
+		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.boxOutput')
 
 		this.event = new EventService(ctx)
 		this.init = new InitService(ctx, this, this.boxOutput)

@@ -7,6 +7,7 @@ import RightGauge from './right-gauge.js';
 import BoxOutput from './box-output.js'
 
 import { GaugeSourceUpdatedEvent, LayoutResizedEvent } from '../config/events.js';
+import Output from './output.js';
 
 export default function App({ ctx }) {
 
@@ -14,7 +15,6 @@ export default function App({ ctx }) {
 	const { stdout } = useStdout()
 	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
 	const [rows, setRows] = useState(layoutHeight)
-	const [output, setOutput] = useState('')
 
 	const setPropsLayoutSize = () => {
 		ctx.data.layout.size.value = stdout.columns + 'x' + stdout.rows
@@ -136,13 +136,13 @@ export default function App({ ctx }) {
 			{ /* live output */}
 
 			<Box flexDirection='column' marginTop={1} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
-				<BoxOutput ctx={ctx} source="ctx.cli.output" noScroll={true} />
+				<BoxOutput ctx={ctx} source="ctx.cli.boxOutput" noScroll={true} />
 			</Box>
 
 			{ /* static output */}
 
 			<Box>
-				<Text>{output}</Text>
+				<Output ctx={ctx} source="ctx.cli.output" />
 			</Box>
 
 			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
