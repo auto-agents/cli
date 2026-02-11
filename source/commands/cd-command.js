@@ -1,5 +1,6 @@
 import { existsSync } from 'fs'
-import { resolve, dirname } from 'path'
+import { dirname } from 'path'
+import path from 'path'
 
 export default class CdCommand {
 
@@ -16,7 +17,8 @@ export default class CdCommand {
 			return
 		}
 
-		let newPath = args[0]
+		var newPath = path.isAbsolute(args[0]) ? args[0]
+			: path.join(this.ctx.cli.currentPath, args[0])
 
 		// Handle special cases
 		if (newPath === '.') {
