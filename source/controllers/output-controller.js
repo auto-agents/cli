@@ -36,12 +36,15 @@ export default class OutputController {
 		var y1 = null
 
 		str = str.replace('\r\n', '\n')
+		str = str.replace('\t', '    ')
+		str = str.replace("[39m", '')
 		const tstr = str.split('\n')
 
 		tstr.forEach(istr => {
 			if (w > 0) {
 				if (istr.length > w)
 					while (istr.length > w) {
+						//o.rows.push("DEPASSEEMTN " + istr.length + ' w=' + w)
 						const s = istr.substring(0, w - 1)
 						o.rows.push(s)
 						if (y0 === null)

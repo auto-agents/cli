@@ -66,14 +66,16 @@ export default class CatCommand {
 			// sync way not found
 			setTimeout(() => {
 				const outp = readFileSync(tmpFile, 'utf8')
-					.replace("\r\n", '\n')
+					//	.replace("\r\n", '\n')
 					.replace("[G", '')
-				const lines = outp.split('\n')
+
+				/*const lines = outp.split('\n')
 				lines.forEach(line => {
 					output.appendLine(line)
-				})
+				})*/
+				output.appendLine(outp)
 
-				output.appendLine(`lines count: ${lines.length}`)
+				//output.appendLine(`lines count: ${lines.length}`)
 				output.appendLine(output.warning(tmpFile))
 
 			}, 100)
