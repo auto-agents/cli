@@ -2,25 +2,31 @@ import { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
 import { LayoutResizedEvent, OutputUpdatedEvent } from '../config/events';
 
-const Output = ({ ctx, consolePath }) => {
+const BoxOutput = ({ ctx, source, height, noScroll = false }) => {
 
-	const o = eval(consolePath)
+	const o = eval(source)
+
+	const getHeight = () => {
+		return height || o.rows.length
+	}
 
 	const buildText = () => {
 		//const o = ctx.cli.output
 		const rows = o.rows
-		const y = o.scrollY
-		const n = ctx.data.layout.output.rows.value || 0
+		const y = noScroll ? 0 : o.scrollY
+
+		const n = getHeight()
+
 		const t = rows.slice(y, y + n)
 		return t.join('\n')
 	}
 
 	const buildScrollbar = () => {
-		//const o = ctx.cli.output
-		const n = ctx.data.layout.output.rows.value || 1
+
+		const n = getHeight()
+
 		const r = n / (o.rows.length || 1)
 		var yc = Math.ceil(r * o.scrollY)
-		//console.log('yc=' + yc + ' scrollY=' + o.scrollY + ' n=' + n + ' r=' + r)
 		var tb = ''
 		for (var i = 0; i < n; i++) {
 
@@ -63,17 +69,26 @@ const Output = ({ ctx, consolePath }) => {
 		}
 	}, [])
 
-	return (
-		<Box flexDirection='row'>
+	if (noScroll)
+		return (
 			<Box flexGrow={1}>
 				<Text>{dbg}</Text>
 				<Text>{text}</Text>
 			</Box>
-			<Box width={1}>
-				<Text>{scrollbar}</Text>
+		);
+
+	else
+		return (
+			<Box flexDirection='row'>
+				<Box flexGrow={1}>
+					<Text>{dbg}</Text>
+					<Text>{text}</Text>
+				</Box>
+				<Box width={1}>
+					<Text>{scrollbar}</Text>
+				</Box>
 			</Box>
-		</Box>
-	);
+		);
 };
 
-export default Output
+export default BoxOutput

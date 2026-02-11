@@ -14,6 +14,9 @@ export default function config(cli) {
 			modules: '../modules',
 			tmp: 'tmp'
 		},
+		ui: {
+			refreshInterval: 1000
+		},
 		cli: {
 			commandPrefix: '/',
 			commandPrompt: ' >',

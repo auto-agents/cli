@@ -1,12 +1,12 @@
 import { Text, Box, useStdout } from 'ink';
 import { useState, useEffect } from 'react';
 
-import Prompter from './components/prompter.js'
-import LeftGauge from './components/left-gauge.js';
-import RightGauge from './components/right-gauge.js';
-import Output from './components/output.js'
+import Prompter from './prompter.js'
+import LeftGauge from './left-gauge.js';
+import RightGauge from './right-gauge.js';
+import BoxOutput from './box-output.js'
 
-import { GaugeSourceUpdatedEvent, LayoutResizedEvent } from './config/events.js';
+import { GaugeSourceUpdatedEvent, LayoutResizedEvent } from '../config/events.js';
 
 export default function App({ ctx }) {
 
@@ -14,10 +14,13 @@ export default function App({ ctx }) {
 	const { stdout } = useStdout()
 	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
 	const [rows, setRows] = useState(layoutHeight)
+	const [output, setOutput] = useState('')
 
 	const setPropsLayoutSize = () => {
 		ctx.data.layout.size.value = stdout.columns + 'x' + stdout.rows
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.size.key)
+
+		// NO MORE USED ---->
 		ctx.data.layout.output.rows.value =
 			stdout.rows
 			- ctx.layout.pageBottomMargin
@@ -30,9 +33,11 @@ export default function App({ ctx }) {
 			- 2
 			// output right scroll bar
 			- 1
+		// <---- NO MORE USED
 
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.rows.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.cols.key)
+
 	}
 	setPropsLayoutSize()
 
@@ -48,8 +53,6 @@ export default function App({ ctx }) {
 			stdout?.off("resize", handleResize);
 		};
 	}, [stdout]);
-
-	// {/*height={rows}*/}
 
 	return (
 
@@ -128,16 +131,23 @@ export default function App({ ctx }) {
 			</Box>
 			*/}
 
-			{ /* prompt input */}
-
-			{ /* <Prompter ctx={ctx} /> */}
-
 			{ /* outputs */}
-			{ /*
-			<Box flexDirection='column' flexGrow={1} marginTop={1} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
-				<Output ctx={ctx} consolePath="ctx.cli.output" />
+
+			{ /* live output */}
+
+			<Box flexDirection='column' marginTop={1} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
+				<BoxOutput ctx={ctx} source="ctx.cli.output" noScroll={true} />
 			</Box>
-			*/}
+
+			{ /* static output */}
+
+			<Box>
+				<Text>{output}</Text>
+			</Box>
+
+			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
+
+			{<Prompter ctx={ctx} />}
 
 		</Box>
 	);

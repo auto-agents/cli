@@ -35,12 +35,14 @@ export default class SpeechModule {
 
         const runSrvAction = new ActionController(
             this.ctx,
+            this.outputContext.output,
             runSrv,
             this.spinner.newSpinner(margin2 + '- running speech module server', cliSpinners.sand),
             async () => {
 
                 const runOpenBrowser = new ActionController(
                     this.ctx,
+                    this.outputContext.output,
                     async () => this.openBrowser(),
                     this.spinner.newSpinner(margin2 + '- opening browser speech SPA', cliSpinners.sand)
                 )
@@ -62,7 +64,7 @@ export default class SpeechModule {
             try {
                 await this.speech.openBrowser()
             } catch (err) {
-                const o = this.ctx.components.output
+                const o = this.output
                 o.appendLine(o.error(err))
             }
         }

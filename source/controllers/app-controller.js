@@ -18,6 +18,7 @@ import InitService from '../services/init-service.js';
 import InputController from './input-controller.js';
 import CommandController from './command-controller.js';
 import DialogController from './dialog-controller.js';
+import RenderController from './render-controller.js';
 
 export default class AppController {
 
@@ -42,10 +43,13 @@ export default class AppController {
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
-		this.output = new OutputController(ctx)
+		this.output = new OutputController(ctx, 'ctx.cli.output')
+		this.boxOutput = new OutputController(ctx, 'ctx.cli.output')
+
 		this.event = new EventService(ctx)
-		this.init = new InitService(ctx, this)
+		this.init = new InitService(ctx, this, this.boxOutput)
 		ctx.components.output = this.output
+		ctx.components.boxOutput = this.boxOutput
 		ctx.components.app = this
 		ctx.components.event = this.event
 		this.inputController = new InputController(ctx)
@@ -76,6 +80,12 @@ export default class AppController {
 		this.heartbeatTick()
 		this.ramService.run()
 		this.timeService.run()
+
+		this.renderController = new RenderController(ctx)
+		ctx.components.render = this.renderController
+		this.renderController
+			.init()
+			.show()
 	}
 
 	#getTitle() {

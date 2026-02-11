@@ -1,7 +1,8 @@
 export default class ActionController {
 
-	constructor(ctx, actionFunc, uiFunc, onEnded, onError) {
+	constructor(ctx, output, actionFunc, uiFunc, onEnded, onError) {
 		this.ctx = ctx
+		this.output = output
 		this.actionFunc = actionFunc
 		this.uiFunc = uiFunc
 		this.onEnded = onEnded
@@ -16,8 +17,8 @@ export default class ActionController {
 
 	async run() {
 		this.uiFunc.run()
-		await this.actionFunc()
+		await this.actionFunc(this.output)
 		if (this.autoStopUI) this.uiFunc.stop()
-		if (this.onEnded) this.onEnded()
+		if (this.onEnded) this.onEnded(this.output)
 	}
 }

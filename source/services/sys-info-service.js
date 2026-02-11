@@ -99,8 +99,8 @@ export default class SysInfoService {
 		return this
 	}
 
-	dump() {
-		const o = this.ctx.components.output
+	dump(output) {
+		const o = output
 		o.newLine()
 		o.appendComment(this.cpuCount + ' cores of ' + this.cpu)
 		o.appendComment('total ram: ' + this.ramAmount + ' | free ram: ' + this.availableRam)
