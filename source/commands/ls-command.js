@@ -1,11 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 import chalk from 'chalk'
+import Status from '../utils/status.js'
 
 export default class LsCommand {
 
 	constructor(ctx) {
 		this.ctx = ctx
+		this.status = new Status(ctx)
 	}
 
 	run() {
@@ -109,7 +111,7 @@ export default class LsCommand {
 			output.appendLine(summary)
 
 		} catch (error) {
-			output.appendLine(output.error(error.message))
+			output.appendLine(this.status.error(error.message))
 		}
 	}
 }

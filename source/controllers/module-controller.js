@@ -1,11 +1,13 @@
 import { existsSync } from "fs";
 import { join } from 'path';
 import chalk from "chalk"
+import Status from '../utils/status.js'
 
 export default class ModuleController {
 
     constructor(ctx, outputContext) {
         this.ctx = ctx
+        this.status = new Status(ctx)
         this.outputContext = outputContext
         this.outputContext.margin += this.outputContext.margin
         this.modulesPath = join(process.cwd(), 'source', 'modules')
@@ -24,7 +26,7 @@ export default class ModuleController {
 
             const path = join(this.modulesPath, module.file)
             if (!existsSync(path)) {
-                o.appendLine(o.error(margin + 'module file not found: ' + path))
+                o.appendLine(this.status.error(margin + 'module file not found: ' + path))
                 continue
             }
             try {
@@ -33,8 +35,8 @@ export default class ModuleController {
                 await m.init()
             }
             catch (err) {
-                o.appendLine(o.error(margin + 'module load error: ' + err))
-                o.appendLine(o.warning(margin + 'module will be disabled'))
+                o.appendLine(this.status.error(margin + 'module load error: ' + err))
+                o.appendLine(this.status.warning(margin + 'module will be disabled'))
             }
         }
     }

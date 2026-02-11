@@ -7,8 +7,9 @@ export default class InputController {
 	commandHelperStartPosition = null
 	commandHelperEndPosition = null
 
-	constructor(ctx) {
+	constructor(ctx, output) {
 		this.ctx = ctx
+		this.output = output
 		const e = this.ctx.components.event
 		e.on(CommandInputStartedEvent, () => this.#CommandInputStartedEvent())
 			.on(InputSubmitedEvent, () => this.#InputSubmitedEvent())
@@ -37,7 +38,7 @@ export default class InputController {
 
 	#showCommands(inp) {
 		this.commandHelperOpened = true
-		const o = this.ctx.components.output
+		const o = this.output
 		const p = this.ctx.cli.commandPrefix
 		const cs = ', '
 		const col = chalk.hex(this.ctx.theme.help.commandsListColor)
@@ -84,7 +85,7 @@ export default class InputController {
 		if (!this.commandHelperStartPosition || !this.commandHelperEndPosition)
 			return
 
-		this.ctx.components.output.removeLines(
+		this.output.removeLines(
 			this.commandHelperStartPosition.y0,
 			this.commandHelperEndPosition.y1
 		)

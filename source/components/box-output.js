@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { LayoutResizedEvent, OutputUpdatedEvent } from '../config/events';
+import { LayoutResizedEvent, BoxOutputUpdatedEvent } from '../config/events';
 
 const BoxOutput = ({ ctx, source, height, noScroll = false }) => {
 
@@ -11,7 +11,7 @@ const BoxOutput = ({ ctx, source, height, noScroll = false }) => {
 	}
 
 	const buildText = () => {
-		//const o = ctx.cli.output
+
 		const rows = o.rows
 		const y = noScroll ? 0 : o.scrollY
 
@@ -50,7 +50,7 @@ const BoxOutput = ({ ctx, source, height, noScroll = false }) => {
 			setScrollbar(buildScrollbar())
 		}
 		ctx.components.event.on(
-			OutputUpdatedEvent,
+			BoxOutputUpdatedEvent,
 			listener
 		)
 		ctx.components.event.on(
@@ -59,7 +59,7 @@ const BoxOutput = ({ ctx, source, height, noScroll = false }) => {
 		)
 		return () => {
 			ctx.components.event.off(
-				OutputUpdatedEvent,
+				BoxOutputUpdatedEvent,
 				listener
 			)
 			ctx.components.event.off(

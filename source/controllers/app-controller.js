@@ -13,12 +13,14 @@ import {
 	AppInitializedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
-import OutputController from './output-controller.js';
+import BoxOutputController from './box-output-controller.js';
 import InitService from '../services/init-service.js';
 import InputController from './input-controller.js';
 import CommandController from './command-controller.js';
 import DialogController from './dialog-controller.js';
 import RenderController from './render-controller.js';
+import OutputController from './output-controller.js';
+import Status from '../utils/status.js'
 
 export default class AppController {
 
@@ -38,13 +40,14 @@ export default class AppController {
 
 	constructor(ctx) {
 		this.ctx = ctx
+		this.status = new Status(ctx)
 
 		const { title, subtitle } = this.#getTitle()
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
-		this.output = new OutputController(ctx, 'ctx.cli.output')
-		this.boxOutput = new OutputController(ctx, 'ctx.cli.output')
+		this.output = new OutputController(ctx, 'this.ctx.cli.output')
+		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.output')
 
 		this.event = new EventService(ctx)
 		this.init = new InitService(ctx, this, this.boxOutput)
@@ -52,9 +55,9 @@ export default class AppController {
 		ctx.components.boxOutput = this.boxOutput
 		ctx.components.app = this
 		ctx.components.event = this.event
-		this.inputController = new InputController(ctx)
+		this.inputController = new InputController(ctx, this.boxOutput)
 		this.commandController = new CommandController(ctx)
-		this.dialog = new DialogController(ctx)
+		this.dialog = new DialogController(ctx, this.output)
 		ctx.components.dialog = this.dialog
 
 		this.ramService = new RamService(ctx)
@@ -126,7 +129,7 @@ export default class AppController {
 	error(message) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(o.error(message))
+		o.appendLine(this.status.error(message))
 	}
 
 	appInitialized() {
@@ -139,12 +142,12 @@ export default class AppController {
 			const moduleSpec = this.ctx.modules[moduleName]
 			const gauge = this.ctx.data.app.modules[gaugeName]
 			gauge.value =
-				!moduleSpec ? o.statusUnavailable() : (
+				!moduleSpec ? this.status.statusUnavailable() : (
 					(moduleInstance && moduleSpec.enabled) ?
-						o.statusOn()
+						this.status.statusOn()
 						: (!moduleInstance && moduleSpec.enabled ?
-							o.statusUnavailable()
-							: o.statusOff()))
+							this.status.statusUnavailable()
+							: this.status.statusOff()))
 			e.emitTarget(GaugeSourceUpdatedEvent, gauge.key)
 		}
 		initModuleGauge('speech')

@@ -24,9 +24,12 @@ export default function config(cli) {
 				userDialogPrefix: 'you >',
 				systemDialogPrefix: '🤖'
 			},
-			output: {
+			boxOutput: {
 				rows: [],
 				scrollY: 0
+			},
+			output: {
+				rows: []
 			},
 			commands: [
 				{

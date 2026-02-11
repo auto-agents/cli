@@ -1,11 +1,13 @@
 import { existsSync } from 'fs'
 import { dirname } from 'path'
 import path from 'path'
+import Status from '../utils/status.js'
 
 export default class CdCommand {
 
 	constructor(ctx) {
 		this.ctx = ctx
+		this.status = new Status(ctx)
 	}
 
 	run(args) {
@@ -13,7 +15,7 @@ export default class CdCommand {
 		output.newLine()
 
 		if (!args || args.length === 0) {
-			output.appendLine(output.error('Error: path argument is required'))
+			output.appendLine(this.status.error('Error: path argument is required'))
 			return
 		}
 
@@ -31,7 +33,7 @@ export default class CdCommand {
 
 		// Check if path exists
 		if (!existsSync(newPath)) {
-			output.appendLine(output.error(`Error: path '${newPath}' does not exist`))
+			output.appendLine(this.status.error(`Error: path '${newPath}' does not exist`))
 			return
 		}
 

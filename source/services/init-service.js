@@ -89,7 +89,7 @@ export default class InitService {
 	}
 
 	async #gatherComputerInfos() {
-		const sys = new SysInfoService(this.ctx).run()
+		const sys = new SysInfoService(this.ctx, this.output).run()
 		this.ctx.components.sysInfo = sys
 		sys.dump(this.output)
 	}
