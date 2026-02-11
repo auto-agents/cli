@@ -1,4 +1,6 @@
 import { existsSync, readFileSync } from 'fs'
+import { renderToString } from 'ink';
+import { Highlight } from 'ink-syntax-highlight';
 
 export default class CatCommand {
 
@@ -30,8 +32,13 @@ export default class CatCommand {
 			// Output each line on a new line
 			const lines = content.split('\n')
 			lines.forEach(line => {
-				output.appendLine(line)
+				//output.appendLine(line)
 			})
+
+			const output = renderToString(
+				<Highlight code={content} />,
+			);
+			console.log(output);
 
 		} catch (error) {
 			output.appendLine(output.error(`Error reading file '${filePath}': ${error.message}`))
