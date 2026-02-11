@@ -49,9 +49,11 @@ export default function App({ ctx }) {
 		};
 	}, [stdout]);
 
+	// {/*height={rows}*/}
+
 	return (
 
-		<Box flexDirection="column" height={rows}>
+		<Box flexDirection="column" >
 
 			{ /* header */}
 
@@ -121,18 +123,21 @@ export default function App({ ctx }) {
 
 			{ /* prompt invite message */}
 
-			<Box marginTop={1} marginBottom={1}>
+			{ /*<Box marginTop={1} marginBottom={1}>
 				<Text italic color={ctx.theme.promptInviteColor}>Enter a query below or type / to enter a command :</Text>
 			</Box>
+			*/}
 
 			{ /* prompt input */}
 
-			<Prompter ctx={ctx} />
+			{ /* <Prompter ctx={ctx} /> */}
 
 			{ /* outputs */}
+			{ /*
 			<Box flexDirection='column' flexGrow={1} marginTop={1} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
 				<Output ctx={ctx} consolePath="ctx.cli.output" />
 			</Box>
+			*/}
 
 		</Box>
 	);

@@ -24,10 +24,13 @@ const ctx = config(cli)
 
 console.clear()
 const app = new AppController(ctx, cli)
-render(<App ctx={ctx} />/*, {
+const r = render(<App ctx={ctx} />/*, {
 	incrementalRendering: false,
 	concurrent: false
 }*/);
+r.unmount()
+
+console.log('c moi qui décide du rendering')
 
 // app start from this point
 
