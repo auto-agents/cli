@@ -1,6 +1,6 @@
-import { Text, Box, useStdout } from 'ink';
+import { Text, Box, useStdout, useStderr, useStdin } from 'ink';
 import { useState, useEffect } from 'react';
-
+import ansiEscapes from 'ansi-escapes';
 import Prompter from './prompter.js'
 import LeftGauge from './left-gauge.js';
 import RightGauge from './right-gauge.js';
@@ -9,7 +9,8 @@ import BoxOutput from './box-output.js'
 import {
 	GaugeSourceUpdatedEvent,
 	LayoutResizedEvent,
-	HideInitBoxOutputEvent
+	HideInitBoxOutputEvent,
+	UIFreezeStatedChangedEvent
 } from '../config/events.js';
 import Output from './output.js';
 
@@ -17,6 +18,34 @@ export default function App({ ctx }) {
 
 	const e = ctx.components.event
 	const { stdout } = useStdout()
+	const { stdin } = useStdin()
+
+	/*stdin.on('data', (data) => {
+		if (data.includes("\u001b")) {
+			//console.log('!' + data)
+			const ck = data.replaceAll("\u001b", "")
+			//console.log('!' + ck)
+			if (ck == '[A') {
+				try {
+					e.emit(UIFreezeStatedChangedEvent, true)
+					stdout.write(ansiEscapes.scrollUp)
+				}
+				catch (e) {
+					console.error(e)
+				}
+			}
+			if (ck == '[B') {
+				try {
+					e.emit(UIFreezeStatedChangedEvent, true)
+					stdout.write(ansiEscapes.scrollDown)
+				}
+				catch (e) {
+					console.error(e)
+				}
+			}
+		}
+	})*/
+
 	const [initBoxVisible, setInitBoxVisible] = useState(true)
 
 	const setPropsLayoutSize = () => {
@@ -24,22 +53,35 @@ export default function App({ ctx }) {
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.size.key)
 
 		// NO MORE USED ---->
-		ctx.data.layout.output.rows.value =
-			stdout.rows
-			- ctx.layout.pageBottomMargin
-			- ctx.layout.headerHeight
-			- ctx.layout.promptAreaHeight
-			// output box borders
-			- 2
-		ctx.data.layout.output.cols.value = stdout.columns
-			// output box borders
-			- 2
-			// output right scroll bar
-			- 1
-		// <---- NO MORE USED
+		if (false) {
+			ctx.data.layout.output.rows.value =
+				stdout.rows
+				- ctx.layout.pageBottomMargin
+				- ctx.layout.headerHeight
+				- ctx.layout.promptAreaHeight
+				// output box borders
+				- 2
+			ctx.data.layout.output.cols.value = stdout.columns
+				// output box borders
+				- 2
+				// output right scroll bar
+				- 1
+			// <---- NO MORE USED
+		}
+
+		ctx.data.layout.rows.value = stdout.rows
+
+		// should use cursor pos if possible
+		ctx.data.layout.output.rows.value = ctx.layout.headerHeight + 1 // the min
+
+		ctx.data.layout.cols.value =
+			ctx.data.layout.output.cols.value =
+			stdout.columns
 
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.rows.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.cols.key)
+		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.rows.key)
+		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.cols.key)
 
 	}
 	setPropsLayoutSize()
@@ -122,11 +164,11 @@ export default function App({ ctx }) {
 
 						<RightGauge prop={ctx.data.counter} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.size} ctx={ctx} />
-						<RightGauge prop={ctx.data.layout.output.cols} ctx={ctx} />
+						<RightGauge prop={ctx.data.layout.cols} ctx={ctx} />
+						<RightGauge prop={ctx.data.layout.rows} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.output.rows} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
+						<RightGauge prop={ctx.data.layout.output.curx} ctx={ctx} />
+						<RightGauge prop={ctx.data.layout.output.cury} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
@@ -167,6 +209,6 @@ export default function App({ ctx }) {
 				<Output ctx={ctx} source="ctx.cli.helpOutput" updateEventName="HelpOutputUpdatedEvent" borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderHelpBoxColor} marginTop={1} />
 			</Box>
 
-		</Box>
+		</Box >
 	);
 }

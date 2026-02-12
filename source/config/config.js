@@ -15,6 +15,7 @@ export default function config(cli) {
 			tmp: 'tmp'
 		},
 		ui: {
+			freeze: false,
 			refreshInterval: 1000
 		},
 		cli: {
@@ -202,7 +203,23 @@ export default function config(cli) {
 					rows: {
 						key: 'output rows',
 						value: null
+					},
+					curx: {
+						key: 'output cursor x',
+						value: null
+					},
+					cury: {
+						key: 'output cursor y',
+						value: null
 					}
+				},
+				rows: {
+					key: 'layout rows',
+					value: 0
+				},
+				cols: {
+					key: 'layout cols',
+					value: null
 				}
 			},
 			ram: {
@@ -274,7 +291,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: "windows",

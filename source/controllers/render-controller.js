@@ -1,5 +1,8 @@
 import App from '../components/app.js';
-import { render } from 'ink';
+import { render, useStdin } from 'ink';
+import ansiEscapes from 'ansi-escapes';
+import { UIFreezeStatedChangedEvent } from '../config/events.js';
+
 var i = require('ink')
 const term = require('terminal-kit').terminal;
 
@@ -11,6 +14,8 @@ export default class RenderController {
     constructor(ctx) {
         this.ctx = ctx
         this.renderCount = 0
+        //this.ctx.components.event.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
+        this.mounted = false
     }
 
     init() {
@@ -35,16 +40,42 @@ export default class RenderController {
     }
 
     show() {
+
         const node = <App ctx={this.ctx} />
         this.renderer = i.render(node
             , {
-                incrementalRendering: true,
+                incrementalRendering: false,
                 concurrent: true
             });
-        /*i.onRender = () => {
-            console.log('render')
-        }*/
+        this.mounted = true
+
+        setInterval(() => {
+            try {
+                //process.stdout.write(ansiEscapes.cursorGetPosition)
+            } catch (err) {
+                console.log(err)
+            }
+        }, 2000)
         return this
+    }
+
+    uiFreezeStatedChangedEvent(state) {
+        if (state) {
+            if (this.mounted) {
+                // freeze
+                this.renderer.unmount()
+                this.mounted = false
+                process.stdin.on('data', () => {
+                    this.ctx.components.event.emit(UIFreezeStatedChangedEvent, false)
+                })
+            }
+        }
+        else {
+            if (!this.mounted) {
+                // unfreeze
+                this.show()
+            }
+        }
     }
 
     renderUI() {

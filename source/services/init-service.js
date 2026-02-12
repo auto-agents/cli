@@ -11,15 +11,15 @@ import OutputContext from '../data/output-context.js';
 
 export default class InitService {
 
-	constructor(ctx, app, output) {
+	constructor(ctx, app, output, logOutput) {
 		this.ctx = ctx
 		this.app = app
 		this.output = output
+		this.logOutput = logOutput
 		this.spinner = new SpinnerService(ctx, output)
 	}
 
 	redirectConsole() {
-		return
 		this.restore = patchConsole((stream, data) => {
 			if (!data) return
 			data = data.trim()
@@ -28,8 +28,8 @@ export default class InitService {
 					this.ctx.theme.console.stdoutColor
 					: this.ctx.theme.console.stderrColor
 			)
-			this.output.newLine()
-			this.output.appendLine(chalk.italic(col(data)))
+			this.logOutput.newLine()
+			this.logOutput.appendLine(chalk.italic(col(data)))
 		});
 	}
 

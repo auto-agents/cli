@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Text, Box } from 'ink'
 import TextInput from 'ink-text-input';
-import { CommandInputStartedEvent, InputAddedEvent, InputSubmitedEvent, InputExecutedEvent } from '../config/events';
+import { CommandInputStartedEvent, InputAddedEvent, InputSubmitedEvent, InputExecutedEvent, GaugeSourceUpdatedEvent } from '../config/events';
 
 const Prompter = ({ ctx }) => {
 

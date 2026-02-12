@@ -12,7 +12,8 @@ import {
 	CommandArgsCountErrorEvent,
 	AppInitializedEvent,
 	OutputUpdatedEvent,
-	HelpOutputUpdatedEvent
+	HelpOutputUpdatedEvent,
+	UIFreezeStatedChangedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -24,6 +25,7 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
 import chalk from 'chalk';
+import ansiEscapes from 'ansi-escapes';
 
 export default class AppController {
 
@@ -54,7 +56,7 @@ export default class AppController {
 		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.boxOutput')
 
 		this.event = new EventService(ctx)
-		this.init = new InitService(ctx, this, this.boxOutput)
+		this.init = new InitService(ctx, this, this.boxOutput, this.output)
 		ctx.components.output = this.output
 		ctx.components.helpOutput = this.helpOutput
 		ctx.components.boxOutput = this.boxOutput
@@ -76,6 +78,7 @@ export default class AppController {
 			.on(CommandModuleLoadErrorEvent, arg => this.error('command load module error: ' + arg[0]))
 			.on(CommandArgsCountErrorEvent, arg => this.error(`command args count mismatch: expected ${arg[0].args?.length || 0}`))
 			.on(AppInitializedEvent, () => this.appInitialized())
+			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),
@@ -96,6 +99,42 @@ export default class AppController {
 			.init()
 			.show()
 		//.start()
+
+		this.setupKeyboardControl()
+	}
+
+	setupKeyboardControl() {
+		process.stdin.on('data', (data) => {
+			//console.log(data)
+			if (data.includes("\u001b")) {
+				const ck = data.replaceAll("\u001b", "")
+				const e = this.ctx.components.event
+
+				//console.log('!' + ck)
+
+				// (up==[A, down==[B)
+				if (ck == '[5~' || ck == '[6~') {	// page up/page down
+					if (this.ctx.ui.freeze) return
+					try {
+						e.emit(UIFreezeStatedChangedEvent, true)
+						console.log('UI Freeze mode enabled. Press [Home] to go back to normal mode')
+					}
+					catch (error) {
+						process.stdout.write(error + '\n')
+					}
+				}
+
+				if (ck == '[H') {
+					if (!this.ctx.ui.freeze) return
+					e.emit(UIFreezeStatedChangedEvent, false)
+					console.log('UI Freeze mode disabled. Press [Page Up] or [Page Down] to go back to freeze mode')
+				}
+			}
+		})
+	}
+
+	uiFreezeStatedChangedEvent(state) {
+		this.ctx.ui.freeze = state
 	}
 
 	#getTitle() {
