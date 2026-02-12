@@ -39,7 +39,6 @@ export default class RenderController {
     }
 
     show() {
-
         const node = <App ctx={this.ctx} />
         this.renderer = i.render(node
             , {
