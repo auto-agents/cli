@@ -14,7 +14,6 @@ export default class RenderController {
     constructor(ctx) {
         this.ctx = ctx
         this.renderCount = 0
-        //this.ctx.components.event.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
         this.mounted = false
     }
 
@@ -59,6 +58,7 @@ export default class RenderController {
         return this
     }
 
+    // don't need to do this
     uiFreezeStatedChangedEvent(state) {
         if (state) {
             if (this.mounted) {

@@ -3,6 +3,7 @@ import path from 'path'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import { render } from 'ink';
 import Status from '../utils/status.js';
+import ansiEscapes from 'ansi-escapes';
 
 export default class CatCommand {
 
@@ -67,9 +68,11 @@ export default class CatCommand {
 
 			// sync way not found
 			setTimeout(() => {
+				i.unmount()
 				const outp = readFileSync(tmpFile, 'utf8')
 					.replace("[G", '')		// remove any clear console ansi code
 				output.appendLine(outp.trim())
+				process.stdout.write(ansiEscapes.cursorHide)
 			}, 100)
 
 		} catch (error) {
