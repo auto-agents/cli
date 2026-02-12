@@ -291,7 +291,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: "windows",

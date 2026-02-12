@@ -27,7 +27,9 @@ export default class DialogController {
 	echoUser(text) {
 		this.output.newLine()
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
-		this.output.appendLine(this.ctx.cli.dialog.userDialogPrefix + ' ' + ucol(text))
+		this.output.appendLine(
+			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)
+			+ ' ' + ucol(text))
 		if (this.#isSpeechAvailable())
 			this.speech(text)
 	}
