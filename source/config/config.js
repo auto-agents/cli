@@ -19,7 +19,7 @@ export default function config(cli) {
 		},
 		cli: {
 			commandPrefix: '/',
-			commandPrompt: ' >',
+			commandPrompt: '>',
 			dialog: {
 				userDialogPrefix: 'you >',
 				systemDialogPrefix: '🤖'
@@ -257,10 +257,14 @@ export default function config(cli) {
 		components: {
 			app: null,
 			output: null,
+			input: null,
+			helpOutput: null,
+			boxOutput: null,
 			event: null,
 			dialog: null,
 			sysInfo: null,
-			module: null
+			module: null,
+			render: null
 		},
 		texts: {
 			dialog: {

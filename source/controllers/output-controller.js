@@ -38,8 +38,8 @@ export default class OutputController {
 	}
 
 
-	newLine() {
-		return this.appendLine(' ')
+	newLine(skipViewUpdate = false) {
+		return this.appendLine(' ', 0, skipViewUpdate)
 	}
 
 }
