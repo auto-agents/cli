@@ -1,6 +1,5 @@
-import { Text, Box, useStdout, useStderr, useStdin } from 'ink';
+import { Text, Box, useStdout, useStdin } from 'ink';
 import { useState, useEffect } from 'react';
-import ansiEscapes from 'ansi-escapes';
 import Prompter from './prompter.js'
 import LeftGauge from './left-gauge.js';
 import RightGauge from './right-gauge.js';
@@ -9,8 +8,7 @@ import BoxOutput from './box-output.js'
 import {
 	GaugeSourceUpdatedEvent,
 	LayoutResizedEvent,
-	HideInitBoxOutputEvent,
-	UIFreezeStatedChangedEvent
+	HideInitBoxOutputEvent
 } from '../config/events.js';
 import Output from './output.js';
 
@@ -19,32 +17,6 @@ export default function App({ ctx }) {
 	const e = ctx.components.event
 	const { stdout } = useStdout()
 	const { stdin } = useStdin()
-
-	/*stdin.on('data', (data) => {
-		if (data.includes("\u001b")) {
-			//console.log('!' + data)
-			const ck = data.replaceAll("\u001b", "")
-			//console.log('!' + ck)
-			if (ck == '[A') {
-				try {
-					e.emit(UIFreezeStatedChangedEvent, true)
-					stdout.write(ansiEscapes.scrollUp)
-				}
-				catch (e) {
-					console.error(e)
-				}
-			}
-			if (ck == '[B') {
-				try {
-					e.emit(UIFreezeStatedChangedEvent, true)
-					stdout.write(ansiEscapes.scrollDown)
-				}
-				catch (e) {
-					console.error(e)
-				}
-			}
-		}
-	})*/
 
 	const [initBoxVisible, setInitBoxVisible] = useState(true)
 

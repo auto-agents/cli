@@ -25,7 +25,7 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
 import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
+import KeyboardController from './keyboard-controller.js';
 
 export default class AppController {
 
@@ -34,6 +34,7 @@ export default class AppController {
 	ramInterval = null
 	ctx = null
 	startTime = null
+	keyboard = null
 	event = null
 	ramService = null
 	timeService = null
@@ -98,39 +99,8 @@ export default class AppController {
 		this.renderController
 			.init()
 			.show()
-		//.start()
-
-		this.setupKeyboardControl()
-	}
-
-	setupKeyboardControl() {
-		process.stdin.on('data', (data) => {
-			//console.log(data)
-			if (data.includes("\u001b")) {
-				const ck = data.replaceAll("\u001b", "")
-				const e = this.ctx.components.event
-
-				//console.log('!' + ck)
-
-				// (up==[A, down==[B)
-				if (ck == '[5~' || ck == '[6~') {	// page up/page down
-					if (this.ctx.ui.freeze) return
-					try {
-						e.emit(UIFreezeStatedChangedEvent, true)
-						console.log('UI Freeze mode enabled. Press [Home] to go back to normal mode')
-					}
-					catch (error) {
-						process.stdout.write(error + '\n')
-					}
-				}
-
-				if (ck == '[H') {
-					if (!this.ctx.ui.freeze) return
-					e.emit(UIFreezeStatedChangedEvent, false)
-					console.log('UI Freeze mode disabled. Press [Page Up] or [Page Down] to go back to freeze mode')
-				}
-			}
-		})
+		this.keyboard = this.ctx.components.keyboard = new KeyboardController(ctx)
+			.init()
 	}
 
 	uiFreezeStatedChangedEvent(state) {
