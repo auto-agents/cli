@@ -23,6 +23,7 @@ import DialogController from './dialog-controller.js';
 import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
+import chalk from 'chalk';
 
 export default class AppController {
 
@@ -162,6 +163,10 @@ export default class AppController {
 
 		// begin dialog
 		this.dialog.hello()
+
+		this.output.newLine(true)
+		this.output.appendLine(
+			chalk.hex(this.ctx.theme.promptInviteColor).italic('Enter a query below or type / to enter a command :'))
 	}
 
 	runInput(inp) {

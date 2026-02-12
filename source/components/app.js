@@ -6,15 +6,18 @@ import LeftGauge from './left-gauge.js';
 import RightGauge from './right-gauge.js';
 import BoxOutput from './box-output.js'
 
-import { GaugeSourceUpdatedEvent, LayoutResizedEvent } from '../config/events.js';
+import {
+	GaugeSourceUpdatedEvent,
+	LayoutResizedEvent,
+	HideInitBoxOutputEvent
+} from '../config/events.js';
 import Output from './output.js';
 
 export default function App({ ctx }) {
 
 	const e = ctx.components.event
 	const { stdout } = useStdout()
-	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
-	const [rows, setRows] = useState(layoutHeight)
+	const [initBoxVisible, setInitBoxVisible] = useState(true)
 
 	const setPropsLayoutSize = () => {
 		ctx.data.layout.size.value = stdout.columns + 'x' + stdout.rows
@@ -42,9 +45,24 @@ export default function App({ ctx }) {
 	setPropsLayoutSize()
 
 	useEffect(() => {
+		const listener = () => {
+			setInitBoxVisible(false)
+		}
+		ctx.components.event.on(
+			HideInitBoxOutputEvent,
+			listener
+		)
+		return () => {
+			ctx.components.event.off(
+				HideInitBoxOutputEvent,
+				listener
+			)
+		}
+	}, [])
+
+	useEffect(() => {
 		const handleResize = () => {
 			console.clear()
-			setRows(layoutHeight())
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
 		}
@@ -120,24 +138,16 @@ export default function App({ ctx }) {
 
 			</Box>
 
-			{ /* init messages */}
-
-			{ /*<Loading subject={ctx.text} action="Scaning agents folder" />*/}
-
-			{ /* prompt invite message */}
-
-			{ /*<Box marginTop={1} marginBottom={1}>
-				<Text italic color={ctx.theme.promptInviteColor}>Enter a query below or type / to enter a command :</Text>
-			</Box>
-			*/}
-
 			{ /* outputs */}
 
 			{ /* live output */}
 
-			<Box flexDirection='column' marginTop={1} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
-				<BoxOutput ctx={ctx} source="ctx.cli.boxOutput" noScroll={true} />
-			</Box>
+			{
+				initBoxVisible &&
+				<Box flexDirection='column' marginTop={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
+					<BoxOutput ctx={ctx} source="ctx.cli.boxOutput" noScroll={true} />
+				</Box>
+			}
 
 			{ /* static output */}
 
