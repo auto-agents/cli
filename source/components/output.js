@@ -1,50 +1,26 @@
 import { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { LayoutResizedEvent, OutputUpdatedEvent } from '../config/events';
+import { LayoutResizedEvent } from '../config/events';
 
-const Output = ({ ctx, consolePath }) => {
+const Output = ({ ctx, source, updateEventName, borderStyle = null, borderColor = null, marginTop = 0 }) => {
 
-	const o = eval(consolePath)
+	const o = eval(source)
 
 	const buildText = () => {
-		//const o = ctx.cli.output
+
 		const rows = o.rows
-		const y = o.scrollY
-		const n = ctx.data.layout.output.rows.value || 0
-		const t = rows.slice(y, y + n)
-		return t.join('\n')
-	}
-
-	const buildScrollbar = () => {
-		//const o = ctx.cli.output
-		const n = ctx.data.layout.output.rows.value || 1
-		const r = n / (o.rows.length || 1)
-		var yc = Math.ceil(r * o.scrollY)
-		//console.log('yc=' + yc + ' scrollY=' + o.scrollY + ' n=' + n + ' r=' + r)
-		var tb = ''
-		for (var i = 0; i < n; i++) {
-
-			const car = i == yc ?
-				ctx.theme.scrollbar.carret
-				: ctx.theme.scrollbar.trackBackground
-
-			tb += car + '\n'
-		}
-		return tb
+		return rows.join('\n')
 	}
 
 	const [text, setText] = useState(buildText);
-	const [dbg, setDbg] = useState('');
-	const [scrollbar, setScrollbar] = useState(buildScrollbar)
 
 	useEffect(() => {
 
 		const listener = () => {
 			setText(buildText())
-			setScrollbar(buildScrollbar())
 		}
 		ctx.components.event.on(
-			OutputUpdatedEvent,
+			updateEventName,
 			listener
 		)
 		ctx.components.event.on(
@@ -53,7 +29,7 @@ const Output = ({ ctx, consolePath }) => {
 		)
 		return () => {
 			ctx.components.event.off(
-				OutputUpdatedEvent,
+				updateEventName,
 				listener
 			)
 			ctx.components.event.off(
@@ -63,17 +39,18 @@ const Output = ({ ctx, consolePath }) => {
 		}
 	}, [])
 
-	return (
-		<Box flexDirection='row'>
-			<Box flexGrow={1}>
-				<Text>{dbg}</Text>
+	if (o.rows.length > 0 && borderStyle && borderColor)
+		return (
+			<Box flexGrow={1} marginTop={marginTop} borderStyle={borderStyle} borderColor={borderColor}>
 				<Text>{text}</Text>
 			</Box>
-			<Box width={1}>
-				<Text>{scrollbar}</Text>
+		);
+	else
+		return (
+			<Box>
+				<Text>{text}</Text>
 			</Box>
-		</Box>
-	);
+		);
 };
 
 export default Output

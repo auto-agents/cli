@@ -11,14 +11,15 @@ import OutputContext from '../data/output-context.js';
 
 export default class InitService {
 
-	constructor(ctx, app) {
+	constructor(ctx, app, output) {
 		this.ctx = ctx
 		this.app = app
-		this.spinner = new SpinnerService(ctx, app.output)
+		this.output = output
+		this.spinner = new SpinnerService(ctx, output)
 	}
 
 	redirectConsole() {
-		//return
+		return
 		this.restore = patchConsole((stream, data) => {
 			if (!data) return
 			data = data.trim()
@@ -27,8 +28,8 @@ export default class InitService {
 					this.ctx.theme.console.stdoutColor
 					: this.ctx.theme.console.stderrColor
 			)
-			this.app.output.newLine()
-			this.app.output.appendLine(chalk.italic(col(data)))
+			this.output.newLine()
+			this.output.appendLine(chalk.italic(col(data)))
 		});
 	}
 
@@ -44,6 +45,7 @@ export default class InitService {
 
 		this.hatActionController = new ActionController(
 			this.ctx,
+			this.output,
 			() => { },
 			this.spinner.newSpinner('• initializing', cliSpinners.sand)
 		).noAutoStopUI()
@@ -62,6 +64,7 @@ export default class InitService {
 		const actionSeq = actions.map((e, _) => {
 			return new ActionController(
 				this.ctx,
+				this.output,
 				e.func,
 				e.uiFunc
 			)
@@ -77,8 +80,8 @@ export default class InitService {
 	async #initEnded() {
 		this.redirectConsole()
 		this.hatActionController.uiFunc.stop()
-		this.app.output.newLine()
-		this.app.output.appendLine('• cli ready ' + chalk.hex('#00FF00').underline('✔'))
+		this.output.newLine()
+		this.output.appendLine('• cli ready ' + chalk.hex('#00FF00').underline('✔'))
 		setTimeout(
 			() => this.app.event.emit(AppInitializedEvent),
 			500
@@ -86,9 +89,9 @@ export default class InitService {
 	}
 
 	async #gatherComputerInfos() {
-		const sys = new SysInfoService(this.ctx).run()
+		const sys = new SysInfoService(this.ctx, this.output).run()
 		this.ctx.components.sysInfo = sys
-		sys.dump()
+		sys.dump(this.output)
 	}
 
 	async #initModules(outputContext) {
@@ -96,6 +99,6 @@ export default class InitService {
 	}
 
 	#getOutputContext(margin) {
-		return new OutputContext(this.ctx, this.app.output, margin)
+		return new OutputContext(this.ctx, this.output, margin)
 	}
 }

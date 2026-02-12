@@ -11,8 +11,9 @@ import { split } from 'shellwords'
 
 export default class CommandController {
 
-	constructor(ctx) {
+	constructor(ctx, output) {
 		this.ctx = ctx
+		this.output = output
 		ctx.components.event.on(RunCommandEvent, async args => this.runCommand(...args))
 	}
 
@@ -51,9 +52,8 @@ export default class CommandController {
 			.join('')
 
 		try {
-			//const module = require(path)
 			const module = await import(path)
-			const o = new module.default(this.ctx)
+			const o = new module.default(this.ctx, this.output)
 			o.run(args)
 		} catch (err) {
 			e.emit(CommandModuleLoadErrorEvent, cn + ` (${err})`)

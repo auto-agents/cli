@@ -4,11 +4,13 @@ import { join } from 'path';
 import ActionController from "../controllers/action-controller";
 import SpinnerService from "../services/spinner-service";
 import callAsync from "../utils/utils.js"
+import Status from '../utils/status.js'
 
 export default class SpeechModule {
 
     constructor(ctx, config, outputContext) {
         this.ctx = ctx
+        this.status = new Status(ctx)
         this.config = config
         this.outputContext = outputContext
         this.modulePath = join(process.cwd(), ctx.paths.modules, 'speech', 'src', 'speech-module.js')
@@ -29,18 +31,20 @@ export default class SpeechModule {
             try {
                 await this.speech.launchServer()
             } catch (err) {
-                o.appendLine(o.error(margin + 'speech module server launch error: ' + err))
+                o.appendLine(this.status.error(margin + 'speech module server launch error: ' + err))
             }
         }
 
         const runSrvAction = new ActionController(
             this.ctx,
+            this.outputContext.output,
             runSrv,
             this.spinner.newSpinner(margin2 + '- running speech module server', cliSpinners.sand),
             async () => {
 
                 const runOpenBrowser = new ActionController(
                     this.ctx,
+                    this.outputContext.output,
                     async () => this.openBrowser(),
                     this.spinner.newSpinner(margin2 + '- opening browser speech SPA', cliSpinners.sand)
                 )
@@ -62,8 +66,8 @@ export default class SpeechModule {
             try {
                 await this.speech.openBrowser()
             } catch (err) {
-                const o = this.ctx.components.output
-                o.appendLine(o.error(err))
+                const o = this.outputContext.output
+                o.appendLine(this.status.error(err))
             }
         }
         callAsync(f)

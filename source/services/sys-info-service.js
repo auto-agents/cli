@@ -1,6 +1,7 @@
 import os from "os";
 import DataTransforms from './../utils/data-transforms';
 import nodeDiskInfo from 'node-disk-info'
+import Status from '../utils/status.js'
 
 export default class SysInfoService {
 
@@ -15,8 +16,10 @@ export default class SysInfoService {
 	disksSummary = []
 	disksList = []
 
-	constructor(ctx) {
+	constructor(ctx, output) {
 		this.ctx = ctx
+		this.status = new Status(ctx)
+		this.output = output
 		this.dataTransforms = new DataTransforms(ctx)
 	}
 
@@ -75,7 +78,7 @@ export default class SysInfoService {
 				}
 			}
 		} catch (e) {
-			console.error(e);
+			this.output.appendLine(this.status.error(e))
 		}
 	}
 
@@ -99,8 +102,8 @@ export default class SysInfoService {
 		return this
 	}
 
-	dump() {
-		const o = this.ctx.components.output
+	dump(output) {
+		const o = output
 		o.newLine()
 		o.appendComment(this.cpuCount + ' cores of ' + this.cpu)
 		o.appendComment('total ram: ' + this.ramAmount + ' | free ram: ' + this.availableRam)

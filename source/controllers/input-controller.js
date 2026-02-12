@@ -7,11 +7,13 @@ export default class InputController {
 	commandHelperStartPosition = null
 	commandHelperEndPosition = null
 
-	constructor(ctx) {
+	constructor(ctx, helpOutput, output) {
 		this.ctx = ctx
+		this.helpOutput = helpOutput
+		this.output = output
 		const e = this.ctx.components.event
 		e.on(CommandInputStartedEvent, () => this.#CommandInputStartedEvent())
-			.on(InputSubmitedEvent, () => this.#InputSubmitedEvent())
+			.on(InputSubmitedEvent, args => this.#InputSubmitedEvent(...args))
 			.on(InputAddedEvent, args => this.#InputAddedEvent(...args))
 	}
 
@@ -20,7 +22,14 @@ export default class InputController {
 		this.#showCommands()
 	}
 
-	#InputSubmitedEvent() {
+	#InputSubmitedEvent(cmd) {
+		if (cmd && cmd.length > 0 && cmd[0] == this.ctx.cli.commandPrefix) {
+			this.output.newLine(true)
+			this.output.appendLine(
+				chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.commandPrompt)
+				+ ' ' + cmd
+			)
+		}
 		if (!this.commandHelperOpened) return
 		this.#hideCommands()
 	}
@@ -37,12 +46,12 @@ export default class InputController {
 
 	#showCommands(inp) {
 		this.commandHelperOpened = true
-		const o = this.ctx.components.output
+		const o = this.helpOutput
 		const p = this.ctx.cli.commandPrefix
 		const cs = ', '
 		const col = chalk.hex(this.ctx.theme.help.commandsListColor)
-		this.commandHelperStartPosition = o.newLine()
-		o.appendLine(chalk.underline(chalk.italic(col('commands:'))))
+		this.commandHelperStartPosition =
+			o.appendLine(chalk.underline(chalk.italic(col('commands:'))))
 		this.commandHelperEndPosition = o.newLine()
 		const n = 16
 		const addLine = s => {
@@ -84,10 +93,7 @@ export default class InputController {
 		if (!this.commandHelperStartPosition || !this.commandHelperEndPosition)
 			return
 
-		this.ctx.components.output.removeLines(
-			this.commandHelperStartPosition.y0,
-			this.commandHelperEndPosition.y1
-		)
+		this.helpOutput.clear()
 		this.commandHelperStartPosition
 			= this.commandHelperEndPosition = null
 	}

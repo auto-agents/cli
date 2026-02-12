@@ -2,11 +2,13 @@ import { existsSync, readFileSync, createWriteStream, writeFileSync } from 'fs'
 import path from 'path'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import { render } from 'ink';
+import Status from '../utils/status.js';
 
 export default class CatCommand {
 
 	constructor(ctx) {
 		this.ctx = ctx
+		this.status = new Status(ctx)
 	}
 
 	tmpFile() {
@@ -33,7 +35,7 @@ export default class CatCommand {
 		output.newLine()
 
 		if (!args || args.length === 0) {
-			output.appendLine(output.error('Error: file path argument is required'))
+			output.appendLine(this.status.error('Error: file path argument is required'))
 			return
 		}
 
@@ -43,7 +45,7 @@ export default class CatCommand {
 
 		// Check if file exists
 		if (!existsSync(filePath)) {
-			output.appendLine(output.error(`Error: file '${filePath}' does not exist`))
+			output.appendLine(this.status.error(`Error: file '${filePath}' does not exist`))
 			return
 		}
 
@@ -66,22 +68,12 @@ export default class CatCommand {
 			// sync way not found
 			setTimeout(() => {
 				const outp = readFileSync(tmpFile, 'utf8')
-					//	.replace("\r\n", '\n')
-					.replace("[G", '')
-
-				/*const lines = outp.split('\n')
-				lines.forEach(line => {
-					output.appendLine(line)
-				})*/
-				output.appendLine(outp)
-
-				//output.appendLine(`lines count: ${lines.length}`)
-				output.appendLine(output.warning(tmpFile))
-
+					.replace("[G", '')		// remove any clear console ansi code
+				output.appendLine(outp.trim())
 			}, 100)
 
 		} catch (error) {
-			output.appendLine(output.error(`Error reading file '${filePath}': ${error.message}`))
+			output.appendLine(this.status.error(`Error reading file '${filePath}': ${error.message}`))
 		}
 	}
 }

@@ -14,16 +14,25 @@ export default function config(cli) {
 			modules: '../modules',
 			tmp: 'tmp'
 		},
+		ui: {
+			refreshInterval: 1000
+		},
 		cli: {
 			commandPrefix: '/',
-			commandPrompt: ' >',
+			commandPrompt: '>',
 			dialog: {
 				userDialogPrefix: 'you >',
 				systemDialogPrefix: '🤖'
 			},
-			output: {
+			boxOutput: {
 				rows: [],
 				scrollY: 0
+			},
+			helpOutput: {
+				rows: []
+			},
+			output: {
+				rows: []
 			},
 			commands: [
 				{
@@ -83,6 +92,7 @@ export default function config(cli) {
 		theme: {
 			borderMainColor: '#777777',
 			borderSecondaryColor: '#777777',
+			borderHelpBoxColor: '#00AA00',
 			borderStyle: 'round',
 			gaugeTextColor: '#FFFFFF',
 			gaugeBorderColor: '#AAAAAA',
@@ -247,10 +257,14 @@ export default function config(cli) {
 		components: {
 			app: null,
 			output: null,
+			input: null,
+			helpOutput: null,
+			boxOutput: null,
 			event: null,
 			dialog: null,
 			sysInfo: null,
-			module: null
+			module: null,
+			render: null
 		},
 		texts: {
 			dialog: {
@@ -260,7 +274,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: "windows",

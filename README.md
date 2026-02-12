@@ -11,7 +11,7 @@
 **This repository contains the CLI tool**
 </td>
 <td>
-<img src="assets/agent-5.jfif" alt="Auto Agents" width="800px">
+<img src="assets/agent-5.jfif" alt="Auto Agents" width="800/px">
 </td>
 </tr>
 </table>
@@ -23,6 +23,7 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
 - provides a rich user UX CLI powered by:
   - **REACT**
   - **[Ink](https://github.com/vadimdemedes/ink?tab=readme-ov-file#static)** the **`REACT for CLI`** framework
+  - **[terminal-kit](https://github.com/cronvel/terminal-kit?tab=readme-ov-file)** *A full-blown terminal lib*
   - **[chalk](https://github.com/chalk/chalk)** the *Terminal string styling done right* library
   - **[cfonts](https://github.com/dominikwilkowski/cfonts)** the library for *lovely ANSI fonts in the console*
   - **[shellwords](https://github.com/andrewrumpf/shellwords)** the library for *parsing command line arguments*

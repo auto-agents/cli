@@ -8,6 +8,7 @@ export default class EventService {
 	}
 
 	emitTarget(eventName, eventTargetName, ...args) {
+		//return
 		const n = eventName + '-' + eventTargetName
 		this.eventEmitter.emit(n, args)
 		return this
@@ -19,6 +20,7 @@ export default class EventService {
 	}
 
 	onTarget(eventName, eventTargetName, listener) {
+		//return
 		const n = eventName + '-' + eventTargetName
 		this.eventEmitter.on(n, listener)
 		return this

@@ -1,11 +1,14 @@
 import chalk from "chalk"
 import callAsync from "../utils/utils.js"
 import util from "util"
+import Status from '../utils/status.js'
 
 export default class DialogController {
 
-	constructor(ctx) {
+	constructor(ctx, output) {
 		this.ctx = ctx
+		this.output = output
+		this.status = new Status(ctx)
 	}
 
 	#isSpeechAvailable() {
@@ -13,7 +16,6 @@ export default class DialogController {
 	}
 
 	hello() {
-		const o = this.ctx.components.output
 		const username = this.ctx.components.sysInfo.username
 		const text = this.ctx.texts.dialog.hello
 			.replace('%username%', chalk.bold(username))
@@ -23,16 +25,15 @@ export default class DialogController {
 	}
 
 	echoUser(text) {
-		const o = this.ctx.components.output
-		o.newLine()
+		this.output.newLine()
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
-		o.appendLine(this.ctx.cli.dialog.userDialogPrefix + ' ' + ucol(text))
+		this.output.appendLine(this.ctx.cli.dialog.userDialogPrefix + ' ' + ucol(text))
 		if (this.#isSpeechAvailable())
 			this.speech(text)
 	}
 
 	echoSystem(text) {
-		const o = this.ctx.components.output
+		const o = this.output
 		o.newLine()
 		const scol = chalk.hex(this.ctx.theme.dialog.systemDialogColor)
 		o.appendLine(this.ctx.cli.dialog.systemDialogPrefix + ' ' + scol(text))
@@ -44,8 +45,8 @@ export default class DialogController {
 			try {
 				await this.ctx.components.module.speech.speak(text)
 			} catch (err) {
-				const o = this.ctx.components.output
-				o.appendLine(o.error(err.stack))
+				const o = this.output
+				o.appendLine(this.status.error(err.stack))
 			}
 		}
 		callAsync(f)

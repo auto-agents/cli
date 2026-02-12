@@ -10,14 +10,20 @@ import {
 	CommandFileNotFoundEvent,
 	CommandModuleLoadErrorEvent,
 	CommandArgsCountErrorEvent,
-	AppInitializedEvent
+	AppInitializedEvent,
+	OutputUpdatedEvent,
+	HelpOutputUpdatedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
-import OutputController from './output-controller.js';
+import BoxOutputController from './box-output-controller.js';
 import InitService from '../services/init-service.js';
 import InputController from './input-controller.js';
 import CommandController from './command-controller.js';
 import DialogController from './dialog-controller.js';
+import RenderController from './render-controller.js';
+import OutputController from './output-controller.js';
+import Status from '../utils/status.js'
+import chalk from 'chalk';
 
 export default class AppController {
 
@@ -37,20 +43,27 @@ export default class AppController {
 
 	constructor(ctx) {
 		this.ctx = ctx
+		this.status = new Status(ctx)
 
 		const { title, subtitle } = this.#getTitle()
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
-		this.output = new OutputController(ctx)
+		this.output = new OutputController(ctx, 'this.ctx.cli.output', OutputUpdatedEvent)
+		this.helpOutput = new OutputController(ctx, 'this.ctx.cli.helpOutput', HelpOutputUpdatedEvent)
+		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.boxOutput')
+
 		this.event = new EventService(ctx)
-		this.init = new InitService(ctx, this)
+		this.init = new InitService(ctx, this, this.boxOutput)
 		ctx.components.output = this.output
+		ctx.components.helpOutput = this.helpOutput
+		ctx.components.boxOutput = this.boxOutput
 		ctx.components.app = this
 		ctx.components.event = this.event
-		this.inputController = new InputController(ctx)
-		this.commandController = new CommandController(ctx)
-		this.dialog = new DialogController(ctx)
+		this.inputController = new InputController(ctx, this.helpOutput, this.output)
+		ctx.components.input = this.inputController
+		this.commandController = new CommandController(ctx, this.output)
+		this.dialog = new DialogController(ctx, this.output)
 		ctx.components.dialog = this.dialog
 
 		this.ramService = new RamService(ctx)
@@ -76,6 +89,12 @@ export default class AppController {
 		this.heartbeatTick()
 		this.ramService.run()
 		this.timeService.run()
+
+		this.renderController = new RenderController(ctx)
+		ctx.components.render = this.renderController
+		this.renderController
+			.init()
+			.show()
 	}
 
 	#getTitle() {
@@ -116,7 +135,7 @@ export default class AppController {
 	error(message) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(o.error(message))
+		o.appendLine(this.status.error(message))
 	}
 
 	appInitialized() {
@@ -129,12 +148,12 @@ export default class AppController {
 			const moduleSpec = this.ctx.modules[moduleName]
 			const gauge = this.ctx.data.app.modules[gaugeName]
 			gauge.value =
-				!moduleSpec ? o.statusUnavailable() : (
+				!moduleSpec ? this.status.statusUnavailable() : (
 					(moduleInstance && moduleSpec.enabled) ?
-						o.statusOn()
+						this.status.statusOn()
 						: (!moduleInstance && moduleSpec.enabled ?
-							o.statusUnavailable()
-							: o.statusOff()))
+							this.status.statusUnavailable()
+							: this.status.statusOff()))
 			e.emitTarget(GaugeSourceUpdatedEvent, gauge.key)
 		}
 		initModuleGauge('speech')
@@ -144,6 +163,10 @@ export default class AppController {
 
 		// begin dialog
 		this.dialog.hello()
+
+		this.output.newLine(true)
+		this.output.appendLine(
+			chalk.hex(this.ctx.theme.promptInviteColor).italic('Enter a query below or type / to enter a command :'))
 	}
 
 	runInput(inp) {

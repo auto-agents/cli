@@ -1,10 +1,11 @@
 export default class SysinfoCommand {
 
-	constructor(ctx) {
+	constructor(ctx, output) {
 		this.ctx = ctx
+		this.output = output
 	}
 
 	run() {
-		this.ctx.components.sysInfo.dump()
+		this.ctx.components.sysInfo.dump(this.output)
 	}
 }

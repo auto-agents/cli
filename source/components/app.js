@@ -1,23 +1,29 @@
 import { Text, Box, useStdout } from 'ink';
 import { useState, useEffect } from 'react';
 
-import Prompter from './components/prompter.js'
-import LeftGauge from './components/left-gauge.js';
-import RightGauge from './components/right-gauge.js';
-import Output from './components/output.js'
+import Prompter from './prompter.js'
+import LeftGauge from './left-gauge.js';
+import RightGauge from './right-gauge.js';
+import BoxOutput from './box-output.js'
 
-import { GaugeSourceUpdatedEvent, LayoutResizedEvent } from './config/events.js';
+import {
+	GaugeSourceUpdatedEvent,
+	LayoutResizedEvent,
+	HideInitBoxOutputEvent
+} from '../config/events.js';
+import Output from './output.js';
 
 export default function App({ ctx }) {
 
 	const e = ctx.components.event
 	const { stdout } = useStdout()
-	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
-	const [rows, setRows] = useState(layoutHeight)
+	const [initBoxVisible, setInitBoxVisible] = useState(true)
 
 	const setPropsLayoutSize = () => {
 		ctx.data.layout.size.value = stdout.columns + 'x' + stdout.rows
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.size.key)
+
+		// NO MORE USED ---->
 		ctx.data.layout.output.rows.value =
 			stdout.rows
 			- ctx.layout.pageBottomMargin
@@ -30,16 +36,33 @@ export default function App({ ctx }) {
 			- 2
 			// output right scroll bar
 			- 1
+		// <---- NO MORE USED
 
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.rows.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.cols.key)
+
 	}
 	setPropsLayoutSize()
 
 	useEffect(() => {
+		const listener = () => {
+			setInitBoxVisible(false)
+		}
+		ctx.components.event.on(
+			HideInitBoxOutputEvent,
+			listener
+		)
+		return () => {
+			ctx.components.event.off(
+				HideInitBoxOutputEvent,
+				listener
+			)
+		}
+	}, [])
+
+	useEffect(() => {
 		const handleResize = () => {
 			console.clear()
-			setRows(layoutHeight())
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
 		}
@@ -51,7 +74,7 @@ export default function App({ ctx }) {
 
 	return (
 
-		<Box flexDirection="column" height={rows}>
+		<Box flexDirection="column" >
 
 			{ /* header */}
 
@@ -115,23 +138,33 @@ export default function App({ ctx }) {
 
 			</Box>
 
-			{ /* init messages */}
+			{ /* outputs */}
 
-			{ /*<Loading subject={ctx.text} action="Scaning agents folder" />*/}
+			{ /* live output */}
 
-			{ /* prompt invite message */}
+			{
+				initBoxVisible &&
+				<Box flexDirection='column' marginTop={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
+					<BoxOutput ctx={ctx} source="ctx.cli.boxOutput" noScroll={true} />
+				</Box>
+			}
 
-			<Box marginTop={1} marginBottom={1}>
-				<Text italic color={ctx.theme.promptInviteColor}>Enter a query below or type / to enter a command :</Text>
+			{ /* static output */}
+
+			<Box>
+				<Output ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" />
 			</Box>
 
-			{ /* prompt input */}
+			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
 
-			<Prompter ctx={ctx} />
+			<Box marginTop={1}>
+				<Prompter ctx={ctx} />
+			</Box>
 
-			{ /* outputs */}
-			<Box flexDirection='column' flexGrow={1} marginTop={1} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
-				<Output ctx={ctx} consolePath="ctx.cli.output" />
+			{ /* help output */}
+
+			<Box>
+				<Output ctx={ctx} source="ctx.cli.helpOutput" updateEventName="HelpOutputUpdatedEvent" borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderHelpBoxColor} marginTop={1} />
 			</Box>
 
 		</Box>
