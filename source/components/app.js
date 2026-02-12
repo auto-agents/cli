@@ -62,7 +62,7 @@ export default function App({ ctx }) {
 
 	useEffect(() => {
 		const handleResize = () => {
-			console.clear()
+			//console.clear()
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
 		}

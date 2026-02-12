@@ -1,5 +1,6 @@
 import App from '../components/app.js';
 import { render } from 'ink';
+var i = require('ink')
 const term = require('terminal-kit').terminal;
 
 export default class RenderController {
@@ -34,21 +35,25 @@ export default class RenderController {
     }
 
     show() {
-        this.renderer = render(<App ctx={this.ctx} />
-            /*, {
-                incrementalRendering: false,
-                concurrent: false
-            }*/);
+        const node = <App ctx={this.ctx} />
+        this.renderer = i.render(node
+            , {
+                incrementalRendering: true,
+                concurrent: true
+            });
+        /*i.onRender = () => {
+            console.log('render')
+        }*/
         return this
     }
 
     renderUI() {
-        //term.hideCursor()
         if (this.renderCount > 0) {
             this.saveCursorPos()
             term.moveTo(1, 1)
         }
 
+        term.hideCursor()
         this.renderer = render(<App ctx={this.ctx} />
             , {
                 incrementalRendering: false,
@@ -57,7 +62,7 @@ export default class RenderController {
                     console.log('?')
                 }
             });
-        r.unmount()     // umount also sync the rendering
+        this.renderer.unmount()     // umount also sync the rendering
 
         if (this.renderCount == 0) {
             this.saveCursorPos()

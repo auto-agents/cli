@@ -95,6 +95,7 @@ export default class AppController {
 		this.renderController
 			.init()
 			.show()
+		//.start()
 	}
 
 	#getTitle() {

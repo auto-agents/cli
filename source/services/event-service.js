@@ -8,7 +8,7 @@ export default class EventService {
 	}
 
 	emitTarget(eventName, eventTargetName, ...args) {
-		//return
+		return
 		const n = eventName + '-' + eventTargetName
 		this.eventEmitter.emit(n, args)
 		return this
