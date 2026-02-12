@@ -109,8 +109,10 @@ export default class AppController {
 		this.ctx.data.layout.output.rows.value = this.output.estimRowsCount
 			+ this.ctx.layout.headerHeight
 		setTimeout(
-			() => this.event.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key),
-			this.ctx.ui.delayedSmallTime)
+			() => {
+				this.event.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key),
+					this.ctx.ui.delayedSmallTime
+			})
 	}
 
 	uiFreezeStatedChangedEvent(state) {

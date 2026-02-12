@@ -17,7 +17,7 @@ export default function config(cli) {
 		ui: {
 			freeze: false,
 			refreshInterval: 1000,
-			delayedLongTime: 100
+			delayedSmallTime: 100
 		},
 		cli: {
 			commandPrefix: '/',
