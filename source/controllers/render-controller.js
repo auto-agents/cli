@@ -14,8 +14,6 @@ export default class RenderController {
 
     init() {
         console.clear()
-        //this.hideCursor()
-
         return this
     }
 
@@ -72,13 +70,6 @@ export default class RenderController {
 
     start() {
         this.renderUI()
-
-        /*
-        this.interval = setInterval(
-            () => console.log('#'),
-            1000
-        )
-        */
 
         this.interval = setInterval(
             () => this.renderUI()
