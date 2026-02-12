@@ -27,6 +27,7 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[chalk](https://github.com/chalk/chalk)** the *Terminal string styling done right* library
   - **[cfonts](https://github.com/dominikwilkowski/cfonts)** the library for *lovely ANSI fonts in the console*
   - **[shellwords](https://github.com/andrewrumpf/shellwords)** the library for *parsing command line arguments*
+  - **[ansi-escapes](https://github.com/sindresorhus/ansi-escapes)** ANSI escape codes for manipulating the terminal
 
 *notice: this tool has been initially 100% hand coded*
 

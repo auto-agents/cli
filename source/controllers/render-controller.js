@@ -43,7 +43,7 @@ export default class RenderController {
         const node = <App ctx={this.ctx} />
         this.renderer = i.render(node
             , {
-                incrementalRendering: false,
+                incrementalRendering: true,
                 concurrent: true
             });
         this.mounted = true

@@ -1,6 +1,7 @@
 const longInterval = 4000
 
-// app context (global prop ?)
+// app OutputContext
+
 export default function config(cli) {
 
 	return {
@@ -157,7 +158,7 @@ export default function config(cli) {
 			},
 			fileView: {
 				titleColor: '#00FF00',
-				backgroundColor: '#000000',
+				backgroundColor: '#1A1A1A',
 				borderColor: '#777777',
 				borderStyle: 'round'
 			}

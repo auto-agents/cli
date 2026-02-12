@@ -14,7 +14,8 @@ export default class CommandController {
 	constructor(ctx, output) {
 		this.ctx = ctx
 		this.output = output
-		ctx.components.event.on(RunCommandEvent, async args => this.runCommand(...args))
+		ctx.components.event
+			.on(RunCommandEvent, async args => this.runCommand(...args))
 	}
 
 	async runCommand(arg) {
