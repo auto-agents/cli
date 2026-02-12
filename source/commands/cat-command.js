@@ -78,7 +78,7 @@ export default class CatCommand {
 				output.appendLine(outp)
 
 				//output.appendLine(`lines count: ${lines.length}`)
-				output.appendLine(this.status.warning(tmpFile))
+				//output.appendLine(this.status.warning(tmpFile))
 
 			}, 100)
 
