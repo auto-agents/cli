@@ -153,7 +153,7 @@ export default function config(cli) {
 				folder: '#00AAFF'
 			},
 			syntaxHighlight: {
-				theme: ''
+				theme: '' // to be done
 			},
 			fileView: {
 				titleColor: '#00FF00',

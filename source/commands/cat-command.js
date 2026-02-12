@@ -54,7 +54,9 @@ export default class CatCommand {
 		try {
 			// Read file content
 			const content = readFileSync(filePath, 'utf8')
-				.replace("\r\n", '\n')
+				.replaceAll("\r\n", '\n')
+				.replaceAll('\t', '    ')
+				.trim()
 
 			const tmpFile = this.tmpFile().path
 			const wstream = createWriteStream(tmpFile)
@@ -67,7 +69,8 @@ export default class CatCommand {
 					borderStyle={this.ctx.theme.fileView.borderStyle}
 					flexDirection="column"
 				>
-					<Box borderColor={this.ctx.theme.fileView.borderColor}
+					<Box backgroundColor={this.ctx.theme.fileView.backgroundColor}
+						borderColor={this.ctx.theme.fileView.borderColor}
 						borderStyle={this.ctx.theme.fileView.borderStyle}
 					>
 						<Text>{fileDesc}</Text>
