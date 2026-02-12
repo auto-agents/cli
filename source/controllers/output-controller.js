@@ -37,6 +37,9 @@ export default class OutputController {
 		}
 	}
 
+	appendComment(str, skipViewUpdate = false) {
+		return this.appendLine(str, 0, skipViewUpdate)
+	}
 
 	newLine(skipViewUpdate = false) {
 		return this.appendLine(' ', 0, skipViewUpdate)

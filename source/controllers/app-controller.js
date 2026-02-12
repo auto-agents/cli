@@ -61,7 +61,7 @@ export default class AppController {
 		ctx.components.event = this.event
 		this.inputController = new InputController(ctx, this.helpOutput, this.output)
 		ctx.components.input = this.inputController
-		this.commandController = new CommandController(ctx)
+		this.commandController = new CommandController(ctx, this.output)
 		this.dialog = new DialogController(ctx, this.output)
 		ctx.components.dialog = this.dialog
 
