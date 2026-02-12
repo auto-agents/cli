@@ -1,9 +1,10 @@
-import { existsSync, readFileSync, createWriteStream, writeFileSync } from 'fs'
+import { existsSync, readFileSync, createWriteStream } from 'fs'
 import path from 'path'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import { render } from 'ink';
 import Status from '../utils/status.js';
 import ansiEscapes from 'ansi-escapes';
+import { Box, Text } from 'ink';
 
 export default class CatCommand {
 
@@ -57,12 +58,24 @@ export default class CatCommand {
 
 			const tmpFile = this.tmpFile().path
 			const wstream = createWriteStream(tmpFile)
+			const fileDesc = filePath
 
 			// language="markdown"
 			const i = render(
-				<SyntaxHighlight
-					code={content}
-				/>, {
+				<Box backgroundColor={this.ctx.theme.fileView.backgroundColor}
+					borderColor={this.ctx.theme.fileView.borderColor}
+					borderStyle={this.ctx.theme.fileView.borderStyle}
+					flexDirection="column"
+				>
+					<Box borderColor={this.ctx.theme.fileView.borderColor}
+						borderStyle={this.ctx.theme.fileView.borderStyle}
+					>
+						<Text>{fileDesc}</Text>
+					</Box>
+					<SyntaxHighlight
+						code={content}
+					/>
+				</Box >, {
 				stdout: wstream
 			})
 

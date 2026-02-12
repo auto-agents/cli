@@ -1,4 +1,5 @@
 export const OutputUpdatedEvent = 'OutputUpdatedEvent'
+export const OutputRowsCountUpdatedEvent = 'OutputRowsCountUpdatedEvent'
 export const HelpOutputUpdatedEvent = 'HelpOutputUpdatedEvent'
 export const BoxOutputUpdatedEvent = 'BoxOutputUpdatedEvent'
 export const InputExecutedEvent = 'InputExecutedEvent'

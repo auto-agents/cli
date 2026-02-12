@@ -28,6 +28,7 @@ export default class InitService {
 					this.ctx.theme.console.stdoutColor
 					: this.ctx.theme.console.stderrColor
 			)
+			if (stream != 'stdout' && data.includes('Cannot update')) return	// skip this error
 			this.logOutput.newLine()
 			this.logOutput.appendLine(chalk.italic(col(data)))
 		});

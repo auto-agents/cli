@@ -16,7 +16,8 @@ export default function config(cli) {
 		},
 		ui: {
 			freeze: false,
-			refreshInterval: 1000
+			refreshInterval: 1000,
+			delayedLongTime: 100
 		},
 		cli: {
 			commandPrefix: '/',
@@ -150,6 +151,15 @@ export default function config(cli) {
 				type: '#0088FF',
 				links: '#FF0088',
 				folder: '#00AAFF'
+			},
+			syntaxHighlight: {
+				theme: ''
+			},
+			fileView: {
+				titleColor: '#00FF00',
+				backgroundColor: '#000000',
+				borderColor: '#777777',
+				borderStyle: 'round'
 			}
 		},
 		layout: {
@@ -202,14 +212,6 @@ export default function config(cli) {
 					},
 					rows: {
 						key: 'output rows',
-						value: null
-					},
-					curx: {
-						key: 'output cursor x',
-						value: null
-					},
-					cury: {
-						key: 'output cursor y',
 						value: null
 					}
 				},

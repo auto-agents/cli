@@ -13,7 +13,8 @@ import {
 	AppInitializedEvent,
 	OutputUpdatedEvent,
 	HelpOutputUpdatedEvent,
-	UIFreezeStatedChangedEvent
+	UIFreezeStatedChangedEvent,
+	OutputRowsCountUpdatedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -52,7 +53,7 @@ export default class AppController {
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
-		this.output = new OutputController(ctx, 'this.ctx.cli.output', OutputUpdatedEvent)
+		this.output = new OutputController(ctx, 'this.ctx.cli.output', OutputUpdatedEvent, OutputRowsCountUpdatedEvent)
 		this.helpOutput = new OutputController(ctx, 'this.ctx.cli.helpOutput', HelpOutputUpdatedEvent)
 		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.boxOutput')
 
@@ -80,6 +81,7 @@ export default class AppController {
 			.on(CommandArgsCountErrorEvent, arg => this.error(`command args count mismatch: expected ${arg[0].args?.length || 0}`))
 			.on(AppInitializedEvent, () => this.appInitialized())
 			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
+			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),
@@ -101,6 +103,14 @@ export default class AppController {
 			.show()
 		this.keyboard = this.ctx.components.keyboard = new KeyboardController(ctx)
 			.init()
+	}
+
+	outputRowsCountUpdated() {
+		this.ctx.data.layout.output.rows.value = this.output.estimRowsCount
+			+ this.ctx.layout.headerHeight
+		setTimeout(
+			() => this.event.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key),
+			this.ctx.ui.delayedSmallTime)
 	}
 
 	uiFreezeStatedChangedEvent(state) {
