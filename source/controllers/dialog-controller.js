@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import callAsync from "../utils/utils.js"
+import utils from "../utils/utils.js"
 import util from "util"
 import Status from '../utils/status.js'
 
@@ -51,6 +51,6 @@ export default class DialogController {
 				o.appendLine(this.status.error(err.stack))
 			}
 		}
-		callAsync(f)
+		utils.callAsync(f)
 	}
 }

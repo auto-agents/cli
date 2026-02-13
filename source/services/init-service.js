@@ -8,6 +8,7 @@ import { AppInitializedEvent } from '../config/events.js';
 import SysInfoService from './sys-info-service.js';
 import ModuleController from '../controllers/module-controller.js';
 import OutputContext from '../data/output-context.js';
+import utils from '../utils/utils.js';
 
 export default class InitService {
 
@@ -85,7 +86,7 @@ export default class InitService {
 		this.output.appendLine('• cli ready ' + chalk.hex('#00FF00').underline('✔'))
 		setTimeout(
 			() => this.app.event.emit(AppInitializedEvent),
-			500
+			this.ctx.ui.initWait
 		)
 	}
 
@@ -93,6 +94,7 @@ export default class InitService {
 		const sys = new SysInfoService(this.ctx, this.output).run()
 		this.ctx.components.sysInfo = sys
 		sys.dump(this.output)
+		await utils.wait(this.ctx.ui.initWait)
 	}
 
 	async #initModules(outputContext) {

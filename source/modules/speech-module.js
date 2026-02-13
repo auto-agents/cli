@@ -3,8 +3,8 @@ import { existsSync } from "fs";
 import { join } from 'path';
 import ActionController from "../controllers/action-controller";
 import SpinnerService from "../services/spinner-service";
-import callAsync from "../utils/utils.js"
 import Status from '../utils/status.js'
+import utils from '../utils/utils.js'
 
 export default class SpeechModule {
 
@@ -30,6 +30,7 @@ export default class SpeechModule {
         const runSrv = async () => {
             try {
                 await this.speech.launchServer()
+                await utils.wait(this.ctx.ui.initFastWait)
             } catch (err) {
                 o.appendLine(this.status.error(margin + 'speech module server launch error: ' + err))
             }
@@ -61,15 +62,13 @@ export default class SpeechModule {
         await this.speech.speak({ sentence: text, voice: null, apiKey: this.config.apiKey })
     }
 
-    openBrowser() {
-        const f = async () => {
-            try {
-                await this.speech.openBrowser()
-            } catch (err) {
-                const o = this.outputContext.output
-                o.appendLine(this.status.error(err))
-            }
+    async openBrowser() {
+        try {
+            await this.speech.openBrowser()
+            await utils.wait(this.ctx.ui.initFastWait)
+        } catch (err) {
+            const o = this.outputContext.output
+            o.appendLine(this.status.error(err))
         }
-        callAsync(f)
     }
 }

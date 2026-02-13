@@ -18,7 +18,9 @@ export default function config(cli) {
 		ui: {
 			freeze: false,
 			refreshInterval: 1000,
-			delayedSmallTime: 100
+			delayedSmallTime: 100,
+			initWait: 500,
+			initFastWait: 250
 		},
 		cli: {
 			commandPrefix: '/',
@@ -296,7 +298,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: "windows",
