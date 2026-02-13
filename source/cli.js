@@ -15,6 +15,23 @@ const cli = meow(
 	},
 );
 
+const { parseArgs } = require('node:util');
+const args = ['-f', '--bar', 'b'];
+const options = {
+	foo: {
+		type: 'boolean',
+		short: 'f',
+	},
+	bar: {
+		type: 'string',
+	},
+};
+const {
+	values,
+	positionals,
+} = parseArgs({ args, options });
+console.log(values, positionals);
+
 // ----- setup app -----
 
 const ctx = config(cli)

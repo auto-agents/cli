@@ -1,4 +1,4 @@
-import { RunCommandEvent, UIFreezeStatedChangedEvent } from "../config/events"
+import { CommandClearInputEvent, RunCommandEvent, UIFreezeStatedChangedEvent } from "../config/events"
 
 export default class KeyboardController {
 
@@ -35,6 +35,10 @@ export default class KeyboardController {
 
                 if (ck == '[H') {       // [H : home
                     e.emit(RunCommandEvent, 'clear')
+                }
+
+                if (data == "\u001b") {
+                    e.emit(CommandClearInputEvent)
                 }
             }
         })

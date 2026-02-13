@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import { Text, Box } from 'ink'
 import TextInput from 'ink-text-input';
-import { CommandInputStartedEvent, InputAddedEvent, InputSubmitedEvent, InputExecutedEvent, GaugeSourceUpdatedEvent } from '../config/events';
+import { CommandInputStartedEvent, InputAddedEvent, InputSubmitedEvent, InputExecutedEvent, GaugeSourceUpdatedEvent, CommandClearInputEvent } from '../config/events';
 
 const Prompter = ({ ctx }) => {
 
 	const e = ctx.components.event
 	const [query, setQuery] = useState('');
+
+	const onCommandClearInputEvent = () => {
+		setQuery('')
+	}
 
 	const onSubmit = query => {
 		if (query && query.length > 0)
@@ -29,8 +33,13 @@ const Prompter = ({ ctx }) => {
 			InputExecutedEvent,
 			listener
 		)
+		ctx.components.event.on(
+			CommandClearInputEvent,
+			onCommandClearInputEvent
+		)
 		return () => {
 			ctx.components.event.off(InputExecutedEvent, listener)
+			ctx.components.event.off(CommandClearInputEvent, onCommandClearInputEvent)
 		}
 	}, [])
 
