@@ -34,6 +34,10 @@ export default class OutputController {
 
 		rows.push(str)
 		this.estimRowsCount++
+		for (var i = 0; i < str.length; i++) {
+			if (str[i] == '\n')
+				this.estimRowsCount++
+		}
 
 		/*else
 			rows[0] += '\n' + str*/

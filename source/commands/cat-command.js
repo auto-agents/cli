@@ -5,6 +5,7 @@ import { render } from 'ink';
 import Status from '../utils/status.js';
 import ansiEscapes from 'ansi-escapes';
 import { Box, Text } from 'ink';
+import * as highlight from "cli-highlight"
 
 export default class CatCommand {
 
@@ -61,6 +62,7 @@ export default class CatCommand {
 			const tmpFile = this.tmpFile().path
 			const wstream = createWriteStream(tmpFile)
 			const fileDesc = filePath
+			const theme = highlight.DEFAULT_THEME
 
 			// language="markdown"
 			const i = render(
@@ -77,6 +79,7 @@ export default class CatCommand {
 					</Box>
 					<SyntaxHighlight
 						code={content}
+						theme={theme}
 					/>
 				</Box >, {
 				stdout: wstream

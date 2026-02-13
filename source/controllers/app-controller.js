@@ -106,10 +106,19 @@ export default class AppController {
 	}
 
 	outputRowsCountUpdated() {
-		this.ctx.data.layout.output.rows.value = this.output.estimRowsCount
+		const eRowCnt =
+			this.ctx.data.layout.output.rows.value = this.output.estimRowsCount
 			+ this.ctx.layout.headerHeight
+
 		setTimeout(
 			() => {
+
+				const layRowCnt = this.ctx.data.layout.rows.value
+				if (eRowCnt > layRowCnt) {
+					// freeze UI
+					this.event.emit(UIFreezeStatedChangedEvent, true)
+				}
+
 				this.event.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key),
 					this.ctx.ui.delayedSmallTime
 			})

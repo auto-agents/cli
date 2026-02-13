@@ -211,11 +211,13 @@ export default function config(cli) {
 						key: 'output cols',
 						value: null
 					},
+					// estimated output rows count
 					rows: {
 						key: 'output rows',
 						value: null
 					}
 				},
+				// terminal viewport rows count
 				rows: {
 					key: 'layout rows',
 					value: 0
