@@ -8,7 +8,8 @@ import BoxOutput from './box-output.js'
 import {
 	GaugeSourceUpdatedEvent,
 	LayoutResizedEvent,
-	HideInitBoxOutputEvent
+	HideInitBoxOutputEvent,
+	HelpOutputUpdatedEvent
 } from '../config/events.js';
 import Output from './output.js';
 
@@ -18,7 +19,17 @@ export default function App({ ctx }) {
 	const { stdout } = useStdout()
 	const { stdin } = useStdin()
 
+	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
+	const [rows, setRows] = useState(layoutHeight)
+
 	const [initBoxVisible, setInitBoxVisible] = useState(true)
+
+	const computeHelpHeight = () => {
+		const fh = ctx.cli.helpOutput.rows.length
+		//console.log(fh)
+		return fh + 3	/* 3 for borders ? */
+	}
+	const [helpHeight, setHelpHeight] = useState(computeHelpHeight)
 
 	const setPropsLayoutSize = () => {
 		ctx.data.layout.size.value = stdout.columns + 'x' + stdout.rows
@@ -77,6 +88,7 @@ export default function App({ ctx }) {
 	useEffect(() => {
 		const handleResize = () => {
 			console.clear()
+			setRows(layoutHeight())
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
 		}
@@ -86,13 +98,23 @@ export default function App({ ctx }) {
 		};
 	}, [stdout]);
 
+	useEffect(() => {
+		const handleHelpResize = () => {
+			setHelpHeight(computeHelpHeight())
+		}
+		e.on(HelpOutputUpdatedEvent, handleHelpResize);
+		return () => {
+			e.off(HelpOutputUpdatedEvent, handleHelpResize);
+		};
+	}, []);
+
 	return (
 
-		<Box flexDirection="column" >
+		<Box flexDirection="column" height={rows}>
 
 			{ /* header */}
 
-			<Box borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor} height={ctx.layout.headerHeight} flexDirection="column" padding={0} margin={0}>
+			<Box borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor} minHeight={ctx.layout.headerHeight} height={ctx.layout.headerHeight} flexDirection="column" padding={0} margin={0}>
 
 				<Box flexDirection="row">
 
@@ -163,22 +185,29 @@ export default function App({ ctx }) {
 				</Box>
 			}
 
-			{ /* static output */}
+			{ /* 'console' output */}
 
-			<Box>
-				<Output ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" />
+			<Box flexDirection="column" flexGrow={0} >
+				<Output name="output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
+				</Output>
 			</Box>
 
 			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
 
-			<Box marginTop={1}>
+			<Box flexDirection="column" flexGrow={1} marginTop={1}>
 				<Prompter ctx={ctx} />
 			</Box>
 
 			{ /* help output */}
 
-			<Box>
-				<Output ctx={ctx} source="ctx.cli.helpOutput" updateEventName="HelpOutputUpdatedEvent" borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderHelpBoxColor} marginTop={1} />
+			<Box height={helpHeight} minHeight={helpHeight}>
+				<Output name="help"
+					ctx={ctx}
+					source="ctx.cli.helpOutput"
+					updateEventName="HelpOutputUpdatedEvent"
+					borderStyle={ctx.theme.borderStyle}
+					borderColor={ctx.theme.borderHelpBoxColor}
+					marginTop={1} />
 			</Box>
 
 		</Box >

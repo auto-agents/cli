@@ -71,7 +71,7 @@ const BoxOutput = ({ ctx, source, height, noScroll = false }) => {
 
 	if (noScroll)
 		return (
-			<Box flexGrow={1}>
+			<Box overflow="hidden">
 				<Text>{dbg}</Text>
 				<Text>{text}</Text>
 			</Box>

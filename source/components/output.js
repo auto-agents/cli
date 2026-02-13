@@ -1,10 +1,33 @@
-import { useState, useEffect } from 'react';
-import { Box, Text } from 'ink';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Box, Text, measureElement } from 'ink';
 import { LayoutResizedEvent } from '../config/events';
 
-const Output = ({ ctx, source, updateEventName, borderStyle = null, borderColor = null, marginTop = 0 }) => {
+const Output = ({
+	children,
+	ctx,
+	source,
+	name,
+	autoFit,
+	height = null,
+	updateEventName,
+	borderStyle = null,
+	borderColor = null,
+	marginTop = 0 }) => {
 
 	const o = eval(source)
+	/*const boxRef = useCallback(node => {
+	
+		if (false) {
+			console.log('node =')
+			console.log(node)
+		}
+		if (false && node) {
+			console.log(measureElement(node))
+			console.log(node.yogaNode.isMeasureDefined())
+		}
+	}, []);*/
+
+	const iref = useRef()
 
 	const buildText = () => {
 
@@ -14,42 +37,60 @@ const Output = ({ ctx, source, updateEventName, borderStyle = null, borderColor 
 
 	const [text, setText] = useState(buildText);
 
+	const calcFixedHeight = () => {
+		const fh = height || (autoFit ? o.rows.length : null)
+		//console.log(name, fh)
+		return fh
+	}
+
+	const [fixedHeight, setFixedHeight] = useState(calcFixedHeight)
+
 	useEffect(() => {
 
-		const listener = () => {
+		const updateCallback = () => {
+
+			setFixedHeight(calcFixedHeight())
 			setText(buildText())
+
+			//console.log(name, 'updateCallback')
+			if (iref?.current) {
+				const m = measureElement(iref.current)
+				//console.log(name, m)
+			}
+
 		}
 		ctx.components.event.on(
 			updateEventName,
-			listener
+			updateCallback
 		)
 		ctx.components.event.on(
 			LayoutResizedEvent,
-			listener
+			updateCallback
 		)
 		return () => {
 			ctx.components.event.off(
 				updateEventName,
-				listener
+				updateCallback
 			)
 			ctx.components.event.off(
 				LayoutResizedEvent,
-				listener
+				updateCallback
 			)
 		}
 	}, [])
 
 	if (o.rows.length > 0 && borderStyle && borderColor)
 		return (
-			<Box flexGrow={1} marginTop={marginTop} borderStyle={borderStyle} borderColor={borderColor}>
+			<Box ref={iref} flexGrow={1} marginTop={marginTop} borderStyle={borderStyle} borderColor={borderColor}>
 				<Text>{text}</Text>
 			</Box>
 		);
 	else
 		return (
-			<Box>
+			<Box flexDirection="column" height={fixedHeight} minHeight={fixedHeight} overflow="hidden" ref={iref} >
 				<Text>{text}</Text>
-			</Box>
+				{children}
+			</Box >
 		);
 };
 

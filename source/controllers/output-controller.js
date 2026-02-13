@@ -2,7 +2,12 @@ export default class OutputController {
 
 	estimRowsCount = 0
 
-	constructor(ctx, source, updateEventName, updateRowCountEventName) {
+	constructor(
+		ctx,
+		source,
+		updateEventName,
+		updateRowCountEventName) {
+
 		this.ctx = ctx
 		this.source = source
 		this.updateEventName = updateEventName

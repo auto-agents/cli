@@ -1,6 +1,5 @@
 import App from '../components/app.js';
 import { render, useStdin } from 'ink';
-import ansiEscapes from 'ansi-escapes';
 import { UIFreezeStatedChangedEvent } from '../config/events.js';
 
 var i = require('ink')
@@ -46,14 +45,6 @@ export default class RenderController {
                 concurrent: true
             });
         this.mounted = true
-
-        setInterval(() => {
-            try {
-                //process.stdout.write(ansiEscapes.cursorGetPosition)
-            } catch (err) {
-                console.log(err)
-            }
-        }, 2000)
         return this
     }
 
