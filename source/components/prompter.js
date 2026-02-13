@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Text, Box } from 'ink'
 import TextInput from 'ink-text-input';
-import { CommandInputStartedEvent, InputAddedEvent, InputSubmitedEvent, InputExecutedEvent, GaugeSourceUpdatedEvent, CommandClearInputEvent } from '../config/events';
+import {
+	CommandInputStartedEvent,
+	InputAddedEvent,
+	InputSubmitedEvent,
+	InputExecutedEvent,
+	CommandClearInputEvent,
+	CommandSetInputEvent
+} from '../config/events';
 
 const Prompter = ({ ctx }) => {
 
@@ -29,6 +36,9 @@ const Prompter = ({ ctx }) => {
 		const listener = () => {
 			setQuery('')
 		}
+		const onCommandSetInputEvent = args => {
+			setQuery(args[0])
+		}
 		ctx.components.event.on(
 			InputExecutedEvent,
 			listener
@@ -37,9 +47,14 @@ const Prompter = ({ ctx }) => {
 			CommandClearInputEvent,
 			onCommandClearInputEvent
 		)
+		ctx.components.event.on(
+			CommandSetInputEvent,
+			onCommandSetInputEvent
+		)
 		return () => {
 			ctx.components.event.off(InputExecutedEvent, listener)
 			ctx.components.event.off(CommandClearInputEvent, onCommandClearInputEvent)
+			ctx.components.event.off(CommandSetInputEvent, onCommandSetInputEvent)
 		}
 	}, [])
 

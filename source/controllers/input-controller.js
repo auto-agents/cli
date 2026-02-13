@@ -3,7 +3,8 @@ import {
 	CommandInputStartedEvent,
 	InputAddedEvent,
 	InputSubmitedEvent,
-	HideInitBoxOutputEvent
+	HideInitBoxOutputEvent,
+	CommandSetInputEvent
 } from "../config/events"
 
 export default class InputController {
@@ -12,15 +13,45 @@ export default class InputController {
 	commandHelperStartPosition = null
 	commandHelperEndPosition = null
 	cmdExecCount = 0
+	cmdHistory = []
+	cmdHistoryIndex = 0
 
 	constructor(ctx, helpOutput, output) {
 		this.ctx = ctx
 		this.helpOutput = helpOutput
 		this.output = output
 		const e = this.ctx.components.event
+
 		e.on(CommandInputStartedEvent, () => this.#CommandInputStartedEvent())
 			.on(InputSubmitedEvent, args => this.#InputSubmitedEvent(...args))
 			.on(InputAddedEvent, args => this.#InputAddedEvent(...args))
+
+		this.#initKeyboardListener()
+	}
+
+	#initKeyboardListener() {
+		process.stdin.on('data', (data) => {
+
+			if (data.includes("\u001b")) {
+				const ck = data.replaceAll("\u001b", "")
+				const e = this.ctx.components.event
+
+				// (up==[A, down==[B)
+				if (ck == '[A') {	// up : previous command
+					if (this.cmdHistory.length == 0) return
+					const cmd = this.cmdHistory[this.cmdHistoryIndex]
+					this.cmdHistoryIndex = Math.max(this.cmdHistoryIndex - 1, 0)
+					e.emit(CommandSetInputEvent, cmd)
+				}
+
+				if (ck == '[B') {       // down : next command
+					if (this.cmdHistory.length == 0) return
+					this.cmdHistoryIndex = Math.min(this.cmdHistoryIndex + 1, this.cmdHistory.length - 1)
+					const cmd = this.cmdHistory[this.cmdHistoryIndex]
+					e.emit(CommandSetInputEvent, cmd)
+				}
+			}
+		})
 	}
 
 	#CommandInputStartedEvent() {
@@ -36,9 +67,13 @@ export default class InputController {
 				+ ' ' + cmd
 			)
 		}
+		this.cmdHistory.push(cmd)
+		this.cmdHistoryIndex = this.cmdHistory.length - 1
 		this.cmdExecCount++
+
 		if (this.cmdExecCount == 1)
 			this.ctx.components.event.emit(HideInitBoxOutputEvent)
+
 		if (!this.commandHelperOpened) return
 		this.#hideCommands()
 	}
