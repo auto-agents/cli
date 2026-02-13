@@ -1,11 +1,17 @@
 import chalk from 'chalk'
-import { CommandInputStartedEvent, InputAddedEvent, InputSubmitedEvent } from "../config/events"
+import {
+	CommandInputStartedEvent,
+	InputAddedEvent,
+	InputSubmitedEvent,
+	HideInitBoxOutputEvent
+} from "../config/events"
 
 export default class InputController {
 
 	commandHelperOpened = false
 	commandHelperStartPosition = null
 	commandHelperEndPosition = null
+	cmdExecCount = 0
 
 	constructor(ctx, helpOutput, output) {
 		this.ctx = ctx
@@ -30,6 +36,9 @@ export default class InputController {
 				+ ' ' + cmd
 			)
 		}
+		this.cmdExecCount++
+		if (this.cmdExecCount == 1)
+			this.ctx.components.event.emit(HideInitBoxOutputEvent)
 		if (!this.commandHelperOpened) return
 		this.#hideCommands()
 	}
