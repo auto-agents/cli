@@ -84,6 +84,7 @@ export default class AppController {
 			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
 			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
 			.on(HelpOutputUpdatedEvent, () => this.output.forceUpdate())
+			.on(InputExecutedEvent, () => this.output.forceUpdate())
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),

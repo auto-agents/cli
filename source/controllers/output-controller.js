@@ -67,9 +67,14 @@ export default class OutputController {
 		rows[0] += ESC
 		this.delayUpdate()
 	}
-
 	delayUpdate() {
-		setTimeout(() => this.ctx.components.event.emit(this.updateEventName),
+		setTimeout(() => {
+			this.ctx.components.event.emit(this.updateEventName)
+			setTimeout(() => {
+				this.ctx.components.event.emit(this.updateEventName)
+			},
+				this.ctx.ui.delayedLongTime)
+		},
 			this.ctx.ui.delayedMediumTime)
 	}
 

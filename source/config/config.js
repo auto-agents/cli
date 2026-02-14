@@ -37,6 +37,7 @@ export default function config(cli) {
 			refreshInterval: 1000,
 			delayedSmallTime: 100,
 			delayedMediumTime: 250,
+			delayedLongTime: 800,
 			initWait: 500,
 			initFastWait: 250
 		},
