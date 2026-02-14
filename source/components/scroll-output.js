@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useReducer } from 'react';
+import { useState, useRef, useEffect, useReducer, useCallback } from 'react';
 import { Box, Text, measureElement, useInput } from 'ink';
-import { LayoutResizedEvent } from '../config/events';
+import { HelpOutputUpdatedEvent, LayoutResizedEvent } from '../config/events';
 
 const reducer = (state, action) => {
 	switch (action.type) {
@@ -49,49 +49,52 @@ const ScrollOutput = ({
 		innerHeight: 0,
 		scrollTop: 0
 	});
+	const [viewportHeight, setViewportHeight] = useState(0)
+	const [textboxHeight, setTextboxHeight] = useState(0)
+	const [scrollbar, setScrollbar] = useState(0)
+	const viewportRef = useRef();
+	const textboxRef = useRef();
+	const [rowsCount, setRowsCount] = useState(0);
 
-	const [innerHeight, setInnerHeight] = useState(0)
+	const textboxMeasurementUpdated = () => {
+		if (!textboxRef?.current) return
+		const dim = measureElement(textboxRef.current)
+		if (dim) setTextboxHeight(dim.height)
+	}
 
-	const innerRef = useRef();
+	const viewportMeasurementUpdated = () => {
 
-	const measurmentUpdated = () => {
+		if (!viewportRef?.current) return
 
-		if (!innerRef?.current) return
-
-		const dimensions = measureElement(innerRef.current);
+		const dimensions = measureElement(viewportRef.current);
 
 		//console.log(name, dimensions)
 
-		//if (false)
 		dispatch({
 			type: 'SET_INNER_HEIGHT',
 			innerHeight: dimensions?.height
 		});
 
 		if (dimensions) {
-			setInnerHeight(dimensions.height)
-			//console.log(dimensions.height)
-			buildScrollbar(dimensions.height)
+			setViewportHeight(dimensions.height)
+			textboxMeasurementUpdated()
+			setScrollbar(buildScrollbar(dimensions.height))
 		}
+		return 0
 	}
 
 	useEffect(() => {
-		measurmentUpdated()
+		viewportMeasurementUpdated()
 	}, []);
 
 	const buildText = () => {
 
 		const rows = o.rows
+		setRowsCount(o.rows.length)
 		return rows.join('\n')
 	}
 
 	const [text, setText] = useState(buildText);
-
-	const calcFixedHeight = () => {
-		const fh = height || (autoFit ? o.rows.length : null)
-		//console.log(name, fh)
-		return fh
-	}
 
 	const buildScrollbar = (n) => {
 
@@ -110,16 +113,11 @@ const ScrollOutput = ({
 		return tb
 	}
 
-	const [fixedHeight, setFixedHeight] = useState(calcFixedHeight)
-	const [scrollbar, setScrollbar] = useState(0)
-
 	useEffect(() => {
 
 		const updateCallback = () => {
-
-			setFixedHeight(calcFixedHeight())
 			setText(buildText())
-			measurmentUpdated()	// crash
+			viewportMeasurementUpdated()	// crash
 		}
 		ctx.components.event.on(
 			updateEventName,
@@ -129,6 +127,10 @@ const ScrollOutput = ({
 			LayoutResizedEvent,
 			updateCallback
 		)
+		ctx.components.event.on(
+			HelpOutputUpdatedEvent,
+			updateCallback
+		)
 		return () => {
 			ctx.components.event.off(
 				updateEventName,
@@ -136,6 +138,10 @@ const ScrollOutput = ({
 			)
 			ctx.components.event.off(
 				LayoutResizedEvent,
+				updateCallback
+			)
+			ctx.components.event.off(
+				HelpOutputUpdatedEvent,
 				updateCallback
 			)
 		}
@@ -156,20 +162,26 @@ const ScrollOutput = ({
 	});
 
 	return (
-		<Box ref={innerRef} flexDirection="column" height={fixedHeight} minHeight={fixedHeight} overflow="hidden" >
-			<Box flexDirection="row" flexShrink={1}>
-				<Box flexGrow={1} marginTop={-state.scrollTop}>
-					<Text>{text}</Text>
-					<Text>state inner height = {state.innerHeight}</Text>
-					<Text> | inner height = {innerHeight}</Text>
-					<Text> | scroll top = {state.scrollTop}</Text>
+		<Box ref={viewportRef} flexGrow={1} flexDirection="column" overflow="hidden" >
+			<Box flexDirection="row" flexGrow={1}>
+				<Box flexDirection="column" flexGrow={1} marginTop={-state.scrollTop}>
+					<Box ref={textboxRef}>
+						<Text>{text}</Text>
+					</Box>
+					<Box>
+						<Text>state viewport height = {state.innerHeight}</Text>
+						<Text> | viewport height = {viewportHeight}</Text>
+						<Text> | scroll top = {state.scrollTop}</Text>
+						<Text> | rows count = {rowsCount}</Text>
+						<Text> | textbox height = {textboxHeight}</Text>
+					</Box>
 					{children}
 				</Box>
-				{/*
+
 				<Box width={1} height={state.innerHeight}>
 					<Text>{scrollbar}</Text>
 				</Box>
-				*/}
+
 			</Box>
 		</Box >
 	);

@@ -1,3 +1,5 @@
+import { ESC } from "../config/consts"
+
 export default class OutputController {
 
 	estimRowsCount = 0
@@ -18,24 +20,23 @@ export default class OutputController {
 		return eval(this.source)
 	}
 
+	isEmpty() {
+		return this.#getSource().rows.length == 0
+	}
+
 	clear(skipViewUpdate = false) {
 		this.#getSource().rows = []
 		this.estimRowsCount = 0
-		if (!skipViewUpdate)
-			this.ctx.components.event.emit(this.updateEventName)
-		if (!skipViewUpdate && this.updateRowCountEventName)
-			this.ctx.components.event.emit(this.updateRowCountEventName)
+		this.updateView(skipViewUpdate)
 	}
 
-	appendLine(str, leftMargin = 0, skipViewUpdate = false) {
+	appendLine(str, skipViewUpdate = false, leftMargin = 0) {
 		if (!str) return
 
 		const y0 = 0
 		const y1 = 1
 
 		const rows = this.#getSource().rows
-
-		//if (rows.length == 0)
 
 		rows.push(str)
 		this.estimRowsCount++
@@ -44,18 +45,32 @@ export default class OutputController {
 				this.estimRowsCount++
 		}
 
-		/*else
-			rows[0] += '\n' + str*/
-
-		if (!skipViewUpdate)
-			this.ctx.components.event.emit(this.updateEventName)
-		if (!skipViewUpdate && this.updateRowCountEventName)
-			this.ctx.components.event.emit(this.updateRowCountEventName)
-
+		this.updateView(skipViewUpdate)
 		return {
 			y0: y0,
 			y1: y1
 		}
+	}
+
+	updateView(skipViewUpdate) {
+		if (!skipViewUpdate)
+			this.ctx.components.event.emit(this.updateEventName)
+		if (!skipViewUpdate && this.updateRowCountEventName)
+			this.ctx.components.event.emit(this.updateRowCountEventName)
+		if (!skipViewUpdate)
+			this.delayUpdate()
+	}
+
+	forceUpdate() {
+		const rows = this.#getSource().rows
+		if (rows.length == 0) return
+		rows[0] += ESC
+		this.delayUpdate()
+	}
+
+	delayUpdate() {
+		setTimeout(() => this.ctx.components.event.emit(this.updateEventName),
+			this.ctx.ui.delayedMediumTime)
 	}
 
 	appendComment(str, skipViewUpdate = false) {

@@ -3,3 +3,5 @@ export const Platforms = {
     mac: 'mac',
     linux: 'linux'
 }
+
+export const ESC = '\u001b'

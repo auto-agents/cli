@@ -1,11 +1,13 @@
 import chalk from 'chalk'
 import {
-	CommandInputStartedEvent,
 	InputAddedEvent,
 	InputSubmitedEvent,
 	HideInitBoxOutputEvent,
-	CommandSetInputEvent
+	CommandSetInputEvent,
+	CommandInputStartedEvent,
+	HelpOutputUpdatedEvent
 } from "../config/events"
+import { ESC } from '../config/consts'
 
 export default class InputController {
 
@@ -32,8 +34,8 @@ export default class InputController {
 	#initKeyboardListener() {
 		process.stdin.on('data', (data) => {
 
-			if (data.includes("\u001b")) {
-				const ck = data.replaceAll("\u001b", "")
+			if (data.includes(ESC)) {
+				const ck = data.replaceAll(ESC, "")
 				const e = this.ctx.components.event
 
 				//console.log(ck)
@@ -97,11 +99,11 @@ export default class InputController {
 		const cs = ', '
 		const col = chalk.hex(this.ctx.theme.help.commandsListColor)
 		this.commandHelperStartPosition =
-			o.appendLine(chalk.underline(chalk.italic(col('commands:'))))
-		this.commandHelperEndPosition = o.newLine()
+			o.appendLine(chalk.underline(chalk.italic(col('commands:'))), true)
+		this.commandHelperEndPosition = o.newLine(false)
 		const n = 16
 		const addLine = s => {
-			this.commandHelperEndPosition = o.appendLine(s)
+			this.commandHelperEndPosition = o.appendLine(s, true)
 		}
 
 		var pat = (inp || '').trim()
@@ -132,6 +134,9 @@ export default class InputController {
 				}
 			}
 		});
+
+		o.updateView()
+		this.ctx.components.event.emit(HelpOutputUpdatedEvent)
 	}
 
 	#hideCommands() {
@@ -142,5 +147,6 @@ export default class InputController {
 		this.helpOutput.clear()
 		this.commandHelperStartPosition
 			= this.commandHelperEndPosition = null
+		this.ctx.components.event.emit(HelpOutputUpdatedEvent)
 	}
 }

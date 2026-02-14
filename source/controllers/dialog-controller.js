@@ -25,7 +25,8 @@ export default class DialogController {
 	}
 
 	echoUser(text) {
-		this.output.newLine()
+		if (!this.output.isEmpty())
+			this.output.newLine()
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
 		this.output.appendLine(
 			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)

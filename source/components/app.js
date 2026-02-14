@@ -187,14 +187,14 @@ export default function App({ ctx }) {
 
 			{ /* 'console' output */}
 
-			<Box borderStyle="round" flexDirection="column" flexGrow={0}>
+			<Box borderStyle="round" flexDirection="column" flexGrow={1}>
 				<ScrollOutput name="console-output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
 				</ScrollOutput>
 			</Box>
 
 			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
 
-			<Box flexDirection="column" flexGrow={1} marginTop={1}>
+			<Box flexDirection="column" flexGrow={0} marginTop={1}>
 				<Prompter ctx={ctx} />
 			</Box>
 

@@ -48,27 +48,27 @@ export default class AppController {
 	constructor(ctx) {
 		this.ctx = ctx
 		this.status = new Status(ctx)
+		ctx.components.app = this
 
 		const { title, subtitle } = this.#getTitle()
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
-		this.output = new OutputController(ctx, 'this.ctx.cli.output', OutputUpdatedEvent, OutputRowsCountUpdatedEvent)
-		this.helpOutput = new OutputController(ctx, 'this.ctx.cli.helpOutput', HelpOutputUpdatedEvent)
-		this.boxOutput = new BoxOutputController(ctx, 'this.ctx.cli.boxOutput')
+		this.event = ctx.components.event = new EventService(ctx)
+		this.output = ctx.components.output = new OutputController(ctx,
+			'this.ctx.cli.output',
+			OutputUpdatedEvent,
+			OutputRowsCountUpdatedEvent)
+		this.helpOutput = ctx.components.helpOutput = new OutputController(ctx,
+			'this.ctx.cli.helpOutput',
+			HelpOutputUpdatedEvent)
+		this.boxOutput = ctx.components.boxOutput = new BoxOutputController(ctx,
+			'this.ctx.cli.boxOutput')
 
-		this.event = new EventService(ctx)
-		this.init = new InitService(ctx, this, this.boxOutput, this.output)
-		ctx.components.output = this.output
-		ctx.components.helpOutput = this.helpOutput
-		ctx.components.boxOutput = this.boxOutput
-		ctx.components.app = this
-		ctx.components.event = this.event
-		this.inputController = new InputController(ctx, this.helpOutput, this.output)
-		ctx.components.input = this.inputController
-		this.commandController = new CommandController(ctx, this.output)
-		this.dialog = new DialogController(ctx, this.output)
-		ctx.components.dialog = this.dialog
+		this.init = ctx.components.init = new InitService(ctx, this, this.boxOutput, this.output)
+		this.inputController = ctx.components.input = new InputController(ctx, this.helpOutput, this.output)
+		this.commandController = ctx.components.command = new CommandController(ctx, this.output)
+		this.dialog = ctx.components.dialog = new DialogController(ctx, this.output)
 
 		this.ramService = new RamService(ctx)
 		this.timeService = new TimeService(ctx)
@@ -82,6 +82,7 @@ export default class AppController {
 			.on(AppInitializedEvent, () => this.appInitialized())
 			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
 			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
+			.on(HelpOutputUpdatedEvent, () => this.output.forceUpdate())
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),

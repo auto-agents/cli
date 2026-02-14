@@ -36,6 +36,7 @@ export default function config(cli) {
 			freeze: false,
 			refreshInterval: 1000,
 			delayedSmallTime: 100,
+			delayedMediumTime: 250,
 			initWait: 500,
 			initFastWait: 250
 		},
@@ -315,7 +316,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
