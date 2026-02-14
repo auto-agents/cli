@@ -4,6 +4,7 @@ export const HelpOutputUpdatedEvent = 'HelpOutputUpdatedEvent'
 export const BoxOutputUpdatedEvent = 'BoxOutputUpdatedEvent'
 export const InputExecutedEvent = 'InputExecutedEvent'
 export const AppInitializedEvent = 'AppInitializedEvent'
+export const AppStartedEvent = 'AppStartedEvent'
 export const LayoutResizedEvent = 'LayoutResizedEvent'
 // this event name is to be completed with source gauge key
 export const GaugeSourceUpdatedEvent = 'GaugeSourceUpdatedEvent-'

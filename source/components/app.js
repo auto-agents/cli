@@ -10,7 +10,8 @@ import {
 	GaugeSourceUpdatedEvent,
 	LayoutResizedEvent,
 	HideInitBoxOutputEvent,
-	HelpOutputUpdatedEvent
+	HelpOutputUpdatedEvent,
+	AppStartedEvent
 } from '../config/events.js';
 
 export default function App({ ctx }) {
@@ -23,6 +24,8 @@ export default function App({ ctx }) {
 	const [rows, setRows] = useState(layoutHeight)
 
 	const [initBoxVisible, setInitBoxVisible] = useState(true)
+	const [promptVisible, setPromptVisible] = useState(false)
+	const [outputVisible, setOutputVisible] = useState(false)
 
 	const computeHelpHeight = () => {
 		const fh = ctx.cli.helpOutput.rows.length
@@ -80,6 +83,23 @@ export default function App({ ctx }) {
 		return () => {
 			ctx.components.event.off(
 				HideInitBoxOutputEvent,
+				listener
+			)
+		}
+	}, [])
+
+	useEffect(() => {
+		const listener = () => {
+			setOutputVisible(true)
+			setPromptVisible(true)
+		}
+		ctx.components.event.on(
+			AppStartedEvent,
+			listener
+		)
+		return () => {
+			ctx.components.event.off(
+				AppStartedEvent,
 				listener
 			)
 		}
@@ -180,23 +200,29 @@ export default function App({ ctx }) {
 
 			{
 				initBoxVisible &&
-				<Box flexDirection='column' marginTop={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
+				<Box flexDirection='column' flexGrow={1} marginTop={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.outputBorderColor}>
 					<BoxOutput ctx={ctx} source="ctx.cli.boxOutput" noScroll={true} />
 				</Box>
 			}
 
 			{ /* 'console' output */}
 
-			<Box borderStyle="round" flexDirection="column" flexGrow={1}>
-				<ScrollOutput name="console-output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
-				</ScrollOutput>
-			</Box>
+			{
+				outputVisible &&
+				<Box borderStyle="round" flexDirection="column" flexGrow={1}>
+					<ScrollOutput name="console-output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
+					</ScrollOutput>
+				</Box>
+			}
 
 			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
 
-			<Box flexDirection="column" flexGrow={0} marginTop={1}>
-				<Prompter ctx={ctx} />
-			</Box>
+			{
+				promptVisible &&
+				<Box flexDirection="column" flexGrow={0} marginTop={1}>
+					<Prompter ctx={ctx} />
+				</Box>
+			}
 
 			{ /* help output */}
 

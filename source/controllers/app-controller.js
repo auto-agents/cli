@@ -14,7 +14,8 @@ import {
 	OutputUpdatedEvent,
 	HelpOutputUpdatedEvent,
 	UIFreezeStatedChangedEvent,
-	OutputRowsCountUpdatedEvent
+	OutputRowsCountUpdatedEvent,
+	AppStartedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -200,6 +201,8 @@ export default class AppController {
 		this.output.newLine(true)
 		this.output.appendLine(
 			chalk.hex(this.ctx.theme.promptInviteColor).italic('Enter a query below or type / to enter a command :'))
+
+		this.event.emit(AppStartedEvent)
 	}
 
 	runInput(inp) {
