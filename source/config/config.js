@@ -211,11 +211,11 @@ export default function config(cli) {
 						value: ''
 					},
 					openAPIChat: {
-						key: 'OpenAPI chat',
+						key: 'OpenAI Api chat',
 						value: ''
 					},
 					openAPIAgents: {
-						key: 'OpenAPI agents',
+						key: 'OpenAI Api agents',
 						value: ''
 					}
 				}
