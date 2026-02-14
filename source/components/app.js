@@ -3,15 +3,15 @@ import { useState, useEffect } from 'react';
 import Prompter from './prompter.js'
 import LeftGauge from './left-gauge.js';
 import RightGauge from './right-gauge.js';
+import ScrollOutput from './scroll-output.js'
 import BoxOutput from './box-output.js'
-
+import Output from './output.js';
 import {
 	GaugeSourceUpdatedEvent,
 	LayoutResizedEvent,
 	HideInitBoxOutputEvent,
 	HelpOutputUpdatedEvent
 } from '../config/events.js';
-import Output from './output.js';
 
 export default function App({ ctx }) {
 
@@ -187,9 +187,9 @@ export default function App({ ctx }) {
 
 			{ /* 'console' output */}
 
-			<Box flexDirection="column" flexGrow={0} >
-				<Output name="output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
-				</Output>
+			<Box borderStyle="round" flexDirection="column" flexGrow={0}>
+				<ScrollOutput name="console-output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
+				</ScrollOutput>
 			</Box>
 
 			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}

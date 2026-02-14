@@ -1,3 +1,20 @@
+import { Platforms } from './consts.js'
+import os from "os";
+
+const getPlatform = () => {
+	const osplatform = os.platform()
+	var platform = Platforms.linux
+	if (osplatform.includes('win'))
+		platform = Platforms.windows
+	else if (osplatform.includes('darwin'))
+		platform = Platforms.mac
+	else if (osplatform.includes('linux'))
+		platform = Platforms.linux
+	return platform
+}
+
+const platform = getPlatform()
+
 const longInterval = 4000
 
 // app OutputContext
@@ -298,27 +315,27 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
-					platform: "windows",
+					platform: platform,
 					browser: "edge",
 					maxLogLines: 15,
 					port: 3310,
 					browsers: {
 						chrome: {
 							runCommand: {
-								windows: "cmd /c start \"\" chrome \"{url}\"",
-								linux: "google-chrome-stable \"{url}\"",
-								mac: "open -a \"Google Chrome\" \"{url}\""
+								[Platforms.windows]: "cmd /c start \"\" chrome \"{url}\"",
+								[Platforms.linux]: "google-chrome-stable \"{url}\"",
+								[Platforms.mac]: "open -a \"Google Chrome\" \"{url}\""
 							},
 							preferredVoices: []
 						},
 						edge: {
 							runCommand: {
-								windows: "cmd /c start \"\" msedge \"{url}\"",
-								linux: "microsoft-edge \"{url}\"",
-								mac: "open -a \"Microsoft Edge\" \"{url}\""
+								[Platforms.windows]: "cmd /c start \"\" msedge \"{url}\"",
+								[Platforms.linux]: "microsoft-edge \"{url}\"",
+								[Platforms.mac]: "open -a \"Microsoft Edge\" \"{url}\""
 							},
 							preferredVoices: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
 						}
@@ -341,6 +358,14 @@ export default function config(cli) {
 				config: {
 
 				}
+			}
+		},
+		shell: {
+			platform: platform,
+			edit: {
+				[Platforms.windows]: 'code %1',
+				[Platforms.mac]: '',
+				[Platforms.linux]: ''
 			}
 		}
 	};

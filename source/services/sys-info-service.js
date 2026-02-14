@@ -2,6 +2,7 @@ import os from "os";
 import DataTransforms from './../utils/data-transforms';
 import nodeDiskInfo from 'node-disk-info'
 import Status from '../utils/status.js'
+import { Platforms } from "../config/consts.js";
 
 export default class SysInfoService {
 
@@ -52,7 +53,8 @@ export default class SysInfoService {
 			+ s + os.type()
 			+ s + os.release()
 			+ s + os.version()
-			+ s + os.platform();
+			+ s + os.platform()
+			+ s + `(${this.ctx.shell.platform})`
 	}
 
 	disksInfo() {

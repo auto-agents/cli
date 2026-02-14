@@ -15,17 +15,6 @@ const Output = ({
 	marginTop = 0 }) => {
 
 	const o = eval(source)
-	/*const boxRef = useCallback(node => {
-	
-		if (false) {
-			console.log('node =')
-			console.log(node)
-		}
-		if (false && node) {
-			console.log(measureElement(node))
-			console.log(node.yogaNode.isMeasureDefined())
-		}
-	}, []);*/
 
 	const iref = useRef()
 

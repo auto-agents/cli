@@ -36,15 +36,17 @@ export default class InputController {
 				const ck = data.replaceAll("\u001b", "")
 				const e = this.ctx.components.event
 
+				//console.log(ck)
+
 				// (up==[A, down==[B)
-				if (ck == '[A') {	// up : previous command
+				if (ck == '[1;2A') {	// shift + up : previous command
 					if (this.cmdHistory.length == 0) return
 					const cmd = this.cmdHistory[this.cmdHistoryIndex]
 					this.cmdHistoryIndex = Math.max(this.cmdHistoryIndex - 1, 0)
 					e.emit(CommandSetInputEvent, cmd)
 				}
 
-				if (ck == '[B') {       // down : next command
+				if (ck == '[1;2B') {       // shift + down : next command
 					if (this.cmdHistory.length == 0) return
 					this.cmdHistoryIndex = Math.min(this.cmdHistoryIndex + 1, this.cmdHistory.length - 1)
 					const cmd = this.cmdHistory[this.cmdHistoryIndex]

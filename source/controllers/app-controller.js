@@ -110,18 +110,19 @@ export default class AppController {
 			this.ctx.data.layout.output.rows.value = this.output.estimRowsCount
 			+ this.ctx.layout.headerHeight
 
-		setTimeout(
-			() => {
+		if (false)	// auto free ui
+			setTimeout(
+				() => {
 
-				const layRowCnt = this.ctx.data.layout.rows.value
-				if (eRowCnt > layRowCnt) {
-					// freeze UI
-					this.event.emit(UIFreezeStatedChangedEvent, true)
-				}
+					const layRowCnt = this.ctx.data.layout.rows.value
+					if (eRowCnt > layRowCnt) {
+						// freeze UI
+						this.event.emit(UIFreezeStatedChangedEvent, true)
+					}
 
-				this.event.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key),
-					this.ctx.ui.delayedSmallTime
-			})
+					this.event.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key),
+						this.ctx.ui.delayedSmallTime
+				})
 	}
 
 	uiFreezeStatedChangedEvent(state) {

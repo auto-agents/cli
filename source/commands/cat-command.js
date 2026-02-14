@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, createWriteStream } from 'fs'
+import { existsSync, readFileSync, createWriteStream, unlink } from 'fs'
 import path from 'path'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import { render } from 'ink';
@@ -90,6 +90,7 @@ export default class CatCommand {
 				i.unmount()
 				const outp = readFileSync(tmpFile, 'utf8')
 					.replace("[G", '')		// remove any clear console ansi code
+				//unlink(tmpFile)
 				output.appendLine(outp.trim())
 				process.stdout.write(ansiEscapes.cursorHide)
 			}, 100)
