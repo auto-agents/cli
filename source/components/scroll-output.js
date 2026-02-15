@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useReducer } from 'react';
 import { Box, Newline, Text, measureElement, useInput } from 'ink';
-import { ConsoleClearedEvent, HelpOutputUpdatedEvent, LayoutResizedEvent } from '../config/events';
+import { ConsoleClearedEvent, HelpOutputUpdatedEvent, LayoutResizedEvent, PromptVisibilityLostEvent } from '../config/events';
 
 const reducer = (state, action) => {
 	var r = null
@@ -23,6 +23,8 @@ const reducer = (state, action) => {
 				scrollTop: state.scrollTop + 1
 			};
 			action.source.scrollY = r.scrollTop
+			action.source.scrollEnd = false
+
 			return r
 
 		case 'SCROLL_UP':
@@ -43,6 +45,7 @@ const reducer = (state, action) => {
 				)
 			}
 			action.source.scrollY = r.scrollTop
+			action.source.scrollEnd = true
 			return r
 
 		case 'SCROLL_TOP':
@@ -214,6 +217,8 @@ const ScrollOutput = ({
 				type: 'SCROLL_UP',
 				source: o
 			});
+			if (o.scrollEnd)
+				ctx.components.event.emit(PromptVisibilityLostEvent)
 			setScrollbar(buildScrollbar(o.innerHeight))
 		}
 	});
@@ -234,7 +239,7 @@ const ScrollOutput = ({
 							<Text> | textbox height = {textboxHeight}</Text>
 						</Box>
 					*/}
-					<Box marginTop={0}>
+					<Box marginTop={0} minHeight={2} overflow="hidden">
 						{children}
 					</Box>
 				</Box>

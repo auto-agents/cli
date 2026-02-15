@@ -1,4 +1,4 @@
-import { CommandClearInputEvent, RunCommandEvent, UIFreezeStatedChangedEvent } from "../config/events"
+import { CommandClearInputEvent, KeyPressedEvent, RunCommandEvent, UIFreezeStatedChangedEvent } from "../config/events"
 import { ESC } from '../config/consts'
 
 export default class KeyboardController {
@@ -8,11 +8,11 @@ export default class KeyboardController {
     }
 
     init() {
+        const e = this.ctx.components.event
         process.stdin.on('data', (data) => {
             //console.log(data)
             if (data.includes(ESC)) {
                 const ck = data.replaceAll(ESC, "")
-                const e = this.ctx.components.event
 
                 //console.log(ck)
 
@@ -41,6 +41,9 @@ export default class KeyboardController {
                 if (data == ESC) {
                     e.emit(CommandClearInputEvent)
                 }
+            }
+            else {
+                e.emit(KeyPressedEvent, data)
             }
         })
         return this

@@ -11,7 +11,11 @@ import {
 	LayoutResizedEvent,
 	HideInitBoxOutputEvent,
 	HelpOutputUpdatedEvent,
-	AppStartedEvent
+	AppStartedEvent,
+	PromptVisibilityLostEvent,
+	InputAddedEvent,
+	ConsoleClearedEvent,
+	KeyPressedEvent
 } from '../config/events.js';
 
 export default function App({ ctx }) {
@@ -130,6 +134,33 @@ export default function App({ ctx }) {
 		};
 	}, []);
 
+	useEffect(() => {
+		const hidePrompt = () => {
+			//setPromptVisible(false)
+		}
+		e.on(PromptVisibilityLostEvent, hidePrompt)
+		return () => {
+			e.off(PromptVisibilityLostEvent, hidePrompt)
+		}
+	}, [])
+
+	useEffect(() => {
+		const showPromptAlways = () => {
+			setPromptVisible(true)
+		}
+		const showPrompt = () => {
+			if (!ctx.cli.output.scrollEnd) {
+				setPromptVisible(true)
+			}
+		}
+		e.on(InputAddedEvent, showPrompt)
+			.on(ConsoleClearedEvent, showPromptAlways)
+		return () => {
+			e.off(InputAddedEvent, showPrompt)
+				.off(ConsoleClearedEvent, showPromptAlways)
+		}
+	}, [])
+
 	return (
 
 		<Box flexDirection="column" height={rows}>
@@ -239,7 +270,7 @@ export default function App({ ctx }) {
 
 			{ /* status bar */}
 
-			<Box height={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+			<Box height={3} minHeight={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
 				<Text italic={true}>status text</Text>
 			</Box>
 		</Box >
