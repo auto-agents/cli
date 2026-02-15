@@ -127,8 +127,11 @@ export default function config(cli) {
 			promptInviteColor: '#00FF00',
 			outputBorderColor: '#555555',
 			scrollbar: {
-				trackBackground: '░',
-				carret: '█'
+				trackBackground: ' ',
+				carretTop: '↑',
+				carret: '█',
+				carretBottom: '↓',
+				color: '#FFFF00'
 			},
 			comment: {
 				color: '#999999',

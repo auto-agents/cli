@@ -209,7 +209,7 @@ export default function App({ ctx }) {
 
 			{
 				outputVisible &&
-				<Box borderStyle="round" flexDirection="column" flexGrow={1}>
+				<Box flexDirection="column" flexGrow={1}>
 					<ScrollOutput name="console-output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
 					</ScrollOutput>
 				</Box>

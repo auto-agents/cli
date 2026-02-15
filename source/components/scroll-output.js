@@ -134,11 +134,10 @@ const ScrollOutput = ({
 		var yc = Math.ceil(r * o.scrollY)
 		var tb = ''
 		for (var i = 0; i < boxHeight; i++) {
-
-			const car = i == yc ?
-				ctx.theme.scrollbar.carret
-				: ctx.theme.scrollbar.trackBackground
-
+			var car = ctx.theme.scrollbar.trackBackground
+			if (i == yc - 1) car = ctx.theme.scrollbar.carretTop
+			if (i == yc + 1) car = ctx.theme.scrollbar.carretBottom
+			if (i == yc) car = ctx.theme.scrollbar.carret
 			tb += car + '\n'
 		}
 		return tb
@@ -231,7 +230,7 @@ const ScrollOutput = ({
 				</Box>
 
 				<Box width={1} height={state.innerHeight}>
-					<Text>{scrollbar}</Text>
+					<Text color={ctx.theme.scrollbar.color}>{scrollbar}</Text>
 				</Box>
 
 			</Box>
