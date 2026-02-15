@@ -58,7 +58,8 @@ export default class InputController {
 	}
 
 	#CommandInputStartedEvent() {
-		if (this.commandHelperOpened) return
+		if (this.commandHelperOpened)
+			this.#hideCommands()
 		this.#showCommands()
 	}
 
@@ -100,6 +101,7 @@ export default class InputController {
 		this.commandHelperStartPosition =
 			o.appendLine(chalk.underline(chalk.italic(col('commands:'))), true)
 		this.commandHelperEndPosition = o.newLine(false)
+
 		const n = 16
 		const addLine = s => {
 			this.commandHelperEndPosition = o.appendLine(s, true)
@@ -109,6 +111,8 @@ export default class InputController {
 		const i = pat.indexOf(' ')
 		if (i > -1)
 			pat = pat.substring(0, i)
+
+		console.log('path=' + pat)
 
 		const argsCol = chalk.hex(this.ctx.theme.help.commandsListArgsColor)
 		this.ctx.cli.commands.forEach(e => {
