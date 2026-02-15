@@ -15,7 +15,8 @@ import {
 	PromptVisibilityLostEvent,
 	InputAddedEvent,
 	ConsoleClearedEvent,
-	KeyPressedEvent
+	KeyPressedEvent,
+	SetStatusMessageEvent
 } from '../config/events.js';
 
 export default function App({ ctx }) {
@@ -31,6 +32,7 @@ export default function App({ ctx }) {
 	const [promptVisible, setPromptVisible] = useState(false)
 	const [outputVisible, setOutputVisible] = useState(false)
 	const [helpVisible, setHelpVisible] = useState(false)
+	const [statusMessage, setStatusMessage] = useState('')
 
 	const computeHelpHeight = () => {
 		const fh = ctx.cli.helpOutput.rows.length
@@ -134,32 +136,25 @@ export default function App({ ctx }) {
 		};
 	}, []);
 
-	/*useEffect(() => {
+	useEffect(() => {
 		const hidePrompt = () => {
-			//setPromptVisible(false)
+			setPromptVisible(false)
 		}
 		e.on(PromptVisibilityLostEvent, hidePrompt)
 		return () => {
 			e.off(PromptVisibilityLostEvent, hidePrompt)
 		}
-	}, [])*/
+	}, [])
 
-	/*useEffect(() => {
-		const showPromptAlways = () => {
-			setPromptVisible(true)
+	useEffect(() => {
+		const handleSetStatusMessage = (...args) => {
+			setStatusMessage(args.length > 0 ? args[0] : '')
 		}
-		const showPrompt = () => {
-			if (!ctx.cli.output.scrollEnd) {
-				setPromptVisible(true)
-			}
-		}
-		e.on(InputAddedEvent, showPrompt)
-			.on(ConsoleClearedEvent, showPromptAlways)
+		e.on(SetStatusMessageEvent, handleSetStatusMessage)
 		return () => {
-			e.off(InputAddedEvent, showPrompt)
-				.off(ConsoleClearedEvent, showPromptAlways)
+			e.off(SetStatusMessageEvent, handleSetStatusMessage)
 		}
-	}, [])*/
+	}, [])
 
 	return (
 
@@ -209,11 +204,11 @@ export default function App({ ctx }) {
 
 					<Box flexDirection="column" width={ctx.layout.gaugeRightColWidth} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderSecondaryColor}>
 
-						<RightGauge prop={ctx.data.counter} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.size} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.cols} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.rows} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.output.rows} ctx={ctx} />
+						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
@@ -277,7 +272,7 @@ export default function App({ ctx }) {
 			{ /* status bar */}
 
 			<Box height={3} minHeight={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
-				<Text color={ctx.theme.statusText.color} italic={true}>status text</Text>
+				<Text color={ctx.theme.statusText.color} italic={true}>{statusMessage}</Text>
 			</Box>
 		</Box >
 	);

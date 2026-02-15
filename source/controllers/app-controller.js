@@ -158,10 +158,10 @@ export default class AppController {
 
 	heartbeatTick() {
 		this.ctx.data.counter.value++
-		this.event.emitTarget(
+		/*this.event.emitTarget(
 			GaugeSourceUpdatedEvent,
 			this.ctx.data.counter.key
-		)
+		)*/
 	}
 
 	heartbeatSecond() {
