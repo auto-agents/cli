@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useReducer } from 'react';
-import { Box, Text, measureElement, useInput } from 'ink';
+import { Box, Newline, Text, measureElement, useInput } from 'ink';
 import { ConsoleClearedEvent, HelpOutputUpdatedEvent, LayoutResizedEvent } from '../config/events';
 
 const reducer = (state, action) => {
@@ -38,7 +38,7 @@ const reducer = (state, action) => {
 				...state,
 				scrollTop: Math.max(
 					action.source.rows.length
-					- action.source.innerHeight + 1,
+					- action.source.innerHeight + 2,
 					0
 				)
 			}
@@ -222,7 +222,7 @@ const ScrollOutput = ({
 		<Box ref={viewportRef} flexGrow={1} flexDirection="column" overflow="hidden" >
 			<Box flexDirection="row" flexGrow={0}>
 				<Box flexDirection="column" flexGrow={1} marginTop={-state.scrollTop}>
-					<Box ref={textboxRef}>
+					<Box ref={textboxRef} marginBottom={0}>
 						<Text>{text}</Text>
 					</Box>
 					{/* 
@@ -234,7 +234,9 @@ const ScrollOutput = ({
 							<Text> | textbox height = {textboxHeight}</Text>
 						</Box>
 					*/}
-					{children}
+					<Box marginTop={0}>
+						{children}
+					</Box>
 				</Box>
 
 				<Box width={1} height={state.innerHeight}>

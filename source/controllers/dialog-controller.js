@@ -26,7 +26,7 @@ export default class DialogController {
 
 	echoUser(text) {
 		if (!this.output.isEmpty())
-			this.output.newLine()
+			this.output.newLine(false)
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
 		this.output.appendLine(
 			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)
@@ -37,7 +37,7 @@ export default class DialogController {
 
 	echoSystem(text) {
 		const o = this.output
-		o.newLine()
+		o.newLine(false)
 		const scol = chalk.hex(this.ctx.theme.dialog.systemDialogColor)
 		o.appendLine(this.ctx.cli.dialog.systemDialogPrefix + ' ' + scol(text))
 	}

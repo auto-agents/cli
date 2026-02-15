@@ -56,6 +56,7 @@ export default class CommandController {
 			const module = await import(path)
 			const o = new module.default(this.ctx, this.output)
 			o.run(args)
+
 		} catch (err) {
 			e.emit(CommandModuleLoadErrorEvent, cn + ` (${err})`)
 			return

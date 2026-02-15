@@ -26,6 +26,7 @@ export default function App({ ctx }) {
 	const [initBoxVisible, setInitBoxVisible] = useState(true)
 	const [promptVisible, setPromptVisible] = useState(false)
 	const [outputVisible, setOutputVisible] = useState(false)
+	const [helpVisible, setHelpVisible] = useState(false)
 
 	const computeHelpHeight = () => {
 		const fh = ctx.cli.helpOutput.rows.length
@@ -121,6 +122,7 @@ export default function App({ ctx }) {
 	useEffect(() => {
 		const handleHelpResize = () => {
 			setHelpHeight(computeHelpHeight())
+			setHelpVisible(ctx.cli.helpOutput.rows.length > 0)
 		}
 		e.on(HelpOutputUpdatedEvent, handleHelpResize);
 		return () => {
@@ -211,31 +213,29 @@ export default function App({ ctx }) {
 				outputVisible &&
 				<Box flexDirection="column" flexGrow={1}>
 					<ScrollOutput name="console-output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
+						{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
+						{
+							promptVisible &&
+							<Prompter ctx={ctx} />
+						}
 					</ScrollOutput>
-				</Box>
-			}
-
-			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
-
-			{
-				promptVisible &&
-				<Box flexDirection="column" flexGrow={0} marginTop={1}>
-					<Prompter ctx={ctx} />
 				</Box>
 			}
 
 			{ /* help output */}
 
-			<Box height={helpHeight} minHeight={helpHeight}>
-				<Output name="help"
-					ctx={ctx}
-					source="ctx.cli.helpOutput"
-					updateEventName="HelpOutputUpdatedEvent"
-					borderStyle={ctx.theme.borderStyle}
-					borderColor={ctx.theme.borderHelpBoxColor}
-					marginTop={1} />
-			</Box>
-
+			{
+				helpVisible &&
+				<Box height={helpHeight} minHeight={helpHeight}>
+					<Output name="help"
+						ctx={ctx}
+						source="ctx.cli.helpOutput"
+						updateEventName="HelpOutputUpdatedEvent"
+						borderStyle={ctx.theme.borderStyle}
+						borderColor={ctx.theme.borderHelpBoxColor}
+						marginTop={1} />
+				</Box>
+			}
 		</Box >
 	);
 }
