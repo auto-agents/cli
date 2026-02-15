@@ -45,6 +45,14 @@ const reducer = (state, action) => {
 			action.source.scrollY = r.scrollTop
 			return r
 
+		case 'SCROLL_TOP':
+			r = {
+				...state,
+				scrollTop: 0
+			}
+			action.source.scrollY = r.scrollTop
+			return r
+
 		default:
 			return state;
 	}
@@ -212,7 +220,7 @@ const ScrollOutput = ({
 
 	return (
 		<Box ref={viewportRef} flexGrow={1} flexDirection="column" overflow="hidden" >
-			<Box flexDirection="row" flexGrow={1}>
+			<Box flexDirection="row" flexGrow={0}>
 				<Box flexDirection="column" flexGrow={1} marginTop={-state.scrollTop}>
 					<Box ref={textboxRef}>
 						<Text>{text}</Text>
