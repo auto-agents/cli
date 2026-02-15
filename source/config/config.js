@@ -10,7 +10,9 @@ import {
 	END,
 	HOME,
 	CTRL_F10,
-	CTRL_F9
+	CTRL_F9,
+	SHIFT_UP,
+	SHIFT_DOWN
 } from './consts.js'
 import os from "os";
 
@@ -134,25 +136,51 @@ export default function config(cli) {
 				},
 				scrollUp: {
 					code: UP,
-					inkKey: 'upArrow',
+					inkKey: {
+						prop: 'upArrow',
+						shift: false,
+						ctrl: false
+					},
 					text: 'up arrow',
 					description: 'scroll console output one line up'
 				},
 				scrollDown: {
 					code: DOWN,
-					inkKey: 'downArrow',
+					inkKey: {
+						prop: 'downArrow',
+						shift: false,
+						ctrl: false
+					},
 					text: 'down arrow',
 					description: 'scroll console output one line down'
 				},
+				cmdUp: {
+					code: SHIFT_UP,
+					text: 'shift + up arrow',
+					description: 'repeat previous command in history'
+				},
+				cmdDown: {
+					code: SHIFT_DOWN,
+					text: 'shift + down arrow',
+					description: 'repeat next comman in history'
+				},
 				pageUp: {
 					code: PAGE_UP,
-					inkKey: 'pageUp',
+					inkKey: {
+						prop: 'pageUp',
+						shift: false,
+						ctrl: false
+					},
 					text: 'page up',
 					description: 'scroll console output one page up'
 				},
 				pageDown: {
 					code: PAGE_DOWN,
-					inkKey: 'pageDown',
+					inkKey: {
+						prop: 'pageDown',
+						shift: false,
+						ctrl: false
+					},
 					text: 'page down',
 					description: 'scroll console output one page down'
 				},

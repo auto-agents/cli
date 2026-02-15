@@ -235,9 +235,13 @@ const ScrollOutput = ({
 	useInput((_input, key) => {
 
 		const keys = ctx.cli.keys
+
 		//console.log(key)
+
 		const checkKeyFromConfig = (key, keyKey) => {
-			return key[keyKey.inkKey]
+			return key[keyKey.inkKey.prop]
+				&& keyKey.inkKey.shift == key.shift
+				&& keyKey.inkKey.ctrl == key.ctrl
 		}
 
 		if (checkKeyFromConfig(key, keys.scrollDown)) {

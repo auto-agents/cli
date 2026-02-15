@@ -71,6 +71,8 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
 
         var forceUpd = false
 
+        //console.log(key)
+
         if (key.upArrow ||
             key.downArrow ||
             (key.ctrl && input === 'c') ||

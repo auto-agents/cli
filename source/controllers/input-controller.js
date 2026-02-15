@@ -40,15 +40,14 @@ export default class InputController {
 
 				//console.log(ck)
 
-				// (up==[A, down==[B)
-				if (ck == '[1;2A') {	// shift + up : previous command
+				if (ck == this.ctx.cli.keys.cmdUp.code) {	// shift + up : previous command
 					if (this.cmdHistory.length == 0) return
 					const cmd = this.cmdHistory[this.cmdHistoryIndex]
 					this.cmdHistoryIndex = Math.max(this.cmdHistoryIndex - 1, 0)
 					e.emit(CommandSetInputEvent, cmd)
 				}
 
-				if (ck == '[1;2B') {       // shift + down : next command
+				if (ck == this.ctx.cli.keys.cmdDown.code) {       // shift + down : next command
 					if (this.cmdHistory.length == 0) return
 					this.cmdHistoryIndex = Math.min(this.cmdHistoryIndex + 1, this.cmdHistory.length - 1)
 					const cmd = this.cmdHistory[this.cmdHistoryIndex]
