@@ -209,7 +209,14 @@ const ScrollOutput = ({
 	}, [])
 
 	useInput((_input, key) => {
-		if (key.downArrow) {
+
+		const keys = ctx.cli.keys
+		//console.log(key)
+		const checkKeyFromConfig = (key, keyKey) => {
+			return key[keyKey.inkKey]
+		}
+
+		if (checkKeyFromConfig(key, keys.scrollDown)) {
 			dispatch({
 				type: 'SCROLL_DOWN',
 				source: o
@@ -217,9 +224,25 @@ const ScrollOutput = ({
 			setScrollbar(buildScrollbar(o.innerHeight))
 		}
 
-		if (key.upArrow) {
+		if (checkKeyFromConfig(key, keys.scrollUp)) {
 			dispatch({
 				type: 'SCROLL_UP',
+				source: o
+			});
+			setScrollbar(buildScrollbar(o.innerHeight))
+		}
+
+		if (checkKeyFromConfig(key, keys.pageDown)) {
+			dispatch({
+				type: 'SCROLL_PAGE_DOWN',
+				source: o
+			});
+			setScrollbar(buildScrollbar(o.innerHeight))
+		}
+
+		if (checkKeyFromConfig(key, keys.pageUp)) {
+			dispatch({
+				type: 'SCROLL_PAGE_UP',
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))

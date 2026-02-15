@@ -133,21 +133,25 @@ export default function config(cli) {
 				},
 				scrollUp: {
 					code: UP,
+					inkKey: 'upArrow',
 					text: 'up arrow',
 					description: 'scroll console output one line up'
 				},
 				scrollDown: {
 					code: DOWN,
+					inkKey: 'downArrow',
 					text: 'down arrow',
 					description: 'scroll console output one line down'
 				},
 				pageUp: {
 					code: PAGE_UP,
+					inkKey: 'pageUp',
 					text: 'page up',
 					description: 'scroll console output one page up'
 				},
 				pageDown: {
 					code: PAGE_DOWN,
+					inkKey: 'pageDown',
 					text: 'page down',
 					description: 'scroll console output one page down'
 				},
