@@ -90,8 +90,13 @@ export default class CatCommand {
 				i.unmount()
 				const outp = readFileSync(tmpFile, 'utf8')
 					.replace("[G", '')		// remove any clear console ansi code
-				//unlink(tmpFile)
-				output.appendLine(outp.trim())
+				const t = outp.trim().split('\n')
+				t.forEach((e, _) => {
+					output.appendLine(e, false)
+				})
+				output.updateView()
+				//unlink(tmpFile) // crash
+				//output.appendLine(outp.trim())				
 				process.stdout.write(ansiEscapes.cursorHide)
 			}, 100)
 

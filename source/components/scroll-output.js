@@ -1,17 +1,20 @@
-import { useState, useRef, useEffect, useReducer, useCallback } from 'react';
+import { useState, useRef, useEffect, useReducer } from 'react';
 import { Box, Text, measureElement, useInput } from 'ink';
-import { HelpOutputUpdatedEvent, LayoutResizedEvent } from '../config/events';
+import { ConsoleClearedEvent, HelpOutputUpdatedEvent, LayoutResizedEvent } from '../config/events';
 
 const reducer = (state, action) => {
+	var r = null
 	switch (action.type) {
 		case 'SET_INNER_HEIGHT':
-			return {
+			r = {
 				...state,
 				innerHeight: action.innerHeight
 			};
+			action.source.innerHeight = r.innerHeight
+			return r
 
 		case 'SCROLL_DOWN':
-			return {
+			r = {
 				...state,
 				/*scrollTop: Math.min(
 					state.innerHeight - state.height,
@@ -19,12 +22,28 @@ const reducer = (state, action) => {
 				)*/
 				scrollTop: state.scrollTop + 1
 			};
+			action.source.scrollY = r.scrollTop
+			return r
 
 		case 'SCROLL_UP':
-			return {
+			r = {
 				...state,
 				scrollTop: Math.max(0, state.scrollTop - 1)
 			};
+			action.source.scrollY = r.scrollTop
+			return r
+
+		case 'SCROLL_END':
+			r = {
+				...state,
+				scrollTop: Math.max(
+					action.source.rows.length
+					- action.source.innerHeight + 1,
+					0
+				)
+			}
+			action.source.scrollY = r.scrollTop
+			return r
 
 		default:
 			return state;
@@ -64,6 +83,15 @@ const ScrollOutput = ({
 
 	const viewportMeasurementUpdated = () => {
 
+		const autoScrollAtEnd = () => {
+			dispatch(
+				{
+					type: 'SCROLL_END',
+					source: o
+				}
+			)
+		}
+
 		if (!viewportRef?.current) return
 
 		const dimensions = measureElement(viewportRef.current);
@@ -72,12 +100,14 @@ const ScrollOutput = ({
 
 		dispatch({
 			type: 'SET_INNER_HEIGHT',
-			innerHeight: dimensions?.height
+			innerHeight: dimensions?.height,
+			source: o
 		});
 
 		if (dimensions) {
 			setViewportHeight(dimensions.height)
 			textboxMeasurementUpdated()
+			autoScrollAtEnd()
 			setScrollbar(buildScrollbar(dimensions.height))
 		}
 		return 0
@@ -96,13 +126,14 @@ const ScrollOutput = ({
 
 	const [text, setText] = useState(buildText);
 
-	const buildScrollbar = (n) => {
+	const buildScrollbar = (boxHeight) => {
 
-		//console.log(n)
-		const r = n / (o.rows.length || 1)
+		//console.log('boxHeight=' + boxHeight + ' | rows count=' + o.rows.length + ' | scrollY=' + o.scrollY)
+
+		const r = boxHeight / (o.rows.length || 1)
 		var yc = Math.ceil(r * o.scrollY)
 		var tb = ''
-		for (var i = 0; i < n; i++) {
+		for (var i = 0; i < boxHeight; i++) {
 
 			const car = i == yc ?
 				ctx.theme.scrollbar.carret
@@ -115,9 +146,16 @@ const ScrollOutput = ({
 
 	useEffect(() => {
 
+		const scrollToTop = () => {
+			dispatch({
+				type: 'SCROLL_TOP',
+				source: o
+			});
+			setScrollbar(buildScrollbar(o.innerHeight))
+		}
 		const updateCallback = () => {
 			setText(buildText())
-			viewportMeasurementUpdated()	// crash
+			viewportMeasurementUpdated()
 		}
 		ctx.components.event.on(
 			updateEventName,
@@ -130,6 +168,10 @@ const ScrollOutput = ({
 		ctx.components.event.on(
 			HelpOutputUpdatedEvent,
 			updateCallback
+		)
+		ctx.components.event.on(
+			ConsoleClearedEvent,
+			scrollToTop
 		)
 		return () => {
 			ctx.components.event.off(
@@ -144,20 +186,28 @@ const ScrollOutput = ({
 				HelpOutputUpdatedEvent,
 				updateCallback
 			)
+			ctx.components.event.off(
+				ConsoleClearedEvent,
+				scrollToTop
+			)
 		}
 	}, [])
 
 	useInput((_input, key) => {
 		if (key.downArrow) {
 			dispatch({
-				type: 'SCROLL_DOWN'
+				type: 'SCROLL_DOWN',
+				source: o
 			});
+			setScrollbar(buildScrollbar(o.innerHeight))
 		}
 
 		if (key.upArrow) {
 			dispatch({
-				type: 'SCROLL_UP'
+				type: 'SCROLL_UP',
+				source: o
 			});
+			setScrollbar(buildScrollbar(o.innerHeight))
 		}
 	});
 
@@ -168,13 +218,15 @@ const ScrollOutput = ({
 					<Box ref={textboxRef}>
 						<Text>{text}</Text>
 					</Box>
-					<Box>
-						<Text>state viewport height = {state.innerHeight}</Text>
-						<Text> | viewport height = {viewportHeight}</Text>
-						<Text> | scroll top = {state.scrollTop}</Text>
-						<Text> | rows count = {rowsCount}</Text>
-						<Text> | textbox height = {textboxHeight}</Text>
-					</Box>
+					{/* 
+						<Box>
+							<Text>state viewport height = {state.innerHeight}</Text>
+							<Text> | viewport height = {viewportHeight}</Text>
+							<Text> | scroll top = {state.scrollTop}</Text>
+							<Text> | rows count = {rowsCount}</Text>
+							<Text> | textbox height = {textboxHeight}</Text>
+						</Box>
+					*/}
 					{children}
 				</Box>
 

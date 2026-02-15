@@ -1,4 +1,4 @@
-import { HideInitBoxOutputEvent, UIFreezeStatedChangedEvent } from "../config/events.js";
+import { ConsoleClearedEvent, HideInitBoxOutputEvent, UIFreezeStatedChangedEvent } from "../config/events.js";
 
 export default class ClearConsoleCommand {
 
@@ -10,5 +10,6 @@ export default class ClearConsoleCommand {
 		this.ctx.components.output.clear()
 		this.ctx.components.event.emit(HideInitBoxOutputEvent)
 		this.ctx.components.event.emit(UIFreezeStatedChangedEvent, false)
+		this.ctx.components.event.emit(ConsoleClearedEvent)
 	}
 }
