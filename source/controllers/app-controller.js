@@ -200,9 +200,9 @@ export default class AppController {
 		this.dialog.hello()
 
 		this.output.newLine(true)
-		this.output.appendLine(
+		/*this.output.appendLine(
 			chalk.hex(this.ctx.theme.promptInviteColor).italic('Enter a query below or type / to enter a command :'))
-
+*/
 		this.event.emit(AppStartedEvent)
 	}
 

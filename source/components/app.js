@@ -134,7 +134,7 @@ export default function App({ ctx }) {
 		};
 	}, []);
 
-	useEffect(() => {
+	/*useEffect(() => {
 		const hidePrompt = () => {
 			//setPromptVisible(false)
 		}
@@ -142,9 +142,9 @@ export default function App({ ctx }) {
 		return () => {
 			e.off(PromptVisibilityLostEvent, hidePrompt)
 		}
-	}, [])
+	}, [])*/
 
-	useEffect(() => {
+	/*useEffect(() => {
 		const showPromptAlways = () => {
 			setPromptVisible(true)
 		}
@@ -159,7 +159,7 @@ export default function App({ ctx }) {
 			e.off(InputAddedEvent, showPrompt)
 				.off(ConsoleClearedEvent, showPromptAlways)
 		}
-	}, [])
+	}, [])*/
 
 	return (
 
@@ -244,12 +244,18 @@ export default function App({ ctx }) {
 				outputVisible &&
 				<Box flexDirection="column" flexGrow={1}>
 					<ScrollOutput name="console-output" ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" >
-						{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
-						{
-							promptVisible &&
-							<Prompter ctx={ctx} />
-						}
 					</ScrollOutput>
+				</Box>
+			}
+
+			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
+			{
+				promptVisible &&
+				<Box minHeight={4} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor} flexDirection="column">
+					<Text color={ctx.theme.promptInviteColor} italic={true}>
+						Enter a query below or type / to enter a command :
+					</Text>
+					<Prompter ctx={ctx} />
 				</Box>
 			}
 
@@ -264,7 +270,7 @@ export default function App({ ctx }) {
 						updateEventName="HelpOutputUpdatedEvent"
 						borderStyle={ctx.theme.borderStyle}
 						borderColor={ctx.theme.borderHelpBoxColor}
-						marginTop={1} />
+						marginTop={0} />
 				</Box>
 			}
 

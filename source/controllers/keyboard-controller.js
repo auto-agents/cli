@@ -42,9 +42,9 @@ export default class KeyboardController {
                     e.emit(CommandClearInputEvent)
                 }
             }
-            else {
+            /*else {
                 e.emit(KeyPressedEvent, data)
-            }
+            }*/
         })
         return this
     }

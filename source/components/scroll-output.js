@@ -40,7 +40,7 @@ const reducer = (state, action) => {
 				...state,
 				scrollTop: Math.max(
 					action.source.rows.length
-					- action.source.innerHeight + 2,
+					- action.source.innerHeight + 1,
 					0
 				)
 			}
@@ -217,8 +217,8 @@ const ScrollOutput = ({
 				type: 'SCROLL_UP',
 				source: o
 			});
-			if (o.scrollEnd)
-				ctx.components.event.emit(PromptVisibilityLostEvent)
+			/*if (o.scrollEnd)
+				ctx.components.event.emit(PromptVisibilityLostEvent)*/
 			setScrollbar(buildScrollbar(o.innerHeight))
 		}
 	});
@@ -227,7 +227,7 @@ const ScrollOutput = ({
 		<Box ref={viewportRef} flexGrow={1} flexDirection="column" overflow="hidden" >
 			<Box flexDirection="row" flexGrow={0}>
 				<Box flexDirection="column" flexGrow={1} marginTop={-state.scrollTop}>
-					<Box ref={textboxRef} marginBottom={0}>
+					<Box ref={textboxRef} marginBottom={2}>
 						<Text>{text}</Text>
 					</Box>
 					{/* 
@@ -239,9 +239,11 @@ const ScrollOutput = ({
 							<Text> | textbox height = {textboxHeight}</Text>
 						</Box>
 					*/}
-					<Box marginTop={0} minHeight={2} overflow="hidden">
-						{children}
-					</Box>
+					{/*
+						<Box marginTop={0} minHeight={2} overflow="hidden">
+							{children}
+						</Box>
+						*/}
 				</Box>
 
 				<Box width={1} height={state.innerHeight}>
