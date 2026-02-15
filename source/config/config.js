@@ -1,4 +1,17 @@
-import { Platforms } from './consts.js'
+import {
+	ESC,
+	Platforms,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	PAGE_UP,
+	PAGE_DOWN,
+	END,
+	HOME,
+	CTRL_F10,
+	CTRL_F9
+} from './consts.js'
 import os from "os";
 
 const getPlatform = () => {
@@ -111,7 +124,55 @@ export default function config(cli) {
 					file: 'cat-command.js'
 				}
 			],
-			currentPath: process.cwd()
+			currentPath: process.cwd(),
+			keys: {
+				clearInput: {
+					code: ESC,
+					text: 'escape',
+					description: 'clear input'
+				},
+				scrollUp: {
+					code: UP,
+					text: 'up arrow',
+					description: 'scroll console output one line up'
+				},
+				scrollDown: {
+					code: DOWN,
+					text: 'down arrow',
+					description: 'scroll console output one line down'
+				},
+				pageUp: {
+					code: PAGE_UP,
+					text: 'page up',
+					description: 'scroll console output one page up'
+				},
+				pageDown: {
+					code: PAGE_DOWN,
+					text: 'page down',
+					description: 'scroll console output one page down'
+				},
+				inputToEnd: {
+					code: END,
+					text: 'end',
+					description: 'go to end of input'
+				},
+				inputToStart: {
+					code: HOME,
+					text: 'home',
+					description: 'go to start of input'
+				},
+				toggleFreeze: {
+					code: CTRL_F10,
+					text: 'ctrl + f10',
+					description: 'toggle freeze console output'
+				},
+				clearConsole: {
+					code: CTRL_F9,
+					text: 'ctrl + f9',
+					description: 'clear the console output',
+					cmd: 'clear'
+				}
+			}
 		},
 		theme: {
 			borderMainColor: '#777777',
@@ -323,7 +384,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
@@ -371,7 +432,7 @@ export default function config(cli) {
 		shell: {
 			platform: platform,
 			edit: {
-				[Platforms.windows]: 'code %1',
+				[Platforms.windows]: 'notepad %1',
 				[Platforms.mac]: '',
 				[Platforms.linux]: ''
 			}
