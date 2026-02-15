@@ -256,7 +256,7 @@ export default function config(cli) {
 				color: '#777777'
 			},
 			cursor: {
-				caracter: '█',
+				character: '█',
 				color: '#00FF00'
 			}
 		},
@@ -393,7 +393,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
