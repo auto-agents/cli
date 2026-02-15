@@ -50,7 +50,7 @@ export default class DialogController {
 				await this.ctx.components.module.speech.speak(text)
 			} catch (err) {
 				const o = this.output
-				o.appendLine(this.status.error(err.stack))
+				o.appendLine(this.status.error(err))
 			}
 		}
 		utils.callAsync(f)
