@@ -236,6 +236,12 @@ export default function App({ ctx }) {
 						marginTop={1} />
 				</Box>
 			}
+
+			{ /* status bar */}
+
+			<Box height={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+				<Text italic={true}>status text</Text>
+			</Box>
 		</Box >
 	);
 }

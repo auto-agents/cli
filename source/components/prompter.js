@@ -59,8 +59,8 @@ const Prompter = ({ ctx }) => {
 	}, [])
 
 	return (
-		<Box flexDirection="column" marginTop={0}>
-			<Box height={1}></Box>
+		<Box flexDirection="column" marginTop={0} minHeight={2}>
+			<Box height={1} minHeight={1}></Box>
 			<Box flexDirection="row">
 				<Box marginRight={1}>
 					<Text color={ctx.theme.promptColor}>{ctx.cli.commandPrompt}</Text>
