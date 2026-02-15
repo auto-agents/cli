@@ -67,16 +67,9 @@ const reducer = (state, action) => {
 };
 
 const ScrollOutput = ({
-	children,
 	ctx,
 	source,
-	name,
-	autoFit,
-	height = null,
-	updateEventName,
-	borderStyle = null,
-	borderColor = null,
-	marginTop = 0 }) => {
+	updateEventName }) => {
 
 	const o = eval(source)
 
@@ -84,17 +77,13 @@ const ScrollOutput = ({
 		innerHeight: 0,
 		scrollTop: 0
 	});
-	const [viewportHeight, setViewportHeight] = useState(0)
-	const [textboxHeight, setTextboxHeight] = useState(0)
 	const [scrollbar, setScrollbar] = useState(0)
 	const viewportRef = useRef();
 	const textboxRef = useRef();
-	const [rowsCount, setRowsCount] = useState(0);
 
 	const textboxMeasurementUpdated = () => {
 		if (!textboxRef?.current) return
 		const dim = measureElement(textboxRef.current)
-		//if (dim) setTextboxHeight(dim.height)
 	}
 
 	const viewportMeasurementUpdated = () => {
@@ -112,8 +101,6 @@ const ScrollOutput = ({
 
 		const dimensions = measureElement(viewportRef.current);
 
-		//console.log(name, dimensions)
-
 		dispatch({
 			type: 'SET_INNER_HEIGHT',
 			innerHeight: dimensions?.height,
@@ -121,7 +108,6 @@ const ScrollOutput = ({
 		});
 
 		if (dimensions) {
-			//setViewportHeight(dimensions.height)
 			textboxMeasurementUpdated()
 			autoScrollAtEnd()
 			setScrollbar(buildScrollbar(dimensions.height))
@@ -136,7 +122,6 @@ const ScrollOutput = ({
 	const buildText = () => {
 
 		const rows = o.rows
-		//setRowsCount(o.rows.length)
 		return rows.join('\n')
 	}
 
@@ -245,11 +230,6 @@ const ScrollOutput = ({
 					<Box ref={textboxRef} marginBottom={2}>
 						<Text>{text}</Text>
 					</Box>
-					{/*
-						<Box marginTop={0} minHeight={2} overflow="hidden">
-							{children}
-						</Box>
-						*/}
 				</Box>
 
 				<Box width={1} height={state.innerHeight}>
