@@ -185,6 +185,9 @@ export default function config(cli) {
 				backgroundColor: '#1A1A1A',
 				borderColor: '#777777',
 				borderStyle: 'round'
+			},
+			statusText: {
+				color: '#777777'
 			}
 		},
 		layout: {

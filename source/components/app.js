@@ -277,7 +277,7 @@ export default function App({ ctx }) {
 			{ /* status bar */}
 
 			<Box height={3} minHeight={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
-				<Text italic={true}>status text</Text>
+				<Text color={ctx.theme.statusText.color} italic={true}>status text</Text>
 			</Box>
 		</Box >
 	);
