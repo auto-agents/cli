@@ -5,7 +5,8 @@ import {
 	CommandFileNotFoundEvent,
 	CommandNotFoundEvent,
 	CommandArgsCountErrorEvent,
-	RunCommandEvent
+	RunCommandEvent,
+	CommandParseErrorEvent
 } from "../config/events"
 import { split } from 'shellwords'
 
@@ -21,13 +22,19 @@ export default class CommandController {
 	async runCommand(arg) {
 
 		// extract com args if any
+		const e = this.ctx.components.event
 		arg = arg.trim()
-		const parsed = split(arg)
+		var parsed = null
+		try {
+			parsed = split(arg)
+		} catch (parseError) {
+			e.emit(CommandParseErrorEvent, parseError)
+			return
+		}
 		const com = parsed[0]
 		const args = parsed.slice(1)
 		this.ctx.cli.lastCommandArgs = args
 
-		const e = this.ctx.components.event
 		const coms = this.ctx.cli.commands
 		const tcom = coms.filter(c => c.names.includes(com))
 		if (tcom.length == 0) {

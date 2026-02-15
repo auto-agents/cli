@@ -15,7 +15,8 @@ import {
 	HelpOutputUpdatedEvent,
 	UIFreezeStatedChangedEvent,
 	OutputRowsCountUpdatedEvent,
-	AppStartedEvent
+	AppStartedEvent,
+	CommandParseErrorEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -76,6 +77,7 @@ export default class AppController {
 
 		this.event
 			.on(InputSubmitedEvent, arg => this.runInput(...arg))
+			.on(CommandParseErrorEvent, arg => this.error('command parse error: ' + arg[0]))
 			.on(CommandNotFoundEvent, arg => this.error('command not found: ' + arg[0]))
 			.on(CommandFileNotFoundEvent, arg => this.error('command file not found: ' + arg[0]))
 			.on(CommandModuleLoadErrorEvent, arg => this.error('command load module error: ' + arg[0]))
