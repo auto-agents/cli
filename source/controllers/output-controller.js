@@ -70,10 +70,6 @@ export default class OutputController {
 	delayUpdate() {
 		setTimeout(() => {
 			this.ctx.components.event.emit(this.updateEventName)
-			setTimeout(() => {
-				this.ctx.components.event.emit(this.updateEventName)
-			},
-				this.ctx.ui.delayedLongTime)
 		},
 			this.ctx.ui.delayedMediumTime)
 	}

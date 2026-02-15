@@ -34,10 +34,34 @@ const reducer = (state, action) => {
 
 			return r
 
+		case 'SCROLL_PAGE_DOWN':
+			r = {
+				...state,
+				scrollTop: state.scrollTop
+			};
+			if (action.source.maxScrollY !== undefined
+				&& action.source.maxScrollY > 0
+			) {
+				r.scrollTop += action.source.innerHeight
+				r.scrollTop = Math.min(action.source.maxScrollY, r.scrollTop)
+			}
+			action.source.scrollY = r.scrollTop
+			action.source.scrollEnd = false
+
+			return r
+
 		case 'SCROLL_UP':
 			r = {
 				...state,
 				scrollTop: Math.max(0, state.scrollTop - 1)
+			};
+			action.source.scrollY = r.scrollTop
+			return r
+
+		case 'SCROLL_PAGE_UP':
+			r = {
+				...state,
+				scrollTop: Math.max(0, state.scrollTop - action.source.innerHeight)
 			};
 			action.source.scrollY = r.scrollTop
 			return r
