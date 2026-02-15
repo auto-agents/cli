@@ -124,6 +124,7 @@ export default function config(cli) {
 					file: 'cat-command.js'
 				}
 			],
+			currentInput: null,
 			currentPath: process.cwd(),
 			keys: {
 				clearInput: {
@@ -253,6 +254,10 @@ export default function config(cli) {
 			},
 			statusText: {
 				color: '#777777'
+			},
+			cursor: {
+				caracter: '█',
+				color: '#00FF00'
 			}
 		},
 		layout: {

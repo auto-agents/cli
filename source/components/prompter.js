@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Text, Box } from 'ink'
-import TextInput from 'ink-text-input';
+import { Text, Box, useStdin } from 'ink'
+import TextInput from './text-input.js';
 import {
 	CommandInputStartedEvent,
 	InputAddedEvent,
@@ -14,9 +14,15 @@ const Prompter = ({ ctx }) => {
 
 	const e = ctx.components.event
 	const [query, setQuery] = useState('');
+	const { stdin } = useStdin()
+
+	const updQuery = q => {
+		setQuery(q)
+		ctx.cli.currentInput = q
+	}
 
 	const onCommandClearInputEvent = () => {
-		setQuery('')
+		updQuery('')
 	}
 
 	const onSubmit = query => {
@@ -25,7 +31,8 @@ const Prompter = ({ ctx }) => {
 	}
 
 	const onChange = c => {
-		setQuery(c)
+		updQuery(c)
+		ctx.cli.currentInput = c
 		if (c == ctx.cli.commandPrefix)
 			e.emit(CommandInputStartedEvent)
 		else
@@ -34,10 +41,10 @@ const Prompter = ({ ctx }) => {
 
 	useEffect(() => {
 		const listener = () => {
-			setQuery('')
+			updQuery('')
 		}
 		const onCommandSetInputEvent = args => {
-			setQuery(args[0])
+			updQuery(args[0])
 		}
 		ctx.components.event.on(
 			InputExecutedEvent,
@@ -65,7 +72,7 @@ const Prompter = ({ ctx }) => {
 				<Box marginRight={1}>
 					<Text color={ctx.theme.promptColor}>{ctx.cli.commandPrompt}</Text>
 				</Box>
-				<TextInput highlightPastedText={true} value={query} onChange={onChange} onSubmit={onSubmit} />
+				<TextInput ctx={ctx} highlightPastedText={true} value={query} onChange={onChange} onSubmit={onSubmit} />
 			</Box>
 		</Box>
 	);

@@ -1,5 +1,7 @@
 import {
     CommandClearInputEvent,
+    InputToEndEvent,
+    InputToStartEvent,
     RunCommandEvent,
     UIFreezeStatedChangedEvent
 } from "../config/events"
@@ -44,6 +46,12 @@ export default class KeyboardController {
 
                 if (data == keys.clearInput.code)
                     e.emit(CommandClearInputEvent)
+
+                if (ck == keys.inputToStart.code)
+                    e.emit(InputToStartEvent)
+
+                if (ck == keys.inputToEnd.code)
+                    e.emit(InputToEndEvent)
             }
         })
         return this

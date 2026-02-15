@@ -26,3 +26,6 @@ export const ConsoleClearedEvent = 'ConsoleClearedEvent'
 export const PromptVisibilityLostEvent = 'PromptVisibilityLostEvent'
 export const KeyPressedEvent = 'KeyPressedEvent'
 export const SetStatusMessageEvent = 'SetStatusMessageEvent'
+export const InputToStartEvent = 'InputToStartEvent'
+export const InputToEndEvent = 'InputToEndEvent'
+
