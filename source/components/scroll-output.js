@@ -21,12 +21,14 @@ const reducer = (state, action) => {
 		case 'SCROLL_DOWN':
 			r = {
 				...state,
-				/*scrollTop: Math.min(
-					state.innerHeight - state.height,
-					state.scrollTop + 1
-				)*/
-				scrollTop: state.scrollTop + 1
+				scrollTop: state.scrollTop
 			};
+			if (action.source.maxScrollY !== undefined
+				&& action.source.maxScrollY > 0
+			) {
+				r.scrollTop++
+				r.scrollTop = Math.min(action.source.maxScrollY, r.scrollTop)
+			}
 			action.source.scrollY = r.scrollTop
 			action.source.scrollEnd = false
 
@@ -130,6 +132,7 @@ const ScrollOutput = ({
 	const buildScrollbar = (boxHeight) => {
 
 		const maxSY = o.rows.length - boxHeight + 1
+		o.maxScrollY = maxSY
 		var noScroll = maxSY <= 0
 		var yc = 0
 		if (!noScroll) {
