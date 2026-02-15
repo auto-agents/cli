@@ -112,31 +112,39 @@ export default class InputController {
 		if (i > -1)
 			pat = pat.substring(0, i)
 
-		console.log('path=' + pat)
+		var tmpLine = ''
 
 		const argsCol = chalk.hex(this.ctx.theme.help.commandsListArgsColor)
 		this.ctx.cli.commands.forEach(e => {
 
-			if (pat == '' || e.names.some(n => n.startsWith(pat))) {
-
-				var s = e.names.map(n => p + n).join(cs).padEnd(n)
-				s += e.description
-				addLine(col(s))
-
-				if (e.args && e.args.length > 0) {
-					s = argsCol(
-						' '.repeat(n)
-						+ (e.args.map(arg => '<' + arg + '> '
-							+ ' : ' + e.argsDesc[arg].type
-							+ (e.argsDesc[arg].required ? ' (required)' : '')
-							+ (e.argsDesc[arg].description ? ' - ' + e.argsDesc[arg].description : '')
-						).join(' '))
-						+ ' '
-					)
-					addLine(s)
-				}
+			if (pat == '') {
+				if (tmpLine != '') tmpLine += ' | '
+				tmpLine += e.names.map(n => p + n).join(cs)
 			}
+			else
+				if (e.names.some(n => n.startsWith(pat))) {
+
+					var s = e.names.map(n => p + n).join(cs).padEnd(n)
+					s += e.description
+					addLine(col(s))
+
+					if (e.args && e.args.length > 0) {
+						s = argsCol(
+							' '.repeat(n)
+							+ (e.args.map(arg => '<' + arg + '> '
+								+ ' : ' + e.argsDesc[arg].type
+								+ (e.argsDesc[arg].required ? ' (required)' : '')
+								+ (e.argsDesc[arg].description ? ' - ' + e.argsDesc[arg].description : '')
+							).join(' '))
+							+ ' '
+						)
+						addLine(s)
+					}
+				}
 		});
+
+		if (tmpLine != '')
+			addLine(col(tmpLine))
 
 		o.updateView()
 		this.ctx.components.event.emit(HelpOutputUpdatedEvent)
