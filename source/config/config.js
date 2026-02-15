@@ -197,7 +197,7 @@ export default function config(cli) {
 			gaugeRightColWidth: 30,
 			gaugeLeftTextWidth: 20,
 			gaugeRightTextWidth: 15,
-			pageBottomMargin: 2,
+			pageBottomMargin: 2,	// don't know why but else terminal add scrollbar (wt)
 			// bad display below these limits
 			minWidth: 145,
 			minHeight: 51
