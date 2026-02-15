@@ -19,7 +19,7 @@ export default class DialogController {
 		const username = this.ctx.components.sysInfo.username
 		const text = this.ctx.texts.dialog.hello
 			.replace('%username%', chalk.bold(username))
-		this.echoSystem(text)
+		this.echoSystem(text, true)
 		if (this.#isSpeechAvailable())
 			this.speech(text)
 	}
@@ -35,9 +35,10 @@ export default class DialogController {
 			this.speech(text)
 	}
 
-	echoSystem(text) {
+	echoSystem(text, skipPrependNewLine) {
 		const o = this.output
-		o.newLine(false)
+		if (!skipPrependNewLine)
+			o.newLine(false)
 		const scol = chalk.hex(this.ctx.theme.dialog.systemDialogColor)
 		o.appendLine(this.ctx.cli.dialog.systemDialogPrefix + ' ' + scol(text))
 	}
