@@ -189,3 +189,19 @@ the run() method of this command must open an editor to edit the content of the 
 - the path that is provided as the first element of the arguments array that is passed to the run() method.
 - the editor is launch as an external process that is given by the property `shell.editor` in the app context (this.ctx). The right command is selected from the property `shell.editor[platform]` where platform is the value of the property `platform` in the app context (this.ctx).
 - the value of the property `shell.editor[platform]` is a string that is used to launch the editor. it is used as a command to launch the editor. The parameter `%1` is replaced by the path of the file to edit.
+
+### command: `config`
+
+```text
+implements the command `config` as described below:
+```
+```js
+{
+    names: ['config','conf','cnf'],
+    description: 'edit the cli config file.',    
+    file: 'config-command.js'
+}
+```
+implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+
+This command works the same way as the command `edit`. This command has no parameters. It always open the file `cli/config/config.json`, related to the cli process path.
