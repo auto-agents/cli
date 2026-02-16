@@ -2,7 +2,7 @@ import chalk from "chalk"
 import utils from "../utils/utils.js"
 import util from "util"
 import Status from '../utils/status.js'
-import { StatusMessage, Status as StatusEnum } from "../data/status-message.js"
+import { StatusMessage, StatusEnum } from "../data/status-message.js"
 import { LogErrorEvent, SetStatusMessageEvent } from "../config/events.js"
 
 export default class DialogController {
@@ -46,11 +46,18 @@ export default class DialogController {
 	async queryOpenAIChat(query) {
 		if (!this.#isChatOpenAIAvailable())
 			return
+		const e = this.ctx.components.event
+		e.emit(SetStatusMessageEvent, new StatusMessage(
+			StatusEnum.waiting,
+			'thinking',
+			'dialog'
+		))
 		const r = await this.ctx.components.module.openAIChat.chat(query)
 			.then(txt =>
 				this.echoSystem(txt))
 			.catch(err => {
-				this.ctx.components.event.emit(LogErrorEvent, err)
+				e.emit(SetStatusMessageEvent)
+				e.emit(LogErrorEvent, err)
 			})
 	}
 
@@ -80,7 +87,7 @@ export default class DialogController {
 				new StatusMessage(
 					StatusEnum.waiting,
 					'speaking',
-					'dialog-controller'))
+					'dialog'))
 
 			if (wait) await this.ctx.components.module.speech.waitIdle()
 
@@ -106,7 +113,7 @@ export default class DialogController {
 					new StatusMessage(
 						StatusEnum.waiting,
 						'speaking',
-						'dialog-controller'))
+						'dialog'))
 				await this.ctx.components.module.speech.speak(text, voice)
 			} catch (err) {
 				this.ctx.components.event.emit(SetStatusMessageEvent)

@@ -1,10 +1,10 @@
-export const Status = {
+export const StatusEnum = {
     on: 'on',
     off: 'off',
     unavailable: 'unavailable',
     waiting: 'waiting',
     idle: 'idle',
-    ready: 'ready'
+    ready: 'ready',
 }
 
 export class StatusMessage {
@@ -20,4 +20,4 @@ export class StatusMessage {
     }
 }
 
-export default { Status, StatusMessage }
+export default { StatusEnum, StatusMessage }

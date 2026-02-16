@@ -9,7 +9,7 @@ import SysInfoService from './sys-info-service.js';
 import ModuleController from '../controllers/module-controller.js';
 import OutputContext from '../data/output-context.js';
 import utils from '../utils/utils.js';
-import { Status, StatusMessage } from '../data/status-message.js';
+import { StatusEnum, StatusMessage } from '../data/status-message.js';
 
 export default class InitService {
 
@@ -89,7 +89,7 @@ export default class InitService {
 		this.ctx.components.event.emit
 			(SetStatusMessageEvent,
 				new StatusMessage(
-					Status.ready,
+					StatusEnum.ready,
 					'cli ready',
 					'init-service'
 				)

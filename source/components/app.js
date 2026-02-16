@@ -18,7 +18,7 @@ import {
 	KeyPressedEvent,
 	SetStatusMessageEvent
 } from '../config/events.js';
-import { Status, StatusMessage } from '../data/status-message.js';
+import { StatusEnum, StatusMessage } from '../data/status-message.js';
 import chalk from 'chalk'
 
 export default function App({ ctx }) {
@@ -159,7 +159,7 @@ export default function App({ ctx }) {
 			var statusMessage = args.length > 0 ? args[0] : null
 			if (!statusMessage)
 				statusMessage = new StatusMessage(
-					Status.idle,
+					StatusEnum.idle,
 					'',
 					'app'
 				)
