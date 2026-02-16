@@ -58,8 +58,8 @@ export default class SpeechModule {
         this.ctx.components.module.speech = this
     }
 
-    async speak(text) {
-        await this.speech.speak({ sentence: text, voice: null, apiKey: this.config.apiKey })
+    async speak(text, voice = null) {
+        await this.speech.speak({ sentence: text, voice: voice, apiKey: this.config.apiKey })
     }
 
     async openBrowser() {

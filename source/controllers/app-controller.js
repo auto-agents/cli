@@ -76,7 +76,7 @@ export default class AppController {
 		this.timeService = new TimeService(ctx)
 
 		this.event
-			.on(InputSubmitedEvent, arg => this.runInput(...arg))
+			.on(InputSubmitedEvent, async arg => await this.runInput(...arg))
 			.on(CommandParseErrorEvent, arg => this.error('command parse error: ' + arg[0]))
 			.on(CommandNotFoundEvent, arg => this.error('command not found: ' + arg[0]))
 			.on(CommandFileNotFoundEvent, arg => this.error('command file not found: ' + arg[0]))
@@ -208,7 +208,7 @@ export default class AppController {
 		this.event.emit(AppStartedEvent)
 	}
 
-	runInput(inp) {
+	async runInput(inp) {
 		if (!inp || inp.length == 0) return
 
 		const o = this.output
@@ -220,8 +220,8 @@ export default class AppController {
 		}
 		else {
 			// run dialog
-			this.dialog.echoUser(inp)
-			this.dialog.echoSystem('...')
+			await this.dialog.echoUser(inp)
+			await this.dialog.echoSystem('...')
 		}
 
 		this.event.emit(InputExecutedEvent)

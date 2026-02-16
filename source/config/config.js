@@ -250,6 +250,20 @@ export default function config(cli) {
 				}
 			}
 		},
+		chat: {
+			repeatUserQuery: {
+				enabled: true,
+				preferredVoices: {
+					edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
+				}
+			},
+			speakAnswers: {
+				enabled: false,
+				preferredVoices: {
+					edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
+				}
+			}
+		},
 		theme: {
 			borderMainColor: '#777777',
 			borderSecondaryColor: '#777777',
@@ -464,7 +478,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
@@ -494,14 +508,14 @@ export default function config(cli) {
 			recognition: {
 				enabled: false
 			},
-			openAPIChat: {
+			openAIChat: {
 				file: 'open-ai-chat.js',
 				enabled: true,
 				config: {
 
 				}
 			},
-			openAPIAgents: {
+			openAIAgents: {
 				file: 'open-ai-agents.js',
 				enabled: true,
 				config: {

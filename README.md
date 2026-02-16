@@ -32,7 +32,8 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
 
 *notice: this tool has been initially hand coded, than evolved using AI*5
 
-- AI tasks are specified in:
+- AI contexts and prompts are specified in:
+  - [doc/command-implementation.md](doc/command-implementation.md)
   - [tasks/dev-cli.md](tasks/dev-cli.md)
 
 ---
