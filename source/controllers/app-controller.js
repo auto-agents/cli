@@ -120,7 +120,7 @@ export default class AppController {
 			this.ctx.data.layout.output.rows.value = this.output.estimRowsCount
 			+ this.ctx.layout.headerHeight
 
-		if (false)	// auto free ui
+		if (false)	// auto freeze ui
 			setTimeout(
 				() => {
 
@@ -211,11 +211,7 @@ export default class AppController {
 
 		// begin dialog
 		this.dialog.hello()
-
 		this.output.newLine(true)
-		/*this.output.appendLine(
-			chalk.hex(this.ctx.theme.promptInviteColor).italic('Enter a query below or type / to enter a command :'))
-*/
 		this.event.emit(AppStartedEvent)
 	}
 
@@ -237,9 +233,6 @@ export default class AppController {
 				.then(async () => {
 					await this.dialog.queryOpenAIChat(inp)
 				})
-			/*.then(async () => {
-				await this.dialog.echoSystem('...')
-			})*/
 		}
 
 		this.event.emit(InputExecutedEvent)
