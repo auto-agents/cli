@@ -3,7 +3,7 @@ import utils from "../utils/utils.js"
 import util from "util"
 import Status from '../utils/status.js'
 import { StatusMessage, Status as StatusEnum } from "../data/status-message.js"
-import { SetStatusMessageEvent } from "../config/events.js"
+import { LogErrorEvent, SetStatusMessageEvent } from "../config/events.js"
 
 export default class DialogController {
 
@@ -47,7 +47,11 @@ export default class DialogController {
 		if (!this.#isChatOpenAIAvailable())
 			return
 		const r = await this.ctx.components.module.openAIChat.chat(query)
-		this.echoSystem(r)
+			.then(txt =>
+				this.echoSystem(txt))
+			.catch(err => {
+				this.ctx.components.event.emit(LogErrorEvent, err)
+			})
 	}
 
 	async echoSystem(text, skipPrependNewLine) {

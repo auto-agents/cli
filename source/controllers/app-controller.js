@@ -17,7 +17,8 @@ import {
 	OutputRowsCountUpdatedEvent,
 	AppStartedEvent,
 	CommandParseErrorEvent,
-	InputExecutingEvent
+	InputExecutingEvent,
+	LogErrorEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -88,6 +89,7 @@ export default class AppController {
 			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
 			.on(HelpOutputUpdatedEvent, () => this.output.forceUpdate())
 			.on(InputExecutedEvent, () => this.output.forceUpdate())
+			.on(LogErrorEvent, (...args) => this.error(args[0]))
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),

@@ -30,3 +30,5 @@ export const SetStatusMessageEvent = 'SetStatusMessageEvent'
 export const InputToStartEvent = 'InputToStartEvent'
 export const InputToEndEvent = 'InputToEndEvent'
 
+export const LogErrorEvent = 'LogErrorEvent'
+export const LogWarningEvent = 'LogWarningEvent'
