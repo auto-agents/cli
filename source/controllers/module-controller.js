@@ -30,7 +30,7 @@ export default class ModuleController {
                 continue
             }
             try {
-                const mod = require(path)
+                const mod = await import(path)
                 const m = new mod.default(this.ctx, module.config, this.outputContext)
                 await m.init()
             }
