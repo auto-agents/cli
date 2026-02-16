@@ -124,6 +124,23 @@ export default function config(cli) {
 						}
 					},
 					file: 'cat-command.js'
+				},
+				{
+					names: ['print', 'pr'],
+					description: 'print a file with parsed syntax and highlighting. compatible with html and markdown files',
+					args: ['filePath'],
+					argsDesc: {
+						filePath: {
+							type: 'string',
+							required: true,
+							description: 'the path of the file to print'
+						}
+					},
+					file: 'print-command.js',
+					extensions: {
+						html: ['html', 'htm'],
+						md: ['md', 'markdown']
+					}
 				}
 			],
 			currentInput: null,

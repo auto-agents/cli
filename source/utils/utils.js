@@ -1,11 +1,61 @@
-export function callAsync(func) {
+import { existsSync, readFileSync, createWriteStream } from 'fs'
+import path from 'path'
+import { render } from 'ink';
+import ansiEscapes from 'ansi-escapes';
+
+export const callAsync = (func) => {
     (async () => {
         await func()
     })();
 }
 
-export function wait(ms) {
+export const wait = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-export default { callAsync, wait }
+export const getTmpFile = (ctx) => {
+    const tmpDir = path.join(
+        process.cwd(),
+        ctx.paths.tmp)
+    var exists = true
+    var name = null
+    var fpath = null
+    while (exists) {
+        name = 'tmp-' + Math.floor(Math.random() * 1000000)
+        exists = existsSync(path.join(tmpDir, name))
+    }
+    fpath = path.join(tmpDir, name)
+    return {
+        name: name,
+        folder: tmpDir,
+        path: fpath
+    }
+}
+
+export const renderComponent = (
+    component,
+    output) => {
+    const tmpFile = getTmpFile(output.ctx).path
+    const wstream = createWriteStream(tmpFile)
+    const i = render(component, {
+        stdout: wstream
+    })
+
+    // sync way not found
+    setTimeout(() => {
+        i.unmount()
+        const outp = readFileSync(tmpFile, 'utf8')
+            .replace("[G", '')		// remove any clear console ansi code
+        const t = outp.trim().split('\n')
+
+        t.forEach((e, _) => {
+            output.appendLine(e.trim(), false)
+        })
+        output.updateView()
+        //unlink(tmpFile) // crash
+        //output.appendLine(outp.trim())				
+        process.stdout.write(ansiEscapes.cursorHide)
+    }, 100)
+}
+
+export default { callAsync, wait, renderComponent, getTmpFile }

@@ -117,8 +117,46 @@ implements the command `cat` as described below:
     file: 'cat-command.js'
 }
 ```
-```text
 the run() method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
 the command must check if the path exists before to change it and display an explicit error message (with the path value)
 eavh line of the file is outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
+
+### command: `print`
+
+```text
+implements the command `print` as described below:
+```
+```js
+{
+    names: ['print','pr'],
+    description: 'print a file with parsed syntax and highlighting. compatible with html and markdown files',
+    args: ['filePath'],
+    argsDesc: {
+        filePath: {
+            type: 'string',
+            required: true,
+            description: 'the path of the file to print'
+        }
+    },
+    file: 'print-command.js',
+    extensions: {
+        html: {'html', 'htm'},
+        md: {'md', 'markdown'}
+    }
+}
+```
+
+implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+
+the run() method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
+the command must check if the path exists before to change it and display an explicit error message (with the path value)
+eavh line of the file is outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
+it uses the library cli-html.
+it checks if the file extensions is a html known extension (html,htm,md,markdown) accordignly to the extensions patterns defined in the command decriptor object in the property `extensions`
+
+if it is a html file, it uses the cli-html library to parse the file and output the result using renderHTML().
+if it is a markdown file, it uses the cli-html library to parse the file and output the result using renderMarkdown().
+else it outputs the file content as is. If the file extension is not a html or markdown extension, it outputs the file using the command "cat". the way to use the command cat is to use the command:
+```js
+this.ctx.components.event.emit(RunCommandEvent, 'cat ' + filePath)
 ```

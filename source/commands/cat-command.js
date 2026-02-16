@@ -6,31 +6,13 @@ import Status from '../utils/status.js';
 import ansiEscapes from 'ansi-escapes';
 import { Box, Text } from 'ink';
 import * as highlight from "cli-highlight"
+import { renderComponent } from '../utils/utils.js';
 
 export default class CatCommand {
 
 	constructor(ctx) {
 		this.ctx = ctx
 		this.status = new Status(ctx)
-	}
-
-	tmpFile() {
-		const tmpDir = path.join(
-			process.cwd(),
-			this.ctx.paths.tmp)
-		var exists = true
-		var name = null
-		var fpath = null
-		while (exists) {
-			name = 'tmp-' + Math.floor(Math.random() * 1000000)
-			exists = existsSync(path.join(tmpDir, name))
-		}
-		fpath = path.join(tmpDir, name)
-		return {
-			name: name,
-			folder: tmpDir,
-			path: fpath
-		}
 	}
 
 	run(args) {
@@ -59,13 +41,11 @@ export default class CatCommand {
 				.replaceAll('\t', '    ')
 				.trim()
 
-			const tmpFile = this.tmpFile().path
-			const wstream = createWriteStream(tmpFile)
 			const fileDesc = filePath
 			const theme = highlight.DEFAULT_THEME
 
 			// language="markdown"
-			const i = render(
+			renderComponent(
 				<Box backgroundColor={this.ctx.theme.fileView.backgroundColor}
 					borderColor={this.ctx.theme.fileView.borderColor}
 					borderStyle={this.ctx.theme.fileView.borderStyle}
@@ -81,24 +61,8 @@ export default class CatCommand {
 						code={content}
 						theme={theme}
 					/>
-				</Box >, {
-				stdout: wstream
-			})
-
-			// sync way not found
-			setTimeout(() => {
-				i.unmount()
-				const outp = readFileSync(tmpFile, 'utf8')
-					.replace("[G", '')		// remove any clear console ansi code
-				const t = outp.trim().split('\n')
-				t.forEach((e, _) => {
-					output.appendLine(e, false)
-				})
-				output.updateView()
-				//unlink(tmpFile) // crash
-				//output.appendLine(outp.trim())				
-				process.stdout.write(ansiEscapes.cursorHide)
-			}, 100)
+				</Box >,
+				output)
 
 		} catch (error) {
 			output.appendLine(this.status.error(`Error reading file '${filePath}': ${error.message}`))
