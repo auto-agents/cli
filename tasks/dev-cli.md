@@ -150,7 +150,7 @@ implement a new command that can be input by user, according to the specificatio
 
 the run() method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
 the command must check if the path exists before to change it and display an explicit error message (with the path value)
-eavh line of the file is outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
+each line of the file is outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
 it uses the library cli-html.
 it checks if the file extensions is a html known extension (html,htm,md,markdown) accordignly to the extensions patterns defined in the command decriptor object in the property `extensions`
 
@@ -160,3 +160,32 @@ else it outputs the file content as is. If the file extension is not a html or m
 ```js
 this.ctx.components.event.emit(RunCommandEvent, 'cat ' + filePath)
 ```
+
+### command: `edit`
+
+```text
+implements the command `edit` as described below:
+```
+```js
+{
+    names: ['edit','ed'],
+    description: 'edit a file with parsed syntax and highlighting.',
+    args: ['filePath'],
+    argsDesc: {
+        filePath: {
+            type: 'string',
+            required: true,
+            description: 'the path of the file to edit'
+        }
+    },
+    file: 'edit-command.js'
+}
+```
+
+implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+
+the command must check if the path exists before to change it and display an explicit error message (with the path value)
+the run() method of this command must open an editor to edit the content of the file from:
+- the path that is provided as the first element of the arguments array that is passed to the run() method.
+- the editor is launch as an external process that is given by the property `shell.editor` in the app context (this.ctx). The right command is selected from the property `shell.editor[platform]` where platform is the value of the property `platform` in the app context (this.ctx).
+- the value of the property `shell.editor[platform]` is a string that is used to launch the editor. it is used as a command to launch the editor. The parameter `%1` is replaced by the path of the file to edit.
