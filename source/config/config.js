@@ -141,6 +141,19 @@ export default function config(cli) {
 						html: ['html', 'htm'],
 						md: ['md', 'markdown']
 					}
+				},
+				{
+					names: ['edit', 'ed'],
+					description: 'edit a file with parsed syntax and highlighting.',
+					args: ['filePath'],
+					argsDesc: {
+						filePath: {
+							type: 'string',
+							required: true,
+							description: 'the path of the file to edit'
+						}
+					},
+					file: 'edit-command.js'
 				}
 			],
 			currentInput: null,
