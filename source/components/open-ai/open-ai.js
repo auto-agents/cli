@@ -66,23 +66,4 @@ export default class OpenAI {
     async saveHistory() {
         await fs.writeFile(this.config.historyPath, this.history.toJson(this))
     }
-
-    /*async completion(query) {
-        const queryMessage = {
-            role: Role_User, content: query
-        }
-        const completion = await this.client.chat.completions.create({
-            model: this.config.model,
-            messages: [
-                ...this.history.messages,
-                queryMessage
-            ]
-        }, {
-            path: this.config.paths.completion
-        });
-        this.history.messages.push(queryMessage)
-        const r = { role: Role_Assistant, content: completion.choices[0].message.content }
-        this.history.messages.push(r)
-        return r.content
-    }*/
 }
