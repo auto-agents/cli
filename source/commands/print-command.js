@@ -4,6 +4,7 @@ import Status from '../utils/status.js'
 import { RunCommandEvent } from '../config/events.js'
 import { renderComponent } from '../utils/utils.js';
 import { Box, Text } from 'ink';
+import { box } from '../utils/decorators.js';
 
 export default class PrintCommand {
 
@@ -63,9 +64,17 @@ export default class PrintCommand {
 				}
 
 				if (renderedContent) {
-					renderedContent.split('\n').forEach(line => {
+
+					/*renderedContent.split('\n').forEach(line => {
 						output.appendLine(line)
-					})
+					})*/
+
+					box(
+						this.ctx,
+						filePath,
+						renderedContent.split('\n'),
+						output)
+
 					/*const fileDesc = filePath
 					renderComponent(
 
