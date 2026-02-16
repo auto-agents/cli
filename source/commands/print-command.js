@@ -3,6 +3,7 @@ import path from 'path'
 import Status from '../utils/status.js'
 import { RunCommandEvent } from '../config/events.js'
 import { box } from '../utils/decorators.js';
+import { resolvePath } from '../utils/utils.js';
 
 export default class PrintCommand {
 
@@ -27,7 +28,7 @@ export default class PrintCommand {
 		}
 
 		const filePath = args[0]
-		const resolvedPath = path.isAbsolute(filePath) ? filePath : path.join(this.ctx.cli.currentPath, filePath)
+		const resolvedPath = resolvePath(this.ctx.cli.currentPath, filePath)
 
 		// Check if file exists
 		if (!existsSync(resolvedPath)) {

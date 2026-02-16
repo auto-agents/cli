@@ -8,6 +8,7 @@ import { Box, Text } from 'ink';
 import * as highlight from "cli-highlight"
 import { renderComponent } from '../utils/utils.js';
 import { box } from '../utils/decorators.js';
+import { resolvePath } from '../utils/utils.js';
 
 export default class CatCommand {
 
@@ -25,9 +26,7 @@ export default class CatCommand {
 			return
 		}
 
-		var filePath = args[0]
-		var filePath = path.isAbsolute(filePath) ? filePath
-			: path.join(this.ctx.cli.currentPath, filePath)
+		var filePath = resolvePath(this.ctx.cli.currentPath, args[0])
 
 		// Check if file exists
 		if (!existsSync(filePath)) {

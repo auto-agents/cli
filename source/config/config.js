@@ -92,7 +92,15 @@ export default function config(cli) {
 				{
 					names: ['ls', 'dir'],
 					description: 'output the list of files of the current folder',
-					file: 'ls-command.js'
+					file: 'ls-command.js',
+					args: ['path'],
+					argsDesc: {
+						path: {
+							type: 'string',
+							required: false,
+							description: 'the path of the folder to be listed. accept wildcards in the last part'
+						}
+					}
 				},
 				{
 					names: ['pwd'],
@@ -311,7 +319,7 @@ export default function config(cli) {
 			},
 			fileView: {
 				titleColor: '#00FF00',
-				backgroundColor: '#1A1A1A',
+				backgroundColor: '#171717',
 				borderColor: '#777777',
 				borderStyle: 'round'
 			},
@@ -456,7 +464,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: platform,

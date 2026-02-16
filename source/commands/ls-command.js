@@ -1,7 +1,9 @@
 import fs from 'fs'
-import path from 'path'
+import path, { basename, dirname } from 'path'
 import chalk from 'chalk'
 import Status from '../utils/status.js'
+import { resolvePath } from '../utils/utils.js'
+import wildcard from 'wildcard'
 
 export default class LsCommand {
 
@@ -10,21 +12,35 @@ export default class LsCommand {
 		this.status = new Status(ctx)
 	}
 
-	run() {
+	run(args) {
 		const currentPath = this.ctx.cli.currentPath
 		const output = this.ctx.components.output
 		const theme = this.ctx.theme.ls
 		output.newLine()
 
 		try {
-			// Output the current path
-			output.appendLine(currentPath)
+
+			const dirPath = args.length > 0 ? args[0] : currentPath
+
+			var resolvedPath = resolvePath(this.ctx.cli.currentPath, dirPath)
+			const pattern = basename(resolvedPath)
+			var wc = false
+			var tpath = resolvedPath
+			if (pattern && pattern.includes('*')) {
+				wc = true
+				tpath = dirname(resolvedPath)
+			}
+
+			// Output the resolved path
+			output.appendLine(tpath)
 			output.newLine()
 
-			const files = fs.readdirSync(currentPath, { withFileTypes: true })
+			const files = fs.readdirSync(tpath, { withFileTypes: true })
 			const fileStats = files.map(file => {
-				const filePath = path.join(currentPath, file.name)
-				const stats = fs.statSync(filePath)
+				if (wc && !wildcard(pattern, file.name))
+					return null
+				const fp = path.join(tpath, file.name)
+				const stats = fs.statSync(fp)
 
 				return {
 					name: file.name,
@@ -36,7 +52,7 @@ export default class LsCommand {
 					type: file.isDirectory() ? 'dir' : file.isFile() ? 'file' : 'other',
 					links: stats.nlink
 				}
-			})
+			}).filter(x => x != null)
 
 			// Helper function to format file size with appropriate unit
 			const formatFileSize = (bytes) => {

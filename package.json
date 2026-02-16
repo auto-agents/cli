@@ -30,7 +30,8 @@
 		"patch-console": "^2.0.0",
 		"react": "^19.2.4",
 		"shellwords": "^1.1.1",
-		"terminal-kit": "^3.1.2"
+		"terminal-kit": "^3.1.2",
+		"wildcard": "^2.0.1"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.28.6",

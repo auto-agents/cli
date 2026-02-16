@@ -65,4 +65,8 @@ export const renderComponent = (
     }, 100)
 }
 
-export default { callAsync, wait, renderComponent, getTmpFile }
+export const resolvePath = (baseBase, newPath) => {
+    return path.isAbsolute(newPath) ? newPath : path.normalize(path.join(baseBase, newPath))
+}
+
+export default { callAsync, wait, renderComponent, getTmpFile, resolvePath }
