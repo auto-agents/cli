@@ -204,4 +204,4 @@ implements the command `config` as described below:
 ```
 implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
-This command works the same way as the command `edit`. This command has no parameters. It always open the file `cli/config/config.json`, related to the cli process path.
+This command works the same way as the command `edit`. This command has no parameters. It always open the file `cli/source/config/config.js`, related to the cli process path.

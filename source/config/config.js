@@ -154,6 +154,11 @@ export default function config(cli) {
 						}
 					},
 					file: 'edit-command.js'
+				},
+				{
+					names: ['config', 'conf', 'cnf'],
+					description: 'edit the cli config file.',
+					file: 'config-command.js'
 				}
 			],
 			currentInput: null,
