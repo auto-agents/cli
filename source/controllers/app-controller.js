@@ -18,7 +18,8 @@ import {
 	AppStartedEvent,
 	CommandParseErrorEvent,
 	InputExecutingEvent,
-	LogErrorEvent
+	LogErrorEvent,
+	LogWarningEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -90,6 +91,7 @@ export default class AppController {
 			.on(HelpOutputUpdatedEvent, () => this.output.forceUpdate())
 			.on(InputExecutedEvent, () => this.output.forceUpdate())
 			.on(LogErrorEvent, (...args) => this.error(args[0]))
+			.on(LogWarningEvent, (...args) => this.warning(args[0]))
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),
@@ -176,6 +178,12 @@ export default class AppController {
 		const o = this.output
 		o.newLine()
 		o.appendLine(this.status.error(message))
+	}
+
+	warning(message) {
+		const o = this.output
+		o.newLine()
+		o.appendLine(this.status.warning(message))
 	}
 
 	appInitialized() {
