@@ -5,7 +5,7 @@ import {
 	CommandInputStartedEvent,
 	InputAddedEvent,
 	InputSubmitedEvent,
-	InputExecutedEvent,
+	InputExecutingEvent,
 	CommandClearInputEvent,
 	CommandSetInputEvent
 } from '../config/events';
@@ -47,7 +47,7 @@ const Prompter = ({ ctx }) => {
 			updQuery(args[0])
 		}
 		ctx.components.event.on(
-			InputExecutedEvent,
+			InputExecutingEvent,
 			listener
 		)
 		ctx.components.event.on(
@@ -59,7 +59,7 @@ const Prompter = ({ ctx }) => {
 			onCommandSetInputEvent
 		)
 		return () => {
-			ctx.components.event.off(InputExecutedEvent, listener)
+			ctx.components.event.off(InputExecutingEvent, listener)
 			ctx.components.event.off(CommandClearInputEvent, onCommandClearInputEvent)
 			ctx.components.event.off(CommandSetInputEvent, onCommandSetInputEvent)
 		}

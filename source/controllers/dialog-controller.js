@@ -2,6 +2,8 @@ import chalk from "chalk"
 import utils from "../utils/utils.js"
 import util from "util"
 import Status from '../utils/status.js'
+import { StatusMessage, Status as StatusEnum } from "../data/status-message.js"
+import { SetStatusMessageEvent } from "../config/events.js"
 
 export default class DialogController {
 
@@ -32,8 +34,9 @@ export default class DialogController {
 
 		if (this.ctx.chat.repeatUserQuery.enabled
 			&& this.#isSpeechAvailable())
-			this.speech(text, this.ctx.chat.repeatUserQuery.preferredVoices
-			[this.ctx.modules.speech.config.browser][0])
+			await this.speech(text, this.ctx.chat.repeatUserQuery.preferredVoices
+			[this.ctx.modules.speech.config.browser][0],
+				true)
 	}
 
 	async echoSystem(text, skipPrependNewLine) {
@@ -45,15 +48,35 @@ export default class DialogController {
 
 		if (this.ctx.chat.speakAnswers.enabled
 			&& this.#isSpeechAvailable())
-			this.speech(text, this.ctx.chat.speakAnswers.preferredVoices
-			[this.ctx.modules.speech.config.browser][0])
+			await this.speech(text, this.ctx.chat.speakAnswers.preferredVoices
+			[this.ctx.modules.speech.config.browser][0],
+				true)
 	}
 
-	async speech(text, voice = null) {
+	async speech(
+		text,
+		voice = null,
+		wait = false) {
 		text = util.stripVTControlCharacters(text)
 		try {
+
+			this.ctx.components.event.emit(
+				SetStatusMessageEvent,
+				new StatusMessage(
+					StatusEnum.waiting,
+					'speaking',
+					'dialog-controller'))
+
+			if (wait) await this.ctx.components.module.speech.waitIdle()
+
 			await this.ctx.components.module.speech.speak(text, voice)
+
+			if (wait) await this.ctx.components.module.speech.waitIdle()
+			this.ctx.components.event.emit(SetStatusMessageEvent)
+
 		} catch (err) {
+			this.ctx.components.event.emit(SetStatusMessageEvent)
+
 			const o = this.output
 			o.appendLine(this.status.error(err))
 		}
@@ -63,8 +86,15 @@ export default class DialogController {
 		text = util.stripVTControlCharacters(text)
 		const f = async () => {
 			try {
+				this.ctx.components.event.emit(
+					SetStatusMessageEvent,
+					new StatusMessage(
+						StatusEnum.waiting,
+						'speaking',
+						'dialog-controller'))
 				await this.ctx.components.module.speech.speak(text, voice)
 			} catch (err) {
+				this.ctx.components.event.emit(SetStatusMessageEvent)
 				const o = this.output
 				o.appendLine(this.status.error(err))
 			}

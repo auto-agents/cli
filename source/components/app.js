@@ -18,6 +18,8 @@ import {
 	KeyPressedEvent,
 	SetStatusMessageEvent
 } from '../config/events.js';
+import { Status, StatusMessage } from '../data/status-message.js';
+import chalk from 'chalk'
 
 export default function App({ ctx }) {
 
@@ -146,9 +148,23 @@ export default function App({ ctx }) {
 		}
 	}, [])
 
+	const buildStatusMessageView = (statusMessage) => {
+		const sepc = chalk.hex(ctx.theme.statusMessage.separatorColor)
+		const sep = sepc(' | ')
+		return `${statusMessage.from.padEnd(20)} ${sep} ${statusMessage.status.padEnd(12)} ${sep} ${statusMessage.message}`
+	}
+
 	useEffect(() => {
-		const handleSetStatusMessage = (...args) => {
-			setStatusMessage(args.length > 0 ? args[0] : '')
+		const handleSetStatusMessage = args => {
+			var statusMessage = args.length > 0 ? args[0] : null
+			if (!statusMessage)
+				statusMessage = new StatusMessage(
+					Status.idle,
+					'',
+					'app'
+				)
+			setStatusMessage(
+				buildStatusMessageView(statusMessage))
 		}
 		e.on(SetStatusMessageEvent, handleSetStatusMessage)
 		return () => {

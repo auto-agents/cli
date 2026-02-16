@@ -175,10 +175,10 @@ const ScrollOutput = ({
 			tb += car + '\n'
 		}
 
-		ctx.components.event.emit(SetStatusMessageEvent,
+		/*ctx.components.event.emit(SetStatusMessageEvent,
 			'boxHeight=' + boxHeight + ' | rows count=' + o.rows.length + ' | scrollY=' + o.scrollY + ' | yc=' + yc
 			+ ' | maxSY=' + maxSY + ' | r=' + r
-		)
+		)*/
 
 		return tb
 	}

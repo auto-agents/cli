@@ -62,6 +62,10 @@ export default class SpeechModule {
         await this.speech.speak({ sentence: text, voice: voice, apiKey: this.config.apiKey })
     }
 
+    async waitIdle() {
+        await this.speech.waitForRunningStatus({ expected: 'idle' })
+    }
+
     async openBrowser() {
         try {
             await this.speech.openBrowser()

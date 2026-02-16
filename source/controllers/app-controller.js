@@ -16,7 +16,8 @@ import {
 	UIFreezeStatedChangedEvent,
 	OutputRowsCountUpdatedEvent,
 	AppStartedEvent,
-	CommandParseErrorEvent
+	CommandParseErrorEvent,
+	InputExecutingEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -213,6 +214,8 @@ export default class AppController {
 
 		const o = this.output
 
+		this.event.emit(InputExecutingEvent)
+
 		if (inp[0] == this.ctx.cli.commandPrefix) {
 			if (inp.length > 1)
 				// run command
@@ -221,7 +224,9 @@ export default class AppController {
 		else {
 			// run dialog
 			await this.dialog.echoUser(inp)
-			await this.dialog.echoSystem('...')
+				.then(async () => {
+					await this.dialog.echoSystem('...')
+				})
 		}
 
 		this.event.emit(InputExecutedEvent)

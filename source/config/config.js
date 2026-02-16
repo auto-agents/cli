@@ -258,7 +258,7 @@ export default function config(cli) {
 				}
 			},
 			speakAnswers: {
-				enabled: false,
+				enabled: true,
 				preferredVoices: {
 					edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
 				}
@@ -315,6 +315,9 @@ export default function config(cli) {
 					text: '#FFFF00',
 					bg: '#BB5500'
 				}
+			},
+			statusMessage: {
+				separatorColor: '#b0d3b0'
 			},
 			subInitTextTitleColor: '#66AA88',
 			ls: {

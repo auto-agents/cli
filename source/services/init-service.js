@@ -4,11 +4,12 @@ import ActionController from '../controllers/action-controller.js'
 import cliSpinners from 'cli-spinners';
 import SpinnerService from './spinner-service.js';
 import ActionSequenceController from '../controllers/action-sequence-controller.js';
-import { AppInitializedEvent } from '../config/events.js';
+import { AppInitializedEvent, SetStatusMessageEvent } from '../config/events.js';
 import SysInfoService from './sys-info-service.js';
 import ModuleController from '../controllers/module-controller.js';
 import OutputContext from '../data/output-context.js';
 import utils from '../utils/utils.js';
+import { Status, StatusMessage } from '../data/status-message.js';
 
 export default class InitService {
 
@@ -21,7 +22,7 @@ export default class InitService {
 	}
 
 	redirectConsole() {
-		//return
+		return
 		this.restore = patchConsole((stream, data) => {
 			if (!data) return
 			data = data.trim()
@@ -85,6 +86,14 @@ export default class InitService {
 		this.hatActionController.uiFunc.stop()
 		this.output.newLine()
 		this.output.appendLine('• cli ready ' + chalk.hex('#00FF00').underline('✔'))
+		this.ctx.components.event.emit
+			(SetStatusMessageEvent,
+				new StatusMessage(
+					Status.ready,
+					'cli ready',
+					'init-service'
+				)
+			)
 		setTimeout(
 			() => this.app.event.emit(AppInitializedEvent),
 			this.ctx.ui.initWait
