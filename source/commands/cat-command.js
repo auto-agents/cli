@@ -45,8 +45,6 @@ export default class CatCommand {
 			const fileDesc = filePath
 			const theme = highlight.DEFAULT_THEME
 
-			// language="markdown"
-
 			/*
 				<Box backgroundColor = {this.ctx.theme.fileView.backgroundColor }
 					borderColor = { this.ctx.theme.fileView.borderColor }
