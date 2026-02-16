@@ -2,8 +2,6 @@ import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 import Status from '../utils/status.js'
 import { RunCommandEvent } from '../config/events.js'
-import { getTmpFile, renderComponent } from '../utils/utils.js';
-import { Box, Text } from 'ink';
 import { box } from '../utils/decorators.js';
 
 export default class PrintCommand {
@@ -65,30 +63,15 @@ export default class PrintCommand {
 
 				if (renderedContent) {
 
-					/*renderedContent.split('\n').forEach(line => {
-						output.appendLine(line)
-					})*/
-
 					const t = box(
 						this.ctx,
 						filePath,
 						renderedContent.split('\n'),
 						output)
 
-					const s = t.join('\n')
+					/*const s = t.join('\n')
 					const f = getTmpFile(this.ctx).path
-					writeFileSync(f, s)
-
-					/*const fileDesc = filePath
-					renderComponent(
-
-						<Box flexDirection="row" flexGrow={1}>
-							<Text>
-								{renderedContent}
-							</Text>
-						</Box>
-
-						, output)*/
+					writeFileSync(f, s)*/
 				}
 			}
 			// For other file types, use the cat command
