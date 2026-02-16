@@ -103,24 +103,4 @@ export default class DialogController {
 			o.appendLine(this.status.error(err))
 		}
 	}
-
-	speechASync(text, voice = null) {
-		text = util.stripVTControlCharacters(text)
-		const f = async () => {
-			try {
-				this.ctx.components.event.emit(
-					SetStatusMessageEvent,
-					new StatusMessage(
-						StatusEnum.waiting,
-						'speaking',
-						'dialog'))
-				await this.ctx.components.module.speech.speak(text, voice)
-			} catch (err) {
-				this.ctx.components.event.emit(SetStatusMessageEvent)
-				const o = this.output
-				o.appendLine(this.status.error(err))
-			}
-		}
-		utils.callAsync(f)
-	}
 }
