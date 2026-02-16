@@ -1,8 +1,8 @@
-import { existsSync, readFileSync } from 'fs'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import path from 'path'
 import Status from '../utils/status.js'
 import { RunCommandEvent } from '../config/events.js'
-import { renderComponent } from '../utils/utils.js';
+import { getTmpFile, renderComponent } from '../utils/utils.js';
 import { Box, Text } from 'ink';
 import { box } from '../utils/decorators.js';
 
@@ -69,11 +69,15 @@ export default class PrintCommand {
 						output.appendLine(line)
 					})*/
 
-					box(
+					const t = box(
 						this.ctx,
 						filePath,
 						renderedContent.split('\n'),
 						output)
+
+					const s = t.join('\n')
+					const f = getTmpFile(this.ctx).path
+					writeFileSync(f, s)
 
 					/*const fileDesc = filePath
 					renderComponent(

@@ -34,7 +34,8 @@ export const getTmpFile = (ctx) => {
 
 export const renderComponent = (
     component,
-    output) => {
+    output,
+    decorator) => {
     const tmpFile = getTmpFile(output.ctx).path
     const wstream = createWriteStream(tmpFile)
     const i = render(
@@ -49,12 +50,17 @@ export const renderComponent = (
             .replace("[G", '')		// remove any clear console ansi code
         const t = outp.trim().split('\n')
 
-        t.forEach((e, _) => {
-            output.appendLine(e.trim(), false)
-        })
-        output.updateView()
+        if (decorator)
+            decorator(t)
+        else {
+            t.forEach((e, _) => {
+                output.appendLine(e.trim(), false)
+            })
+            output.updateView()
+        }
+
         //unlink(tmpFile) // crash
-        //output.appendLine(outp.trim())				
+
         process.stdout.write(ansiEscapes.cursorHide)
     }, 100)
 }

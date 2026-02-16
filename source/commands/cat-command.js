@@ -7,6 +7,7 @@ import ansiEscapes from 'ansi-escapes';
 import { Box, Text } from 'ink';
 import * as highlight from "cli-highlight"
 import { renderComponent } from '../utils/utils.js';
+import { box } from '../utils/decorators.js';
 
 export default class CatCommand {
 
@@ -45,11 +46,12 @@ export default class CatCommand {
 			const theme = highlight.DEFAULT_THEME
 
 			// language="markdown"
-			renderComponent(
-				<Box backgroundColor={this.ctx.theme.fileView.backgroundColor}
-					borderColor={this.ctx.theme.fileView.borderColor}
-					borderStyle={this.ctx.theme.fileView.borderStyle}
-					flexDirection="column"
+
+			/*
+				<Box backgroundColor = {this.ctx.theme.fileView.backgroundColor }
+					borderColor = { this.ctx.theme.fileView.borderColor }
+					borderStyle = { this.ctx.theme.fileView.borderStyle }
+					flexDirection = "column"
 				>
 					<Box backgroundColor={this.ctx.theme.fileView.backgroundColor}
 						borderColor={this.ctx.theme.fileView.borderColor}
@@ -61,8 +63,21 @@ export default class CatCommand {
 						code={content}
 						theme={theme}
 					/>
-				</Box >,
-				output)
+				</Box >
+			*/
+
+			renderComponent(
+
+				< SyntaxHighlight
+					code={content}
+					theme={theme}
+				/>
+				,
+				output,
+				(lines) => {
+					box(this.ctx, fileDesc, lines, output)
+				}
+			)
 
 		} catch (error) {
 			output.appendLine(this.status.error(`Error reading file '${filePath}': ${error.message}`))
