@@ -21,7 +21,7 @@
 The **CLI tool** makes it possible to interact with the `Auto Agents` functionnalities
 
 - provides a rich user UX CLI powered by:
-  - **REACT**
+  - **[REACT](https://github.com/facebook/react)** React is a JavaScript library for building user interfaces
   - **[Ink](https://github.com/vadimdemedes/ink?tab=readme-ov-file#static)** the **`REACT for CLI`** framework
   - **[terminal-kit](https://github.com/cronvel/terminal-kit?tab=readme-ov-file)** *A full-blown terminal lib*
   - **[chalk](https://github.com/chalk/chalk)** the *Terminal string styling done right* library
