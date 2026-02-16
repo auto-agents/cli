@@ -7,7 +7,8 @@ import {
 	CommandInputStartedEvent,
 	HelpOutputUpdatedEvent
 } from "../config/events"
-import { ESC } from '../config/consts'
+import { ESC } from '../config/consts.js'
+import Status from '../utils/status.js'
 
 export default class InputController {
 
@@ -17,12 +18,14 @@ export default class InputController {
 	cmdExecCount = 0
 	cmdHistory = []
 	cmdHistoryIndex = 0
+	status = null
 
 	constructor(ctx, helpOutput, output) {
 		this.ctx = ctx
 		this.helpOutput = helpOutput
 		this.output = output
 		const e = this.ctx.components.event
+		this.status = new Status(ctx)
 
 		e.on(CommandInputStartedEvent, () => this.#CommandInputStartedEvent())
 			.on(InputSubmitedEvent, args => this.#InputSubmitedEvent(...args))
@@ -115,15 +118,18 @@ export default class InputController {
 		var tmpLine = ''
 
 		const argsCol = chalk.hex(this.ctx.theme.help.commandsListArgsColor)
+		var cnt = 0
 		this.ctx.cli.commands.forEach(e => {
 
 			if (pat == '') {
 				if (tmpLine != '') tmpLine += ' | '
 				tmpLine += e.names.map(n => p + n).join(cs)
+				cnt++
 			}
 			else
 				if (e.names.some(n => n.startsWith(pat))) {
 
+					cnt++
 					var s = e.names.map(n => p + n).join(cs).padEnd(n)
 					s += e.description
 					addLine(col(s))
@@ -138,13 +144,15 @@ export default class InputController {
 							).join(' '))
 							+ ' '
 						)
-						addLine(s)
+						addLine(this.status.warning(s))
 					}
 				}
 		});
 
 		if (tmpLine != '')
 			addLine(col(tmpLine))
+		if (cnt == 0)
+			addLine(this.status.warning('no command found'))
 
 		o.updateView()
 		this.ctx.components.event.emit(HelpOutputUpdatedEvent)
