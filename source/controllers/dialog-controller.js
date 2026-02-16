@@ -17,6 +17,10 @@ export default class DialogController {
 		return this.ctx.components.module.speech != null
 	}
 
+	#isChatOpenAIAvailable() {
+		return this.ctx.components.module.openAIChat != null
+	}
+
 	hello() {
 		const username = this.ctx.components.sysInfo.username
 		const text = this.ctx.texts.dialog.hello
@@ -37,6 +41,13 @@ export default class DialogController {
 			await this.speech(text, this.ctx.chat.repeatUserQuery.preferredVoices
 			[this.ctx.modules.speech.config.browser][0],
 				true)
+	}
+
+	async queryOpenAIChat(query) {
+		if (!this.#isChatOpenAIAvailable())
+			return
+		const r = await this.ctx.components.module.openAIChat.chat(query)
+		this.echoSystem(r)
 	}
 
 	async echoSystem(text, skipPrependNewLine) {

@@ -14,6 +14,7 @@ import {
 	SHIFT_UP,
 	SHIFT_DOWN
 } from './consts.js'
+import { join } from 'path'
 import os from "os";
 
 const getPlatform = () => {
@@ -31,6 +32,7 @@ const getPlatform = () => {
 const platform = getPlatform()
 
 const longInterval = 4000
+const saved = 'saved'
 
 // app OutputContext
 
@@ -45,6 +47,7 @@ export default function config(cli) {
 		paths: {
 			agents: '../agents',
 			modules: '../modules',
+			saved: saved,
 			tmp: 'tmp'
 		},
 		ui: {
@@ -294,7 +297,7 @@ export default function config(cli) {
 			},
 			dialog: {
 				userDialogColor: '#4499FF',
-				systemDialogColor: '#44BB99'
+				systemDialogColor: '#56e0b9'
 			},
 			warningColor: '#FF7700',
 			errorColor: '#FF0000',
@@ -376,11 +379,11 @@ export default function config(cli) {
 						key: 'voice recognition',
 						value: ''
 					},
-					openAPIChat: {
+					openAIChat: {
 						key: 'OpenAI Api chat',
 						value: ''
 					},
-					openAPIAgents: {
+					openAIAgents: {
 						key: 'OpenAI Api agents',
 						value: ''
 					}
@@ -511,11 +514,23 @@ export default function config(cli) {
 			recognition: {
 				enabled: false
 			},
+			openAI: {
+				apiKey: 'change-me',
+				model: "google/gemma-3-1b",
+				baseURL: "http://localhost:1234/v1/",
+				paths: {
+					completion: '/chat/completions'
+				},
+				maxRetries: 2	// default
+			},
 			openAIChat: {
 				file: 'open-ai-chat.js',
 				enabled: true,
 				config: {
-
+					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
+					model: "google/gemma-3-1b",
+					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
+					instructions: 'You are a coding assistant'
 				}
 			},
 			openAIAgents: {

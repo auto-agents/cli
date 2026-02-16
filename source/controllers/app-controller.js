@@ -196,8 +196,8 @@ export default class AppController {
 		}
 		initModuleGauge('speech')
 		initModuleGauge('recognition')
-		initModuleGauge('openAPIChat')
-		initModuleGauge('openAPIAgents')
+		initModuleGauge('openAIChat')
+		initModuleGauge('openAIAgents')
 
 		// begin dialog
 		this.dialog.hello()
@@ -225,8 +225,11 @@ export default class AppController {
 			// run dialog
 			await this.dialog.echoUser(inp)
 				.then(async () => {
-					await this.dialog.echoSystem('...')
+					await this.dialog.queryOpenAIChat(inp)
 				})
+			/*.then(async () => {
+				await this.dialog.echoSystem('...')
+			})*/
 		}
 
 		this.event.emit(InputExecutedEvent)

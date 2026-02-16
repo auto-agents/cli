@@ -55,6 +55,7 @@ export default class SpeechModule {
         )
         await runSrvAction.run()
 
+        // this will enable module for the cli
         this.ctx.components.module.speech = this
     }
 
