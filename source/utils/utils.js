@@ -37,7 +37,8 @@ export const renderComponent = (
     output) => {
     const tmpFile = getTmpFile(output.ctx).path
     const wstream = createWriteStream(tmpFile)
-    const i = render(component, {
+    const i = render(
+        component, {
         stdout: wstream
     })
 
