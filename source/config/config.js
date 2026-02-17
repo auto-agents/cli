@@ -297,7 +297,7 @@ export default function config(cli) {
 			},
 			dialog: {
 				userDialogColor: '#4499FF',
-				systemDialogColor: '#56e0b9'
+				systemDialogColor: '#BBBBBB'
 			},
 			warningColor: '#FF7700',
 			errorColor: '#FF0000',

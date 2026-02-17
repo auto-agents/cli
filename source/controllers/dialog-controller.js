@@ -4,6 +4,8 @@ import util from "util"
 import Status from '../utils/status.js'
 import { StatusMessage, StatusEnum } from "../data/status-message.js"
 import { LogErrorEvent, SetStatusMessageEvent } from "../config/events.js"
+import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
+import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
 
 export default class DialogController {
 
@@ -11,6 +13,8 @@ export default class DialogController {
 		this.ctx = ctx
 		this.output = output
 		this.status = new Status(ctx)
+		this.responseTextFormater = new ResponseTextFormater(ctx, {})
+		this.responseSpeechFormater = new ResponseSpeechFormater(ctx, {})
 	}
 
 	#isSpeechAvailable() {
@@ -66,13 +70,29 @@ export default class DialogController {
 		if (!skipPrependNewLine)
 			o.newLine(false)
 		const scol = chalk.hex(this.ctx.theme.dialog.systemDialogColor)
-		o.appendLine(this.ctx.cli.dialog.systemDialogPrefix + ' ' + scol(text))
+
+		// render response
+
+		const outp = this.responseTextFormater.getRendered(text)
+		const t = outp.trim().replaceAll('\t', '    ').split('\n')
+
+		if (t.length > 0)
+			t[0] = this.ctx.cli.dialog.systemDialogPrefix + ' ' + t[0]
+		t.forEach(l => {
+			const s = l.length == 0 ? ' ' : l
+			return o.appendLine(scol(s))
+		})
+
+		// eventually speek
 
 		if (this.ctx.chat.speakAnswers.enabled
-			&& this.#isSpeechAvailable())
-			await this.speech(text, this.ctx.chat.speakAnswers.preferredVoices
+			&& this.#isSpeechAvailable()) {
+			const sp = this.responseSpeechFormater.getSpeech(text)
+
+			await this.speech(sp, this.ctx.chat.speakAnswers.preferredVoices
 			[this.ctx.modules.speech.config.browser][0],
 				true)
+		}
 	}
 
 	async speech(

@@ -30,6 +30,7 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[ansi-escapes](https://github.com/sindresorhus/ansi-escapes)** ANSI escape codes for manipulating the terminal
   - **[wildcard](https://github.com/DamonOehlman/wildcard)** a library for matching file paths using glob patterns
   - **[openai](https://github.com/openai/openai-node)** This library provides convenient access to the OpenAI REST API
+  - **[unicode-emoji-utils](https://github.com/cungminh2710/unicode-emoji-utils)** A collection of utilities for emojis and raw data for Unicode Emojis
 
 *notice: this tool has been initially hand coded, than evolved using AI*5
 
