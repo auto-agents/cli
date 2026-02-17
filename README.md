@@ -21,8 +21,8 @@
 The **CLI tool** makes it possible to interact with the `Auto Agents` functionnalities
 
 - provides a rich user UX CLI powered by:
-  - **[REACT](https://github.com/facebook/react)** React is a JavaScript library for building user interfaces
-  - **[Ink](https://github.com/vadimdemedes/ink?tab=readme-ov-file#static)** the **`REACT for CLI`** framework
+  - **[React](https://github.com/facebook/react)** React is a JavaScript library for building user interfaces
+  - **[Ink](https://github.com/vadimdemedes/ink?tab=readme-ov-file#static)** the **`React for CLI`** framework
   - **[terminal-kit](https://github.com/cronvel/terminal-kit?tab=readme-ov-file)** *A full-blown terminal lib*
   - **[chalk](https://github.com/chalk/chalk)** the *Terminal string styling done right* library
   - **[cfonts](https://github.com/dominikwilkowski/cfonts)** the library for *lovely ANSI fonts in the console*
@@ -31,6 +31,8 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[wildcard](https://github.com/DamonOehlman/wildcard)** a library for matching file paths using glob patterns
   - **[openai](https://github.com/openai/openai-node)** This library provides convenient access to the OpenAI REST API
   - **[unicode-emoji-utils](https://github.com/cungminh2710/unicode-emoji-utils)** A collection of utilities for emojis and raw data for Unicode Emojis
+  - **[remark](https://github.com/remarkjs/remark)** A remark parser (JavaScript community version of Markdown)
+  - **[strip-markdown](https://github.com/wooorm/strip-markdown)** A remark plugin to strip markdown formatting
 
 *notice: this tool has been initially hand coded, than evolved using AI*5
 
