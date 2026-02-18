@@ -20,7 +20,14 @@ export default class LsCommand {
 
 		try {
 
-			const dirPath = args.length > 0 ? args[0] : currentPath
+			//const dirPath = args.length > 0 ? args[0] : currentPath
+			const pathArg = '--path'
+			const dirPath =
+				// path is maybe given by its argument name: cat --path path
+				((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
+				// or as a positional not named argument: cat path
+				|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
+					: currentPath)
 
 			var resolvedPath = resolvePath(this.ctx.cli.currentPath, dirPath)
 			const pattern = basename(resolvedPath)

@@ -11,15 +11,19 @@ The command description is defined by a `javascript object` structured as below:
 {
     names: ["name1", "name2", ...],
     description: "description",
-    options: {
+    config: {
+        options: {
             arg1: {
                 type: 'string',
                 multiple: false,
                 short: 'n',
                 default: `default value`,
-                description: 'description'
+                description: 'description',
+                required: true
             }, ...
-        }
+        },
+        allowPositionals: true
+    },
     file: "file.js"
 }
 ```
@@ -27,15 +31,19 @@ where:
 - the names property is an array that list the names of the command (without the prefix character), that can have multiple names
 - the description property is a string that describe the command in human language
 
-- the `options` property is an object that describe the arguments of the command if any, it can be ommited if the command does not have any arguments. It is conform to the specification of the `config.options` object defined by the the specification of the method `util.pargeArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig`. The properties of the object `options` are defined as explain below:
+- the `config` property is an object that describe the command specifiction accordlingly to the `util.parseArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig`. It has the properties:
+    - `options`: describes the command parameters and arguments
+    - `allowPositionals`: true | false. Indicates if a command accept positional arguments
+
+- the `options` property is an object that describe the arguments of the command if any, it can be ommited if the command does not have any arguments. It is conform to the specification of the `config.options` object defined by the the specification of the method `util.parseArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig`. The properties of the object `options` are defined as explain below:
 
     - `type` : a type name for each argument. possibles values are:
         - `string` or `boolean` | `string[]` | `boolean[]`
     - `multiple` : whether this option can be provided multiple times. If true, all values will be collected in an array. If false, values for the option are last-wins. Default: false.
     - `short` : A single character alias for the option.
     - `default` : The value to assign to the option if it does not appear in the arguments to be parsed. The value must match the type specified by the type property. If multiple is true, it must be an array. No default value is applied when the option does appear in the arguments to be parsed, even if the provided value is falsy. can be of type: `string` | `boolean` | `string[]` | `boolean[]`
-    -  a boolean indicating if the argument is required
-    - and a description of the argument in human language
+    - `required` : a boolean indicating if the argument is required
+    - `description` : a description of the argument in human language
      
 - the file property is a string that define the path of the command file, relative to the commands implementations folder: `cli/commands`
 
@@ -59,7 +67,22 @@ for example, the command `exit` is implemented in the file `exit-command.js` and
 
 - the class has a constructor method that is called with the app context as parameter. this parameter is named `ctx` and is used to initialize the class property `ctx` by the class object constructor
 
-- the class has a `run` method that is called when the command is executed. this method is used to execute the command implementation. This method can take an array of arguments if the command has arguments
+- the class has a `run` method that is called when the command is executed. this method is used to execute the command implementation. This method take the object returned by the `util.parseArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig` an array of arguments if the command has arguments. Thus the `run` method parameter has the follwing structure:
+
+```js
+{ 
+    values: {
+        arg1: value1, ...
+    }, 
+    positionals: [ positionnal1, ...]
+}
+```
+
+where:
+
+- `values` contains, for each matched properties, a property with the name of a matched argument from the `options` specification, having the value parsed from the command line for the argument.
+
+- `positionnals` contains the parsed arguments from the command line, that havn't been provided with an argument name, like `-a` or `--arg`. These arguments are listed in the same order than they appears in the command line.
 
 for example, the command `exit` that is implemented in the file `exit-command.js` has this implementation:
 ```js
@@ -69,7 +92,7 @@ export default class ExitCommand {
 		this.ctx = ctx
 	}
 
-	run() {
+	run(args) {
 		process.exit()
 	}
 }
@@ -81,17 +104,23 @@ for example, the command `cd` that is implemented in the file `cd-command.js` ha
     names: ['cd'],
     description: 'set current path',
     args: ['path'],
-    options: {
-        path: {
-            type: 'string',
-            default: null,
-            description: 'the path to set as current path'
-        }
+    config: {
+        options: {
+            path: {
+                type: 'string',
+                default: null,
+                description: 'the path to set as current path',
+                required: true
+            }
+        },
+        allowPositionals: true
     },
     file: 'cd-command.js'
 }
 ```
 ```js
+import { CommandArgsCountErrorEvent } from "../config/events"
+
 export default class CdCommand {
 
 	constructor(ctx) {
@@ -99,7 +128,16 @@ export default class CdCommand {
 	}
 
 	run(args) {
-		this.ctx.cli.currentPath = args[0]
+        const path = 
+        // path is maybe given by its argument name: cat --path path
+        ((args?.values && args?.values['--path']) ? args.values['--path'] : null) 
+        // or as a positional not named argument: cat path
+        || ((args?.positionals && args?.positionals.length>0) ? args.positionals[0] : null)
+
+        if (path!=null)
+		    this.ctx.cli.currentPath = path
+        else
+            this.ctx.components.events.emit(CommandArgsCountErrorEvent)
 	}
 }
 ```

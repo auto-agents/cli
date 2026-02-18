@@ -96,13 +96,16 @@ export default function config(cli) {
 					names: ['ls', 'dir'],
 					description: 'output the list of files of the current folder',
 					file: 'ls-command.js',
-					options: {
-						path: {
-							type: 'string',
-							required: false,
-							default: null,
-							description: 'the path of the folder to be listed. accept wildcards in the last part'
-						}
+					config: {
+						options: {
+							path: {
+								type: 'string',
+								required: false,
+								required: false,
+								description: 'the path of the folder to be listed. accept wildcards in the last part'
+							}
+						},
+						allowPositionals: true
 					}
 				},
 				{
@@ -113,36 +116,45 @@ export default function config(cli) {
 				{
 					names: ['cd'],
 					description: 'set current path',
-					options: {
-						path: {
-							type: 'string',
-							required: true,
-							description: 'the path to set as current path'
-						}
+					config: {
+						options: {
+							path: {
+								type: 'string',
+								required: true,
+								description: 'the path to set as current path'
+							}
+						},
+						allowPositionals: true
 					},
 					file: 'cd-command.js'
 				},
 				{
 					names: ['cat'],
 					description: 'output the content of a file',
-					options: {
-						filePath: {
-							type: 'string',
-							required: true,
-							description: 'the path of the file output'
-						}
+					config: {
+						options: {
+							filePath: {
+								type: 'string',
+								required: true,
+								description: 'the path of the file to output'
+							}
+						},
+						allowPositionals: true
 					},
 					file: 'cat-command.js'
 				},
 				{
 					names: ['print', 'pr'],
 					description: 'print a file with parsed syntax and highlighting. compatible with html and markdown files',
-					options: {
-						filePath: {
-							type: 'string',
-							required: true,
-							description: 'the path of the file to print'
-						}
+					config: {
+						options: {
+							filePath: {
+								type: 'string',
+								required: true,
+								description: 'the path of the file to print'
+							}
+						},
+						allowPositionals: true
 					},
 					file: 'print-command.js',
 					extensions: {
@@ -153,12 +165,15 @@ export default function config(cli) {
 				{
 					names: ['edit', 'ed'],
 					description: 'edit a file with parsed syntax and highlighting.',
-					options: {
-						filePath: {
-							type: 'string',
-							required: true,
-							description: 'the path of the file to edit'
-						}
+					config: {
+						options: {
+							filePath: {
+								type: 'string',
+								required: true,
+								description: 'the path of the file to edit'
+							}
+						},
+						allowPositionals: true
 					},
 					file: 'edit-command.js'
 				},

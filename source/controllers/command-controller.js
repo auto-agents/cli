@@ -6,9 +6,12 @@ import {
 	CommandNotFoundEvent,
 	CommandArgsCountErrorEvent,
 	RunCommandEvent,
-	CommandParseErrorEvent
+	CommandParseErrorEvent,
+	LogErrorEvent,
+	errorEvent
 } from "../config/events"
 import { split } from 'shellwords'
+import { parseArgs } from 'node:util'
 
 export default class CommandController {
 
@@ -44,11 +47,58 @@ export default class CommandController {
 		const comd = tcom[0]
 
 		// checks args
-		const comArgs = comd.options
-		const comArgsNames = Object.getOwnPropertyNames(comArgs)
-		if (args.length > 0 && (!comArgs || comArgsNames.length == 0)) {
+		const comArgs = comd.config?.options
+		const comArgsNames = comArgs ? Object.getOwnPropertyNames(comArgs) : []
+		const withOptions = comArgs && comArgsNames.length > 0
+
+		// too much args
+		if (args.length > 0 && !withOptions) {
 			e.emit(CommandArgsCountErrorEvent, comd)
 			return
+		}
+
+		var parsedArgs = null
+
+		// parse args
+		if (withOptions) {
+
+			const optNames = Object.getOwnPropertyNames(comd.config.options)
+			const maxArgsCount = optNames.length
+			const positionalsCount = optNames.filter(
+				optName => comd.config.options[optName].type == 'string')
+				.length
+			const flagsCounts = optNames.filter(
+				optName => comd.config.options[optName].type == 'boolean')
+				.length
+			const minArgsCount = optNames.filter(optName => comd.config.options[optName].required)
+				.length
+			const maxArgsFromTypes = positionalsCount * 2 + flagsCounts
+
+			if (args.length > maxArgsFromTypes) {
+				// too much args
+				e.emit(CommandArgsCountErrorEvent, comd)
+				return
+			}
+			if (args.length < minArgsCount) {
+				// not enough args
+				e.emit(CommandArgsCountErrorEvent, comd)
+				return
+			}
+
+			try {
+				const o = {
+					...comd.config,
+					args: args
+				}
+
+				parsedArgs = parseArgs(o)
+
+				console.log(parsedArgs)
+			}
+			catch (err) {
+				e.emit(LogErrorEvent, errorEvent('command', err))
+				return
+			}
 		}
 
 		const path = join(process.cwd(), 'source', 'commands', comd.file);
@@ -64,7 +114,8 @@ export default class CommandController {
 		try {
 			const module = await import(path)
 			const o = new module.default(this.ctx, this.output)
-			o.run(args)
+
+			o.run(parsedArgs)
 
 		} catch (err) {
 			e.emit(CommandModuleLoadErrorEvent, cn + ` (${err})`)

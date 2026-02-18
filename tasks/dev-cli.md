@@ -12,9 +12,8 @@ describe an implementation of a new command that can be input by user, according
 
 #### generical prompt
 
-```text
 implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. The new command specification is described by the javascript object below:
-```
+
 ```js
 {
     names: ['name1', 'name2', ...],
@@ -32,7 +31,6 @@ implement a new command that can be input by user, according to the specificatio
     file: 'ls-command.js'
 }
 ```
-```text
 the run() method of this command must output the list of files that are in the folder path indicated by the property `cli.currentPath` in the app context (this.ctx). Each file name must be outputed on a new line in the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Each line contains the filename and all of the file properties (size, last modified date, etc.) properly aligned in columns. Use differents colors for each file property using new colors hex values that must be defined in the json object property `theme.ls`, through a set of keys dedicated for each file property in the file `cli/source/config/config.js`. The file properties are: name, size, last modified date, permissions, owner, group, type, and number of links. The file properties must be aligned in columns with the same width for each property. The file properties must be outputed in the following order: name, size, last modified date, permissions, owner, group, type, and number of links. 
 the colors object in `theme.ls` must have the following keys: name, size, lastModified, permissions, owner, group, type, and links.
 use `chalk.hex()` to build the ainsi colorization orders.
@@ -40,28 +38,26 @@ use `output.error()` to build the error message string.
 `output.error()` must be the parameter of the output.appendLine() method
 output the date according to the locale
 colorize folder names with a different color from the property ls.folder
-```
 
 #### fixes
 
-```text
-The 'perm' header text is misaligned. fix it.
+- The 'perm' header text is misaligned. fix it.
 /!\ it fails doing that (SWE-1.5) -> must be hand-coded
 
-add a row separator line between the header and the file entries.
+- add a row separator line between the header and the file entries.
 
-add the most approriate unit, dependending on each file size (bytes,mo,gb,etc.) to the size column.
+- add the most approriate unit, dependending on each file size (bytes,mo,gb,etc.) to the size column.
 
-add a single space character between the size and the unit
+- add a single space character between the size and the unit
 
-do not indicates size when the line is a folder
+- do not indicates size when the line is a folder
 
-add the `/ ` character before the name when the line is a folder, else add the ` ` character before the name
+- add the `/ ` character before the name when the line is a folder, else add the ` ` character before the name
 
-the command must output the path for which files are listed, separated by a blank line
+- the command must output the path for which files are listed, separated by a blank line
 
-add a blank line after the last file entry, and add a summary line that indicates the number of files and folders, and the total amount of file sizes with the right unit. use the color that is defined for the size column for the size value in the summary line 
-```
+- add a blank line after the last file entry, and add a summary line that indicates the number of files and folders, and the total amount of file sizes with the right unit. use the color that is defined for the size column for the size value in the summary line 
+
 
 ### command: `pwd`
 
@@ -78,70 +74,78 @@ the run() method of this command must output the current path that is stored in 
 
 ### command: `cd`
 
-```text
 implements the command `cd` as described below:
-```
+
 ```js
 {
     names: ['cd'],
     description: 'change the current path',
-    options: {
-        filePath: {
+    config: {
+        options: {
+            filePath: {
             type: 'string',
             required: true,
             default: null,
-            description: 'the new path, abosulte or relative'
+            description: 'the new path, absolute or relative'
         }
+        },
+        allowPositionals: true
     },
     file: 'cd-command.js'
 }
 ```
-```text
-the run() method of this command must change the current path that is stored in the property `cli.currentPath` in the app context (this.ctx). The path must be changed to the path that is provided as the first element of the arguments array that is passed to the run() method.
+
+the `run()` method of this command must change the current path that is stored in the property `cli.currentPath` in the app context (this.ctx). The path must be changed to the path that is provided as the first element of the arguments array that is passed to the run() method.
 
 the command cd must check if the path exists before to change it and display an explicit error message (with the new builded path value, coz it can change if specified by . or .. )
 
 fix so that '.' goes to the process path and '..' go one path level up related to current path
-```
 
 ### command: `cat`
 
-```text
 implements the command `cat` as described below:
-```
+
 ```js
 {
     names: ['cat'],
-    description: 'output the content of a file',    
-    options: {
-        filePath: {
+    description: 'output the content of a file',
+    config: {
+        options: {
+            filePath: {
             type: 'string',
+            required: true,
             default: null,
             description: 'the path of the file output'
         }
+        },
+        allowPositionals: true
     },
     file: 'cat-command.js'
 }
 ```
-the run() method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
+
+the `run()` method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
 the command must check if the path exists before to change it and display an explicit error message (with the path value)
 eavh line of the file is outputed on a new line using the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Add a blank line before the output.
 
 ### command: `print`
 
-```text
 implements the command `print` as described below:
-```
+
 ```js
 {
     names: ['print','pr'],
     description: 'print a file with parsed syntax and highlighting. compatible with html and markdown files',
-    options: {
-        filePath: {
-            type: 'string',
-            default: null,
-            description: 'the path of the file to print'
-        }
+    config: {
+        options: {
+            filePath: {
+                type: 'string',
+                default: null,
+                required: true,
+                description: 'the path of the file to print'
+            }
+        },
+        allowPositionals: true
     },
     file: 'print-command.js',
     extensions: {
@@ -196,9 +200,8 @@ the run() method of this command must open an editor to edit the content of the 
 
 ### command: `config`
 
-```text
 implements the command `config` as described below:
-```
+
 ```js
 {
     names: ['config','conf','cnf'],

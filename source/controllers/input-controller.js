@@ -144,14 +144,13 @@ export default class InputController {
 						s += e.description
 						addLine(col(s))
 
-						const argsNames = e.options ? Object.getOwnPropertyNames(e.options) : []
+						const argsNames = e.config?.options ? Object.getOwnPropertyNames(e.config.options) : []
 						if (argsNames && argsNames.length > 0) {
 
 							s = ' '.repeat(padcmdname + 4)
 							argsNames.forEach(argName => {
 
-								const arg = e.options[argName]
-								//console.log(argName, arg)
+								const arg = e.config.options[argName]
 								s += `<${argName}> `
 								s += ' : ' + arg.type
 									+ (arg.required ? '(required)' : '')
