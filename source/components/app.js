@@ -150,8 +150,12 @@ export default function App({ ctx }) {
 
 	const buildStatusMessageView = (statusMessage) => {
 		const sepc = chalk.hex(ctx.theme.statusMessage.separatorColor)
+		const textc = chalk.hex(ctx.theme.statusMessage.messageColor)
+		const statc = ctx.theme.statusMessage.statusColors[statusMessage.status] ?
+			chalk.hex(ctx.theme.statusMessage.statusColors[statusMessage.status])(statusMessage.status) :
+			statusMessage.status
 		const sep = sepc(' | ')
-		return `${statusMessage.from.padEnd(20)} ${sep} ${statusMessage.status.padEnd(12)} ${sep} ${statusMessage.message}`
+		return `${statusMessage.from.padEnd(20)} ${sep} ${statc.padEnd(12)} ${sep} ${textc(statusMessage.message)}`
 	}
 
 	useEffect(() => {

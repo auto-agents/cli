@@ -90,8 +90,8 @@ export default class AppController {
 			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
 			.on(HelpOutputUpdatedEvent, () => this.output.forceUpdate())
 			.on(InputExecutedEvent, () => this.output.forceUpdate())
-			.on(LogErrorEvent, (...args) => this.error(args[0]))
-			.on(LogWarningEvent, (...args) => this.warning(args[0]))
+			.on(LogErrorEvent, args => this.handleLogErrorEvent(args[0]))
+			.on(LogWarningEvent, args => this.warning(args[0]))
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),
@@ -113,6 +113,11 @@ export default class AppController {
 			.show()
 		this.keyboard = this.ctx.components.keyboard = new KeyboardController(ctx)
 			.init()
+	}
+
+	handleLogErrorEvent(errorEvent) {
+		console.log(errorEvent)
+		this.error(errorEvent.error.message)
 	}
 
 	outputRowsCountUpdated() {

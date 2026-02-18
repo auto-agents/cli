@@ -32,3 +32,10 @@ export const InputToEndEvent = 'InputToEndEvent'
 
 export const LogErrorEvent = 'LogErrorEvent'
 export const LogWarningEvent = 'LogWarningEvent'
+
+export const errorEvent = (from, err) => {
+    return {
+        from: from,
+        error: err
+    }
+}

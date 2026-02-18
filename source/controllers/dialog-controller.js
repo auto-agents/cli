@@ -3,7 +3,7 @@ import utils from "../utils/utils.js"
 import util from "util"
 import Status from '../utils/status.js'
 import { StatusMessage, StatusEnum } from "../data/status-message.js"
-import { LogErrorEvent, SetStatusMessageEvent } from "../config/events.js"
+import { LogErrorEvent, SetStatusMessageEvent, errorEvent } from "../config/events.js"
 import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
 
@@ -53,7 +53,7 @@ export default class DialogController {
 		const e = this.ctx.components.event
 		e.emit(SetStatusMessageEvent, new StatusMessage(
 			StatusEnum.waiting,
-			'thinking',
+			'🤖 thinking',
 			'dialog'
 		))
 		const r = await this.ctx.components.module.openAIChat.chat(query)
@@ -61,7 +61,8 @@ export default class DialogController {
 				this.echoSystem(txt))
 			.catch(err => {
 				e.emit(SetStatusMessageEvent)
-				e.emit(LogErrorEvent, err)
+				e.emit(LogErrorEvent,
+					errorEvent('dialog', err))
 			})
 	}
 
@@ -100,27 +101,28 @@ export default class DialogController {
 		voice = null,
 		wait = false) {
 		text = util.stripVTControlCharacters(text)
+		const e = this.ctx.components.event
+		const sp = this.ctx.components.module.speech
 		try {
 
-			this.ctx.components.event.emit(
+			e.emit(
 				SetStatusMessageEvent,
 				new StatusMessage(
 					StatusEnum.waiting,
-					'speaking',
+					'🔊 speaking',
 					'dialog'))
 
-			if (wait) await this.ctx.components.module.speech.waitIdle()
+			if (wait) await sp.waitIdle()
 
-			await this.ctx.components.module.speech.speak(text, voice)
+			await sp.speak(text, voice)
 
-			if (wait) await this.ctx.components.module.speech.waitIdle()
-			this.ctx.components.event.emit(SetStatusMessageEvent)
+			if (wait) await sp.waitIdle()
+			e.emit(SetStatusMessageEvent)
 
 		} catch (err) {
 			this.ctx.components.event.emit(SetStatusMessageEvent)
 
-			const o = this.output
-			o.appendLine(this.status.error(err))
+			e.emit(LogErrorEvent, errorEvent('app', err))
 		}
 	}
 }

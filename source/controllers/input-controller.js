@@ -123,14 +123,14 @@ export default class InputController {
 
 			if (pat == '') {
 				if (tmpLine != '') tmpLine += ' | '
-				tmpLine += e.names.map(n => p + n).join(cs)
+				tmpLine += e.names.join(cs)
 				cnt++
 			}
 			else
 				if (e.names.some(n => n.startsWith(pat))) {
 
 					cnt++
-					var s = e.names.map(n => p + n).join(cs).padEnd(n)
+					var s = e.names.join(cs).padEnd(n)
 					s += e.description
 					addLine(col(s))
 

@@ -320,7 +320,16 @@ export default function config(cli) {
 				}
 			},
 			statusMessage: {
-				separatorColor: '#b0d3b0'
+				separatorColor: '#b0d3b0',
+				messageColor: '#AAAAAA',
+				statusColors: {
+					on: '#00AA00',
+					off: '#777777',
+					unavailable: '#AA5500',
+					waiting: '#99AA00',
+					idle: '#00AA00',
+					ready: '#00AA00'
+				}
 			},
 			subInitTextTitleColor: '#66AA88',
 			ls: {
