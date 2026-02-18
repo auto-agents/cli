@@ -2,6 +2,7 @@ import { existsSync } from 'fs'
 import { dirname } from 'path'
 import path from 'path'
 import Status from '../utils/status.js'
+import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
 
 export default class CdCommand {
 
@@ -18,9 +19,7 @@ export default class CdCommand {
 
 		const pathArg = 'path'
 		const dirPath =
-			// path is maybe given by its argument name: cat --path path
 			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			// or as a positional not named argument: cat path
 			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
 				: null)
 
@@ -39,7 +38,13 @@ export default class CdCommand {
 		// Check if path exists
 		if (!existsSync(newPath)) {
 			e.emit(CommandRunErrorEvent,
-				{ ...errorEvent(this.From, `Error: path '${newPath}' does not exist`), cmd: this.From }
+				{
+					...errorEvent(this.From,
+						new Error(`Error: path '${newPath}' does not exist`,
+							{ error }
+						)),
+					cmd: this.From
+				}
 			)
 			return
 		}

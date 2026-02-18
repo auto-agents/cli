@@ -9,7 +9,6 @@ export default class ClearConsoleCommand {
 	run() {
 		this.ctx.components.output.clear()
 		this.ctx.components.event.emit(HideInitBoxOutputEvent)
-		//this.ctx.components.event.emit(UIFreezeStatedChangedEvent, false)
 		this.ctx.components.event.emit(ConsoleClearedEvent)
 	}
 }

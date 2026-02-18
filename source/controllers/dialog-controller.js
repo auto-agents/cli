@@ -57,8 +57,10 @@ export default class DialogController {
 			'dialog'
 		))
 		const r = await this.ctx.components.module.openAIChat.chat(query)
-			.then(txt =>
-				this.echoSystem(txt))
+			.then(txt => {
+				e.emit(SetStatusMessageEvent)
+				this.echoSystem(txt)
+			})
 			.catch(err => {
 				e.emit(SetStatusMessageEvent)
 				e.emit(LogErrorEvent,

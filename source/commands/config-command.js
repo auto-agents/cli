@@ -2,8 +2,11 @@ import { existsSync } from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
 import Status from '../utils/status.js';
+import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
 
 export default class ConfigCommand {
+
+	From = 'config'
 
 	constructor(ctx) {
 		this.ctx = ctx
@@ -12,14 +15,19 @@ export default class ConfigCommand {
 
 	run() {
 		const output = this.ctx.components.output
-		output.newLine()
+		const e = this.ctx.components.event
 
 		// Always open cli/config/config.json relative to the CLI process path
 		const configFilePath = path.join(process.cwd(), 'source', 'config', 'config.js')
 
 		// Check if file exists
 		if (!existsSync(configFilePath)) {
-			output.appendLine(this.status.error(`Error: config file '${configFilePath}' does not exist`))
+			e.emit(CommandRunErrorEvent,
+				{
+					...errorEvent(this.From,
+						new Error(`Error: config file '${configFilePath}' does not exist`)),
+					com: this.From
+				})
 			return
 		}
 
@@ -29,7 +37,12 @@ export default class ConfigCommand {
 			const editorCommand = this.ctx.shell.edit[platform]
 
 			if (!editorCommand || editorCommand.trim() === '') {
-				output.appendLine(this.status.error(`Error: no editor configured for platform '${platform}'`))
+				e.emit(CommandRunErrorEvent,
+					{
+						...errorEvent(this.From,
+							new Error(`Error: no editor configured for platform '${platform}'`)),
+						com: this.From
+					})
 				return
 			}
 
@@ -48,10 +61,17 @@ export default class ConfigCommand {
 			})
 
 			editor.on('error', (error) => {
-				output.appendLine(this.status.error(`Error launching editor: ${error.message}`))
+				e.emit(CommandRunErrorEvent,
+					{
+						...errorEvent(this.From,
+							new Error(`Error launching editor: ${error.message}`,
+								{ error })),
+						com: this.From
+					})
 			})
 
 			editor.on('spawn', () => {
+				output.newLine()
 				output.appendLine(`Opening config file '${configFilePath}' in editor...`)
 			})
 
@@ -59,7 +79,13 @@ export default class ConfigCommand {
 			editor.unref()
 
 		} catch (error) {
-			output.appendLine(this.status.error(`Error opening config file '${configFilePath}': ${error.message}`))
+			e.emit(CommandRunErrorEvent,
+				{
+					...errorEvent(this.From,
+						new Error(`Error opening config file '${configFilePath}': ${error.message}`,
+							{ error })),
+					com: this.From
+				})
 		}
 	}
 }

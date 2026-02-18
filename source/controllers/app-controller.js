@@ -31,7 +31,6 @@ import DialogController from './dialog-controller.js';
 import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
-import chalk from 'chalk';
 import KeyboardController from './keyboard-controller.js';
 
 export default class AppController {
@@ -119,12 +118,12 @@ export default class AppController {
 
 	handleCommandErrorEvent(reason, errorEvent) {
 		const sep = reason && reason.length > 0 ? ' : ' : ''
-		const sm = errorEvent.error ? (sep + errorEvent.error) : ''
+		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
 		this.error(reason + sm)
 	}
 
 	handleLogErrorEvent(errorEvent) {
-		this.error(errorEvent.error)
+		this.error(errorEvent.error?.message)
 	}
 
 	outputRowsCountUpdated() {

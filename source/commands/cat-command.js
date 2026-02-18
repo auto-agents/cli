@@ -1,14 +1,11 @@
-import { existsSync, readFileSync, createWriteStream, unlink } from 'fs'
-import path from 'path'
+import { existsSync, readFileSync } from 'fs'
 import SyntaxHighlight from 'ink-syntax-highlight';
-import { render } from 'ink';
 import Status from '../utils/status.js';
-import ansiEscapes from 'ansi-escapes';
-import { Box, Text } from 'ink';
 import * as highlight from "cli-highlight"
 import { renderComponent } from '../utils/utils.js';
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
+import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
 
 export default class CatCommand {
 
@@ -19,8 +16,7 @@ export default class CatCommand {
 
 	run(args) {
 		const output = this.ctx.components.output
-		output.newLine()
-
+		const e = this.ctx.components.event
 		const pathArg = 'filePath'
 		const arg =
 			// path is maybe given by its argument name: cat --path path
@@ -33,7 +29,12 @@ export default class CatCommand {
 
 		// Check if file exists
 		if (!existsSync(filePath)) {
-			output.appendLine(this.status.error(`Error: file '${filePath}' does not exist`))
+			e.emit(CommandRunErrorEvent,
+				{
+					...errorEvent(this.From,
+						new Error(`Error: file '${filePath}' does not exist`)),
+					com: this.From
+				})
 			return
 		}
 
@@ -47,25 +48,7 @@ export default class CatCommand {
 			const fileDesc = filePath
 			const theme = highlight.DEFAULT_THEME
 
-			/*
-				<Box backgroundColor = {this.ctx.theme.fileView.backgroundColor }
-					borderColor = { this.ctx.theme.fileView.borderColor }
-					borderStyle = { this.ctx.theme.fileView.borderStyle }
-					flexDirection = "column"
-				>
-					<Box backgroundColor={this.ctx.theme.fileView.backgroundColor}
-						borderColor={this.ctx.theme.fileView.borderColor}
-						borderStyle={this.ctx.theme.fileView.borderStyle}
-					>
-						<Text>{fileDesc}</Text>
-					</Box>
-					<SyntaxHighlight
-						code={content}
-						theme={theme}
-					/>
-				</Box >
-			*/
-
+			output.newLine()
 			renderComponent(
 
 				< SyntaxHighlight
@@ -80,7 +63,13 @@ export default class CatCommand {
 			)
 
 		} catch (error) {
-			output.appendLine(this.status.error(`Error reading file '${filePath}': ${error.message}`))
+			e.emit(CommandRunErrorEvent,
+				{
+					...errorEvent(this.From,
+						new Error(`Error reading file '${filePath}': ${error.message}`,
+							{ error })),
+					com: this.From
+				})
 		}
 	}
 }

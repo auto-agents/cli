@@ -26,9 +26,7 @@ export default class PrintCommand {
 
 		const pathArg = 'filePath'
 		const arg =
-			// path is maybe given by its argument name: cat --path path
 			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			// or as a positional not named argument: cat path
 			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
 				: null)
 
@@ -38,7 +36,8 @@ export default class PrintCommand {
 		if (!existsSync(resolvedPath)) {
 			e.emit(CommandRunErrorEvent,
 				{
-					...errorEvent(this.From, `Error: file '${resolvedPath}' does not exist`),
+					...errorEvent(this.From,
+						new Error(`Error: file '${resolvedPath}' does not exist`)),
 					com: this.From
 				})
 			return
@@ -89,7 +88,8 @@ export default class PrintCommand {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
-						`Error reading file '${resolvedPath}': ${error.message}`),
+						new Error(`Error reading file '${resolvedPath}': ${error.message}`,
+							{ error })),
 					com: this.From
 				})
 		}

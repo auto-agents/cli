@@ -14,12 +14,10 @@ export default class EditCommand {
 
 	run(args) {
 		const output = this.ctx.components.output
-
+		const e = this.ctx.components.event
 		const pathArg = 'filePath'
 		const arg =
-			// path is maybe given by its argument name: cat --path path
 			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			// or as a positional not named argument: cat path
 			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
 				: null)
 
@@ -31,11 +29,14 @@ export default class EditCommand {
 			// Get the platform-specific editor command
 			const platform = this.ctx.shell.platform
 			const editorCommand = this.ctx.shell.edit[platform]
-			const e = this.ctx.components.event
 
 			if (!editorCommand || editorCommand.trim() === '') {
 				e.emit(CommandRunErrorEvent,
-					{ ...errorEvent(this.From, `Error: no editor configured for platform '${platform}'`), cmd: this.From }
+					{
+						...errorEvent(this.From,
+							new Error(`Error: no editor configured for platform '${platform}'`)),
+						cmd: this.From
+					}
 				)
 				return
 			}
@@ -57,7 +58,8 @@ export default class EditCommand {
 			editor.on('error', (error) => {
 				e.emit(CommandRunErrorEvent,
 					{
-						...errorEvent(this.From, `Error launching editor: ${error.message}`),
+						...errorEvent(this.From,
+							new Error(`Error launching editor: ${error.message}`, { error })),
 						cmd: this.From
 					}
 				)
@@ -73,8 +75,12 @@ export default class EditCommand {
 
 		} catch (error) {
 			e.emit(CommandRunErrorEvent,
-				{ ...errorEvent(this.From, `Error editing file '${filePath}': ${error.message}`), cmd: this.From }
-			)
+				{
+					...errorEvent(this.From,
+						new Error(`Error editing file '${filePath}': ${error.message}`,
+							{ error })),
+					com: this.From
+				})
 		}
 	}
 }
