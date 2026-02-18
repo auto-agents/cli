@@ -14,13 +14,16 @@ export default class CdCommand {
 		const output = this.ctx.components.output
 		output.newLine()
 
-		if (!args || args.length === 0) {
-			output.appendLine(this.status.error('Error: path argument is required'))
-			return
-		}
+		const pathArg = '--path'
+		const dirPath =
+			// path is maybe given by its argument name: cat --path path
+			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
+			// or as a positional not named argument: cat path
+			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
+				: null)
 
-		var newPath = path.isAbsolute(args[0]) ? args[0]
-			: path.join(this.ctx.cli.currentPath, args[0])
+		var newPath = path.isAbsolute(dirPath) ? dirPath
+			: path.join(this.ctx.cli.currentPath, dirPath)
 
 		// Handle special cases
 		if (newPath === '.') {

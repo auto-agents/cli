@@ -151,9 +151,9 @@ export default class InputController {
 							argsNames.forEach(argName => {
 
 								const arg = e.config.options[argName]
-								s += `<${argName}> `
+								s += `<${argName}>`
 								s += ' : ' + arg.type
-									+ (arg.required ? '(required)' : '')
+									+ (arg.required ? ' (required)' : ' (optional)')
 									+ (arg.description ? (' - ' + arg.description) : '')
 									+ ' '
 							})

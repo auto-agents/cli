@@ -8,12 +8,15 @@ import {
 	RunCommandEvent,
 	CommandParseErrorEvent,
 	LogErrorEvent,
-	errorEvent
+	errorEvent,
+	CommandRunErrorEvent
 } from "../config/events"
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
 
 export default class CommandController {
+
+	From = 'command'
 
 	constructor(ctx, output) {
 		this.ctx = ctx
@@ -31,7 +34,10 @@ export default class CommandController {
 		try {
 			parsed = split(arg)
 		} catch (parseError) {
-			e.emit(CommandParseErrorEvent, parseError)
+			e.emit(CommandParseErrorEvent, {
+				...errorEvent(this.From, parseError),
+				args: arg
+			})
 			return
 		}
 		const com = parsed[0]
@@ -41,7 +47,11 @@ export default class CommandController {
 		const coms = this.ctx.cli.commands
 		const tcom = coms.filter(c => c.names.includes(com))
 		if (tcom.length == 0) {
-			e.emit(CommandNotFoundEvent, com)
+			e.emit(CommandNotFoundEvent, {
+				...errorEvent(this.From, com),
+				args: arg,
+				cmd: com
+			})
 			return
 		}
 		const comd = tcom[0]
@@ -76,12 +86,18 @@ export default class CommandController {
 
 			if (args.length > maxArgsFromTypes) {
 				// too much args
-				e.emit(CommandArgsCountErrorEvent, comd)
+				e.emit(CommandArgsCountErrorEvent, {
+					...errorEvent(this.From, comd),
+					args: arg
+				})
 				return
 			}
 			if (args.length < minArgsCount) {
 				// not enough args
-				e.emit(CommandArgsCountErrorEvent, comd)
+				e.emit(CommandArgsCountErrorEvent, {
+					...errorEvent(this.From, comd),
+					args: arg
+				})
 				return
 			}
 
@@ -93,17 +109,27 @@ export default class CommandController {
 
 				parsedArgs = parseArgs(o)
 
-				console.log(parsedArgs)
+				//console.log(parsedArgs)
 			}
 			catch (err) {
-				e.emit(LogErrorEvent, errorEvent('command', err))
+				e.emit(CommandParseErrorEvent, {
+					...errorEvent(this.From, err),
+					cmd: com,
+					args: arg
+				})
 				return
 			}
 		}
 
 		const path = join(process.cwd(), 'source', 'commands', comd.file);
 		if (!existsSync(path)) {
-			e.emit(CommandFileNotFoundEvent, path)
+			e.emit(CommandFileNotFoundEvent, {
+				...errorEvent(this.From, path),
+				args: arg,
+				cmd: com,
+				args: arg,
+				path: path
+			})
 			return
 		}
 		const cn = comd.file.replace('-command.js', '')
@@ -111,14 +137,28 @@ export default class CommandController {
 			.map(n => n[0].toUpperCase() + n.substring(1))
 			.join('')
 
+		var module = null
+		var instance = null
 		try {
-			const module = await import(path)
-			const o = new module.default(this.ctx, this.output)
-
-			o.run(parsedArgs)
-
+			module = await import(path)
+			instance = new module.default(this.ctx, this.output)
 		} catch (err) {
-			e.emit(CommandModuleLoadErrorEvent, cn + ` (${err})`)
+			e.emit(CommandModuleLoadErrorEvent, {
+				...errorEvent(this.From, err),
+				cmd: com,
+				cn: cn
+			})
+			return
+		}
+
+		try {
+			instance.run(parsedArgs)	// add tryc 'command run error'
+		} catch (err) {
+			e.emit(CommandRunErrorEvent, {
+				...errorEvent(this.From, err),
+				cmd: com,
+				cn: cn
+			})
 			return
 		}
 	}

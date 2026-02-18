@@ -2,6 +2,7 @@ import { existsSync } from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
 import Status from '../utils/status.js';
+import { resolvePath } from '../utils/utils.js';
 
 export default class EditCommand {
 
@@ -14,20 +15,17 @@ export default class EditCommand {
 		const output = this.ctx.components.output
 		output.newLine()
 
-		if (!args || args.length === 0) {
-			output.appendLine(this.status.error('Error: file path argument is required'))
-			return
-		}
+		const pathArg = '--filePath'
+		const arg =
+			// path is maybe given by its argument name: cat --path path
+			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
+			// or as a positional not named argument: cat path
+			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
+				: null)
 
-		var filePath = args[0]
-		var filePath = path.isAbsolute(filePath) ? filePath
-			: path.join(this.ctx.cli.currentPath, filePath)
+		var filePath = resolvePath(this.ctx.cli.currentPath, arg)
 
-		// Check if file exists
-		if (!existsSync(filePath)) {
-			output.appendLine(this.status.error(`Error: file '${filePath}' does not exist`))
-			return
-		}
+		// allows new file (not existing)
 
 		try {
 			// Get the platform-specific editor command

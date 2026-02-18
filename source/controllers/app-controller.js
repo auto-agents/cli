@@ -80,11 +80,11 @@ export default class AppController {
 
 		this.event
 			.on(InputSubmitedEvent, async arg => await this.runInput(...arg))
-			.on(CommandParseErrorEvent, arg => this.error('command parse error: ' + arg[0]))
-			.on(CommandNotFoundEvent, arg => this.error('command not found: ' + arg[0]))
-			.on(CommandFileNotFoundEvent, arg => this.error('command file not found: ' + arg[0]))
-			.on(CommandModuleLoadErrorEvent, arg => this.error('command load module error: ' + arg[0]))
-			.on(CommandArgsCountErrorEvent, arg => this.error(`command args count mismatch: expected ${arg[0].args?.length || 0}`))
+			.on(CommandParseErrorEvent, args => this.handleCommandErrorEvent('command parse error', args[0]))
+			.on(CommandNotFoundEvent, args => this.handleCommandErrorEvent('command not found', args[0]))
+			.on(CommandFileNotFoundEvent, args => this.handleCommandErrorEvent('command file not found', args[0]))
+			.on(CommandModuleLoadErrorEvent, args => this.handleCommandErrorEvent('command load module error', args[0]))
+			.on(CommandArgsCountErrorEvent, args => this.handleCommandErrorEvent(`command args count mismatch: expected ${args[0].args?.length || 0}`, args[0]))
 			.on(AppInitializedEvent, () => this.appInitialized())
 			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
 			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
@@ -115,8 +115,13 @@ export default class AppController {
 			.init()
 	}
 
+	handleCommandErrorEvent(reason, errorEvent) {
+		const sm = errorEvent.error ? (' : ' + errorEvent.error) : ''
+		this.error(reason + sm)
+	}
+
 	handleLogErrorEvent(errorEvent) {
-		this.error(errorEvent.error.message)
+		this.error(errorEvent.error)
 	}
 
 	outputRowsCountUpdated() {

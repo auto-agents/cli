@@ -22,13 +22,17 @@ export default class PrintCommand {
 		const output = this.ctx.components.output
 		output.newLine()
 
-		if (!args || args.length === 0) {
-			output.appendLine(this.status.error('Error: file path argument is required'))
-			return
-		}
+		const pathArg = '--filePath'
+		const arg =
+			// path is maybe given by its argument name: cat --path path
+			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
+			// or as a positional not named argument: cat path
+			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
+				: null)
 
-		const filePath = args[0]
-		const resolvedPath = resolvePath(this.ctx.cli.currentPath, filePath)
+		console.log(arg)
+
+		const resolvedPath = resolvePath(this.ctx.cli.currentPath, arg)
 
 		// Check if file exists
 		if (!existsSync(resolvedPath)) {
@@ -66,7 +70,7 @@ export default class PrintCommand {
 
 					const t = box(
 						this.ctx,
-						filePath,
+						arg,
 						renderedContent.split('\n'),
 						output)
 
@@ -77,7 +81,7 @@ export default class PrintCommand {
 			}
 			// For other file types, use the cat command
 			else {
-				this.ctx.components.event.emit(RunCommandEvent, 'cat ' + filePath)
+				this.ctx.components.event.emit(RunCommandEvent, 'cat ' + arg)
 			}
 
 		} catch (error) {

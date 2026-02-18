@@ -21,12 +21,15 @@ export default class CatCommand {
 		const output = this.ctx.components.output
 		output.newLine()
 
-		if (!args || args.length === 0) {
-			output.appendLine(this.status.error('Error: file path argument is required'))
-			return
-		}
+		const pathArg = '--filePath'
+		const arg =
+			// path is maybe given by its argument name: cat --path path
+			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
+			// or as a positional not named argument: cat path
+			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
+				: null)
 
-		var filePath = resolvePath(this.ctx.cli.currentPath, args[0])
+		var filePath = resolvePath(this.ctx.cli.currentPath, arg)
 
 		// Check if file exists
 		if (!existsSync(filePath)) {
