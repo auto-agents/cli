@@ -1,4 +1,4 @@
-import fs from 'fs'
+import { existsSync, readdirSync, statSync } from 'fs'
 import path, { basename, dirname } from 'path'
 import chalk from 'chalk'
 import Status from '../utils/status.js'
@@ -41,9 +41,7 @@ export default class LsCommand {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
-						new Error(`Error: path '${resolvedPath}' does not exist`,
-							{ error }
-						)),
+						new Error(`Error: path '${resolvedPath}' does not exist`)),
 					cmd: this.From
 				}
 			)
@@ -55,12 +53,12 @@ export default class LsCommand {
 		output.appendLine(tpath)
 		output.newLine()
 
-		const files = fs.readdirSync(tpath, { withFileTypes: true })
+		const files = readdirSync(tpath, { withFileTypes: true })
 		const fileStats = files.map(file => {
 			if (wc && !wildcard(pattern, file.name))
 				return null
 			const fp = path.join(tpath, file.name)
-			const stats = fs.statSync(fp)
+			const stats = statSync(fp)
 
 			return {
 				name: file.name,
