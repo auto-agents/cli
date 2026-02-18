@@ -20,7 +20,7 @@ export default class LsCommand {
 
 		try {
 
-			const pathArg = '--path'
+			const pathArg = 'path'
 			const dirPath =
 				// path is maybe given by its argument name: cat --path path
 				((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)

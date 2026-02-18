@@ -21,7 +21,7 @@ export default class CatCommand {
 		const output = this.ctx.components.output
 		output.newLine()
 
-		const pathArg = '--filePath'
+		const pathArg = 'filePath'
 		const arg =
 			// path is maybe given by its argument name: cat --path path
 			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)

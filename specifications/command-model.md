@@ -128,9 +128,10 @@ export default class CdCommand {
 	}
 
 	run(args) {
+        const pathArg = 'path'
         const path = 
         // path is maybe given by its argument name: cat --path path
-        ((args?.values && args?.values['--path']) ? args.values['--path'] : null) 
+        ((args?.values && args?.values[pathArg]) ? args.values[pathArg] : null) 
         // or as a positional not named argument: cat path
         || ((args?.positionals && args?.positionals.length>0) ? args.positionals[0] : null)
 
