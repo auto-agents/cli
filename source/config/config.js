@@ -101,7 +101,6 @@ export default function config(cli) {
 							path: {
 								type: 'string',
 								required: false,
-								required: false,
 								description: 'the path of the folder to be listed. accept wildcards in the last part'
 							}
 						},
@@ -264,7 +263,7 @@ export default function config(cli) {
 				}
 			}
 		},
-		chat: {
+		dialog: {
 			repeatUserQuery: {
 				enabled: true,
 				preferredVoices: {
@@ -275,6 +274,12 @@ export default function config(cli) {
 				enabled: true,
 				preferredVoices: {
 					edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
+				}
+			},
+			speakErrors: {
+				enabled: true,
+				preferredVoices: {
+					edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
 				}
 			}
 		},
@@ -504,7 +509,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
@@ -565,8 +570,8 @@ export default function config(cli) {
 			platform: platform,
 			edit: {
 				[Platforms.windows]: 'notepad %1',
-				[Platforms.mac]: '',
-				[Platforms.linux]: ''
+				[Platforms.mac]: null,
+				[Platforms.linux]: null
 			}
 		}
 	};

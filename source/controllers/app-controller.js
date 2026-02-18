@@ -20,7 +20,9 @@ import {
 	InputExecutingEvent,
 	LogErrorEvent,
 	LogWarningEvent,
-	CommandRunErrorEvent
+	CommandRunErrorEvent,
+	SpeakCommandEvent,
+	speakEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -34,6 +36,8 @@ import Status from '../utils/status.js'
 import KeyboardController from './keyboard-controller.js';
 
 export default class AppController {
+
+	From = 'app'
 
 	heartbeatSecondInterval = null
 	heartbeatTickInterval = null
@@ -80,18 +84,18 @@ export default class AppController {
 
 		this.event
 			.on(InputSubmitedEvent, async arg => await this.runInput(...arg))
-			.on(CommandRunErrorEvent, args => this.handleCommandErrorEvent('', args[0]))
-			.on(CommandParseErrorEvent, args => this.handleCommandErrorEvent('command parse error', args[0]))
-			.on(CommandNotFoundEvent, args => this.handleCommandErrorEvent('command not found', args[0]))
-			.on(CommandFileNotFoundEvent, args => this.handleCommandErrorEvent('command file not found', args[0]))
-			.on(CommandModuleLoadErrorEvent, args => this.handleCommandErrorEvent('command load module error', args[0]))
-			.on(CommandArgsCountErrorEvent, args => this.handleCommandErrorEvent(`command args count mismatch: expected ${args[0].args?.length || 0}`, args[0]))
+			.on(CommandRunErrorEvent, async args => await this.handleCommandErrorEvent('', args[0]))
+			.on(CommandParseErrorEvent, async args => await this.handleCommandErrorEvent('command parse error', args[0]))
+			.on(CommandNotFoundEvent, async args => await this.handleCommandErrorEvent('command not found', args[0]))
+			.on(CommandFileNotFoundEvent, async args => await this.handleCommandErrorEvent('command file not found', args[0]))
+			.on(CommandModuleLoadErrorEvent, async args => await this.handleCommandErrorEvent('command load module error', args[0]))
+			.on(CommandArgsCountErrorEvent, async args => await this.handleCommandErrorEvent(`command args count mismatch: expected ${args[0].args?.length || 0}`, args[0]))
 			.on(AppInitializedEvent, () => this.appInitialized())
 			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
 			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
 			.on(HelpOutputUpdatedEvent, () => this.output.forceUpdate())
 			.on(InputExecutedEvent, () => this.output.forceUpdate())
-			.on(LogErrorEvent, args => this.handleLogErrorEvent(args[0]))
+			.on(LogErrorEvent, async (args) => await this.handleLogErrorEvent(args[0]))
 			.on(LogWarningEvent, args => this.warning(args[0]))
 
 		this.heartbeatSecondInterval = setInterval(
@@ -116,13 +120,39 @@ export default class AppController {
 			.init()
 	}
 
-	handleCommandErrorEvent(reason, errorEvent) {
-		const sep = reason && reason.length > 0 ? ' : ' : ''
-		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
-		this.error(reason + sm)
+	#isSpeechAvailable() {	// todo: util func
+		return this.ctx.components.module.speech != null
 	}
 
-	handleLogErrorEvent(errorEvent) {
+	async handleCommandErrorEvent(reason, errorEvent) {
+		const sep = reason && reason.length > 0 ? ' : ' : ''
+		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
+		const text = reason + sm
+
+		if (this.#isSpeechAvailable
+			&& this.ctx.dialog.speakErrors.enabled
+			&& errorEvent?.from != 'dialog')
+			this.event.emit(SpeakCommandEvent, speakEvent(
+				this.From,
+				text,
+				this.ctx.dialog.speakErrors.preferredVoices
+				[this.ctx.modules.speech.config.browser][0],
+				true));
+
+		this.error(text)
+	}
+
+	async handleLogErrorEvent(errorEvent) {
+		if (this.#isSpeechAvailable
+			&& this.ctx.dialog.speakErrors.enabled
+			&& errorEvent?.from != 'dialog')
+			this.event.emit(SpeakCommandEvent, speakEvent(
+				this.From,
+				errorEvent.error?.message,
+				this.ctx.dialog.speakErrors.preferredVoices
+				[this.ctx.modules.speech.config.browser][0],
+				true));
+
 		this.error(errorEvent.error?.message)
 	}
 

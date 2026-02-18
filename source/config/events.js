@@ -30,6 +30,7 @@ export const KeyPressedEvent = 'KeyPressedEvent'
 export const SetStatusMessageEvent = 'SetStatusMessageEvent'
 export const InputToStartEvent = 'InputToStartEvent'
 export const InputToEndEvent = 'InputToEndEvent'
+export const SpeakCommandEvent = 'SpeakCommandEvent'
 
 export const LogErrorEvent = 'LogErrorEvent'
 export const LogWarningEvent = 'LogWarningEvent'
@@ -38,5 +39,14 @@ export const errorEvent = (from, err) => {
     return {
         from: from,
         error: err
+    }
+}
+
+export const speakEvent = (from, text, voice, wait) => {
+    return {
+        from: from,
+        text: text,
+        voice: voice,
+        wait: wait
     }
 }

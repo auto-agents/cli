@@ -1,9 +1,8 @@
 import chalk from "chalk"
-import utils from "../utils/utils.js"
 import util from "util"
 import Status from '../utils/status.js'
 import { StatusMessage, StatusEnum } from "../data/status-message.js"
-import { LogErrorEvent, SetStatusMessageEvent, errorEvent } from "../config/events.js"
+import { LogErrorEvent, SetStatusMessageEvent, SpeakCommandEvent, errorEvent } from "../config/events.js"
 import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
 
@@ -15,6 +14,10 @@ export default class DialogController {
 		this.status = new Status(ctx)
 		this.responseTextFormater = new ResponseTextFormater(ctx, {})
 		this.responseSpeechFormater = new ResponseSpeechFormater(ctx, {})
+		this.ctx.components.event.on(
+			SpeakCommandEvent,
+			async data => await this.#speakEventHandler(data[0])
+		)
 	}
 
 	#isSpeechAvailable() {
@@ -40,10 +43,12 @@ export default class DialogController {
 			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)
 			+ ' ' + ucol(text))
 
-		if (this.ctx.chat.repeatUserQuery.enabled
+		if (this.ctx.dialog.repeatUserQuery.enabled
 			&& this.#isSpeechAvailable())
-			await this.speech(text, this.ctx.chat.repeatUserQuery.preferredVoices
-			[this.ctx.modules.speech.config.browser][0],
+			await this.speak(
+				text,
+				this.ctx.dialog.repeatUserQuery.preferredVoices
+				[this.ctx.modules.speech.config.browser][0],
 				true)
 	}
 
@@ -88,21 +93,32 @@ export default class DialogController {
 
 		// eventually speek
 
-		if (this.ctx.chat.speakAnswers.enabled
+		if (this.ctx.dialog.speakAnswers.enabled
 			&& this.#isSpeechAvailable()) {
-			const sp = this.responseSpeechFormater.getSpeech(text)
-
-			await this.speech(sp, this.ctx.chat.speakAnswers.preferredVoices
-			[this.ctx.modules.speech.config.browser][0],
+			await this.speak(
+				text,
+				this.ctx.dialog.speakAnswers.preferredVoices
+				[this.ctx.modules.speech.config.browser][0],
 				true)
 		}
 	}
 
-	async speech(
+	async #speakEventHandler(data) {
+		await this.speak(
+			data.text,
+			data.voice,
+			data.wait
+		)
+	}
+
+	async speak(
 		text,
 		voice = null,
 		wait = false) {
-		text = util.stripVTControlCharacters(text)
+		text =
+			this.responseSpeechFormater.getSpeech(
+				util.stripVTControlCharacters(text))
+
 		const e = this.ctx.components.event
 		const sp = this.ctx.components.module.speech
 		try {
@@ -119,6 +135,7 @@ export default class DialogController {
 			await sp.speak(text, voice)
 
 			if (wait) await sp.waitIdle()
+
 			e.emit(SetStatusMessageEvent)
 
 		} catch (err) {
