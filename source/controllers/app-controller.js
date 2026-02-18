@@ -19,7 +19,8 @@ import {
 	CommandParseErrorEvent,
 	InputExecutingEvent,
 	LogErrorEvent,
-	LogWarningEvent
+	LogWarningEvent,
+	CommandRunErrorEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -80,6 +81,7 @@ export default class AppController {
 
 		this.event
 			.on(InputSubmitedEvent, async arg => await this.runInput(...arg))
+			.on(CommandRunErrorEvent, args => this.handleCommandErrorEvent('', args[0]))
 			.on(CommandParseErrorEvent, args => this.handleCommandErrorEvent('command parse error', args[0]))
 			.on(CommandNotFoundEvent, args => this.handleCommandErrorEvent('command not found', args[0]))
 			.on(CommandFileNotFoundEvent, args => this.handleCommandErrorEvent('command file not found', args[0]))
@@ -116,7 +118,8 @@ export default class AppController {
 	}
 
 	handleCommandErrorEvent(reason, errorEvent) {
-		const sm = errorEvent.error ? (' : ' + errorEvent.error) : ''
+		const sep = reason && reason.length > 0 ? ' : ' : ''
+		const sm = errorEvent.error ? (sep + errorEvent.error) : ''
 		this.error(reason + sm)
 	}
 

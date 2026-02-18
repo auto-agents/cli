@@ -1,11 +1,13 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import path from 'path'
 import Status from '../utils/status.js'
-import { RunCommandEvent } from '../config/events.js'
+import { CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../config/events.js'
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
 
 export default class PrintCommand {
+
+	From = 'print'
 
 	constructor(ctx) {
 		this.ctx = ctx
@@ -19,8 +21,8 @@ export default class PrintCommand {
 	}
 
 	async run(args) {
+		const e = this.ctx.components.event
 		const output = this.ctx.components.output
-		output.newLine()
 
 		const pathArg = 'filePath'
 		const arg =
@@ -30,13 +32,15 @@ export default class PrintCommand {
 			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
 				: null)
 
-		console.log(arg)
-
 		const resolvedPath = resolvePath(this.ctx.cli.currentPath, arg)
 
 		// Check if file exists
 		if (!existsSync(resolvedPath)) {
-			output.appendLine(this.status.error(`Error: file '${resolvedPath}' does not exist`))
+			e.emit(CommandRunErrorEvent,
+				{
+					...errorEvent(this.From, `Error: file '${resolvedPath}' does not exist`),
+					com: this.From
+				})
 			return
 		}
 
@@ -68,15 +72,12 @@ export default class PrintCommand {
 
 				if (renderedContent) {
 
+					output.newLine()
 					const t = box(
 						this.ctx,
 						arg,
 						renderedContent.split('\n'),
 						output)
-
-					/*const s = t.join('\n')
-					const f = getTmpFile(this.ctx).path
-					writeFileSync(f, s)*/
 				}
 			}
 			// For other file types, use the cat command
@@ -85,7 +86,12 @@ export default class PrintCommand {
 			}
 
 		} catch (error) {
-			output.appendLine(this.status.error(`Error reading file '${resolvedPath}': ${error.message}`))
+			e.emit(CommandRunErrorEvent,
+				{
+					...errorEvent(this.From,
+						`Error reading file '${resolvedPath}': ${error.message}`),
+					com: this.From
+				})
 		}
 	}
 }

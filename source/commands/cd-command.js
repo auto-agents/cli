@@ -5,6 +5,8 @@ import Status from '../utils/status.js'
 
 export default class CdCommand {
 
+	From = 'cd'
+
 	constructor(ctx) {
 		this.ctx = ctx
 		this.status = new Status(ctx)
@@ -12,7 +14,7 @@ export default class CdCommand {
 
 	run(args) {
 		const output = this.ctx.components.output
-		output.newLine()
+		const e = this.ctx.components.event
 
 		const pathArg = 'path'
 		const dirPath =
@@ -36,11 +38,14 @@ export default class CdCommand {
 
 		// Check if path exists
 		if (!existsSync(newPath)) {
-			output.appendLine(this.status.error(`Error: path '${newPath}' does not exist`))
+			e.emit(CommandRunErrorEvent,
+				{ ...errorEvent(this.From, `Error: path '${newPath}' does not exist`), cmd: this.From }
+			)
 			return
 		}
 
 		this.ctx.cli.currentPath = newPath
+		output.newLine()
 		output.appendLine(`Changed directory to: ${newPath}`)
 	}
 }

@@ -1,10 +1,11 @@
-import { existsSync } from 'fs'
-import path from 'path'
 import { spawn } from 'child_process'
 import Status from '../utils/status.js';
 import { resolvePath } from '../utils/utils.js';
+import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
 
 export default class EditCommand {
+
+	From = 'edit'
 
 	constructor(ctx) {
 		this.ctx = ctx
@@ -13,8 +14,6 @@ export default class EditCommand {
 
 	run(args) {
 		const output = this.ctx.components.output
-		output.newLine()
-		// /ed --filePath hello
 
 		const pathArg = 'filePath'
 		const arg =
@@ -32,9 +31,12 @@ export default class EditCommand {
 			// Get the platform-specific editor command
 			const platform = this.ctx.shell.platform
 			const editorCommand = this.ctx.shell.edit[platform]
+			const e = this.ctx.components.event
 
 			if (!editorCommand || editorCommand.trim() === '') {
-				output.appendLine(this.status.error(`Error: no editor configured for platform '${platform}'`))
+				e.emit(CommandRunErrorEvent,
+					{ ...errorEvent(this.From, `Error: no editor configured for platform '${platform}'`), cmd: this.From }
+				)
 				return
 			}
 
@@ -53,10 +55,16 @@ export default class EditCommand {
 			})
 
 			editor.on('error', (error) => {
-				output.appendLine(this.status.error(`Error launching editor: ${error.message}`))
+				e.emit(CommandRunErrorEvent,
+					{
+						...errorEvent(this.From, `Error launching editor: ${error.message}`),
+						cmd: this.From
+					}
+				)
 			})
 
 			editor.on('spawn', () => {
+				output.newLine()
 				output.appendLine(`Opening '${filePath}' in editor...`)
 			})
 
@@ -64,7 +72,9 @@ export default class EditCommand {
 			editor.unref()
 
 		} catch (error) {
-			output.appendLine(this.status.error(`Error editing file '${filePath}': ${error.message}`))
+			e.emit(CommandRunErrorEvent,
+				{ ...errorEvent(this.From, `Error editing file '${filePath}': ${error.message}`), cmd: this.From }
+			)
 		}
 	}
 }
