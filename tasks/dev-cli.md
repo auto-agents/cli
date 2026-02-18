@@ -28,7 +28,7 @@ implement a new command that can be input by user, according to the specificatio
 ```js
 {
     names: ['ls','dir'],
-    description: 'output the list of files of the current folder',
+    description: 'output the list of files of the current folder. accept jokers * in the dirname part of the path',
     file: 'ls-command.js'
 }
 ```
@@ -85,7 +85,14 @@ implements the command `cd` as described below:
 {
     names: ['cd'],
     description: 'change the current path',
-    args: ['path'],
+    options: {
+        filePath: {
+            type: 'string',
+            required: true,
+            default: null,
+            description: 'the new path, abosulte or relative'
+        }
+    },
     file: 'cd-command.js'
 }
 ```
@@ -105,12 +112,11 @@ implements the command `cat` as described below:
 ```js
 {
     names: ['cat'],
-    description: 'output the content of a file',
-    args: ['filePath'],
-    argsDesc: {
+    description: 'output the content of a file',    
+    options: {
         filePath: {
             type: 'string',
-            required: true,
+            default: null,
             description: 'the path of the file output'
         }
     },
@@ -130,11 +136,10 @@ implements the command `print` as described below:
 {
     names: ['print','pr'],
     description: 'print a file with parsed syntax and highlighting. compatible with html and markdown files',
-    args: ['filePath'],
-    argsDesc: {
+    options: {
         filePath: {
             type: 'string',
-            required: true,
+            default: null,
             description: 'the path of the file to print'
         }
     },
@@ -170,11 +175,10 @@ implements the command `edit` as described below:
 {
     names: ['edit','ed'],
     description: 'edit a file with parsed syntax and highlighting.',
-    args: ['filePath'],
-    argsDesc: {
+    options: {
         filePath: {
             type: 'string',
-            required: true,
+            default: null,
             description: 'the path of the file to edit'
         }
     },

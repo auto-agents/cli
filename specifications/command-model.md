@@ -11,11 +11,12 @@ The command description is defined by a `javascript object` structured as below:
 {
     names: ["name1", "name2", ...],
     description: "description",
-    args: ["arg1", "arg2", ...],
-    argsDesc: {
+    options: {
             arg1: {
                 type: 'string',
-                required: true,
+                multiple: false,
+                short: 'n',
+                default: `default value`,
                 description: 'description'
             }, ...
         }
@@ -25,8 +26,17 @@ The command description is defined by a `javascript object` structured as below:
 where:
 - the names property is an array that list the names of the command (without the prefix character), that can have multiple names
 - the description property is a string that describe the command in human language
-- the args property is an array that list the arguments of the command if any, it can be ommited if the command does not have any arguments
-- the argsDesc property is an object that describe the arguments of the command if any, it can be ommited if the command does not have any arguments. It indicatges a type name for each argument, a boolean indicating if the argument is required, and a description of the argument in human language
+
+- the `options` property is an object that describe the arguments of the command if any, it can be ommited if the command does not have any arguments. It is conform to the specification of the `config.options` object defined by the the specification of the method `util.pargeArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig`. The properties of the object `options` are defined as explain below:
+
+    - `type` : a type name for each argument. possibles values are:
+        - `string` or `boolean` | `string[]` | `boolean[]`
+    - `multiple` : whether this option can be provided multiple times. If true, all values will be collected in an array. If false, values for the option are last-wins. Default: false.
+    - `short` : A single character alias for the option.
+    - `default` : The value to assign to the option if it does not appear in the arguments to be parsed. The value must match the type specified by the type property. If multiple is true, it must be an array. No default value is applied when the option does appear in the arguments to be parsed, even if the provided value is falsy. can be of type: `string` | `boolean` | `string[]` | `boolean[]`
+    -  a boolean indicating if the argument is required
+    - and a description of the argument in human language
+     
 - the file property is a string that define the path of the command file, relative to the commands implementations folder: `cli/commands`
 
 for example, the command that terminate the `CLI tool` is described as below:
@@ -71,10 +81,10 @@ for example, the command `cd` that is implemented in the file `cd-command.js` ha
     names: ['cd'],
     description: 'set current path',
     args: ['path'],
-    argsDesc: {
+    options: {
         path: {
             type: 'string',
-            required: true,
+            default: null,
             description: 'the path to set as current path'
         }
     },

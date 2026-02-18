@@ -116,7 +116,6 @@ export default class AppController {
 	}
 
 	handleLogErrorEvent(errorEvent) {
-		console.log(errorEvent)
 		this.error(errorEvent.error.message)
 	}
 

@@ -96,11 +96,11 @@ export default function config(cli) {
 					names: ['ls', 'dir'],
 					description: 'output the list of files of the current folder',
 					file: 'ls-command.js',
-					args: ['path'],
-					argsDesc: {
+					options: {
 						path: {
 							type: 'string',
 							required: false,
+							default: null,
 							description: 'the path of the folder to be listed. accept wildcards in the last part'
 						}
 					}
@@ -113,8 +113,7 @@ export default function config(cli) {
 				{
 					names: ['cd'],
 					description: 'set current path',
-					args: ['path'],
-					argsDesc: {
+					options: {
 						path: {
 							type: 'string',
 							required: true,
@@ -126,8 +125,7 @@ export default function config(cli) {
 				{
 					names: ['cat'],
 					description: 'output the content of a file',
-					args: ['filePath'],
-					argsDesc: {
+					options: {
 						filePath: {
 							type: 'string',
 							required: true,
@@ -139,8 +137,7 @@ export default function config(cli) {
 				{
 					names: ['print', 'pr'],
 					description: 'print a file with parsed syntax and highlighting. compatible with html and markdown files',
-					args: ['filePath'],
-					argsDesc: {
+					options: {
 						filePath: {
 							type: 'string',
 							required: true,
@@ -156,8 +153,7 @@ export default function config(cli) {
 				{
 					names: ['edit', 'ed'],
 					description: 'edit a file with parsed syntax and highlighting.',
-					args: ['filePath'],
-					argsDesc: {
+					options: {
 						filePath: {
 							type: 'string',
 							required: true,
@@ -493,7 +489,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: platform,

@@ -44,7 +44,9 @@ export default class CommandController {
 		const comd = tcom[0]
 
 		// checks args
-		if (args.length > 0 && !comd.args) {
+		const comArgs = comd.options
+		const comArgsNames = Object.getOwnPropertyNames(comArgs)
+		if (args.length > 0 && (!comArgs || comArgsNames.length == 0)) {
 			e.emit(CommandArgsCountErrorEvent, comd)
 			return
 		}
