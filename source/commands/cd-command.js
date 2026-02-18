@@ -40,9 +40,7 @@ export default class CdCommand {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
-						new Error(`Error: path '${newPath}' does not exist`,
-							{ error }
-						)),
+						new Error(`Error: path '${newPath}' does not exist`)),
 					cmd: this.From
 				}
 			)
