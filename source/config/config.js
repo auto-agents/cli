@@ -180,6 +180,30 @@ export default function config(cli) {
 					names: ['config', 'conf', 'cnf'],
 					description: 'edit the cli config file.',
 					file: 'config-command.js'
+				},
+				{
+					names: ['dialog', 'dial', 'd'],
+					description: 'configure and control the dialog with the cli tool',
+					config: {
+						options: {
+							action: {
+								type: 'string',
+								required: true,
+								allowedValues: [
+									{
+										value: 'shet-up',
+										descritption: 'turn off the current dialog speak (from the chat) if any'
+									},
+									{
+										value: 'su',
+										description: 'same as shet-up'
+									}],
+								description: 'an action order for the dialog controller'
+							}
+						},
+						allowPositionals: true
+					},
+					file: 'dialog-command.js'
 				}
 			],
 			currentInput: null,

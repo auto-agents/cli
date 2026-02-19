@@ -152,7 +152,7 @@ export default class CommandController {
 		}
 
 		try {
-			instance.run(parsedArgs)	// add tryc 'command run error'
+			await instance.run(parsedArgs, comd)	// add tryc 'command run error'
 		} catch (err) {
 			e.emit(CommandRunErrorEvent, {
 				...errorEvent(this.From, err),

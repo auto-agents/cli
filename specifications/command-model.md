@@ -69,18 +69,23 @@ for example, the command `exit` is implemented in the file `exit-command.js` and
 
 - the class has a constructor method that is called with the app context as parameter. this parameter is named `ctx` and is used to initialize the class property `ctx` by the class object constructor
 
-- the class has a `run` method that is called when the command is executed. this method is used to execute the command implementation. This method take the object returned by the `util.parseArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig` an array of arguments if the command has arguments. Thus the `run` method parameter has the follwing structure:
+- the class has a `run` method that is called when the command is executed. this method is used to execute the command implementation. This method take the object returned by the `util.parseArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig` as first parameter, and the command specification object `com` as the second parameter.Thus the `run` method parameter 1 has the follwing structure:
 
 ```js
+run(
 { 
     values: {
         arg1: value1, ...
     }, 
     positionals: [ positionnal1, ...]
-}
+},
+com
+)
 ```
 
 where:
+
+- `com` is the command specification object from the configuration.
 
 - `values` contains, for each matched properties, a property with the name of a matched argument from the `options` specification, having the value parsed from the command line for the argument.
 
@@ -94,7 +99,7 @@ export default class ExitCommand {
 		this.ctx = ctx
 	}
 
-	run(args) {
+	run(args,com) {
 		process.exit()
 	}
 }
@@ -129,7 +134,7 @@ export default class CdCommand {
 		this.ctx = ctx
 	}
 
-	run(args) {
+	run(args,com) {
         const pathArg = 'path'
         const path = 
         // path is maybe given by its argument name: cat --path path

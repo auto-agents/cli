@@ -76,6 +76,12 @@ export default class DialogController {
 			})
 	}
 
+	async shetUp() {
+		if (!this.#isSpeechAvailable())
+			return
+		await this.ctx.components.module.speech.shetUp()
+	}
+
 	async echoSystem(text, skipPrependNewLine) {
 		const o = this.output
 		if (!skipPrependNewLine)

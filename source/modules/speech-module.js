@@ -68,6 +68,10 @@ export default class SpeechModule {
         await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
     }
 
+    async shetUp() {
+        await this.speech.shetUp(this.config.apiKey)
+    }
+
     async openBrowser() {
         try {
             await this.speech.openBrowser()
