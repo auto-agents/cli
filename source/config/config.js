@@ -355,7 +355,9 @@ export default function config(cli) {
 			},
 			dialog: {
 				userDialogColor: '#4499FF',
-				systemDialogColor: '#BBBBBB'
+				systemDialogColor: '#BBBBBB',
+				assistantNameColor: '#FFFF00',
+				duoAssistantDialogColor: '#7abe8f'
 			},
 			warningColor: '#FF7700',
 			errorColor: '#FF0000',
@@ -559,7 +561,7 @@ export default function config(cli) {
 					browser: "edge",
 					maxLogLines: 15,
 					port: 3310,
-					waitTimeoutMs: 120000,
+					waitTimeoutMs: 60000 * 10,
 					browsers: {
 						chrome: {
 							runCommand: {
@@ -599,7 +601,7 @@ export default function config(cli) {
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
 					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
-					instructions: 'You are a coding assistant'
+					instructions: 'You are a coding assistant. you must always respond in french language'
 				}
 			},
 			openAIAgents: {

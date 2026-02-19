@@ -5,7 +5,7 @@ import { StatusMessage, StatusEnum } from "../data/status-message.js"
 import { LogErrorEvent, SetStatusMessageEvent, SpeakCommandEvent, errorEvent } from "../config/events.js"
 import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
-import { Role_Assistant, Role_System, Role_User } from "../components/open-ai/roles.js"
+import { Role_Assistant } from "../components/open-ai/roles.js"
 
 export default class DialogController {
 
@@ -122,7 +122,7 @@ export default class DialogController {
 		if (t.length > 0) {
 			// add role symbol
 			if (!name) name = this.ctx.dialog.speakAnswers.name
-			const n = name != null ? ` (${name})` : ''
+			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
 			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
 		}
 
@@ -186,7 +186,8 @@ export default class DialogController {
 				secondary: true,
 				// who speaks
 				voice: this.ctx.dialog.speakDuo.preferredVoices,
-				name: this.ctx.dialog.speakDuo.name
+				name: this.ctx.dialog.speakDuo.name,
+				color: this.ctx.theme.dialog.duoAssistantDialogColor
 			}
 		)
 
@@ -228,7 +229,8 @@ export default class DialogController {
 				secondary: false,
 				// who speaks
 				voice: this.ctx.dialog.speakDuo.preferredVoices,
-				name: this.ctx.dialog.speakDuo.name
+				name: this.ctx.dialog.speakDuo.name,
+				color: this.ctx.theme.dialog.duoAssistantDialogColor
 			})
 
 			await this.waitSpeechSpeak()
@@ -264,9 +266,7 @@ export default class DialogController {
 		voice = null,
 		waitForEnd = false,
 		interrupt = false) {
-		text =
-			this.responseSpeechFormater.getSpeech(
-				util.stripVTControlCharacters(text))
+		text = this.responseSpeechFormater.getSpeech(text)
 
 		const e = this.ctx.components.event
 		const sp = this.ctx.components.module.speech

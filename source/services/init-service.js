@@ -34,6 +34,7 @@ export default class InitService {
 					: this.ctx.theme.console.stderrColor
 			)
 			if (stream != 'stdout' && data.includes('Cannot update')) return	// skip this error
+
 			this.logOutput.newLine(false)
 			const t = data.split('\n')
 			t.forEach(x => {
