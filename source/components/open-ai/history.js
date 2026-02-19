@@ -1,4 +1,4 @@
-import { Role_Developer, Role_System } from "./roles"
+import { Role_Assistant, Role_Developer, Role_System } from "./roles"
 
 export default class History {
 
@@ -14,10 +14,10 @@ export default class History {
 
     reset() {
         this.messages = [
-            {
+            /*{
                 role: Role_Developer,
                 content: this.instructions
-            }
+            }*/
         ]
         return this
     }
@@ -31,16 +31,33 @@ export default class History {
         )
     }
 
-    getLastSystemMessage() {
+    getLastAssistantMessage() {
         var i = this.messages.length - 1
         var founded = false
+        var r = null
         while (i > 0 && !founded) {
             const m = this.messages[i]
-            if (i.role == Role_System)
-                return m.content
-            i--
+            if (m.role == Role_Assistant) {
+                r = m.content
+                founded = true
+            }
+            else
+                i--
         }
-        return null
+        return r
+    }
+
+    buildFlipedRoles() {
+        // invert content of 'user' and 'system' messages. returns a new history
+        const h = new History(this.instructions)
+        for (var i = 1; i < this.messages.length - 1; i++) {
+            const m0 = this.messages[i]
+            const m1 = this.messages[i + 1]
+
+            h.addMessage(m0.role, m1.content)
+            h.addMessage(m1.role, m0.content)
+        }
+        return h
     }
 
     static createFromJson(json) {

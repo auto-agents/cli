@@ -68,6 +68,11 @@ export default class SpeechModule {
         await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
     }
 
+    async waitSpeak(timeout) {
+        timeout ||= this.ctx.modules.speech.config.waitTimeoutMs
+        await this.speech.waitForRunningStatus({ expected: 'speaking', timeoutMs: timeout })
+    }
+
     async shetUp() {
         await this.speech.shetUp(this.config.apiKey)
     }

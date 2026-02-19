@@ -5,7 +5,7 @@ import { StatusMessage, StatusEnum } from "../data/status-message.js"
 import { LogErrorEvent, SetStatusMessageEvent, SpeakCommandEvent, errorEvent } from "../config/events.js"
 import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
-import { Role_System, Role_User } from "../components/open-ai/roles.js"
+import { Role_Assistant, Role_System, Role_User } from "../components/open-ai/roles.js"
 
 export default class DialogController {
 
@@ -37,7 +37,7 @@ export default class DialogController {
 		const username = this.ctx.components.sysInfo.username
 		const text = this.ctx.texts.dialog.hello
 			.replace('%username%', chalk.bold(username))
-		this.echoSystem(text, true)
+		this.echoSystem(text, true, {})
 	}
 
 	async echoUser(text) {
@@ -57,7 +57,14 @@ export default class DialogController {
 				true)
 	}
 
-	async queryOpenAIChat(query, secondary = false) {
+	async queryOpenAIChat(query,
+		skipPrependNewLine,
+		{
+			secondary = false,
+			name = null,
+			voice = null,
+			color = null
+		}) {
 		if (!this.#isChatOpenAIAvailable())
 			return
 		const e = this.ctx.components.event
@@ -71,7 +78,14 @@ export default class DialogController {
 			.chat(query, secondary)
 			.then(txt => {
 				e.emit(SetStatusMessageEvent)
-				this.echoSystem(txt)
+				this.echoSystem(txt,
+					skipPrependNewLine,
+					{
+						secondary: secondary,
+						name: name,
+						voice: voice,
+						color: color
+					})
 				return txt
 			})
 			.catch(err => {
@@ -88,19 +102,30 @@ export default class DialogController {
 		await this.ctx.components.module.speech.shetUp()
 	}
 
-	async echoSystem(text, skipPrependNewLine) {
+	async echoSystem(text, skipPrependNewLine, {
+		secondary = false,
+		name = null,
+		voice = null,
+		color = null
+	}) {
 		const o = this.output
 		if (!skipPrependNewLine)
 			o.newLine(false)
-		const scol = chalk.hex(this.ctx.theme.dialog.systemDialogColor)
+		color ||= this.ctx.theme.dialog.systemDialogColor
+		const scol = chalk.hex(color)
 
 		// render response
 
 		const outp = this.responseTextFormater.getRendered(text)
 		const t = outp.trim().replaceAll('\t', '    ').split('\n')
 
-		if (t.length > 0)
-			t[0] = this.ctx.cli.dialog.systemDialogPrefix + ' ' + t[0]
+		if (t.length > 0) {
+			// add role symbol
+			if (!name) name = this.ctx.dialog.speakAnswers.name
+			const n = name != null ? ` (${name})` : ''
+			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
+		}
+
 		t.forEach(l => {
 			const s = l.length == 0 ? ' ' : l
 			return o.appendLine(scol(s))
@@ -112,8 +137,11 @@ export default class DialogController {
 			&& this.#isSpeechAvailable()) {
 			await this.speak(
 				text,
-				this.ctx.dialog.speakAnswers.preferredVoices
-				[this.ctx.modules.speech.config.browser][0],
+				voice == null ?
+					this.ctx.dialog.speakAnswers.preferredVoices
+					[this.ctx.modules.speech.config.browser][0]
+					: voice[this.ctx.modules.speech.config.browser][0]
+				,
 				true)
 		}
 	}
@@ -130,16 +158,18 @@ export default class DialogController {
 		const secondaryChat = chat.openaiSecondary
 		const sp = this.ctx.components.module.speech
 
-		console.log(primaryChat.history)
+		//console.log(primaryChat.history)
 
-		var lastSysMessage = primaryChat.history.getLastSystemMessage()
-		if (!lastSysMessage) {
-			lastSysMessage = {
-				role: Role_System,
+		var lastAssistMessage = primaryChat.history.getLastAssistantMessage()
+		if (!lastAssistMessage) {
+			lastAssistMessage = {
+				role: Role_Assistant,
 				content: this.ctx.dialog.sentences.dualModeInitialSystemSentence
 			}
 		}
+		//console.log('last sys message: ', lastAssistMessage)
 		secondaryChat.history.reset()
+		primaryChat.history.reset()
 
 		// wait idle
 		if (this.ctx.dialog.speakAnswers.enabled
@@ -148,9 +178,64 @@ export default class DialogController {
 		// TODO: wait app idle
 		// ...
 
-		// ask from the last response
-		const text = await this.queryOpenAIChat(lastSysMessage.content, true)
-		console.log(secondaryChat.history)
+		// 2 ------ speak
+
+		// chat from the secondary history
+		this.echoSystem(lastAssistMessage.content, false,
+			{
+				secondary: true,
+				// who speaks
+				voice: this.ctx.dialog.speakDuo.preferredVoices,
+				name: this.ctx.dialog.speakDuo.name
+			}
+		)
+
+		await this.waitSpeechSpeak()
+		await this.waitSpeechIdle()
+
+		var message = lastAssistMessage.content
+
+		//---- DIAL LOOP -----
+
+		while (this.duoModeEnabled) {
+
+			// 2 ------ query	1 ----- speak
+
+			await this.queryOpenAIChat(message, false,
+				{
+					secondary: true,
+					// who responds
+					voice: null,
+					name: null
+				}
+			)
+
+			await this.waitSpeechSpeak()
+			await this.waitSpeechIdle()
+
+			//console.log('seconday history:')
+			//console.log(secondaryChat.history)
+
+			// build the primary history from the secondary history
+			message = secondaryChat.history.getLastAssistantMessage()
+
+			//console.log('last:', m)
+
+			// 1 ----- query	2 ----- speak
+
+			// chat from the primary history
+			await this.queryOpenAIChat(message, false, {
+				secondary: false,
+				// who speaks
+				voice: this.ctx.dialog.speakDuo.preferredVoices,
+				name: this.ctx.dialog.speakDuo.name
+			})
+
+			await this.waitSpeechSpeak()
+			await this.waitSpeechIdle()
+
+			message = primaryChat.history.getLastAssistantMessage()
+		}
 	}
 
 	async #speakEventHandler(data) {
@@ -160,6 +245,18 @@ export default class DialogController {
 			data.waitForEnd,
 			data.interrupt
 		)
+	}
+
+	async waitSpeechIdle() {
+		if (!(this.ctx.dialog.speakAnswers.enabled
+			&& this.#isSpeechAvailable())) return
+		await this.ctx.components.module.speech.waitIdle()
+	}
+
+	async waitSpeechSpeak() {
+		if (!(this.ctx.dialog.speakAnswers.enabled
+			&& this.#isSpeechAvailable())) return
+		await this.ctx.components.module.speech.waitSpeak()
 	}
 
 	async speak(

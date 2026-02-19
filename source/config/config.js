@@ -303,6 +303,7 @@ export default function config(cli) {
 				}
 			},
 			speakAnswers: {
+				name: 'seraphina',
 				enabled: true,
 				preferredVoices: {
 					edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
@@ -312,6 +313,12 @@ export default function config(cli) {
 				enabled: true,
 				preferredVoices: {
 					edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
+				}
+			},
+			speakDuo: {
+				name: 'emma',
+				preferredVoices: {
+					edge: ['Microsoft EmmaMultilingual Online (Natural) - English (United States)']
 				}
 			},
 			sentences: {

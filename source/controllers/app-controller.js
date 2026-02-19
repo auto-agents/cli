@@ -272,7 +272,12 @@ export default class AppController {
 			// run dialog
 			await this.dialog.echoUser(inp)
 				.then(async () => {
-					await this.dialog.queryOpenAIChat(inp)
+					await this.dialog.queryOpenAIChat(
+						inp, false, {
+						secondary: false,
+						name: null,
+						voice: null
+					})
 				})
 		}
 
