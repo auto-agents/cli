@@ -63,8 +63,9 @@ export default class SpeechModule {
         await this.speech.speak({ sentence: text, voice: voice, apiKey: this.config.apiKey })
     }
 
-    async waitIdle() {
-        await this.speech.waitForRunningStatus({ expected: 'idle' })
+    async waitIdle(timeout) {
+        timeout ||= this.ctx.modules.speech.waitTimeoutMs
+        await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
     }
 
     async openBrowser() {

@@ -516,6 +516,7 @@ export default function config(cli) {
 					browser: "edge",
 					maxLogLines: 15,
 					port: 3310,
+					waitTimeoutMs: 120000,
 					browsers: {
 						chrome: {
 							runCommand: {

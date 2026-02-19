@@ -42,11 +42,12 @@ export const errorEvent = (from, err) => {
     }
 }
 
-export const speakEvent = (from, text, voice, wait) => {
+export const speakEvent = (from, text, voice, waitForEnd, interrupt) => {
     return {
         from: from,
         text: text,
         voice: voice,
-        wait: wait
+        waitForEnd: waitForEnd,
+        interrupt: interrupt
     }
 }

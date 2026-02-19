@@ -8,6 +8,8 @@ import ResponseSpeechFormater from "../components/open-ai/response-speech-format
 
 export default class DialogController {
 
+	From = 'dialog'
+
 	constructor(ctx, output) {
 		this.ctx = ctx
 		this.output = output
@@ -59,7 +61,7 @@ export default class DialogController {
 		e.emit(SetStatusMessageEvent, new StatusMessage(
 			StatusEnum.waiting,
 			'🤖 thinking',
-			'dialog'
+			this.From
 		))
 		const r = await this.ctx.components.module.openAIChat.chat(query)
 			.then(txt => {
@@ -69,7 +71,7 @@ export default class DialogController {
 			.catch(err => {
 				e.emit(SetStatusMessageEvent)
 				e.emit(LogErrorEvent,
-					errorEvent('dialog', err))
+					errorEvent(this.From, err))
 			})
 	}
 
@@ -107,14 +109,16 @@ export default class DialogController {
 		await this.speak(
 			data.text,
 			data.voice,
-			data.wait
+			data.waitForEnd,
+			data.interrupt
 		)
 	}
 
 	async speak(
 		text,
 		voice = null,
-		wait = false) {
+		waitForEnd = false,
+		interrupt = false) {
 		text =
 			this.responseSpeechFormater.getSpeech(
 				util.stripVTControlCharacters(text))
@@ -128,20 +132,23 @@ export default class DialogController {
 				new StatusMessage(
 					StatusEnum.waiting,
 					'🔊 speaking',
-					'dialog'))
+					this.From))
 
-			if (wait) await sp.waitIdle()
+			if (!interrupt) await sp.waitIdle()
+				.catch(err => {
+					e.emit(LogErrorEvent, errorEvent(this.From, err))
+				})
 
 			await sp.speak(text, voice)
 
-			if (wait) await sp.waitIdle()
+			if (waitForEnd) await sp.waitIdle()
 
 			e.emit(SetStatusMessageEvent)
 
 		} catch (err) {
 			this.ctx.components.event.emit(SetStatusMessageEvent)
 
-			e.emit(LogErrorEvent, errorEvent('app', err))
+			e.emit(LogErrorEvent, errorEvent(this.From, err))
 		}
 	}
 }
