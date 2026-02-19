@@ -19,7 +19,8 @@ The command description is defined by a `javascript object` structured as below:
                 short: 'n',
                 default: `default value`,
                 description: 'description',
-                required: true
+                required: true,
+                allowedValues: ['value1','value2',...]
             }, ...
         },
         allowPositionals: true
@@ -33,7 +34,7 @@ where:
 
 - the `config` property is an object that describe the command specifiction accordlingly to the `util.parseArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig`. It has the properties:
     - `options`: describes the command parameters and arguments
-    - `allowPositionals`: true | false. Indicates if a command accept positional arguments
+    - `allowPositionals`: true | false. Indicates if a command accept positional arguments. if false the option name must always be specified in the command line (eg. `--name value`)
 
 - the `options` property is an object that describe the arguments of the command if any, it can be ommited if the command does not have any arguments. It is conform to the specification of the `config.options` object defined by the the specification of the method `util.parseArgs([config])` from `Node.Js` at `https://nodejs.org/api/util.html#utilparseargsconfig`. The properties of the object `options` are defined as explain below:
 
@@ -43,6 +44,7 @@ where:
     - `short` : A single character alias for the option.
     - `default` : The value to assign to the option if it does not appear in the arguments to be parsed. The value must match the type specified by the type property. If multiple is true, it must be an array. No default value is applied when the option does appear in the arguments to be parsed, even if the provided value is falsy. can be of type: `string` | `boolean` | `string[]` | `boolean[]`
     - `required` : a boolean indicating if the argument is required
+    - `allowedValues` : the possibles values of the option if it is a of type `string`. must be omitted if the option value is not constrained
     - `description` : a description of the argument in human language
      
 - the file property is a string that define the path of the command file, relative to the commands implementations folder: `cli/commands`
