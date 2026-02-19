@@ -338,6 +338,7 @@ export default function config(cli) {
 			statusMessage: {
 				separatorColor: '#b0d3b0',
 				messageColor: '#AAAAAA',
+				submessageColor: '#AAAAFF',
 				statusColors: {
 					on: '#00AA00',
 					off: '#777777',

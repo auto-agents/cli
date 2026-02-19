@@ -23,6 +23,8 @@ import chalk from 'chalk'
 
 export default function App({ ctx }) {
 
+	const From = 'app'
+
 	const e = ctx.components.event
 	const { stdout } = useStdout()
 	const { stdin } = useStdin()
@@ -151,11 +153,12 @@ export default function App({ ctx }) {
 	const buildStatusMessageView = (statusMessage) => {
 		const sepc = chalk.hex(ctx.theme.statusMessage.separatorColor)
 		const textc = chalk.hex(ctx.theme.statusMessage.messageColor)
+		const subtextc = chalk.hex(ctx.theme.statusMessage.submessageColor)
 		const statc = ctx.theme.statusMessage.statusColors[statusMessage.status] ?
-			chalk.hex(ctx.theme.statusMessage.statusColors[statusMessage.status])(statusMessage.status) :
-			statusMessage.status
+			chalk.hex(ctx.theme.statusMessage.statusColors[statusMessage.status])(statusMessage.status.padEnd(12)) :
+			statusMessage.status.padEnd(12)
 		const sep = sepc(' | ')
-		return `${statusMessage.from.padEnd(20)} ${sep} ${statc.padEnd(12)} ${sep} ${textc(statusMessage.message)}`
+		return `${statusMessage.from.padEnd(20)} ${sep} ${statc} ${sep} ${textc((statusMessage.message || '').padEnd(20))} ${sep} ${subtextc(statusMessage.subMessage || '')}`
 	}
 
 	useEffect(() => {
@@ -163,10 +166,11 @@ export default function App({ ctx }) {
 			var statusMessage = args.length > 0 ? args[0] : null
 			if (!statusMessage)
 				statusMessage = new StatusMessage(
+					From,
 					StatusEnum.idle,
-					'',
-					'app'
+					'', ''
 				)
+
 			setStatusMessage(
 				buildStatusMessageView(statusMessage))
 		}

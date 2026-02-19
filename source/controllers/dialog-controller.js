@@ -59,9 +59,10 @@ export default class DialogController {
 			return
 		const e = this.ctx.components.event
 		e.emit(SetStatusMessageEvent, new StatusMessage(
+			this.From,
 			StatusEnum.waiting,
-			'🤖 thinking',
-			this.From
+			'🤖 thinking ...',
+			this.ctx.modules.openAIChat.config.model
 		))
 		const r = await this.ctx.components.module.openAIChat.chat(query)
 			.then(txt => {
@@ -130,9 +131,10 @@ export default class DialogController {
 			e.emit(
 				SetStatusMessageEvent,
 				new StatusMessage(
+					this.From,
 					StatusEnum.waiting,
 					'🔊 speaking',
-					this.From))
+				))
 
 			if (!interrupt) await sp.waitIdle()
 				.catch(err => {

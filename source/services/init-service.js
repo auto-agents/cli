@@ -13,6 +13,8 @@ import { StatusEnum, StatusMessage } from '../data/status-message.js';
 
 export default class InitService {
 
+	From = 'init-service'
+
 	constructor(ctx, app, output, logOutput) {
 		this.ctx = ctx
 		this.app = app
@@ -89,9 +91,9 @@ export default class InitService {
 		this.ctx.components.event.emit
 			(SetStatusMessageEvent,
 				new StatusMessage(
+					this.From,
 					StatusEnum.ready,
-					'cli ready',
-					'init-service'
+					'cli ready'
 				)
 			)
 		setTimeout(

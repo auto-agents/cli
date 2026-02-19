@@ -10,12 +10,14 @@ export const StatusEnum = {
 export class StatusMessage {
 
     constructor(
+        from,
         status,
         message,
-        from
+        subMessage
     ) {
         this.status = status
         this.message = message
+        this.subMessage = subMessage
         this.from = from
     }
 }
