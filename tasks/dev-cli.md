@@ -233,7 +233,7 @@ The command `dialog` is used to configure and control the dialog with the `cli t
             action: {
                 type: 'string',
                 required: true,
-                allowedValues: 'stop',
+                allowedValues: ['su','shet-up'],
                 description: 'an action order for the dialog controller'
             }
         },
