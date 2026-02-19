@@ -64,7 +64,7 @@ export default class SpeechModule {
     }
 
     async waitIdle(timeout) {
-        timeout ||= this.ctx.modules.speech.waitTimeoutMs
+        timeout ||= this.ctx.modules.speech.config.waitTimeoutMs
         await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
     }
 
