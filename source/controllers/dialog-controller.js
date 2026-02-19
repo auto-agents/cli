@@ -5,6 +5,7 @@ import { StatusMessage, StatusEnum } from "../data/status-message.js"
 import { LogErrorEvent, SetStatusMessageEvent, SpeakCommandEvent, errorEvent } from "../config/events.js"
 import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
+import { Role_System, Role_User } from "../components/open-ai/roles.js"
 
 export default class DialogController {
 
@@ -56,7 +57,7 @@ export default class DialogController {
 				true)
 	}
 
-	async queryOpenAIChat(query) {
+	async queryOpenAIChat(query, secondary = false) {
 		if (!this.#isChatOpenAIAvailable())
 			return
 		const e = this.ctx.components.event
@@ -66,16 +67,19 @@ export default class DialogController {
 			'🤖 thinking ...',
 			this.ctx.modules.openAIChat.config.model
 		))
-		const r = await this.ctx.components.module.openAIChat.chat(query)
+		const r = await this.ctx.components.module.openAIChat
+			.chat(query, secondary)
 			.then(txt => {
 				e.emit(SetStatusMessageEvent)
 				this.echoSystem(txt)
+				return txt
 			})
 			.catch(err => {
 				e.emit(SetStatusMessageEvent)
 				e.emit(LogErrorEvent,
 					errorEvent(this.From, err))
 			})
+		return r
 	}
 
 	async shetUp() {
@@ -115,8 +119,38 @@ export default class DialogController {
 	}
 
 	async setDuoModeEnabled(on) {
+		if (!this.#isChatOpenAIAvailable()) return
+
 		if (on == this.duoModeEnabled) return
 		this.duoModeEnabled = on
+		if (!on) return
+
+		const chat = this.ctx.components.module.openAIChat
+		const primaryChat = chat.openai
+		const secondaryChat = chat.openaiSecondary
+		const sp = this.ctx.components.module.speech
+
+		console.log(primaryChat.history)
+
+		var lastSysMessage = primaryChat.history.getLastSystemMessage()
+		if (!lastSysMessage) {
+			lastSysMessage = {
+				role: Role_System,
+				content: this.ctx.dialog.sentences.dualModeInitialSystemSentence
+			}
+		}
+		secondaryChat.history.reset()
+
+		// wait idle
+		if (this.ctx.dialog.speakAnswers.enabled
+			&& this.#isSpeechAvailable())
+			await sp.waitIdle()
+		// TODO: wait app idle
+		// ...
+
+		// ask from the last response
+		const text = await this.queryOpenAIChat(lastSysMessage.content, true)
+		console.log(secondaryChat.history)
 	}
 
 	async #speakEventHandler(data) {

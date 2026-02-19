@@ -13,7 +13,7 @@ export default class OpenAI {
         this.history = null
     }
 
-    async init() {
+    async init(disableHistorySave = false) {
         // init client
         const c = this.config
         this.client = new OpenAiApi({
@@ -23,16 +23,16 @@ export default class OpenAI {
         })
         var histText = null
         // load history
-        if (!fs.existsSync(c.historyPath)) {
-            histText = new History(this.config.instructions).toJson()
+        if (disableHistorySave
+            || !fs.existsSync(c.historyPath)) {
+            this.history = new History(c.instructions)
         }
         else {
             histText = await fs.readFile(c.historyPath, 'utf-8')
+            this.history = JSON.parse(histText) // TODO: change this
         }
-        this.history = JSON.parse(histText)
         return this
     }
-
 
     async completion(query) {
 

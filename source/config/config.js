@@ -313,6 +313,9 @@ export default function config(cli) {
 				preferredVoices: {
 					edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
 				}
+			},
+			sentences: {
+				dualModeInitialSystemSentence: 'hello'
 			}
 		},
 		theme: {

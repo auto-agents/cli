@@ -4,6 +4,7 @@ import cliSpinners from 'cli-spinners';
 import Status from '../utils/status.js'
 import utils from '../utils/utils.js'
 import OpenAI from "../components/open-ai/open-ai.js";
+import History from "../components/open-ai/history.js";
 
 export default class OpenAIChatModule {
 
@@ -13,6 +14,7 @@ export default class OpenAIChatModule {
         this.outputContext = outputContext
         this.spinner = new SpinnerService(ctx, outputContext.output)
         this.status = new Status(ctx)
+        this.historyDuo = null
     }
 
     async init() {
@@ -21,6 +23,8 @@ export default class OpenAIChatModule {
         const margin = this.outputContext.margin + this.outputContext.marginBase
         const margin2 = margin + this.outputContext.marginBase
         o.appendLine(margin + '~ loading open ai chat module')
+
+        // primary open ai chat
 
         this.openai = new OpenAI(
             this.ctx,
@@ -32,9 +36,22 @@ export default class OpenAIChatModule {
         )
         await this.openai.init()
 
+        // secondary open ai chat (duo mode)
+        this.openaiSecondary = new OpenAI(
+            this.ctx,
+            {
+                ...this.ctx.modules.openAI,
+                ...this.config
+            },
+            this.outputContext
+        )
+        await this.openaiSecondary.init(true)
+
         const initApi = async () => {
             try {
+
                 await utils.wait(this.ctx.ui.initFastWait)
+
             } catch (err) {
                 o.appendLine(this.status.error(margin + 'open ai chat module init error: ' + err))
             }
@@ -52,11 +69,11 @@ export default class OpenAIChatModule {
 
         // this will enable module for the cli
         this.ctx.components.module.openAIChat = this
-
     }
 
-    async chat(query) {
-        const r = await this.openai.completion(query)
+    async chat(query, secondary = false) {
+        const api = !secondary ? this.openai : this.openaiSecondary
+        const r = await api.completion(query)
         return r
     }
 }
