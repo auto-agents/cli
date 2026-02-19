@@ -316,13 +316,15 @@ export default function config(cli) {
 				}
 			},
 			speakDuo: {
-				name: 'emma',
+				name: 'guy',
 				preferredVoices: {
-					edge: ['Microsoft EmmaMultilingual Online (Natural) - English (United States)']
+					edge: ['Microsoft Guy Online (Natural) - English (United States)',
+						'Microsoft EmmaMultilingual Online (Natural) - English (United States)']
 				}
 			},
 			sentences: {
-				dualModeInitialSystemSentence: 'hello'
+				dualModeInitialSystemSentence0: "bonjour. répond en langue française. n'ajoute pas de traduction",
+				dualModeInitialSystemSentence: "hello",
 			}
 		},
 		theme: {
@@ -601,7 +603,8 @@ export default function config(cli) {
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
 					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
-					instructions: 'You are a coding assistant. you must always respond in french language'
+					instructions: 'You are a coding assistant.',
+					instructions0: 'répond en langue française',
 				}
 			},
 			openAIAgents: {
