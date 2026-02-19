@@ -30,18 +30,23 @@ export default class OpenAIChatModule {
             this.ctx,
             {
                 ...this.ctx.modules.openAI,
-                ...this.config
+                ...this.config,
+                id: 1,
+                instructions: this.ctx.dialog.roles.agent1.instructions
             },
             this.outputContext
         )
         await this.openai.init()
 
         // secondary open ai chat (duo mode)
+
         this.openaiSecondary = new OpenAI(
             this.ctx,
             {
                 ...this.ctx.modules.openAI,
-                ...this.config
+                ...this.config,
+                id: 2,
+                instructions: this.ctx.dialog.roles.agent2.instructions
             },
             this.outputContext
         )

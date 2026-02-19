@@ -325,6 +325,14 @@ export default function config(cli) {
 			sentences: {
 				dualModeInitialSystemSentence0: "bonjour. répond en langue française. n'ajoute pas de traduction",
 				dualModeInitialSystemSentence: "hello",
+			},
+			roles: {
+				agent1: {
+					instructions: 'you are a software solution developer and seller. your are looking to design a new software solution and find new customers'
+				},
+				agent2: {
+					instructions: 'you are a customer looking for a software developper and seller in order to get a new software solution'
+				}
 			}
 		},
 		theme: {
@@ -591,6 +599,7 @@ export default function config(cli) {
 				apiKey: 'change-me',
 				model: "google/gemma-3-1b",
 				baseURL: "http://localhost:1234/v1/",
+				temperature: 0.7,		// TODO: use this parameter
 				paths: {
 					completion: '/chat/completions'
 				},
@@ -601,7 +610,11 @@ export default function config(cli) {
 				enabled: true,
 				config: {
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
+
 					model: "google/gemma-3-1b",
+					model1: "mistralai/ministral-3-3b",
+					//model2: 'gpt2-finetuned-recipes-cooking_v2-i1',
+
 					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
 					instructions: 'You are a coding assistant.',
 					instructions0: 'répond en langue française',

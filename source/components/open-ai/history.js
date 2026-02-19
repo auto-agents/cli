@@ -14,10 +14,10 @@ export default class History {
 
     reset() {
         this.messages = [
-            /*{
-                role: Role_Developer,
+            {
+                role: Role_System,
                 content: this.instructions
-            }*/
+            }
         ]
         return this
     }

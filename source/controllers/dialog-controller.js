@@ -68,12 +68,14 @@ export default class DialogController {
 		if (!this.#isChatOpenAIAvailable())
 			return
 		const e = this.ctx.components.event
+
 		e.emit(SetStatusMessageEvent, new StatusMessage(
 			this.From,
 			StatusEnum.waiting,
 			'🤖 thinking ...',
 			this.ctx.modules.openAIChat.config.model
 		))
+
 		const r = await this.ctx.components.module.openAIChat
 			.chat(query, secondary)
 			.then(txt => {
@@ -153,12 +155,17 @@ export default class DialogController {
 		this.duoModeEnabled = on
 		if (!on) return
 
+		const d = this.ctx.dialog
+		const o = this.output
+
+		o.newLine()
+		o.appendLine(`agent 1 is '${d.speakAnswers.name}' with instructions: ${d.roles.agent1.instructions}`)
+		o.appendLine(`agent 2 is '${d.speakDuo.name}' with instructions: ${d.roles.agent2.instructions}`)
+
 		const chat = this.ctx.components.module.openAIChat
 		const primaryChat = chat.openai
 		const secondaryChat = chat.openaiSecondary
 		const sp = this.ctx.components.module.speech
-
-		//console.log(primaryChat.history)
 
 		var lastAssistMessage = primaryChat.history.getLastAssistantMessage()
 		if (!lastAssistMessage) {
@@ -167,7 +174,7 @@ export default class DialogController {
 				content: this.ctx.dialog.sentences.dualModeInitialSystemSentence
 			}
 		}
-		//console.log('last sys message: ', lastAssistMessage)
+
 		secondaryChat.history.reset()
 		primaryChat.history.reset()
 
@@ -213,9 +220,6 @@ export default class DialogController {
 
 			await this.waitSpeechSpeak()
 			await this.waitSpeechIdle()
-
-			//console.log('seconday history:')
-			//console.log(secondaryChat.history)
 
 			// build the primary history from the secondary history
 			message = secondaryChat.history.getLastAssistantMessage()
