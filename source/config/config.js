@@ -197,6 +197,14 @@ export default function config(cli) {
 									{
 										value: 'su',
 										description: 'same as shet-up'
+									},
+									{
+										value: 'duo-on',
+										description: 'activate the agent chat dialog duo mode'
+									},
+									{
+										value: 'duo-off',
+										description: 'stop the agent chat dialog duo mode'
 									}],
 								description: 'an action order for the dialog controller'
 							}

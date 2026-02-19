@@ -1,5 +1,5 @@
 import Status from '../utils/status.js'
-import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
+import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent } from '../config/events.js'
 
 export default class DialogCommand {
 
@@ -45,16 +45,27 @@ export default class DialogCommand {
 		}
 
 		// Execute the dialog action based on the action value
+		const dialogController = this.ctx.components.dialog
 		switch (action) {
+
 			case 'su':
 			case 'shet-up':
-				await this.#executeSuAction()
+				await dialogController.shetUp()
 				break
-		}
-	}
 
-	async #executeSuAction() {
-		const dialogController = this.ctx.components.dialog
-		await dialogController.shetUp()
+			case 'duo-on':
+				await dialogController.setDuoModeEnabled(true)
+				break
+
+			case 'duo-off':
+				await dialogController.setDuoModeEnabled(false)
+				break
+
+			default:
+				e.emit(CommandNotFoundEvent, errorEvent(
+					this.From,
+					new Error(action)
+				))
+		}
 	}
 }

@@ -10,6 +10,8 @@ export default class DialogController {
 
 	From = 'dialog'
 
+	duoModeEnabled = false
+
 	constructor(ctx, output) {
 		this.ctx = ctx
 		this.output = output
@@ -110,6 +112,11 @@ export default class DialogController {
 				[this.ctx.modules.speech.config.browser][0],
 				true)
 		}
+	}
+
+	async setDuoModeEnabled(on) {
+		if (on == this.duoModeEnabled) return
+		this.duoModeEnabled = on
 	}
 
 	async #speakEventHandler(data) {
