@@ -179,12 +179,15 @@ implements the command `edit` as described below:
 {
     names: ['edit','ed'],
     description: 'edit a file with parsed syntax and highlighting.',
-    options: {
-        filePath: {
-            type: 'string',
-            default: null,
-            description: 'the path of the file to edit'
-        }
+    config: {
+        options: {
+            filePath: {
+                type: 'string',
+                required: true,
+                description: 'the path of the file to edit'
+            }
+        },
+        allowPositionals: true
     },
     file: 'edit-command.js'
 }
@@ -212,3 +215,30 @@ implements the command `config` as described below:
 implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 This command works the same way as the command `edit`. This command has no parameters. It always open the file `cli/source/config/config.js`, related to the cli process path.
+
+### command: `dialog`
+
+Implements a new command named `dialog`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+
+this command is specified as below:
+
+The command `dialog` is used to configure and control the dialog with the `cli tool` and with the `speech module`.
+
+```js
+{
+    names: ['dialod','dial','d'],
+    description: 'configure and control the dialog with the cli tool',
+    config: {
+        options: {
+            action: {
+                type: 'string',
+                required: true,
+                allowedValues: 'stop',
+                description: 'an action order for the dialog controller'
+            }
+        },
+        allowPositionals: true
+    },
+    file: 'dialog-command.js'
+}
+```
