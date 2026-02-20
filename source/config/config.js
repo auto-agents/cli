@@ -192,7 +192,7 @@ export default function config(cli) {
 								allowedValues: [
 									{
 										value: 'shet-up',
-										descritption: 'turn off the current dialog speak (from the chat) if any'
+										description: 'turn off the current dialog speak (from the chat) if any'
 									},
 									{
 										value: 'su',
@@ -212,6 +212,21 @@ export default function config(cli) {
 						allowPositionals: true
 					},
 					file: 'dialog-command.js'
+				},
+				{
+					names: ['help', 'h'],
+					description: 'provide informations about the cli tool, contexts, commands and RAG db',
+					config: {
+						options: {
+							command: {
+								type: 'string',
+								required: false,
+								description: 'a command name'
+							}
+						},
+						allowPositionals: true
+					},
+					file: 'help-command.js'
 				}
 			],
 			currentInput: null,
@@ -384,6 +399,9 @@ export default function config(cli) {
 			promptInputColor: '#FFFFFF',
 			promptInviteColor: '#00FF00',
 			outputBorderColor: '#555555',
+			output: {
+				borderColor: '#555555'
+			},
 			scrollbar: {
 				trackBackground: ' ',
 				carretTop: '↑',
@@ -397,7 +415,9 @@ export default function config(cli) {
 			},
 			help: {
 				commandsListColor: '#00FF00',
-				commandsListArgsColor: '#00BB55'
+				commandsListArgsColor: '#00BB55',
+				argumentDescriptionColor: '#58b48e',
+				allowedValueDescriptionColor: '#99FF99'
 			},
 			dialog: {
 				userDialogColor: '#4499FF',

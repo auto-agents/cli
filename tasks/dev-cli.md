@@ -245,7 +245,7 @@ The command `dialog` is used to configure and control the dialog with the `cli t
 
 ### command: `help`
 
-mplements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+Implements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
 
 this command is specified as below:
 
@@ -255,7 +255,7 @@ The command `help` is used to provide informations about:
 - the `commands`
 - any informational document defined as it in the help configuration or in the `CLI TOOL RAG database content`
 
-``js
+```js
 {
     names: ['help','h'],
     description: 'provide informations about the cli tool, contexts, commands and RAG db',
@@ -272,3 +272,13 @@ The command `help` is used to provide informations about:
     file: 'help-command.js'
 }
 ```
+
+#### fixes / improvements
+
+- add the new parameters in config.js from those added in help-command.js
+- replace theme.output.borderColor by theme.borderSecondayColor
+- you can't use directly colors from context theme properties in help-command.js. you must use them through the method call chalk.hex(my_color) using import chalk from 'chalk'. do not repeat several times the sames chalk uses, factorize them using functions
+- calls to the factorized function must be fixed:  they must receive the text as parameter. and the functions must return a call to chalk.hex followed by the text parameter, like this: chalk.hex(my_color)(text)
+- allowedValues have both a value text and a description in cli.commands , in the allowedValues objects. add the output of these description to the output of allowed values, in a property way (mulitples lines)
+- add distinct colors definied in the config for the argument descriptions and for the allowed valued descriptions
+- add different colors for the allowed value and its description
