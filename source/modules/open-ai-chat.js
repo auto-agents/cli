@@ -5,6 +5,7 @@ import Status from '../utils/status.js'
 import utils from '../utils/utils.js'
 import OpenAI from "../components/open-ai/open-ai.js";
 import History from "../components/open-ai/history.js";
+import fs from 'fs'
 
 export default class OpenAIChatModule {
 
@@ -80,5 +81,10 @@ export default class OpenAIChatModule {
         const api = !secondary ? this.openai : this.openaiSecondary
         const r = await api.completion(query)
         return r
+    }
+
+    saveHistory(filePath) {
+        const h = this.openai.history.toJson()
+        fs.writeFileSync(filePath, h)
     }
 }

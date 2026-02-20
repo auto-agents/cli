@@ -149,8 +149,8 @@ export default class InputController {
 						const argsNames = e.config?.options ? Object.getOwnPropertyNames(e.config.options) : []
 						if (nbMatch == 1 && argsNames && argsNames.length > 0) {
 
-							s = ' '.repeat(padcmdname + 4)
 							argsNames.forEach(argName => {
+								s = ' '.repeat(padcmdname + 4)
 
 								const arg = e.config.options[argName]
 
@@ -177,10 +177,10 @@ export default class InputController {
 									// possible values
 									+ pv
 									+ ' '
-							})
 
-							s = argsCol(s)
-							addLine(s)
+								s = argsCol(s)
+								addLine(s)
+							})
 						}
 					}
 				}

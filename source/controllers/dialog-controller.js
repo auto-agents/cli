@@ -188,7 +188,9 @@ export default class DialogController {
 			}
 		}
 
+		secondaryChat.history.instructions = agent2.instructions
 		secondaryChat.history.reset()
+		primaryChat.history.instructions = agent1.instructions
 		primaryChat.history.reset()
 
 		// wait idle

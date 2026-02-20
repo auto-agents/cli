@@ -205,8 +205,28 @@ export default function config(cli) {
 									{
 										value: 'duo-off',
 										description: 'stop the agent chat dialog duo mode'
-									}],
+									},
+									{
+										value: 'save',
+										description: 'save the current dialog history into a file. eg: --action save --file myfile.txt'
+									}
+								],
 								description: 'an action order for the dialog controller'
+							},
+							agent1_instructions: {
+								type: 'string',
+								required: false,
+								description: 'instructions for the agent 1 when duo mode enabled'
+							},
+							agent2_instructions: {
+								type: 'string',
+								required: false,
+								description: 'instructions for the agent 2 when duo mode enabled'
+							},
+							file: {
+								type: 'string',
+								required: false,
+								description: 'a file path to use in combination with action saved'
 							}
 						},
 						allowPositionals: true

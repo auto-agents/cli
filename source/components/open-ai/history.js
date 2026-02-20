@@ -70,6 +70,6 @@ export default class History {
             instructions: this.instructions,
             messages: this.messages
         }
-        return JSON.stringify(o)
+        return JSON.stringify(o, null, 2)
     }
 }
