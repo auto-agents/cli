@@ -11,6 +11,7 @@ export default class DialogCommand extends Command {
 
 	// dial duo-on --agent1_instructions "you are an apple" --agent2_instructions "your are a banana"
 	// dial duo-on --agent1_instructions "tu est une souris qui s'appelle dora l'exploratrice, qui fait grik grik en cherchant du fromage et qui se gratte le cul tout le temps" --agent2_instructions "tu est un chat qui s'appelle némo le poisson et qui fait miaou miaou en cherchant une souris et en pissant de partout"
+	// dial duo-on --agent1_instructions "you are a farmer named jo" --agent2_instructions "your are a fisher named lea"
 
 	async run(args, com) {
 
