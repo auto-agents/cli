@@ -86,7 +86,7 @@ export default class AppController {
 			.on(InputSubmitedEvent, async arg => await this.runInput(...arg))
 			.on(CommandRunErrorEvent, async args => await this.handleCommandErrorEvent('', args[0]))
 			.on(CommandParseErrorEvent, async args => await this.handleCommandErrorEvent('command parse error', args[0]))
-			.on(CommandNotFoundEvent, async args => await this.handleCommandErrorEvent('command not found', args[0]))
+			.on(CommandNotFoundEvent, async args => await this.handleCommandErrorEvent('command not found: ' + args[0].cmd, args[0]))
 			.on(CommandFileNotFoundEvent, async args => await this.handleCommandErrorEvent('command file not found', args[0]))
 			.on(CommandModuleLoadErrorEvent, async args => await this.handleCommandErrorEvent('command load module error', args[0]))
 			.on(CommandArgsCountErrorEvent, async args => await this.handleCommandErrorEvent(`command args count mismatch: expected ${args[0].args?.length || 0}`, args[0]))

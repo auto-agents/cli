@@ -62,10 +62,13 @@ export default class DialogCommand {
 				break
 
 			default:
-				e.emit(CommandNotFoundEvent, errorEvent(
-					this.From,
-					new Error(action)
-				))
+				e.emit(CommandNotFoundEvent, {
+					...errorEvent(
+						this.From,
+						new Error(action)
+					),
+					cmd: action
+				})
 		}
 	}
 }

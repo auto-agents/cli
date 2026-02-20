@@ -176,6 +176,8 @@ export default class DialogController {
 			}
 		}
 
+		console.log(lastAssistMessage)
+
 		secondaryChat.history.reset()
 		primaryChat.history.reset()
 
