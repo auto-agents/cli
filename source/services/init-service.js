@@ -38,6 +38,7 @@ export default class InitService {
 			this.logOutput.newLine(false)
 			const t = data.split('\n')
 			t.forEach(x => {
+				if (!x || x.length == 0) x = ' '
 				this.logOutput.appendLine(chalk.italic(col(x)), false)
 			})
 			this.logOutput.updateView()

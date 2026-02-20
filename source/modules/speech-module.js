@@ -60,7 +60,7 @@ export default class SpeechModule {
     }
 
     async speak(text, voice = null) {
-        await this.speech.speak({
+        return await this.speech.speak({
             sentence: text,
             voice: voice,
             apiKey: this.config.apiKey

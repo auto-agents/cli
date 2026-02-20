@@ -69,6 +69,8 @@ export default class DialogController {
 			return
 		const e = this.ctx.components.event
 
+		//console.log('CLI: start chat')
+
 		e.emit(SetStatusMessageEvent, new StatusMessage(
 			this.From,
 			StatusEnum.waiting,
@@ -78,9 +80,9 @@ export default class DialogController {
 
 		const r = await this.ctx.components.module.openAIChat
 			.chat(query, secondary)
-			.then(txt => {
+			.then(async txt => {
 				e.emit(SetStatusMessageEvent)
-				this.echoSystem(txt,
+				await this.echoSystem(txt,
 					skipPrependNewLine,
 					{
 						secondary: secondary,
@@ -88,6 +90,9 @@ export default class DialogController {
 						voice: voice,
 						color: color
 					})
+
+				//console.log('CLI: end chat + speak')
+
 				return txt
 			})
 			.catch(err => {
@@ -148,6 +153,8 @@ export default class DialogController {
 		}
 	}
 
+	async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }
+
 	async setDuoModeEnabled(
 		on,
 		{ agents }
@@ -175,18 +182,18 @@ export default class DialogController {
 		const secondaryChat = chat.openaiSecondary
 		const sp = this.ctx.components.module.speech
 
-		var lastAssistMessage = primaryChat.history.getLastAssistantMessage()
-		if (!lastAssistMessage) {
-			lastAssistMessage = {
-				role: Role_Assistant,
-				content: this.ctx.dialog.sentences.dualModeInitialSystemSentence
-			}
-		} else {
+		//var lastAssistMessage = primaryChat.history.getLastAssistantMessage()
+		//if (!lastAssistMessage) {
+		var lastAssistMessage = {
+			role: Role_Assistant,
+			content: this.ctx.dialog.sentences.dualModeInitialSystemSentence
+		}
+		/*} else {
 			lastAssistMessage = {
 				role: Role_Assistant,
 				content: lastAssistMessage
 			}
-		}
+		}*/
 
 		secondaryChat.history.instructions = agent2.instructions
 		secondaryChat.history.reset()
@@ -213,8 +220,8 @@ export default class DialogController {
 			}
 		)
 
-		await this.waitSpeechSpeak()
-		await this.waitSpeechIdle()
+		//await this.waitSpeechSpeak()
+		//await this.waitSpeechIdle()
 
 		var message = lastAssistMessage.content
 
@@ -233,11 +240,13 @@ export default class DialogController {
 				}
 			)
 
-			await this.waitSpeechSpeak()
-			await this.waitSpeechIdle()
+			//await this.waitSpeechSpeak()
+			//await this.waitSpeechIdle()
 
 			// build the primary history from the secondary history
 			message = secondaryChat.history.getLastAssistantMessage()
+
+			await this.sleep(250)
 
 			//console.log('last:', m)
 
@@ -252,8 +261,8 @@ export default class DialogController {
 				color: this.ctx.theme.dialog.duoAssistantDialogColor
 			})
 
-			await this.waitSpeechSpeak()
-			await this.waitSpeechIdle()
+			//await this.waitSpeechSpeak()
+			//await this.waitSpeechIdle()
 
 			message = primaryChat.history.getLastAssistantMessage()
 		}
@@ -305,8 +314,14 @@ export default class DialogController {
 				})
 
 			await sp.speak(text, voice)
+			/*.then(
+			console.log('CLI: START SPEAK')
+		)*/
 
-			if (waitForEnd) await sp.waitIdle()
+			if (waitForEnd) {
+				//await sp.waitSpeak()				
+				//await sp.waitIdle()
+			}
 
 			e.emit(SetStatusMessageEvent)
 

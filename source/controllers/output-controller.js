@@ -38,8 +38,11 @@ export default class OutputController {
 
 		const rows = this.#getSource().rows
 
-		rows.push(str)
-		this.estimRowsCount++
+		//rows.push(str)
+		const t = str.split('\n')
+		t.forEach(s => rows.push(s))
+
+		this.estimRowsCount += 2
 		for (var i = 0; i < str.length; i++) {
 			if (str[i] == '\n')
 				this.estimRowsCount++

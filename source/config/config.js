@@ -353,7 +353,11 @@ export default function config(cli) {
 			speakDuo: {
 				name: 'guy',
 				preferredVoices: {
-					edge: ['Microsoft Guy Online (Natural) - English (United States)',
+					edge: [
+						'Microsoft Guy Online (Natural) - English (United States)',
+						'Microsoft GiuseppeMultilingual Online (Natural) - Italian (Italy)',
+						'Microsoft Antoine Online (Natural) - French (Canada)',
+						'Microsoft Thierry Online (Natural) - French (Canada)',
 						'Microsoft EmmaMultilingual Online (Natural) - English (United States)']
 				}
 			},
