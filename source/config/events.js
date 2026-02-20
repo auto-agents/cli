@@ -32,6 +32,8 @@ export const InputToStartEvent = 'InputToStartEvent'
 export const InputToEndEvent = 'InputToEndEvent'
 export const SpeakCommandEvent = 'SpeakCommandEvent'
 
+export const TaskRunErrorEvent = 'TaskRunErrorEvent'
+
 export const LogErrorEvent = 'LogErrorEvent'
 export const LogWarningEvent = 'LogWarningEvent'
 
