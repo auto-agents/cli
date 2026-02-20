@@ -344,10 +344,19 @@ export default function config(cli) {
 			roles: {
 
 				agent1: {
-					instructions: "you are philosophical student."
+					instructions: "you are a AI expert researcher."
 				},
 				agent2: {
-					instructions: "you are a buddhist and a philosophical teacher."
+					instructions: "you are a AI expert developer."
+				},
+
+				buddhism: {
+					agent1: {
+						instructions: "you are philosophical student."
+					},
+					agent2: {
+						instructions: "you are a buddhist and a philosophical teacher."
+					}
 				},
 
 				loveGame: {

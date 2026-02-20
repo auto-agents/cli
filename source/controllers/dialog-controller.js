@@ -148,7 +148,10 @@ export default class DialogController {
 		}
 	}
 
-	async setDuoModeEnabled(on) {
+	async setDuoModeEnabled(
+		on,
+		{ agents }
+	) {
 		if (!this.#isChatOpenAIAvailable()) return
 
 		if (on == this.duoModeEnabled) return
@@ -158,10 +161,14 @@ export default class DialogController {
 		const d = this.ctx.dialog
 		const o = this.output
 
+		const agent1 = agents.agent1
+		const agent2 = agents.agent2
+
+		const cmtCol = s => chalk.hex(this.ctx.theme.console.stdoutColor).italic(s)
 		o.newLine()
-		o.appendLine(`agent 1 is '${d.speakDuo.name}' with instructions: ${d.roles.agent1.instructions}`)
+		o.appendLine(cmtCol(`agent 1 is '${chalk.bold(agent2.name)}' with instructions: ${agent1.instructions}`))
 		o.newLine()
-		o.appendLine(`agent 2 is '${d.speakAnswers.name}' with instructions: ${d.roles.agent2.instructions}`)
+		o.appendLine(cmtCol(`agent 2 is '${chalk.bold(agent1.name)}' with instructions: ${agent2.instructions}`))
 
 		const chat = this.ctx.components.module.openAIChat
 		const primaryChat = chat.openai
@@ -174,9 +181,12 @@ export default class DialogController {
 				role: Role_Assistant,
 				content: this.ctx.dialog.sentences.dualModeInitialSystemSentence
 			}
+		} else {
+			lastAssistMessage = {
+				role: Role_Assistant,
+				content: lastAssistMessage
+			}
 		}
-
-		console.log(lastAssistMessage)
 
 		secondaryChat.history.reset()
 		primaryChat.history.reset()

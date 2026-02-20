@@ -54,7 +54,21 @@ export default class DialogCommand {
 				break
 
 			case 'duo-on':
-				await dialogController.setDuoModeEnabled(true)
+				await dialogController.setDuoModeEnabled(
+					true,
+					{
+						agents: {
+							agent1: {
+								...this.ctx.dialog.roles.agent1,
+								name: this.ctx.dialog.speakAnswers.name
+							},
+							agent2: {
+								...this.ctx.dialog.roles.agent2,
+								name: this.ctx.dialog.speakDuo.name
+							}
+						}
+					}
+				)
 				break
 
 			case 'duo-off':
