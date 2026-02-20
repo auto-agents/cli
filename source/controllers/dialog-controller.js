@@ -1,12 +1,15 @@
 import chalk from "chalk"
-import util from "util"
 import Status from '../utils/status.js'
 import { StatusMessage, StatusEnum } from "../data/status-message.js"
 import { LogErrorEvent, SetStatusMessageEvent, SpeakCommandEvent, errorEvent } from "../config/events.js"
 import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
 import { Role_Assistant } from "../components/open-ai/roles.js"
+import Dialoger from "../components/dialog/dialoger.js"
 
+/**
+ * controls a dialog with or without ai and speech
+ */
 export default class DialogController {
 
 	From = 'dialog'
@@ -19,6 +22,9 @@ export default class DialogController {
 		this.status = new Status(ctx)
 		this.responseTextFormater = new ResponseTextFormater(ctx, {})
 		this.responseSpeechFormater = new ResponseSpeechFormater(ctx, {})
+
+		this.dialoger = new Dialoger(ctx)
+
 		this.ctx.components.event.on(
 			SpeakCommandEvent,
 			async data => await this.#speakEventHandler(data[0])

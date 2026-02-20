@@ -1,8 +1,14 @@
+import FifoStack from "../../utils/fifo-stack"
 
 /*
  the dialoger handle dialog behaviors
- - round robin
+ - round robin for speakers & thinkers
  */
 export default class Dialoger {
+
+    constructor(ctx) {
+        this.ctx = ctx
+        this.fifoStack = new FifoStack(ctx)
+    }
 
 }

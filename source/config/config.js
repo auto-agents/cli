@@ -238,7 +238,7 @@ export default function config(cli) {
 									},
 									{
 										value: 'text',
-										description: 'use the  messages text view format'
+										description: 'use the messages text view format'
 									}
 								],
 								default: 'text',

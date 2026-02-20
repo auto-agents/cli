@@ -21,6 +21,7 @@
 The **CLI tool** makes it possible to interact with the `Auto Agents` functionnalities
 
 - provides a rich user UX CLI powered by:
+  - **[Node.Js](https://nodejs.org/)** cross-platform JavaScript runtime environment 
   - **[React](https://github.com/facebook/react)** React is a JavaScript library for building user interfaces
   - **[Ink](https://github.com/vadimdemedes/ink?tab=readme-ov-file#static)** the **`React for CLI`** framework
   - **[terminal-kit](https://github.com/cronvel/terminal-kit?tab=readme-ov-file)** *A full-blown terminal lib*
@@ -33,12 +34,14 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[unicode-emoji-utils](https://github.com/cungminh2710/unicode-emoji-utils)** A collection of utilities for emojis and raw data for Unicode Emojis
   - **[remark](https://github.com/remarkjs/remark)** A remark parser (JavaScript community version of Markdown)
   - **[strip-markdown](https://github.com/wooorm/strip-markdown)** A remark plugin to strip markdown formatting
+  - **[async-mutex](https://github.com/DirtyHairy/async-mutex)** Implements primitives for synchronizing asynchronous operations in Javascript
 
 *notice: this tool has been initially hand coded, than evolved using AI*5
 
 - AI contexts and prompts are specified in:
   - [doc/command-implementation.md](doc/command-implementation.md)
   - [tasks/dev-cli.md](tasks/dev-cli.md)
+  - [tasks/dev-various.md](tasks/dev-various.md)
 
 ---
 
