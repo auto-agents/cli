@@ -102,10 +102,10 @@ export default class AppController {
 			() => this.heartbeatSecond(),
 			1000
 		)
-		this.heartbeatTickInterval = setInterval(
+		/*this.heartbeatTickInterval = setInterval(
 			() => this.heartbeatTick(),
 			500
-		)
+		)*/
 		this.heartbeatSecond()
 		this.heartbeatTick()
 		this.ramService.run()

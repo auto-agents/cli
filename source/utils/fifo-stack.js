@@ -59,6 +59,7 @@ export default class FifoStack {
 
     /**
     * Processes an asynchronous task.
+    * - async pump until empty queue
     * @param {Function} task The async function to execute.
     */
     async processTaskes(previousTaskResult = null, previousTaskError = null) {
