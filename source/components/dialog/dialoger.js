@@ -1,4 +1,4 @@
-import FifoStack from "../../utils/fifo-stack"
+import { FifoStack } from "../../utils/fifo-stack"
 
 /*
  the dialoger handle dialog behaviors
@@ -11,4 +11,11 @@ export default class Dialoger {
         this.fifoStack = new FifoStack(ctx)
     }
 
+    async addPrompt(task) {
+        await this.fifoStack.addTask(task)
+    }
+
+    async addAnswear(task) {
+        await this.fifoStack.addTask(task)
+    }
 }

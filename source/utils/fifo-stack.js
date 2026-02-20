@@ -2,9 +2,25 @@ import { Mutex } from 'async-mutex';
 import { errorEvent, TaskRunErrorEvent } from '../config/events';
 
 /**
+ * build a task
+ * - the function must accept these parameters: (previsousTaskResult,previousTaskError)
+ * - thenCb can accept the result of fun as parameter
+ * - catchCb can accept the error as parameter
+ */
+export const task = (name, fun, thenCb = null, catchCb = null) => {
+    return {
+        name: name,
+        fun: fun,
+        then: thenCb,
+        catch: catchCb,
+        lock: null
+    }
+}
+
+/**
  * plays a fifo stack of async tasks until the end. the stack can grows continously while executing
  */
-export default class FifoStack {
+export class FifoStack {
 
     traceOn = false
 
@@ -15,21 +31,6 @@ export default class FifoStack {
         this.currentTaskIndex = 0;
         this.numberOfTasks = initialTasks.length;
         this.mutex = new Mutex();
-    }
-
-    /**
-     * build a task
-     * - the function must accept these parameters: (previsousTaskResult,previousTaskError)
-     * - thenCb can accept the result of fun as parameter
-     * - catchCb can accept the error as parameter
-     */
-    task(name, fun, thenCb = null, catchCb = null) {
-        return {
-            name: name,
-            fun: fun,
-            then: thenCb,
-            catch: catchCb
-        }
     }
 
     trace(str) {
@@ -44,12 +45,19 @@ export default class FifoStack {
      */
     async addTask(task) {
 
-        this.trace('addTask')
+        this.trace('addTask: ' + task.name)
 
         var relaunchQueue = false
-        await this.mutex.runExclusive(() => {
+        await this.mutex.runExclusive(async () => {
             relaunchQueue = this.queue.length == 0
             this.queue = [task, ...this.queue]
+            task.lock = new Mutex()
+
+            this.trace('lock task: ' + task.name)
+            task.release = await task.lock
+                .acquire()
+            await task.lock
+                .acquire()  // locked
         })
         if (relaunchQueue) {
             this.trace('relaunch queue')
@@ -79,9 +87,13 @@ export default class FifoStack {
         }
 
         try {
+            this.trace('run task: ' + currentTask.name)
             await currentTask.fun(previousTaskResult, previousTaskError) // Execute the async function
                 .then(
                     async res => {
+
+                        this.trace('unlock completed task: ' + currentTask.name)
+                        await currentTask.release()
 
                         if (currentTask.thenCb)
                             await currentTask.thenCb(res)
@@ -92,6 +104,9 @@ export default class FifoStack {
         }
         // do not stock the stack processing on error
         catch (err) {
+
+            this.trace('unlock errored task: ' + currentTask.name)
+            await currentTask.release()
 
             e.emit(TaskRunErrorEvent,
                 {
@@ -109,3 +124,5 @@ export default class FifoStack {
         }
     }
 }
+
+export default { task, FifoStack }

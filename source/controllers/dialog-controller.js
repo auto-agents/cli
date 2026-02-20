@@ -6,6 +6,7 @@ import ResponseTextFormater from '../components/open-ai/response-text-formater.j
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
 import { Role_Assistant } from "../components/open-ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
+import { task } from "../utils/fifo-stack.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -39,12 +40,42 @@ export default class DialogController {
 		return this.ctx.components.module.openAIChat != null
 	}
 
+	// ------------------------------------------------------
+
+	/**
+	 * engage dialog
+	 */
 	hello() {
 		const username = this.ctx.components.sysInfo.username
 		const text = this.ctx.texts.dialog.hello
 			.replace('%username%', chalk.bold(username))
 		this.echoSystem(text, true, {})
 	}
+
+	/**
+	 * add a user prompt
+	 * @param {String} text 
+	 */
+	async addUserPrompt(text) {
+		const fun = async () => {
+			await this.echoUser(inp)
+				.then(async () => {
+					await this.queryOpenAIChat(
+						inp, false, {
+						secondary: false,
+						name: null,
+						voice: null
+					})
+				})
+		}
+		const task = task(
+			'user prompt',
+			fun
+		)
+		this.dialoger.addPrompt(task)
+	}
+
+	// ------------------------------------------------------
 
 	async echoUser(text) {
 		if (!this.output.isEmpty())
