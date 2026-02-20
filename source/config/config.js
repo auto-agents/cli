@@ -226,7 +226,23 @@ export default function config(cli) {
 							file: {
 								type: 'string',
 								required: false,
-								description: 'a file path to use in combination with action saved'
+								description: 'a file path to use in combination with action save'
+							},
+							format: {
+								type: 'string',
+								required: false,
+								allowedValues: [
+									{
+										value: 'json',
+										description: 'use the native message format json'
+									},
+									{
+										value: 'text',
+										description: 'use the  messages text view format'
+									}
+								],
+								default: 'text',
+								description: 'the export format to use in combination with action save'
 							}
 						},
 						allowPositionals: true

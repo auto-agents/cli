@@ -83,8 +83,11 @@ export default class OpenAIChatModule {
         return r
     }
 
-    saveHistory(filePath) {
-        const h = this.openai.history.toJson()
+    saveHistory(filePath, format) {
+        const h =
+            (!format || format == 'json') ?
+                this.openai.history.toJson()
+                : this.openai.history.toText()
         fs.writeFileSync(filePath, h)
     }
 }

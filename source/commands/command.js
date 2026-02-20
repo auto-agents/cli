@@ -54,4 +54,17 @@ export default class Command {
             }
         )
     }
+
+    checkModuleAvailable(name) {
+        const r = !this.ctx.components.module[name]
+        if (!r)
+            e.emit(CommandRunErrorEvent,
+                {
+                    ...errorEvent(
+                        this.From,
+                        new Error('module not available: openAIChat'))
+                }
+            )
+        return r
+    }
 }

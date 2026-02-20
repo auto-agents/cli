@@ -67,18 +67,13 @@ export default class DialogCommand extends Command {
 				const file = this.getValue(com, args, argFile)
 				if (!this.checkParameter(com, argFile, file))
 					return
-
-				if (!this.ctx.components.module.openAIChat)
-					e.emit(CommandRunErrorEvent,
-						{
-							...errorEvent(
-								this.From,
-								new Error('module not available: openAIChat'))
-						}
-					)
-				else {
-					this.ctx.components.module.openAIChat.saveHistory(file)
-				}
+				const argFormat = 'format'
+				const format = this.getValue(com, args, argFormat)
+				if (!this.checkParameter(com, argFormat, format))
+					return
+				if (!this.checkModuleAvailable('OpenAIChat'))
+					return
+				this.ctx.components.module.openAIChat.saveHistory(file, format)
 				break
 
 			default:

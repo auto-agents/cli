@@ -72,4 +72,15 @@ export default class History {
         }
         return JSON.stringify(o, null, 2)
     }
+
+    toText() {
+        const t = ['**instructions :** ' + this.instructions]
+        this.messages.forEach(m => {
+            t.push('')
+            t.push('**' + m.role + '** : ')
+            t.push('')
+            t.push(m.content)
+        })
+        return t.join('\n')
+    }
 }
