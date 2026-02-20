@@ -242,3 +242,33 @@ The command `dialog` is used to configure and control the dialog with the `cli t
     file: 'dialog-command.js'
 }
 ```
+
+### command: `help`
+
+mplements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+
+this command is specified as below:
+
+The command `help` is used to provide informations about:
+- the `cli tool` 
+- the `contexts` of the cli tool
+- the `commands`
+- any informational document defined as it in the help configuration or in the `CLI TOOL RAG database content`
+
+``js
+{
+    names: ['help','h'],
+    description: 'provide informations about the cli tool, contexts, commands and RAG db',
+    config: {
+        options: {
+            command: {
+                type: 'string',
+                required: true,
+                description: 'a command name'
+            }
+        },
+        allowPositionals: true
+    },
+    file: 'help-command.js'
+}
+```

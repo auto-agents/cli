@@ -159,8 +159,9 @@ export default class DialogController {
 		const o = this.output
 
 		o.newLine()
-		o.appendLine(`agent 1 is '${d.speakAnswers.name}' with instructions: ${d.roles.agent1.instructions}`)
-		o.appendLine(`agent 2 is '${d.speakDuo.name}' with instructions: ${d.roles.agent2.instructions}`)
+		o.appendLine(`agent 1 is '${d.speakDuo.name}' with instructions: ${d.roles.agent1.instructions}`)
+		o.newLine()
+		o.appendLine(`agent 2 is '${d.speakAnswers.name}' with instructions: ${d.roles.agent2.instructions}`)
 
 		const chat = this.ctx.components.module.openAIChat
 		const primaryChat = chat.openai

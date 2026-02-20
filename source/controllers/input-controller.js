@@ -122,8 +122,10 @@ export default class InputController {
 			var cnt = 0
 
 			var padcmdname = 0
+			var nbMatch = 0
 			this.ctx.cli.commands.forEach(e => {
 				if (e.names.some(name => name.startsWith(pat))) {
+					nbMatch++
 					var s = e.names.join(cs)
 					padcmdname = Math.max(padcmdname, s.length)
 				}
@@ -136,7 +138,7 @@ export default class InputController {
 					tmpLine += e.names.join(cs)
 					cnt++
 				}
-				else
+				else {
 					if (e.names.some(name => name.startsWith(pat))) {
 
 						cnt++
@@ -145,16 +147,35 @@ export default class InputController {
 						addLine(col(s))
 
 						const argsNames = e.config?.options ? Object.getOwnPropertyNames(e.config.options) : []
-						if (argsNames && argsNames.length > 0) {
+						if (nbMatch == 1 && argsNames && argsNames.length > 0) {
 
 							s = ' '.repeat(padcmdname + 4)
 							argsNames.forEach(argName => {
 
 								const arg = e.config.options[argName]
+
+								// possible values
+								var pv = ''
+								if (arg.allowedValues) {
+									pv = ' - values: ' + arg.allowedValues
+										.map(x => x.value).join(' ')
+								}
+
+								// arg name
 								s += `<${argName}>`
+								// arg type
 								s += ' : ' + arg.type
+
+									// arg required | optionnal
+
 									+ (arg.required ? ' (required)' : ' (optional)')
+
+									// arg description
+
 									+ (arg.description ? (' - ' + arg.description) : '')
+
+									// possible values
+									+ pv
 									+ ' '
 							})
 
@@ -162,6 +183,7 @@ export default class InputController {
 							addLine(s)
 						}
 					}
+				}
 			});
 
 			if (tmpLine != '')
