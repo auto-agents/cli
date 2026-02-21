@@ -52,11 +52,34 @@ export default class Dialoger {
     }
 
     async addUserDialog(text, options) {
-        const t = task(
-            'user dialog',
-            () => this.userEchoFun(text)
-        )
-        await this.fifoStack.addTask(t)
+        options ||= {}
+        const results = []
+
+        // 1. echo output
+        results.push(
+            await this.fifoStack.addTask(
+                task(
+                    'user dialog : echo',
+                    async () => {
+                        await this.userEchoFun(text, options)
+                    }
+                )
+            ))
+
+        // 2. eventually speak
+        if (this.#isUserSpeakEchoAvailable()) {
+            results.push(
+                await this.fifoStack.addTask(
+                    task(
+                        'user dialog: speak',
+                        async () => {
+                            await this.speakFun(text, options)
+                        }
+                    )
+                ))
+        }
+
+        return results
     }
 
     /**
@@ -107,6 +130,11 @@ export default class Dialoger {
 
     #isSpeechAvailable() {
         return this.ctx.components.module.speech != null
+    }
+
+    #isUserSpeakEchoAvailable() {
+        return this.ctx.dialog.repeatUserQuery.enabled
+            && this.#isSpeechAvailable()
     }
 
     #isChatOpenAIAvailable() {

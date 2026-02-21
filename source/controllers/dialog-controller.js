@@ -52,14 +52,6 @@ export default class DialogController {
 		)
 	}
 
-	#isSpeechAvailable() {
-		return this.ctx.components.module.speech != null
-	}
-
-	#isChatOpenAIAvailable() {
-		return this.ctx.components.module.openAIChat != null
-	}
-
 	// ------------------------------------------------------
 
 	/**
@@ -78,17 +70,12 @@ export default class DialogController {
 			})
 	}
 
-	#getSystemVoice() {
-		return this.ctx.dialog.speakAnswers.preferredVoices
-		[this.ctx.modules.speech.config.browser][0]
-	}
-
 	/**
 	 * add a user prompt
 	 * @param {String} text 
 	 */
 	async addUserPrompt(text) {
-		const fun = async () => {
+		/*const fun = async () => {
 			await this.echoUser(inp)
 				.then(async () => {
 					await this.queryOpenAIChat(
@@ -103,7 +90,14 @@ export default class DialogController {
 			'user prompt',
 			fun
 		)
-		this.dialoger.addPrompt(task)
+		this.dialoger.addPrompt(task)*/
+
+		await this.dialoger.addUserDialog(
+			text,
+			{
+				skipPrependNewLine: true,
+				voice: this.#getUserVoice()
+			})
 	}
 
 	// ------------------------------------------------------
@@ -341,6 +335,26 @@ export default class DialogController {
 		}
 	}
 
+	// -----------------------------------------------------------------
+
+	#getSystemVoice() {
+		return this.ctx.dialog.speakAnswers.preferredVoices
+		[this.ctx.modules.speech.config.browser][0]
+	}
+
+	#getUserVoice() {
+		return this.ctx.dialog.repeatUserQuery.preferredVoices
+		[this.ctx.modules.speech.config.browser][0]
+	}
+
+	#isSpeechAvailable() {
+		return this.ctx.components.module.speech != null
+	}
+
+	#isChatOpenAIAvailable() {
+		return this.ctx.components.module.openAIChat != null
+	}
+
 	async #speakEventHandler(data) {
 		await this.speak(
 			data.text,
@@ -362,11 +376,15 @@ export default class DialogController {
 		await this.ctx.components.module.speech.waitSpeak()
 	}
 
+	// ------------------------------------------------------
+
 	async speak(
 		text,
-		voice = null,
-		waitForEnd = false,
-		interrupt = false) {
+		{
+			voice = null,
+			waitForEnd = false,
+			interrupt = false
+		}) {
 		text = this.responseSpeechFormater.getSpeech(text)
 
 		const e = this.ctx.components.event
