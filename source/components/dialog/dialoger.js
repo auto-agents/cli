@@ -163,6 +163,17 @@ export default class Dialoger {
         return results
     }
 
+    async speak(text, options) {
+        return await this.fifoStack.addTask(
+            task(
+                'system dialog: speak',
+                async () => {
+                    await this.speakFun(text, options)
+                }
+            )
+        )
+    }
+
     async handleSpeekCommandEvent(text) {
         await this.fifoStack.addTask(task)
     }

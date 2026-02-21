@@ -75,23 +75,6 @@ export default class DialogController {
 	 * @param {String} text 
 	 */
 	async addUserPrompt(text) {
-		/*const fun = async () => {
-			await this.echoUser(inp)
-				.then(async () => {
-					await this.queryOpenAIChat(
-						inp, false, {
-						secondary: false,
-						name: null,
-						voice: null
-					})
-				})
-		}
-		const task = task(
-			'user prompt',
-			fun
-		)
-		this.dialoger.addPrompt(task)*/
-
 		await this.dialoger.addUserDialog(
 			text,
 			{
@@ -110,16 +93,6 @@ export default class DialogController {
 		this.output.appendLine(
 			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)
 			+ ' ' + ucol(text))
-
-		/*
-		if (this.ctx.dialog.repeatUserQuery.enabled
-			&& this.#isSpeechAvailable())
-			await this.speak(
-				text,
-				this.ctx.dialog.repeatUserQuery.preferredVoices
-				[this.ctx.modules.speech.config.browser][0],
-				true)
-		*/
 	}
 
 	async shetUp() {
@@ -157,22 +130,6 @@ export default class DialogController {
 			const s = l.length == 0 ? ' ' : l
 			return o.appendLine(scol(s))
 		})
-
-		// eventually speek
-
-		/*
-		if (this.ctx.dialog.speakAnswers.enabled
-			&& this.#isSpeechAvailable()) {
-			await this.speak(
-				text,
-				voice == null ?
-					this.ctx.dialog.speakAnswers.preferredVoices
-					[this.ctx.modules.speech.config.browser][0]
-					: voice[this.ctx.modules.speech.config.browser][0]
-				,
-				true)
-		}
-		*/
 	}
 
 	async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }
@@ -311,11 +268,10 @@ export default class DialogController {
 	}
 
 	async #speakEventHandler(data) {
-		await this.speak(
-			data.text,
-			data.voice,
-			data.waitForEnd,
-			data.interrupt
+		this.dialoger.speak(data.text,
+			{
+				voice: data.voice
+			}
 		)
 	}
 

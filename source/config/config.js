@@ -435,6 +435,9 @@ export default function config(cli) {
 				}
 			}
 		},
+		dialoger: {
+			sliceTime: 100
+		},
 		theme: {
 			borderMainColor: '#777777',
 			borderSecondaryColor: '#777777',

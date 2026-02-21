@@ -13,7 +13,12 @@ export const task = (name, fun, thenCb = null, catchCb = null) => {
         fun: fun,
         then: thenCb,
         catch: catchCb,
-        lock: null
+        lock: null,
+        outputContext: {
+        },
+        result: null,
+        err: null,
+        taskId: null
     }
 }
 
@@ -23,6 +28,7 @@ export const task = (name, fun, thenCb = null, catchCb = null) => {
 export class FifoStack {
 
     traceOn = false
+    taskIdCounter = 0
 
     constructor(from, ctx, initialTasks = []) {
         this.from = from
@@ -60,15 +66,16 @@ export class FifoStack {
      */
     async addTask(task) {
 
-        this.trace('addTask: ' + task.name)
-
         await this.mutex.runExclusive(async () => {
 
+            this.trace('addTask: ' + task.name + ' id=' + this.taskIdCounter)
+
+            task.taskId = this.taskIdCounter
+            this.taskIdCounter++
             task.lock = new Mutex()
             task.release = await task.lock
                 .acquire()
-
-            this.queue = [task, ...this.queue]
+            this.queue.push(task)
         })
 
         await task.lock
@@ -100,7 +107,6 @@ export class FifoStack {
                 })
 
                 try {
-                    //this.trace('run task: ' + currentTask.name)
 
                     await currentTask.fun(
                         previousTaskResult,
@@ -147,9 +153,8 @@ export class FifoStack {
                 }
             }
 
-            //this.trace('process taskes: wait next turn')
             // interslice wait
-            await this.sleep(1000)
+            await this.sleep(this.ctx.dialoger.sliceTime)
         }
 
     }
@@ -157,6 +162,5 @@ export class FifoStack {
     async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }
 
 }
-
 
 export default { task, FifoStack }

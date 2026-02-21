@@ -272,14 +272,6 @@ export default class AppController {
 		else {
 			// run dialog
 			await this.dialog.addUserPrompt(inp)
-			/*.then(async () => {
-				await this.dialog.queryOpenAIChat(
-					inp, false, {
-					secondary: false,
-					name: null,
-					voice: null
-				})
-			})*/
 		}
 
 		this.event.emit(InputExecutedEvent)
