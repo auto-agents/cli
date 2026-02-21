@@ -41,7 +41,7 @@ export default class DialogController {
 			async (text, options) => await this.speak(text, options),
 
 			// thinkFun
-			async (text) => await this.think(text)
+			async (text, options) => await this.queryOpenAIChat(text, options)
 		)
 
 		this.dialoger.run()
@@ -96,7 +96,8 @@ export default class DialogController {
 			text,
 			{
 				skipPrependNewLine: true,
-				voice: this.#getUserVoice()
+				userVoice: this.#getUserVoice(),
+				assistantVoice: this.#getSystemVoice()
 			})
 	}
 
@@ -119,52 +120,6 @@ export default class DialogController {
 				[this.ctx.modules.speech.config.browser][0],
 				true)
 		*/
-	}
-
-	async queryOpenAIChat(query,
-		skipPrependNewLine,
-		{
-			secondary = false,
-			name = null,
-			voice = null,
-			color = null
-		}) {
-		if (!this.#isChatOpenAIAvailable())
-			return
-		const e = this.ctx.components.event
-
-		//console.log('CLI: start chat')
-
-		e.emit(SetStatusMessageEvent, new StatusMessage(
-			this.From,
-			StatusEnum.waiting,
-			'🤖 thinking ...',
-			this.ctx.modules.openAIChat.config.model
-		))
-
-		const r = await this.ctx.components.module.openAIChat
-			.chat(query, secondary)
-			.then(async txt => {
-				e.emit(SetStatusMessageEvent)
-				await this.echoSystem(txt,
-					skipPrependNewLine,
-					{
-						secondary: secondary,
-						name: name,
-						voice: voice,
-						color: color
-					})
-
-				//console.log('CLI: end chat + speak')
-
-				return txt
-			})
-			.catch(err => {
-				e.emit(SetStatusMessageEvent)
-				e.emit(LogErrorEvent,
-					errorEvent(this.From, err))
-			})
-		return r
 	}
 
 	async shetUp() {
@@ -421,5 +376,52 @@ export default class DialogController {
 
 			e.emit(LogErrorEvent, errorEvent(this.From, err))
 		}
+	}
+
+	async queryOpenAIChat(
+		query,
+		{
+			skipPrependNewLine = false,
+			secondary = false,
+			name = null,
+			voice = null,
+			color = null
+		}) {
+		if (!this.#isChatOpenAIAvailable())
+			return
+		const e = this.ctx.components.event
+
+		//console.log('CLI: start chat')
+
+		e.emit(SetStatusMessageEvent, new StatusMessage(
+			this.From,
+			StatusEnum.waiting,
+			'🤖 thinking ...',
+			this.ctx.modules.openAIChat.config.model
+		))
+
+		const r = await this.ctx.components.module.openAIChat
+			.chat(query, secondary)
+			.then(async resp => {
+				const txt = resp.choices[0].message.content
+				e.emit(SetStatusMessageEvent)
+				await this.echoSystem(txt,
+					skipPrependNewLine,
+					{
+						secondary: secondary,
+						name: name,
+						voice: voice,
+						color: color
+					})
+
+				return resp
+			})
+			.catch(err => {
+				e.emit(SetStatusMessageEvent)
+				e.emit(LogErrorEvent,
+					errorEvent(this.From, err))
+			})
+
+		return r
 	}
 }

@@ -22,7 +22,7 @@ export const task = (name, fun, thenCb = null, catchCb = null) => {
  */
 export class FifoStack {
 
-    traceOn = true
+    traceOn = false
 
     constructor(from, ctx, initialTasks = []) {
         this.from = from
@@ -102,12 +102,18 @@ export class FifoStack {
                 try {
                     //this.trace('run task: ' + currentTask.name)
 
-                    await currentTask.fun(previousTaskResult, previousTaskError) // Execute the async function
+                    await currentTask.fun(
+                        previousTaskResult,
+                        previousTaskError) // Execute the async function
                         .then(
                             async res => {
 
+                                //console.log(res)
+
                                 previousTaskResult = res
                                 previousTaskError = null
+                                currentTask.result = res
+                                currentTask.error = null
 
                                 this.trace('unlock completed task: ' + currentTask.name)
                                 await currentTask.release()
@@ -121,6 +127,8 @@ export class FifoStack {
 
                     previousTaskResult = null
                     previousTaskError = err
+                    currentTask.result = null
+                    currentTask.error = err
 
                     this.trace('unlock errored task: ' + currentTask.name)
                     await currentTask.release()

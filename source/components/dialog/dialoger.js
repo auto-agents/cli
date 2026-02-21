@@ -28,10 +28,17 @@ export default class Dialoger {
         } -> void */
         assistantEchoFun,
 
-        // text -> void
+        /* text, {
+            voice = null            
+         } -> void
+         */
         speakFun,
 
-        // text -> json
+        /* input, {
+            voice = null,
+            secondary = null,
+            name = null
+         } -> json */
         thinkFun,
     ) {
         this.ctx = ctx
@@ -73,7 +80,45 @@ export default class Dialoger {
                     task(
                         'user dialog: speak',
                         async () => {
-                            await this.speakFun(text, options)
+                            await this.speakFun(text, {
+                                ...options,
+                                voice: options.userVoice
+                            })
+                        }
+                    )
+                ))
+        }
+
+        var aiResult = null
+        // 3. eventually think (includes ai output response)
+        if (this.#isChatOpenAIAvailable) {
+            aiResult = await this.fifoStack.addTask(
+                task(
+                    'user dialog: request ai response',
+                    async () => {
+                        return await this.thinkFun(text, options)
+                    }
+                )
+            )
+            results.push(aiResult)
+        }
+
+        // eventually speak response
+        if (this.#isUserSpeakEchoAvailable()
+            && aiResult) {
+
+            //console.log(aiResult)
+            const aiText = aiResult.result.choices[0].message.content
+
+            results.push(
+                await this.fifoStack.addTask(
+                    task(
+                        'assistant dialog: speak',
+                        async () => {
+                            await this.speakFun(aiText, {
+                                ...options,
+                                voice: options.assistantVoice
+                            })
                         }
                     )
                 ))

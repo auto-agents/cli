@@ -60,7 +60,7 @@ export default class OpenAI {
         this.history.messages.push(queryMessage)
         const rq = { role: Role_Assistant, content: r.choices[0].message.content }
         this.history.messages.push(rq)
-        return rq.content
+        return r
     }
 
     async saveHistory() {
