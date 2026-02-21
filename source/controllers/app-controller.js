@@ -41,7 +41,6 @@ export default class AppController {
 	From = 'app'
 
 	heartbeatSecondInterval = null
-	heartbeatTickInterval = null
 	ramInterval = null
 	ctx = null
 	startTime = null
@@ -104,12 +103,7 @@ export default class AppController {
 			() => this.heartbeatSecond(),
 			1000
 		)
-		/*this.heartbeatTickInterval = setInterval(
-			() => this.heartbeatTick(),
-			500
-		)*/
 		this.heartbeatSecond()
-		this.heartbeatTick()
 		this.ramService.run()
 		this.timeService.run()
 
@@ -219,14 +213,6 @@ export default class AppController {
 		await this.init.run()
 	}
 
-	heartbeatTick() {
-		this.ctx.data.counter.value++
-		/*this.event.emitTarget(
-			GaugeSourceUpdatedEvent,
-			this.ctx.data.counter.key
-		)*/
-	}
-
 	heartbeatSecond() {
 	}
 
@@ -267,9 +253,7 @@ export default class AppController {
 
 		// begin dialog
 		this.event.emit(AppStartedEvent)
-
 		await this.dialog.hello()
-		this.output.appendLine('ici')
 		this.output.newLine(true)
 	}
 
