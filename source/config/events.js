@@ -33,6 +33,11 @@ export const InputToEndEvent = 'InputToEndEvent'
 export const SpeakCommandEvent = 'SpeakCommandEvent'
 
 export const TaskRunErrorEvent = 'TaskRunErrorEvent'
+export const TaskAddUserDialogCommandEvent = 'TaskAddUserDialogCommandEvent'
+export const TaskAddAssistantDialogCommandEvent = 'TaskAddAssistantDialogCommandEvent'
+export const TaskAddAssistantMessageCommandEvent = 'TaskAddAssistantMessageCommandEvent'
+export const TaskAddThinkCommandEvent = 'TaskAddThinkCommandEvent'
+export const TaskAddSpeakCommandEvent = 'TaskAddSpeakCommandEvent'
 
 export const LogErrorEvent = 'LogErrorEvent'
 export const LogWarningEvent = 'LogWarningEvent'

@@ -22,7 +22,7 @@ export const task = (name, fun, thenCb = null, catchCb = null) => {
  */
 export class FifoStack {
 
-    traceOn = false
+    traceOn = true
 
     constructor(from, ctx, initialTasks = []) {
         this.from = from
@@ -39,6 +39,21 @@ export class FifoStack {
     }
 
     /**
+     * add a sequence of tasks to the end of the stack
+     * run the sequence and returns until the end
+     * @param {Object[]} taskes 
+     */
+    async addTaskes(...taskes) {
+        const results = []
+        for (const task of taskes) {
+            results.push(
+                await this.addTask(task)
+            )
+        }
+        return results
+    }
+
+    /**
      * add a task to the end of the stack
      * - if populate an empty queue, relaunch the processing of taskes
      * @param {Object} task 
@@ -47,82 +62,93 @@ export class FifoStack {
 
         this.trace('addTask: ' + task.name)
 
-        var relaunchQueue = false
         await this.mutex.runExclusive(async () => {
-            relaunchQueue = this.queue.length == 0
-            this.queue = [task, ...this.queue]
-            task.lock = new Mutex()
 
-            this.trace('lock task: ' + task.name)
+            task.lock = new Mutex()
             task.release = await task.lock
                 .acquire()
-            await task.lock
-                .acquire()  // locked
+
+            this.queue = [task, ...this.queue]
         })
-        if (relaunchQueue) {
-            this.trace('relaunch queue')
-            await this.processTaskes()
-        }
+
+        await task.lock
+            .acquire()  // locked, blocked
+
+        return task
     }
 
     /**
     * Processes an asynchronous task.
-    * - async pump until empty queue
-    * @param {Function} task The async function to execute.
+    * - async pump forever
     */
-    async processTaskes(previousTaskResult = null, previousTaskError = null) {
+    async processTaskes() {
 
         const e = this.ctx.components.event
+        var end = false
+        var previousTaskResult = null
+        var previousTaskError = null
 
-        var queueEmpty = false
-        await this.mutex.runExclusive(() => {
-            queueEmpty = this.queue.length === 0 // must Exit if the queue is empty            
-        })
-        if (queueEmpty) return
+        this.trace('procces taskes running')
 
-        const currentTask = this.queue.shift();  // Get the next task from the front of the queue
-        const runNextTask = async (res, err) => {
-            this.currentTaskIndex++
-            await th.processTaskes(res, err)
-        }
+        while (!end) {
 
-        try {
-            this.trace('run task: ' + currentTask.name)
-            await currentTask.fun(previousTaskResult, previousTaskError) // Execute the async function
-                .then(
-                    async res => {
+            if (this.queue.length > 0) {
 
-                        this.trace('unlock completed task: ' + currentTask.name)
-                        await currentTask.release()
-
-                        if (currentTask.thenCb)
-                            await currentTask.thenCb(res)
-
-                        await runNextTask(res, null)
-                    }
-                )
-        }
-        // do not stock the stack processing on error
-        catch (err) {
-
-            this.trace('unlock errored task: ' + currentTask.name)
-            await currentTask.release()
-
-            e.emit(TaskRunErrorEvent,
-                {
-                    ...errorEvent(
-                        this.from,
-                        err
-                    ),
-                    task: currentTask
+                var currentTask = null
+                await this.mutex.runExclusive(async () => {
+                    currentTask = this.queue.shift();  // Get the next task from the front of the queue
                 })
 
-            if (currentTask.catchCb)
-                await currentTask.catchCb(err)
+                try {
+                    //this.trace('run task: ' + currentTask.name)
 
-            await runNextTask(null, err)
+                    await currentTask.fun(previousTaskResult, previousTaskError) // Execute the async function
+                        .then(
+                            async res => {
+
+                                previousTaskResult = res
+                                previousTaskError = null
+
+                                this.trace('unlock completed task: ' + currentTask.name)
+                                await currentTask.release()
+
+                                if (currentTask.thenCb)
+                                    await currentTask.thenCb(res)
+                            }
+                        )
+                }
+                catch (err) {
+
+                    previousTaskResult = null
+                    previousTaskError = err
+
+                    this.trace('unlock errored task: ' + currentTask.name)
+                    await currentTask.release()
+
+                    e.emit(TaskRunErrorEvent,
+                        {
+                            ...errorEvent(
+                                this.from,
+                                err
+                            ),
+                            task: currentTask
+                        })
+
+                    if (currentTask.catchCb)
+                        await currentTask.catchCb(err)
+                }
+            }
+
+            //this.trace('process taskes: wait next turn')
+            // interslice wait
+            await this.sleep(1000)
         }
+
     }
+
+    async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }
+
 }
+
 
 export default { task, FifoStack }

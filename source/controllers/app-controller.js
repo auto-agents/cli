@@ -22,7 +22,8 @@ import {
 	LogWarningEvent,
 	CommandRunErrorEvent,
 	SpeakCommandEvent,
-	speakEvent
+	speakEvent,
+	TaskRunErrorEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -90,12 +91,13 @@ export default class AppController {
 			.on(CommandFileNotFoundEvent, async args => await this.handleCommandErrorEvent('command file not found', args[0]))
 			.on(CommandModuleLoadErrorEvent, async args => await this.handleCommandErrorEvent('command load module error', args[0]))
 			.on(CommandArgsCountErrorEvent, async args => await this.handleCommandErrorEvent(`command args count mismatch: expected ${args[0].args?.length || 0}`, args[0]))
-			.on(AppInitializedEvent, () => this.appInitialized())
+			.on(AppInitializedEvent, async () => await this.appInitialized())
 			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
 			.on(OutputRowsCountUpdatedEvent, () => this.outputRowsCountUpdated())
 			.on(HelpOutputUpdatedEvent, () => this.output.forceUpdate())
 			.on(InputExecutedEvent, () => this.output.forceUpdate())
 			.on(LogErrorEvent, async (args) => await this.handleLogErrorEvent(args[0]))
+			.on(TaskRunErrorEvent, async (args) => await this.handleTaskRunErrorEvent(args[0]))
 			.on(LogWarningEvent, args => this.warning(args[0]))
 
 		this.heartbeatSecondInterval = setInterval(
@@ -154,6 +156,19 @@ export default class AppController {
 				true));
 
 		this.error(errorEvent.error?.message)
+	}
+
+	async handleTaskRunErrorEvent(taskErrorEvent) {
+		this.error(`task '${taskErrorEvent.task.name}' error: ${taskErrorEvent.error?.message}`)
+
+		if (this.#isSpeechAvailable
+			&& this.ctx.dialog.speakErrors.enabled)
+			this.event.emit(SpeakCommandEvent, speakEvent(
+				this.From,
+				taskErrorEvent.error?.message,
+				this.ctx.dialog.speakErrors.preferredVoices
+				[this.ctx.modules.speech.config.browser][0],
+				true));
 	}
 
 	outputRowsCountUpdated() {
@@ -227,7 +242,7 @@ export default class AppController {
 		o.appendLine(this.status.warning(message))
 	}
 
-	appInitialized() {
+	async appInitialized() {
 		// init modules gauges
 		const o = this.output
 		const e = this.event
@@ -251,9 +266,11 @@ export default class AppController {
 		initModuleGauge('openAIAgents')
 
 		// begin dialog
-		this.dialog.hello()
-		this.output.newLine(true)
 		this.event.emit(AppStartedEvent)
+
+		await this.dialog.hello()
+		this.output.appendLine('ici')
+		this.output.newLine(true)
 	}
 
 	async runInput(inp) {

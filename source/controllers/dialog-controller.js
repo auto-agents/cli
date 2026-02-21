@@ -1,12 +1,17 @@
 import chalk from "chalk"
 import Status from '../utils/status.js'
 import { StatusMessage, StatusEnum } from "../data/status-message.js"
-import { LogErrorEvent, SetStatusMessageEvent, SpeakCommandEvent, errorEvent } from "../config/events.js"
+import {
+	LogErrorEvent,
+	SetStatusMessageEvent,
+	SpeakCommandEvent,
+	TaskAddAssistantMessageCommandEvent,
+	errorEvent
+} from "../config/events.js"
 import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
 import { Role_Assistant } from "../components/open-ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
-import { task } from "../utils/fifo-stack.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -24,7 +29,22 @@ export default class DialogController {
 		this.responseTextFormater = new ResponseTextFormater(ctx, {})
 		this.responseSpeechFormater = new ResponseSpeechFormater(ctx, {})
 
-		this.dialoger = new Dialoger(ctx)
+		this.dialoger = new Dialoger(ctx,
+
+			// userEchoFun
+			(text) => this.echoUser(text),
+
+			// assistantEchoFun
+			(text, options) => this.echoSystem(text, options),
+
+			// speackFun
+			async (text, options) => await this.speak(text, options),
+
+			// thinkFun
+			async (text) => await this.think(text)
+		)
+
+		this.dialoger.run()
 
 		this.ctx.components.event.on(
 			SpeakCommandEvent,
@@ -45,11 +65,22 @@ export default class DialogController {
 	/**
 	 * engage dialog
 	 */
-	hello() {
+	async hello() {
 		const username = this.ctx.components.sysInfo.username
 		const text = this.ctx.texts.dialog.hello
 			.replace('%username%', chalk.bold(username))
-		this.echoSystem(text, true, {})
+
+		await this.dialoger.addSystemMessage(
+			text,
+			{
+				skipPrependNewLine: true,
+				voice: this.#getSystemVoice()
+			})
+	}
+
+	#getSystemVoice() {
+		return this.ctx.dialog.speakAnswers.preferredVoices
+		[this.ctx.modules.speech.config.browser][0]
 	}
 
 	/**
@@ -85,6 +116,7 @@ export default class DialogController {
 			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)
 			+ ' ' + ucol(text))
 
+		/*
 		if (this.ctx.dialog.repeatUserQuery.enabled
 			&& this.#isSpeechAvailable())
 			await this.speak(
@@ -92,6 +124,7 @@ export default class DialogController {
 				this.ctx.dialog.repeatUserQuery.preferredVoices
 				[this.ctx.modules.speech.config.browser][0],
 				true)
+		*/
 	}
 
 	async queryOpenAIChat(query,
@@ -146,7 +179,8 @@ export default class DialogController {
 		await this.ctx.components.module.speech.shetUp()
 	}
 
-	async echoSystem(text, skipPrependNewLine, {
+	async echoSystem(text, {
+		skipPrependNewLine = false,
 		secondary = false,
 		name = null,
 		voice = null,
@@ -177,6 +211,7 @@ export default class DialogController {
 
 		// eventually speek
 
+		/*
 		if (this.ctx.dialog.speakAnswers.enabled
 			&& this.#isSpeechAvailable()) {
 			await this.speak(
@@ -188,6 +223,7 @@ export default class DialogController {
 				,
 				true)
 		}
+		*/
 	}
 
 	async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }
