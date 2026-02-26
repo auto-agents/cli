@@ -12,6 +12,7 @@ import ResponseTextFormater from '../components/open-ai/response-text-formater.j
 import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
 import { Role_Assistant } from "../components/open-ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
+import OutputContext from "../data/output-context.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -67,7 +68,9 @@ export default class DialogController {
 			{
 				skipPrependNewLine: true,
 				voice: this.#getSystemVoice()
-			})
+			},
+			this.output.getOutputContext()
+		)
 	}
 
 	/**
@@ -81,7 +84,8 @@ export default class DialogController {
 				skipPrependNewLine: true,
 				userVoice: this.#getUserVoice(),
 				assistantVoice: this.#getSystemVoice()
-			})
+			},
+			this.output.getOutputContext())
 	}
 
 	// ------------------------------------------------------
@@ -247,7 +251,7 @@ export default class DialogController {
 		}
 	}
 
-	// -----------------------------------------------------------------
+	// ----- speak ---------------------------------------------------
 
 	#getSystemVoice() {
 		return this.ctx.dialog.speakAnswers.preferredVoices

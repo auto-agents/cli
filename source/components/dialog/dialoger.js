@@ -14,6 +14,8 @@ import { FifoStack, task } from "../../utils/fifo-stack"
  */
 export default class Dialoger {
 
+    dialogContexts = {}
+
     constructor(ctx,
         // text -> void
         userEchoFun,
@@ -58,7 +60,7 @@ export default class Dialoger {
         })
     }
 
-    async addUserDialog(text, options) {
+    async addUserDialog(text, options, outputContext) {
         options ||= {}
         const results = []
 
@@ -132,7 +134,7 @@ export default class Dialoger {
      * @param {String} text 
      * @param {object} options
      */
-    async addSystemMessage(text, options) {
+    async addSystemMessage(text, options, outputContext) {
         options ||= {}
         const results = []
 

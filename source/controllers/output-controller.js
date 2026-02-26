@@ -1,8 +1,11 @@
 import { ESC } from "../config/consts"
+import OutputContext from "../data/output-context"
 
 export default class OutputController {
 
 	estimRowsCount = 0
+	outputContexts = {}
+	outputContextIdCounter = 0
 
 	constructor(
 		ctx,
@@ -16,16 +19,31 @@ export default class OutputController {
 		this.updateRowCountEventName = updateRowCountEventName
 	}
 
-	#getSource() {
+	getOutputContext() {
+		this.outputContextIdCounter++
+		const oc = new OutputContext(
+			this.ctx,
+			this,
+			this.margin)
+		oc.id = this.outputContextIdCounter
+		this.outputContexts[this.outputContextIdCounter] = oc
+		return oc
+	}
+
+	deleteOutputContext(id) {
+		delete this.outputContexts[id]
+	}
+
+	getSource() {
 		return eval(this.source)
 	}
 
 	isEmpty() {
-		return this.#getSource().rows.length == 0
+		return this.getSource().rows.length == 0
 	}
 
 	clear(skipViewUpdate = false) {
-		this.#getSource().rows = []
+		this.getSource().rows = []
 		this.estimRowsCount = 0
 		this.updateView(skipViewUpdate)
 	}
@@ -36,22 +54,24 @@ export default class OutputController {
 		const y0 = 0
 		const y1 = 1
 
-		const rows = this.#getSource().rows
+		const rows = this.getSource().rows
 
 		//rows.push(str)
+		const rowY0 = rows.length
 		const t = str.split('\n')
 		t.forEach(s => rows.push(s))
+		const rowY1 = rows.length
 
 		this.estimRowsCount += 2
-		for (var i = 0; i < str.length; i++) {
-			if (str[i] == '\n')
-				this.estimRowsCount++
-		}
+		this.estimRowsCount += t.length
 
 		this.updateView(skipViewUpdate)
+
 		return {
 			y0: y0,
-			y1: y1
+			y1: y1,
+			rowY0: rowY0,
+			rowY1: rowY1
 		}
 	}
 
@@ -65,7 +85,7 @@ export default class OutputController {
 	}
 
 	forceUpdate() {
-		const rows = this.#getSource().rows
+		const rows = this.getSource().rows
 		if (rows.length == 0) return
 		rows[0] += ESC
 		this.delayUpdate()

@@ -11,18 +11,18 @@ export default class BoxOutputController {
 		this.source = source
 	}
 
-	#getSource() {
+	getSource() {
 		return eval(this.source)
 	}
 
 	clear() {
-		this.#getSource().rows = []
+		this.getSource().rows = []
 		this.ctx.components.event.emit(BoxOutputUpdatedEvent)
 	}
 
 	setLine(str, y, leftMargin = 0, skipViewUpdate = false) {
 		if (!str) return
-		const o = this.#getSource()
+		const o = this.getSource()
 		if (y > o.rows.length - 1)
 			y = o.rows.length - 1
 		o.rows[y] = ' '.repeat(leftMargin) + str
@@ -34,7 +34,7 @@ export default class BoxOutputController {
 	appendLine(str, leftMargin = 0, skipViewUpdate = false) {
 		if (!str) return
 		str = ' '.repeat(leftMargin) + str
-		const o = this.#getSource()
+		const o = this.getSource()
 		const w = this.ctx.data.layout.output.cols.value || 0
 		const h = this.ctx.data.layout.output.rows.value || 0
 		var y0 = null
@@ -79,7 +79,7 @@ export default class BoxOutputController {
 	}
 
 	removeLines(from, to, skipViewUpdate = false) {
-		const o = this.#getSource()
+		const o = this.getSource()
 		if (from >= 0 && from < o.rows.length
 			&& to >= 0 && to >= from && to < o.rows.length
 		) {
