@@ -1,19 +1,19 @@
-import ActionController from "../controllers/action-controller"
-import SpinnerService from "../services/spinner-service";
+import ActionController from "../controllers/action-controller.js"
+import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../utils/status.js'
 import utils from '../utils/utils.js'
 import History from "../components/ai/history.js";
 import fs from 'fs'
 
-export default class OpenAIChatModule {
+export default class AIChatModule {
 
-    constructor(ctx, config, outputContext,
-        apiClientFilepath,
-        apiClientConfig
+    constructor(ctx, config, outputContext, moduleSpec
     ) {
-        this.apiClientFilepath = apiClientFilepath || "../components/ai/open-ai-api-client.js"
-        this.apiClientConfig = apiClientConfig || ctx.modules.openAIApi
+        this.moduleSpec = moduleSpec
+        this.apiName = moduleSpec.apiName
+        this.apiClientFilepath = moduleSpec.apiClientFilepath
+        this.apiClientConfig = eval(moduleSpec.apiClientConfig)
         this.ctx = ctx
         this.config = config
         this.outputContext = outputContext
@@ -27,7 +27,7 @@ export default class OpenAIChatModule {
         const o = this.outputContext.output
         const margin = this.outputContext.margin + this.outputContext.marginBase
         const margin2 = margin + this.outputContext.marginBase
-        o.appendLine(margin + '~ loading ai chat module. configuring client: ' + this.apiClientFilepath)
+        o.appendLine(margin + `~ loading ai chat module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
 
         // dynamically import AI Api Client
         const apiClient = await import(this.apiClientFilepath)
@@ -66,7 +66,7 @@ export default class OpenAIChatModule {
                 await utils.wait(this.ctx.ui.initFastWait)
 
             } catch (err) {
-                o.appendLine(this.status.error(margin + 'open ai chat module init error: ' + err))
+                o.appendLine(this.status.error(margin + this.apiName + ' chat module init error: ' + err))
             }
         }
 
@@ -74,7 +74,7 @@ export default class OpenAIChatModule {
             this.ctx,
             this.outputContext.output,
             initApi,
-            this.spinner.newSpinner(margin2 + '- initializing open ai chat module', cliSpinners.sand),
+            this.spinner.newSpinner(margin2 + '- initializing ' + this.apiName + ' chat module', cliSpinners.sand),
             async () => {
             }
         )

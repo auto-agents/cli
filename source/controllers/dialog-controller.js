@@ -142,7 +142,7 @@ export default class DialogController {
 		on,
 		{ agents }
 	) {
-		if (!this.#isChatOpenAIAvailable()) return
+		if (!this.#isAIChatAvailable()) return
 
 		if (on == this.duoModeEnabled) return
 		this.duoModeEnabled = on
@@ -267,7 +267,7 @@ export default class DialogController {
 		return this.ctx.components.module.speech != null
 	}
 
-	#isChatOpenAIAvailable() {
+	#isAIChatAvailable() {
 		return this.ctx.components.module.AIChat != null
 	}
 
@@ -300,6 +300,8 @@ export default class DialogController {
 			waitForEnd = false,
 			interrupt = false
 		}) {
+		if (!text || text.length == 0) return
+
 		text = this.responseSpeechFormater.getSpeech(text)
 
 		const e = this.ctx.components.event
@@ -347,7 +349,7 @@ export default class DialogController {
 			voice = null,
 			color = null
 		}) {
-		if (!this.#isChatOpenAIAvailable())
+		if (!this.#isAIChatAvailable())
 			return
 		const e = this.ctx.components.event
 
@@ -363,7 +365,7 @@ export default class DialogController {
 		const r = await this.ctx.components.module.AIChat
 			.chat(query, secondary)
 			.then(async resp => {
-				const txt = resp.choices[0].message.content
+				const txt = resp.content
 				e.emit(SetStatusMessageEvent)
 				await this.echoSystem(txt,
 					skipPrependNewLine,

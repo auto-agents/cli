@@ -110,7 +110,7 @@ export default class Dialoger {
             && aiResult) {
 
             //console.log(aiResult)
-            const aiText = aiResult.result.choices[0].message.content
+            const aiText = aiResult.result?.content
 
             results.push(
                 await this.fifoStack.addTask(

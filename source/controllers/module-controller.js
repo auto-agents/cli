@@ -31,9 +31,8 @@ export default class ModuleController {
             }
             try {
                 const mod = await import(path)
-                const m = new mod.default(this.ctx, module.config, this.outputContext)
+                const m = new mod.default(this.ctx, module.config, this.outputContext, module)
                 await m.init()
-                m.moduleSpec = module
             }
             catch (err) {
                 o.appendLine(this.status.error(margin + 'module load error: ' + err))

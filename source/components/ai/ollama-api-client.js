@@ -1,10 +1,8 @@
-import fs from 'fs'
-import History from './history.js'
-import { Role_Assistant, Role_User } from './roles.js'
-import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
+import { Role_Assistant, Role_User } from './roles.js'
+import { Ollama } from 'ollama'
 
-export default class OpenAIApiClient extends AIApiClient {
+export default class OllamaApiClient extends AIApiClient {
 
     constructor(ctx, config, outputContext) {
         super(ctx, config, outputContext)
@@ -14,20 +12,14 @@ export default class OpenAIApiClient extends AIApiClient {
 
         await super.init(options)
 
-        // init client
-        const c = this.config
-        this.client = new OpenAiApi({
-            apiKey: c.apiKey,
-            maxRetries: c.maxRetries,
-            baseURL: c.baseURL
-        })
+        this.client = new Ollama(
+            { host: this.config.baseURL }
+        )
 
         return this
     }
 
     async completion(query) {
-
-        //console.log(this.config)
 
         const queryMessage = {
             role: Role_User, content: query
@@ -38,24 +30,21 @@ export default class OpenAIApiClient extends AIApiClient {
             queryMessage
         ]
 
-        //console.log('messages=', messages)
-
-        const r = await this.client.chat.completions.create({
+        const r = await this.client.chat({
             model: this.config.model,
             messages: messages,
-            verbosity: 'high',
+            //verbosity: 'high',
             tools: this.config.tools,
             temperature: this.config.temperature,
             stream: this.config.stream,
             think: this.config.think
-        }, {
-            path: this.config.paths.completion
         })
 
-        //console.log(r)
+        console.log(r)
+        //if (r.message.thinking) console.log(r.message.thinking)
 
         this.history.messages.push(queryMessage)
-        const rq = { role: Role_Assistant, content: r.choices[0].message.content }
+        const rq = { role: Role_Assistant, content: r.message.content }
         this.history.messages.push(rq)
         return { response: r, content: rq.content }
     }

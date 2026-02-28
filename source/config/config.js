@@ -703,35 +703,17 @@ export default function config(cli) {
 			recognition: {
 				enabled: false
 			},
-			openAIApi: {
-				/*
-				* openAI API configuration
-				*/
-				apiKey: 'change-me',
-				model: "google/gemma-3-1b",
-				// LM STUDIO
-				//baseURL: "http://localhost:1234/v1/",
-				// OLLAMA
-				//baseURL: "http://localhost:11434/api/",
-				// OLLAMA-MCP-BRIDGE
-				baseURL: "http://localhost:8000/api/",
-				temperature: 0.7,
-				paths: {
-					// LM STUDIO
-					//completion: '/chat/completions'
-					// OLLAMA
-					completion: '/chat'
-				},
-				maxRetries: 2,	// default
-				stream: false,
-				thinking: false
-			},
 			openAIChat: {
 				/*
 				* openAI chat module configuration
 				*/
-				file: 'open-ai-chat.js',
-				enabled: true,
+				file: 'ai-chat.js',
+
+				apiName: 'OpenAI',
+				apiClientFilepath: "../components/ai/open-ai-api-client.js",
+				apiClientConfig: "ctx.servers.llm.openAIApi",
+
+				enabled: false,
 				config: {
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 
@@ -740,37 +722,26 @@ export default function config(cli) {
 					//model: "mistralai/ministral-3-3b",
 					//model2: 'gpt2-finetuned-recipes-cooking_v2-i1',
 
-					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
 					instructions: 'You are a coding assistant.',
 					instructions0: 'répond en langue française',
 				}
-			},
-			ollamaMCPBridgeAI: {
-				/*
-				* ollama MCP Bridge API configuration
-				*/
-				apiKey: 'change-me',
-				model: "qwen3:4b",
-				// OLLAMA-MCP-BRIDGE
-				baseURL: "http://localhost:8000/api/",
-				//baseURL: "http://localhost:11434/api/",	// ollama direct
-				temperature: 0.7,
-				paths: {
-					completion: '/chat'
-				},
-				maxRetries: 2,	// default
-				stream: false,
-				thinking: false
 			},
 			ollamaAIChat: {
 				/*
 				* openAI chat module configuration
 				*/
-				file: 'ollama-ai-chat.js',
-				enabled: false,
+				file: 'ai-chat.js',
+
+				apiName: 'Ollama',
+				apiClientFilepath: "../components/ai/ollama-api-client.js",
+				apiClientConfig: "ctx.servers.llm.ollamaMCPBridgeAI",
+
+				enabled: true,
 				config: {
 					apiKey: "",
-					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
+					//model: "qwen3:0.6b",
+					//model: "gemma3:1b",
+					temperature: 0.7,
 					instructions: 'You are a coding assistant.',
 				}
 			},
@@ -780,6 +751,68 @@ export default function config(cli) {
 				config: {
 
 				}
+			}
+		},
+		servers: {
+			llm: {
+				lmStudioApi: {
+					/*
+					* LM Studio API configuration
+					*/
+					apiKey: 'change-me',
+					model: "google/gemma-3-1b",
+					// LM STUDIO
+					baseURL: "http://localhost:1234/v1/",
+					temperature: 0.7,
+					paths: {
+						// LM STUDIO
+						completion: '/chat/completions'
+					},
+					maxRetries: 2,	// default
+					stream: false,
+					think: true,
+					historyPath: join(process.cwd(), saved, 'chat-history.json')
+				},
+				openAIApi: {
+					/*
+					* openAI API configuration
+					*/
+					apiKey: 'change-me',
+					model: "google/gemma-3-1b",
+					// LM STUDIO
+					//baseURL: "http://localhost:1234/v1/",
+					// OLLAMA
+					//baseURL: "http://localhost:11434/api/",
+					// OLLAMA-MCP-BRIDGE
+					baseURL: "http://localhost:8000/api/",
+					temperature: 0.7,
+					paths: {
+						// LM STUDIO
+						//completion: '/chat/completions'
+						// OLLAMA
+						completion: '/chat'
+					},
+					maxRetries: 2,	// default
+					stream: false,
+					think: true,
+					historyPath: join(process.cwd(), saved, 'chat-history.json')
+				},
+				ollamaMCPBridgeAI: {
+					/*
+					* ollama MCP Bridge API configuration
+					*/
+					apiKey: 'change-me',
+					model: "qwen3:4b",
+					// OLLAMA-MCP-BRIDGE
+					baseURL: "http://localhost:8000",
+					//baseURL: "http://localhost:11434/",	// ollama direct
+					temperature: 0.7,
+					maxRetries: 2,	// default
+					stream: false,
+					// true,false (swen3) low,medium,high (gpt-oss)
+					think: true,
+					historyPath: join(process.cwd(), saved, 'chat-history.json')
+				},
 			}
 		},
 		shell: {
