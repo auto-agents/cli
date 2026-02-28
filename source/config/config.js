@@ -753,6 +753,7 @@ export default function config(cli) {
 				model: "qwen3:4b",
 				// OLLAMA-MCP-BRIDGE
 				baseURL: "http://localhost:8000/api/",
+				//baseURL: "http://localhost:11434/api/",	// ollama direct
 				temperature: 0.7,
 				paths: {
 					completion: '/chat'

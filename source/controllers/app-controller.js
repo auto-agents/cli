@@ -235,7 +235,7 @@ export default class AppController {
 		const initModuleGauge = (moduleName, gaugeName) => {
 			gaugeName ||= moduleName
 			const moduleInstance = this.ctx.components.module[moduleName]
-			const moduleSpec = this.ctx.modules[moduleName]
+			const moduleSpec = moduleInstance?.moduleSpec
 			const gauge = this.ctx.data.app.modules[gaugeName]
 			gauge.value =
 				!moduleSpec ? this.status.statusUnavailable() : (
