@@ -248,8 +248,8 @@ export default class AppController {
 		}
 		initModuleGauge('speech')
 		initModuleGauge('recognition')
-		initModuleGauge('openAIChat')
-		initModuleGauge('openAIAgents')
+		initModuleGauge('AIChat')
+		initModuleGauge('AIAgents')
 
 		// begin dialog
 		this.event.emit(AppStartedEvent)

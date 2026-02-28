@@ -567,12 +567,12 @@ export default function config(cli) {
 						key: 'voice recognition',
 						value: ''
 					},
-					openAIChat: {
-						key: 'OpenAI Api chat',
+					AIChat: {
+						key: 'AI Api chat',
 						value: ''
 					},
-					openAIAgents: {
-						key: 'OpenAI Api agents',
+					AIAgents: {
+						key: 'AI Api agents',
 						value: ''
 					}
 				}
@@ -672,7 +672,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
@@ -703,29 +703,74 @@ export default function config(cli) {
 			recognition: {
 				enabled: false
 			},
-			openAI: {
+			openAIApi: {
+				/*
+				* openAI API configuration
+				*/
 				apiKey: 'change-me',
 				model: "google/gemma-3-1b",
-				baseURL: "http://localhost:1234/v1/",
-				temperature: 0.7,		// TODO: use this parameter
+				// LM STUDIO
+				//baseURL: "http://localhost:1234/v1/",
+				// OLLAMA
+				//baseURL: "http://localhost:11434/api/",
+				// OLLAMA-MCP-BRIDGE
+				baseURL: "http://localhost:8000/api/",
+				temperature: 0.7,
 				paths: {
-					completion: '/chat/completions'
+					// LM STUDIO
+					//completion: '/chat/completions'
+					// OLLAMA
+					completion: '/chat'
 				},
-				maxRetries: 2	// default
+				maxRetries: 2,	// default
+				stream: false,
+				thinking: false
 			},
 			openAIChat: {
+				/*
+				* openAI chat module configuration
+				*/
 				file: 'open-ai-chat.js',
 				enabled: true,
 				config: {
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 
-					model: "google/gemma-3-1b",
-					model1: "mistralai/ministral-3-3b",
+					model: "qwen3:4b",
+					//model: "google/gemma-3-1b",
+					//model: "mistralai/ministral-3-3b",
 					//model2: 'gpt2-finetuned-recipes-cooking_v2-i1',
 
 					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
 					instructions: 'You are a coding assistant.',
 					instructions0: 'répond en langue française',
+				}
+			},
+			ollamaMCPBridgeAI: {
+				/*
+				* ollama MCP Bridge API configuration
+				*/
+				apiKey: 'change-me',
+				model: "qwen3:4b",
+				// OLLAMA-MCP-BRIDGE
+				baseURL: "http://localhost:8000/api/",
+				temperature: 0.7,
+				paths: {
+					completion: '/chat'
+				},
+				maxRetries: 2,	// default
+				stream: false,
+				thinking: false
+			},
+			ollamaAIChat: {
+				/*
+				* openAI chat module configuration
+				*/
+				file: 'ollama-ai-chat.js',
+				enabled: false,
+				config: {
+					apiKey: "",
+					historyPath: join(process.cwd(), saved, 'open-ai-chat-history.json'),
+					instructions: 'You are a coding assistant.',
 				}
 			},
 			openAIAgents: {

@@ -3,13 +3,17 @@ import SpinnerService from "../services/spinner-service";
 import cliSpinners from 'cli-spinners';
 import Status from '../utils/status.js'
 import utils from '../utils/utils.js'
-import OpenAI from "../components/open-ai/open-ai.js";
-import History from "../components/open-ai/history.js";
+import History from "../components/ai/history.js";
 import fs from 'fs'
 
 export default class OpenAIChatModule {
 
-    constructor(ctx, config, outputContext) {
+    constructor(ctx, config, outputContext,
+        apiClientFilepath,
+        apiClientConfig
+    ) {
+        this.apiClientFilepath = apiClientFilepath || "../components/ai/open-ai-api-client.js"
+        this.apiClientConfig = apiClientConfig || ctx.modules.openAIApi
         this.ctx = ctx
         this.config = config
         this.outputContext = outputContext
@@ -23,35 +27,38 @@ export default class OpenAIChatModule {
         const o = this.outputContext.output
         const margin = this.outputContext.margin + this.outputContext.marginBase
         const margin2 = margin + this.outputContext.marginBase
-        o.appendLine(margin + '~ loading open ai chat module')
+        o.appendLine(margin + '~ loading ai chat module. configuring client: ' + this.apiClientFilepath)
+
+        // dynamically import AI Api Client
+        const apiClient = await import(this.apiClientFilepath)
 
         // primary open ai chat
 
-        this.openai = new OpenAI(
+        this.api = new apiClient.default(
             this.ctx,
             {
-                ...this.ctx.modules.openAI,
+                ...this.apiClientConfig,
                 ...this.config,
                 id: 1,
                 instructions: this.ctx.dialog.roles.agent1.instructions
             },
             this.outputContext
         )
-        await this.openai.init()
+        await this.api.init()
 
         // secondary open ai chat (duo mode)
 
-        this.openaiSecondary = new OpenAI(
+        this.apiSecondary = new apiClient.default(
             this.ctx,
             {
-                ...this.ctx.modules.openAI,
+                ...this.apiClientConfig,
                 ...this.config,
                 id: 2,
                 instructions: this.ctx.dialog.roles.agent2.instructions
             },
             this.outputContext
         )
-        await this.openaiSecondary.init(true)
+        await this.apiSecondary.init(true)
 
         const initApi = async () => {
             try {
@@ -74,12 +81,12 @@ export default class OpenAIChatModule {
         await initApiAction.run()
 
         // this will enable module for the cli
-        this.ctx.components.module.openAIChat = this
+        this.ctx.components.module.AIChat = this
     }
 
     async chat(query, secondary = false) {
-        const api = !secondary ? this.openai : this.openaiSecondary
-        const r = await api.completion(query)
+        const capi = !secondary ? this.api : this.apiSecondary
+        const r = await capi.completion(query)
         return r
     }
 

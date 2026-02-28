@@ -62,7 +62,7 @@ export default class Command {
                 {
                     ...errorEvent(
                         this.From,
-                        new Error('module not available: openAIChat'))
+                        new Error('module not available: ' + name))
                 }
             )
         return r

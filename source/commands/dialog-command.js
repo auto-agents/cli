@@ -73,7 +73,7 @@ export default class DialogCommand extends Command {
 					return
 				if (!this.checkModuleAvailable('OpenAIChat'))
 					return
-				this.ctx.components.module.openAIChat.saveHistory(file, format)
+				this.ctx.components.module.AIChat.saveHistory(file, format)
 				break
 
 			default:

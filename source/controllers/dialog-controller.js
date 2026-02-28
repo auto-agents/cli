@@ -8,9 +8,9 @@ import {
 	TaskAddAssistantMessageCommandEvent,
 	errorEvent
 } from "../config/events.js"
-import ResponseTextFormater from '../components/open-ai/response-text-formater.js'
-import ResponseSpeechFormater from "../components/open-ai/response-speech-formater.js"
-import { Role_Assistant } from "../components/open-ai/roles.js"
+import ResponseTextFormater from '../components/ai/response-text-formater.js'
+import ResponseSpeechFormater from "../components/ai/response-speech-formater.js"
+import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
 
@@ -160,9 +160,9 @@ export default class DialogController {
 		o.newLine()
 		o.appendLine(cmtCol(`agent 2 is '${chalk.bold(agent1.name)}' with instructions: ${agent2.instructions}`))
 
-		const chat = this.ctx.components.module.openAIChat
-		const primaryChat = chat.openai
-		const secondaryChat = chat.openaiSecondary
+		const chat = this.ctx.components.module.AIChat
+		const primaryChat = chat.api
+		const secondaryChat = chat.apiSecondary
 		const sp = this.ctx.components.module.speech
 
 		//var lastAssistMessage = primaryChat.history.getLastAssistantMessage()
@@ -268,7 +268,7 @@ export default class DialogController {
 	}
 
 	#isChatOpenAIAvailable() {
-		return this.ctx.components.module.openAIChat != null
+		return this.ctx.components.module.AIChat != null
 	}
 
 	async #speakEventHandler(data) {
@@ -357,10 +357,10 @@ export default class DialogController {
 			this.From,
 			StatusEnum.waiting,
 			'🤖 thinking ...',
-			this.ctx.modules.openAIChat.config.model
+			this.ctx.components.module.AIChat.config.model
 		))
 
-		const r = await this.ctx.components.module.openAIChat
+		const r = await this.ctx.components.module.AIChat
 			.chat(query, secondary)
 			.then(async resp => {
 				const txt = resp.choices[0].message.content

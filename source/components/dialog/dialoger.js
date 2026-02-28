@@ -196,7 +196,7 @@ export default class Dialoger {
     }
 
     #isChatOpenAIAvailable() {
-        return this.ctx.components.module.openAIChat != null
+        return this.ctx.components.module.AIChat != null
     }
 
 }

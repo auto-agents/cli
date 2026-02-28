@@ -1,9 +1,9 @@
 import fs from 'fs'
 import History from './history.js'
-import { Role_Assistant, Role_User } from './roles'
+import { Role_Assistant, Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 
-export default class OpenAI {
+export default class OpenAIApiClient {
 
     constructor(ctx, config, outputContext) {
         this.ctx = ctx
@@ -52,10 +52,16 @@ export default class OpenAI {
         const r = await this.client.chat.completions.create({
             model: this.config.model,
             messages: messages,
-            verbosity: 'high'
+            verbosity: 'high',
+            tools: this.config.tools,
+            temperature: this.config.temperature,
+            stream: this.config.stream,
+            thinking: this.config.thinking
         }, {
             path: this.config.paths.completion
         })
+
+        console.log(r)
 
         this.history.messages.push(queryMessage)
         const rq = { role: Role_Assistant, content: r.choices[0].message.content }
