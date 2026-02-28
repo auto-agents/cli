@@ -365,6 +365,7 @@ export default class DialogController {
 		const r = await this.ctx.components.module.AIChat
 			.chat(query, secondary)
 			.then(async resp => {
+				this.ctx.components.module.AIChat.lastResponse = resp
 				const txt = resp.content
 				e.emit(SetStatusMessageEvent)
 				await this.echoSystem(txt,

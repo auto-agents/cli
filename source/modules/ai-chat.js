@@ -32,12 +32,16 @@ export default class AIChatModule {
         // dynamically import AI Api Client
         const apiClient = await import(this.apiClientFilepath)
 
+        this.config = {
+            ...this.apiClientConfig,
+            ...this.config
+        }
+
         // primary open ai chat
 
         this.api = new apiClient.default(
             this.ctx,
             {
-                ...this.apiClientConfig,
                 ...this.config,
                 id: 1,
                 instructions: this.ctx.dialog.roles.agent1.instructions
@@ -51,7 +55,6 @@ export default class AIChatModule {
         this.apiSecondary = new apiClient.default(
             this.ctx,
             {
-                ...this.apiClientConfig,
                 ...this.config,
                 id: 2,
                 instructions: this.ctx.dialog.roles.agent2.instructions

@@ -728,7 +728,7 @@ export default function config(cli) {
 			},
 			ollamaAIChat: {
 				/*
-				* openAI chat module configuration
+				* Ollama chat module configuration
 				*/
 				file: 'ai-chat.js',
 
@@ -736,11 +736,27 @@ export default function config(cli) {
 				apiClientFilepath: "../components/ai/ollama-api-client.js",
 				apiClientConfig: "ctx.servers.llm.ollamaMCPBridgeAI",
 
-				enabled: true,
+				enabled: false,
 				config: {
 					apiKey: "",
 					//model: "qwen3:0.6b",
 					//model: "gemma3:1b",
+					temperature: 0.7,
+					instructions: 'You are a coding assistant.',
+				}
+			},
+			lmStudioAIChat: {
+				/*
+				* LM Studio chat module configuration
+				*/
+				file: 'ai-chat.js',
+
+				apiName: 'LMStudio',
+				apiClientFilepath: "../components/ai/lm-studio-api-client.js",
+				apiClientConfig: "ctx.servers.llm.lmStudioApi",
+
+				enabled: true,
+				config: {
 					temperature: 0.7,
 					instructions: 'You are a coding assistant.',
 				}
@@ -759,10 +775,10 @@ export default function config(cli) {
 					/*
 					* LM Studio API configuration
 					*/
-					apiKey: 'change-me',
+					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
 					// LM STUDIO
-					baseURL: "http://localhost:1234/v1/",
+					baseURL: "ws://localhost:1234",
 					temperature: 0.7,
 					paths: {
 						// LM STUDIO
