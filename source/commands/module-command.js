@@ -1,6 +1,5 @@
 import Command from './command.js'
 import chalk from 'chalk'
-import { CommandRunErrorEvent, errorEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from '../config/events.js'
 import OutputContext from '../data/output-context.js'
 
 export default class ModuleCommand extends Command {
@@ -51,7 +50,6 @@ export default class ModuleCommand extends Command {
 		const action = this.getPositionalArg(com, args, argAction, 0)
 		if (!this.checkParameter(com, argAction, action))
 			return
-		const e = this.ctx.components.event
 
 		switch (action) {
 			case 'list':
@@ -66,7 +64,6 @@ export default class ModuleCommand extends Command {
 
 				const mc = await this.#getModuleController()
 				await mc.load(name, this.#getOutputContext(4))
-				e.emit(ModuleLoadedEvent, name)
 				this.#listModules()
 				break
 			}
@@ -79,7 +76,6 @@ export default class ModuleCommand extends Command {
 
 				const mc = await this.#getModuleController()
 				await mc.unload(name, this.#getOutputContext(4))
-				e.emit(ModuleUnloadedEvent, name)
 				this.#listModules()
 				break
 			}
@@ -92,9 +88,7 @@ export default class ModuleCommand extends Command {
 
 				const mc = await this.#getModuleController()
 				await mc.unload(name, this.#getOutputContext(4))
-				e.emit(ModuleUnloadedEvent, name)
 				await mc.load(name, this.#getOutputContext(4))
-				e.emit(ModuleLoadedEvent, name)
 				this.#listModules()
 				break
 			}

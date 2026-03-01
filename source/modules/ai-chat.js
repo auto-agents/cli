@@ -24,9 +24,18 @@ export default class AIChatModule {
 
     async init() {
 
-        const o = this.outputContext.output
-        const margin = ' '.repeat(this.outputContext.margin + this.outputContext.marginBase)
-        const margin2 = ' '.repeat(margin.length + this.outputContext.marginBase)
+        const oc = this.outputContext
+        const o = oc.output
+        const margin = ' '.repeat(oc.margin + oc.marginBase)
+        const margin2 = ' '.repeat(margin.length + oc.marginBase)
+
+        if (this.ctx.components.module.AIChat) {
+            // first stop another AIChat module
+            await this.ctx.components.moduleController.unload(
+                this.ctx.components.module.AIChat.moduleName,
+                this.outputContext
+            )
+        }
 
         o.newLine()
         o.appendLine(margin + `~ loading ai chat module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)

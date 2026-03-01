@@ -3,6 +3,8 @@ import { join } from 'path';
 import chalk from "chalk"
 import Status from '../utils/status.js'
 import OutputContext from "../data/output-context.js";
+import { isAppInitialized } from "../utils/utils.js";
+import { ModuleLoadedEvent, ModuleUnloadedEvent } from "../config/events.js";
 
 export default class ModuleController {
 
@@ -45,12 +47,18 @@ export default class ModuleController {
                 return null
             }
 
+            module.moduleName = moduleName
             const mod = await import(path)
             const m = new mod.default(this.ctx, module.config, oc, module)
+            m.moduleName = moduleName
             await m.init()
             this.modules[moduleName] = m
             this.ctx.components.module[moduleName] = m
             module.isLoaded = true
+            module.isEnabled = true
+
+            if (isAppInitialized(this.ctx))
+                this.ctx.components.event.emit(ModuleLoadedEvent)
             return m
         }
         catch (err) {
@@ -90,6 +98,9 @@ export default class ModuleController {
             delete this.ctx.components.module[moduleName]
 
             module.isLoaded = false
+            if (isAppInitialized(this.ctx))
+                this.ctx.components.event.emit(ModuleUnloadedEvent)
+
             return true
         }
         catch (err) {

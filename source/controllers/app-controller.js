@@ -230,6 +230,9 @@ export default class AppController {
 	}
 
 	async appInitialized() {
+
+		this.isInitialized = true
+
 		// init modules gauges
 		this.#setupModulesGauges()
 

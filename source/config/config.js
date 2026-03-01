@@ -810,6 +810,7 @@ export default function config(cli) {
 					//model: "qwen3:4b",
 					//model: 'qwen3-1.7b',
 					model: "google/gemma-3-1b",
+					//model: 'google/gemma-2-9b',
 					//model: "mistralai/ministral-3-3b",
 					//model2: 'gpt2-finetuned-recipes-cooking_v2-i1',
 
@@ -854,7 +855,8 @@ export default function config(cli) {
 				isLoaded: false,
 
 				config: {
-					model: 'qwen3-1.7b',
+					model: 'google/gemma-2-9b',
+					//model: 'qwen3-1.7b',
 					//model: 'qwen3-0.6b',
 					temperature: 0.7,
 					instructions: 'You are a coding assistant.',
@@ -876,7 +878,8 @@ export default function config(cli) {
 
 				config: {
 					//model: "google/gemma-3-1b",
-					model: 'qwen3-0.6b',
+					//model: 'qwen3-0.6b',
+					model: 'google/gemma-2-9b',
 					temperature: 0.7,
 					instructions: 'You are a coding assistant.',
 				}

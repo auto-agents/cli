@@ -84,6 +84,10 @@ export const isAIChatAvailable = ctx => {
         && ctx.components.module.AIChat !== undefined
 }
 
+export const isAppInitialized = ctx => {
+    return ctx.components.app.isInitialized
+}
+
 export default {
     callAsync,
     wait,
