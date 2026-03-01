@@ -250,6 +250,41 @@ export default function config(cli) {
 					file: 'dialog-command.js'
 				},
 				{
+					names: ['app', 'a'],
+					description: 'access to settings, configuration, run-time variables',
+					config: {
+						options: {
+							action: {
+								type: 'string',
+								required: true,
+								allowedValues: [
+									{
+										value: 'get',
+										description: 'get a value of the app context having the given path'
+									},
+									{
+										value: 'set',
+										description: 'set a value of the app context having the given path and the given value. the value is given as a javascript expression that will be evaluated'
+									}
+								],
+								description: 'an action order for the app command'
+							},
+							path: {
+								type: 'string',
+								required: true,
+								description: 'the path of the app context value for the actions get and set'
+							},
+							value: {
+								type: 'string',
+								required: false,
+								description: 'the value as a javasccript expression for the set action'
+							}
+						},
+						allowPositionals: true
+					},
+					file: 'app-command.js'
+				},
+				{
 					names: ['help', 'h'],
 					description: 'provide informations about the cli tool, contexts, commands and RAG db',
 					config: {

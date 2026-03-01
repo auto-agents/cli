@@ -288,9 +288,10 @@ The command `help` is used to provide informations about:
 Implements a new command named `app`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
 Use as a model the command class in `cli/source/commands/dialog-command.js` and its command descriptor in the file `cli/source/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
 
-this command is specified as below:
-
 The command `app` is used to access to settings, configuration, run-time variables of the `cli tool`.
+- The action `get` implements the output of the `JSON` text of the value having given property path in the context of the command: `this.ctx`
+- the action `set` implements the value initialization from the evaluted javascript expression of the property having given property path in the context of the command: `this.ctx`
+
 The command descriptor is given below:
 
 ```js

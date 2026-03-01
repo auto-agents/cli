@@ -9,11 +9,9 @@ export const box = (ctx, title, lines, output, backgroundColor, borderColor) => 
     var tw = util.stripVTControlCharacters(title).length
     var mw = tw
     lines.forEach(line => {
-        mw = Math.max(mw, util.stripVTControlCharacters(line.trim()).length)
+        mw = Math.max(mw, util.stripVTControlCharacters(line/*.trim()*/).length)
     })
     const w = Math.max(tw, mw)
-
-    //console.log(w)
 
     const topRow = w => borderColor('╭') + borderColor('─').repeat(w) + borderColor('╮')
     const bottomRow = w => borderColor('╰') + borderColor('─').repeat(w) + borderColor('╯')
@@ -26,7 +24,7 @@ export const box = (ctx, title, lines, output, backgroundColor, borderColor) => 
     t.push(sideRow(w, bottomRow(w - 2), 0))
 
     lines.forEach(line => {
-        const s = line.trim()
+        const s = line/*.trim()*/
         const ts = util.stripVTControlCharacters(s)
         const l = ts.length
         t.push(sideRow(w, s, mw - l))
@@ -34,8 +32,6 @@ export const box = (ctx, title, lines, output, backgroundColor, borderColor) => 
     t.push(bottomRow(w))
 
     t.forEach(x => output.appendLine(x, false))
-
-    //console.log(t)
 
     output.updateView()
 
