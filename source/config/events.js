@@ -32,6 +32,9 @@ export const InputToStartEvent = 'InputToStartEvent'
 export const InputToEndEvent = 'InputToEndEvent'
 export const SpeakCommandEvent = 'SpeakCommandEvent'
 
+export const ModuleLoadedEvent = 'ModuleLoadedEvent'
+export const ModuleUnloadedEvent = 'ModuleUnloadedEvent'
+
 export const TaskRunErrorEvent = 'TaskRunErrorEvent'
 export const TaskAddUserDialogCommandEvent = 'TaskAddUserDialogCommandEvent'
 export const TaskAddAssistantDialogCommandEvent = 'TaskAddAssistantDialogCommandEvent'

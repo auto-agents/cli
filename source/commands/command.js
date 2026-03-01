@@ -1,4 +1,4 @@
-import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent } from '../config/events.js'
+import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
 
 // command base class
 export default class Command {
@@ -66,5 +66,15 @@ export default class Command {
                 }
             )
         return r
+    }
+
+    emitCommandError(message) {
+        this.ctx.components.event.emit(
+            CommandRunErrorEvent,
+            {
+                ...errorEvent(this.From, new Error(message)),
+                cmd: this.From
+            }
+        )
     }
 }

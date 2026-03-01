@@ -1,5 +1,4 @@
 import Command from './command.js'
-import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import { renderComponent } from '../utils/utils.js';
 import * as highlight from "cli-highlight"
@@ -9,16 +8,6 @@ export default class AppCommand extends Command {
 
 	constructor(ctx) {
 		super(ctx, 'app com')
-	}
-
-	#emitError(message) {
-		this.ctx.components.event.emit(
-			CommandRunErrorEvent,
-			{
-				...errorEvent(this.From, new Error(message)),
-				cmd: this.From
-			}
-		)
 	}
 
 	#getByPath(root, path) {
@@ -85,7 +74,7 @@ export default class AppCommand extends Command {
 						}
 					)
 				} catch (err) {
-					this.#emitError(`app get error: ${err?.message || err}`)
+					this.emitCommandError(`app get error: ${err?.message || err}`)
 				}
 				break
 			}
@@ -102,13 +91,13 @@ export default class AppCommand extends Command {
 					output.newLine()
 					output.appendLine(path + ' set to: ' + value)
 				} catch (err) {
-					this.#emitError(`app set error: ${err?.message || err}`)
+					this.emitCommandError(`app set error: ${err?.message || err}`)
 				}
 				break
 			}
 
 			default:
-				this.#emitError(`Error: invalid action '${action}'`)
+				this.emitCommandError(`Error: invalid action '${action}'`)
 		}
 	}
 }

@@ -23,7 +23,9 @@ import {
 	CommandRunErrorEvent,
 	SpeakCommandEvent,
 	speakEvent,
-	TaskRunErrorEvent
+	TaskRunErrorEvent,
+	ModuleLoadedEvent,
+	ModuleUnloadedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -99,6 +101,8 @@ export default class AppController {
 			.on(LogErrorEvent, async (args) => await this.handleLogErrorEvent(args[0]))
 			.on(TaskRunErrorEvent, async (args) => await this.handleTaskRunErrorEvent(args[0]))
 			.on(LogWarningEvent, args => this.warning(args[0]))
+			.on(ModuleLoadedEvent, args => this.#setupModulesGauges())
+			.on(ModuleUnloadedEvent, args => this.#setupModulesGauges())
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),
