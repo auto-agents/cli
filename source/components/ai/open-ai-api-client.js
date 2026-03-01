@@ -54,7 +54,18 @@ export default class OpenAIApiClient extends AIApiClient {
 
         this.history.messages.push(queryMessage)
         const rq = { role: Role_Assistant, content: r.choices[0].message.content }
+        const u = r.usage
         this.history.messages.push(rq)
-        return { response: r, content: rq.content }
+        return {
+            response: r,
+            content: rq.content,
+            stats: {
+                tokensPerSecond: null,
+                totalTimeSec: null,
+                promptTokensCount: u?.prompt_tokens,
+                predictedTokensCount: u?.completion_tokens,
+                totalTokensCount: u?.total_tokens
+            }
+        }
     }
 }

@@ -951,10 +951,34 @@ export default function config(cli) {
 						// OLLAMA
 						//completion: '/chat'
 					},
-					/*tools: [{
-						type: "mcp",
-						server_label: "mcp/desktop-commander"
-					}],*/
+
+					enableGemmaStyleToolCallParsing: true,
+
+					tools: [
+						{
+							type: "function",
+							function: {
+								name: "get_time",
+								description: "Get the current time",
+								parameters: {
+									type: "object",
+									properties: {
+										"timezone": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						},
+						{
+							type: "function",
+							function: {
+								name: "get_date",
+								description: "Get the current date of the day"
+							}
+						}
+					],
+
 					maxRetries: 2,	// default
 					stream: false,
 					think: true,
