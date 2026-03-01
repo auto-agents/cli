@@ -979,6 +979,8 @@ export default function config(cli) {
 						}
 					],
 
+					toolResponsePattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations: '{data}'",
+
 					maxRetries: 2,	// default
 					stream: false,
 					think: true,
