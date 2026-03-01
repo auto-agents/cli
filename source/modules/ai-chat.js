@@ -3,8 +3,8 @@ import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../utils/status.js'
 import utils from '../utils/utils.js'
-import History from "../components/ai/history.js";
 import fs from 'fs'
+import ResponseProcessors from "../components/ai/response-processors.js";
 
 export default class AIChatModule {
 
@@ -15,11 +15,19 @@ export default class AIChatModule {
         this.apiClientFilepath = moduleSpec.apiClientFilepath
         this.apiClientConfig = eval(moduleSpec.apiClientConfig)
         this.ctx = ctx
+
         this.config = config
+        this.config = {
+            ...this.apiClientConfig,
+            ...this.config
+        }
+
         this.outputContext = outputContext
         this.spinner = new SpinnerService(ctx, outputContext.output)
         this.status = new Status(ctx)
         this.historyDuo = null
+        this.responseProcessors = new ResponseProcessors(
+            ctx, this.config, outputContext.clone().addMargins(4))
     }
 
     async init() {
@@ -42,11 +50,6 @@ export default class AIChatModule {
 
         // dynamically import AI Api Client
         const apiClient = await import(this.apiClientFilepath)
-
-        this.config = {
-            ...this.apiClientConfig,
-            ...this.config
-        }
 
         // primary open ai chat
 
@@ -76,7 +79,7 @@ export default class AIChatModule {
 
         const initApi = async () => {
             try {
-
+                await this.responseProcessors.loadProcessors(this.config.responseProcessors)
                 await utils.wait(this.ctx.ui.initFastWait)
 
             } catch (err) {
@@ -120,15 +123,23 @@ export default class AIChatModule {
 
     async chat(query, secondary = false) {
         const capi = !secondary ? this.api : this.apiSecondary
-        const r = await capi.completion(query)
+        var r = await capi.completion(query)
+
+        r = await this.responseProcessors.run(r)
+
         return r
     }
 
     saveHistory(filePath, format) {
         const h =
             (!format || format == 'json') ?
-                this.openai.history.toJson()
-                : this.openai.history.toText()
+                this.api.history.toJson()
+                : this.api.history.toText()
         fs.writeFileSync(filePath, h)
+    }
+
+    clearHistory() {
+        this.api.history.reset()
+        this.apiSecondary.history.reset()
     }
 }

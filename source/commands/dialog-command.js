@@ -1,6 +1,7 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent } from '../config/events.js'
+import { isAIChatAvailable } from '../utils/utils.js'
 
 export default class DialogCommand extends Command {
 
@@ -73,7 +74,13 @@ export default class DialogCommand extends Command {
 					return
 				if (!this.checkModuleAvailable('OpenAIChat'))
 					return
-				this.ctx.components.module.AIChat.saveHistory(file, format)
+				if (isAIChatAvailable(this.ctx))
+					this.ctx.components.module.AIChat.saveHistory(file, format)
+				break
+
+			case 'clear':
+				if (isAIChatAvailable(this.ctx))
+					this.ctx.components.module.AIChat.clearHistory()
 				break
 
 			default:

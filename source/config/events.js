@@ -34,6 +34,7 @@ export const SpeakCommandEvent = 'SpeakCommandEvent'
 
 export const ModuleLoadedEvent = 'ModuleLoadedEvent'
 export const ModuleUnloadedEvent = 'ModuleUnloadedEvent'
+export const ResponseProcessorLoadedEvent = 'ResponseProcessorLoadedEvent'
 
 export const TaskRunErrorEvent = 'TaskRunErrorEvent'
 export const TaskAddUserDialogCommandEvent = 'TaskAddUserDialogCommandEvent'

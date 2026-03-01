@@ -114,6 +114,7 @@ export default class ModuleController {
         const oc = this.outputContext
         const o = oc.output
         const margin = ' '.repeat(oc.margin)
+
         for (const moduleName in this.ctx.modules) {
             const module = this.ctx.modules[moduleName]
             if (!module.enabled) continue

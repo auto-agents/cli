@@ -209,6 +209,10 @@ export default function config(cli) {
 									{
 										value: 'save',
 										description: 'save the current dialog history into a file. eg: --action save --file myfile.txt'
+									},
+									{
+										value: 'clear',
+										description: 'clear current chat histories'
 									}
 								],
 								description: 'an action order for the dialog controller'
@@ -756,7 +760,7 @@ export default function config(cli) {
 				description: 'speech agent using the plateform configured speech module',
 				file: 'speech-module.js',
 
-				enabled: true,
+				enabled: false,
 				isLoaded: false,
 
 				config: {
@@ -944,15 +948,13 @@ export default function config(cli) {
 					//baseURL: "http://localhost:11434/api/",
 					// OLLAMA-MCP-BRIDGE
 					//baseURL: "http://localhost:8000/api/",
-					temperature: 0.7,
+					temperature: 0,
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'
 						// OLLAMA
 						//completion: '/chat'
 					},
-
-					enableGemmaStyleToolCallParsing: true,
 
 					tools: [
 						{
@@ -978,6 +980,9 @@ export default function config(cli) {
 							}
 						}
 					],
+
+					enableGemmaStyleToolCallParsing: true,
+					responseProcessors: ['gemma-style-tool-call-parser.js'],
 
 					toolResponsePattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations: '{data}'",
 
