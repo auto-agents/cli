@@ -1,6 +1,5 @@
 import { Role_Assistant, Role_User } from './roles.js'
-import { LMStudioClient } from "@lmstudio/sdk";
-import { Chat } from "@lmstudio/sdk";
+import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
 
 export default class LMStudioApiClient extends AIApiClient {
@@ -15,17 +14,16 @@ export default class LMStudioApiClient extends AIApiClient {
 
         // init client
         const c = this.config
-        this.client = new LMStudioClient({
-            verboseErrorMessages: false,
-            baseUrl: c.baseURL
+        this.client = new OpenAiApi({
+            apiKey: c.apiKey,
+            maxRetries: c.maxRetries,
+            baseURL: c.baseURL
         })
 
         return this
     }
 
     async completion(query) {
-
-        //console.log(this.config)
 
         const queryMessage = {
             role: Role_User, content: query
@@ -36,22 +34,42 @@ export default class LMStudioApiClient extends AIApiClient {
             queryMessage
         ]
 
-        const chat = Chat.from(messages)
+        //console.log('messages=', messages)
 
-        const model = await this.client.llm.model(this.config.model)
-
-        const r = await model.respond(chat)
+        const r = await this.client.chat.completions.create({
+            model: this.config.model,
+            input: query,
+            integrations: this.config.integrations,
+            temperature: this.config.temperature,
+            stream: this.config.stream,
+        }, {
+            path: this.config.paths.completion
+        })
         const s = r.stats
+        const responseId = r.response_id
 
         //console.log(r)
+        const outputs = r.output.filter(x => x.type == 'message')
+        var output = ''
+        r.output.forEach(outp => {
+            if (outp.type == 'tool_call') {
+                var tx = outp.output //.replaceAll("\\n", '')
+                const obj = JSON.parse(tx)
+                console.log(obj)
+                tx = JSON.stringify(JSON.parse(tx), null, 2)
+                output += tx + "\n\n"
+            }
+            if (outp.type == 'message')
+                output += outp.content.trim()
+        });
 
         this.history.messages.push(queryMessage)
-        const rq = { role: Role_Assistant, content: r.nonReasoningContent }
+        const rq = { role: Role_Assistant, content: output }
         this.history.messages.push(rq)
-
         return {
             response: r,
             content: rq.content,
+            responseId: responseId,
             stats: {
                 tokensPerSecond: s?.tokensPerSecond,
                 totalTimeSec: s?.totalTimeSec,

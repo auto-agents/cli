@@ -101,7 +101,7 @@ export default class DialogController {
 	}
 
 	async shetUp() {
-		if (isSpeechAvailable(this.ctx))
+		if (!isSpeechAvailable(this.ctx))
 			return
 		await this.ctx.components.module.speech.shetUp()
 	}

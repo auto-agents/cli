@@ -1,5 +1,3 @@
-import fs from 'fs'
-import History from './history.js'
 import { Role_Assistant, Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'

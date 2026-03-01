@@ -707,7 +707,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
@@ -748,12 +748,11 @@ export default function config(cli) {
 				apiClientFilepath: "../components/ai/open-ai-api-client.js",
 				apiClientConfig: "ctx.servers.llm.openAIApi",
 
-				enabled: false,
+				enabled: true,
 				config: {
-					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
-
-					model: "qwen3:4b",
-					//model: "google/gemma-3-1b",
+					//model: "qwen3:4b",
+					//model: 'qwen3-1.7b',
+					model: "google/gemma-3-1b",
 					//model: "mistralai/ministral-3-3b",
 					//model2: 'gpt2-finetuned-recipes-cooking_v2-i1',
 
@@ -790,9 +789,28 @@ export default function config(cli) {
 				apiClientFilepath: "../components/ai/lm-studio-api-client.js",
 				apiClientConfig: "ctx.servers.llm.lmStudioApi",
 
-				enabled: true,
+				enabled: false,
 				config: {
 					model: 'qwen3-1.7b',
+					//model: 'qwen3-0.6b',
+					temperature: 0.7,
+					instructions: 'You are a coding assistant.',
+				}
+			},
+			lmStudioJSAIChat: {
+				/*
+				* LM Studio chat module configuration
+				*/
+				file: 'ai-chat.js',
+
+				apiName: 'LMStudioJS',
+				apiClientFilepath: "../components/ai/lm-studio-js-api-client.js",
+				apiClientConfig: "ctx.servers.llm.lmStudioJSApi",
+
+				enabled: false,
+				config: {
+					//model: "google/gemma-3-1b",
+					model: 'qwen3-0.6b',
 					temperature: 0.7,
 					instructions: 'You are a coding assistant.',
 				}
@@ -813,6 +831,22 @@ export default function config(cli) {
 					*/
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
+					baseURL: "http://localhost:1234/api/v1",
+					temperature: 0.7,
+					paths: {
+						completion: '/chat'
+					},
+					integrations: ["mcp/desktop-commander"],
+					maxRetries: 2,	// default
+					stream: false,
+					think: true,
+					historyPath: join(process.cwd(), saved, 'chat-history.json')
+				},
+				lmStudioJSApi: {
+					/*
+					* LM Studio JS API configuration
+					*/
+					model: "google/gemma-3-1b",
 					// LM STUDIO
 					baseURL: "ws://localhost:1234",
 					temperature: 0.7,
@@ -829,21 +863,25 @@ export default function config(cli) {
 					/*
 					* openAI API configuration
 					*/
-					apiKey: 'change-me',
+					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
 					// LM STUDIO
-					//baseURL: "http://localhost:1234/v1/",
+					baseURL: "http://localhost:1234/v1/",
 					// OLLAMA
 					//baseURL: "http://localhost:11434/api/",
 					// OLLAMA-MCP-BRIDGE
-					baseURL: "http://localhost:8000/api/",
+					//baseURL: "http://localhost:8000/api/",
 					temperature: 0.7,
 					paths: {
 						// LM STUDIO
-						//completion: '/chat/completions'
+						completion: '/chat/completions'
 						// OLLAMA
-						completion: '/chat'
+						//completion: '/chat'
 					},
+					/*tools: [{
+						type: "mcp",
+						server_label: "mcp/desktop-commander"
+					}],*/
 					maxRetries: 2,	// default
 					stream: false,
 					think: true,
