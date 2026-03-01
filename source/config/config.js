@@ -707,7 +707,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				file: 'speech-module.js',
-				enabled: false,
+				enabled: true,
 				config: {
 					apiKey: "change-me",
 					platform: platform,
@@ -792,6 +792,7 @@ export default function config(cli) {
 
 				enabled: true,
 				config: {
+					model: 'qwen3-1.7b',
 					temperature: 0.7,
 					instructions: 'You are a coding assistant.',
 				}

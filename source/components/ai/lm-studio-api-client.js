@@ -48,7 +48,7 @@ export default class OpenAIApiClient extends AIApiClient {
         //console.log(r)
 
         this.history.messages.push(queryMessage)
-        const rq = { role: Role_Assistant, content: r.content }
+        const rq = { role: Role_Assistant, content: r.nonReasoningContent }
         this.history.messages.push(rq)
 
         return {
