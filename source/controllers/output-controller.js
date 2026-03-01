@@ -81,8 +81,8 @@ export default class OutputController {
 		this.updateView(skipViewUpdate)
 
 		return {
-			y0: y0,
-			y1: y1,
+			y0: rowY0,
+			y1: rowY1,
 			rowY0: rowY0,
 			rowY1: rowY1
 		}

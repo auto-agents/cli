@@ -92,6 +92,19 @@ export default class ModuleCommand extends Command {
 				break
 			}
 
+			case 'reload': {
+				const argName = 'name'
+				const name = this.getPositionalArg(com, args, argName, 1)
+				if (!this.checkParameter(com, argName, name))
+					return
+
+				const mc = await this.#getModuleController()
+				await mc.unload(name, this.#getOutputContext(4))
+				await mc.load(name, this.#getOutputContext(4))
+				this.#listModules()
+				break
+			}
+
 			default:
 				this.#emitError(`Unknown action: ${action}`)
 		}

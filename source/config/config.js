@@ -269,6 +269,10 @@ export default function config(cli) {
 									{
 										value: 'unload',
 										description: 'unload a module by its name, if it is not already unloaded'
+									},
+									{
+										value: 'reload',
+										description: 'unload and load a module by its name, if it is already loaded'
 									}
 								],
 								description: 'an action order for the module command'
