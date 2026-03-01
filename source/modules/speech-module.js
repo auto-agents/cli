@@ -66,10 +66,21 @@ export default class SpeechModule {
         const oc = outputContext || this.outputContext
         const o = oc.output
         const margin = ' '.repeat(oc.margin + oc.marginBase)
+
+        const stopSrv = async () => {
+            await this.speech.stopServer()
+            this.ctx.components.module.speech = null
+        }
+
         o.newLine()
-        o.appendLine(margin + '- stopping server...')
-        await this.speech.stopServer()
-        this.ctx.components.module.speech = null
+        const stopSrvAction = new ActionController(
+            this.ctx,
+            o,
+            stopSrv,
+            new SpinnerService(this.ctx, o)
+                .newSpinner(margin + '- stopping speech module server', cliSpinners.sand)
+        )
+        await stopSrvAction.run()
     }
 
     async speak(text, voice = null) {

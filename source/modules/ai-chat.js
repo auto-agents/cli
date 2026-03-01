@@ -89,6 +89,26 @@ export default class AIChatModule {
         this.ctx.components.module.AIChat = this
     }
 
+    async unload(outputContext) {
+        const oc = outputContext || this.outputContext
+        const o = oc.output
+        const margin = ' '.repeat(oc.margin + oc.marginBase)
+
+        const stopSrv = async () => {
+            this.ctx.components.module.AIChat = null
+        }
+
+        o.newLine()
+        const stopSrvAction = new ActionController(
+            this.ctx,
+            o,
+            stopSrv,
+            new SpinnerService(this.ctx, o)
+                .newSpinner(margin + '- stopping module AIChat: ' + this.moduleSpec.apiName, cliSpinners.sand)
+        )
+        await stopSrvAction.run()
+    }
+
     async chat(query, secondary = false) {
         const capi = !secondary ? this.api : this.apiSecondary
         const r = await capi.completion(query)
