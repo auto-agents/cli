@@ -8,7 +8,7 @@
 describe an implementation of a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md`. Write the result in file `cli/doc/command-implementation.md`
 ```
 
-### implement news commands
+### implement new commands
 
 #### generical prompt
 
@@ -282,3 +282,49 @@ The command `help` is used to provide informations about:
 - allowedValues have both a value text and a description in cli.commands , in the allowedValues objects. add the output of these description to the output of allowed values, in a property way (mulitples lines)
 - add distinct colors definied in the config for the argument descriptions and for the allowed valued descriptions
 - add different colors for the allowed value and its description
+
+### command: `app`
+
+Implements a new command named `app`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+Use as a model the command class in `cli/source/commands/dialog-command.js` and its command descriptor in the file `cli/source/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
+
+this command is specified as below:
+
+The command `app` is used to access to settings, configuration, run-time variables of the `cli tool`.
+The command descriptor is given below:
+
+```js
+{
+    names: ['app','a'],
+    description: 'access to settings, configuration, run-time variables',
+    config: {
+        options: {
+            action: {
+                type: 'string',
+                required: true,
+                allowedValues: [
+                    { value: 'get',
+                      description: 'get a value of the app context having the given path'
+                    },
+                    { value: 'set',
+                        description: 'set a value of the app context having the given path and the given value. the value is given as a javascript expression that will be evaluated'
+                    }
+                ],                
+                description: 'an action order for the app command'
+            },
+            path: {
+                type: 'string',
+                required: true,
+                description: 'the path of the app context value for the actions get and set'
+            },
+            value: {
+                type: 'string',
+                required: false,
+                description: 'the value as a javasccript expression for the set action'
+            }
+        },
+        allowPositionals: true
+    },
+    file: 'app-command.js'
+}
+```
