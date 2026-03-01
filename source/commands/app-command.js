@@ -46,7 +46,9 @@ export default class AppCommand extends Command {
 	}
 
 	#evalValue(expr) {
-		return Function('ctx', `return (${expr})`)(this.ctx)
+		var x
+		eval('x=' + expr)
+		return x
 	}
 
 	run(args, com) {
@@ -91,15 +93,14 @@ export default class AppCommand extends Command {
 			case 'set': {
 				const argValue = 'value'
 				const valueExpr = this.getPositionalArg(com, args, argValue, 2)
-				if (!valueExpr) {
-					this.#emitError("Error: parameter 'value' is required for action 'set'")
+				if (!this.checkParameter(com, argValue, valueExpr))
 					return
-				}
 
 				try {
 					const value = this.#evalValue(valueExpr)
 					this.#setByPath(this.ctx, path, value)
-					output.appendLine('OK')
+					output.newLine()
+					output.appendLine(path + ' set to: ' + value)
 				} catch (err) {
 					this.#emitError(`app set error: ${err?.message || err}`)
 				}
