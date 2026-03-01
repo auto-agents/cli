@@ -5,7 +5,7 @@ import { LMStudioClient } from "@lmstudio/sdk";
 import { Chat } from "@lmstudio/sdk";
 import AIApiClient from './ai-api-client.js'
 
-export default class OpenAIApiClient extends AIApiClient {
+export default class LMStudioApiClient extends AIApiClient {
 
     constructor(ctx, config, outputContext) {
         super(ctx, config, outputContext)
@@ -18,7 +18,7 @@ export default class OpenAIApiClient extends AIApiClient {
         // init client
         const c = this.config
         this.client = new LMStudioClient({
-            clientPasskey: c.apiKey,
+            verboseErrorMessages: false,
             baseUrl: c.baseURL
         })
 
