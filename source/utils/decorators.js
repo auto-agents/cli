@@ -7,11 +7,13 @@ export const box = (ctx, title, lines, output, backgroundColor, borderColor) => 
     borderColor = chalk.hex(borderColor || ctx.theme.fileView.borderColor)
 
     var tw = util.stripVTControlCharacters(title).length
-    var mw = tw
+    var mw = 0
     lines.forEach(line => {
-        mw = Math.max(mw, util.stripVTControlCharacters(line/*.trim()*/).length)
+        mw = Math.max(mw, util.stripVTControlCharacters(line).length)
     })
-    const w = Math.max(tw, mw)
+    var w = Math.max(tw, mw)
+    const dw = tw > mw ? 4 : 0
+    w += dw
 
     const topRow = w => borderColor('╭') + borderColor('─').repeat(w) + borderColor('╮')
     const bottomRow = w => borderColor('╰') + borderColor('─').repeat(w) + borderColor('╯')
@@ -24,10 +26,10 @@ export const box = (ctx, title, lines, output, backgroundColor, borderColor) => 
     t.push(sideRow(w, bottomRow(w - 2), 0))
 
     lines.forEach(line => {
-        const s = line/*.trim()*/
+        const s = line
         const ts = util.stripVTControlCharacters(s)
         const l = ts.length
-        t.push(sideRow(w, s, mw - l))
+        t.push(sideRow(w, s, w - l))
     })
     t.push(bottomRow(w))
 
