@@ -53,7 +53,8 @@ export default class InitService {
 	}
 
 	async #runInternal() {
-		const mg = '    '
+		const mg = 4
+		const margin = ' '.repeat(mg)
 
 		this.hatActionController = new ActionController(
 			this.ctx,
@@ -66,11 +67,11 @@ export default class InitService {
 		const actions = [
 			{
 				func: async () => this.#gatherComputerInfos(),
-				uiFunc: this.spinner.newSpinner(mg + '- gathering system informations', cliSpinners.sand)
+				uiFunc: this.spinner.newSpinner(margin + '- gathering system informations', cliSpinners.sand)
 			},
 			{
 				func: async () => this.#initModules(this.#getOutputContext(mg)),
-				uiFunc: this.spinner.newSpinner(mg + '- initializing modules', cliSpinners.sand)
+				uiFunc: this.spinner.newSpinner(margin + '- initializing modules', cliSpinners.sand)
 			}
 		]
 		const actionSeq = actions.map((e, _) => {

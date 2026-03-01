@@ -2,6 +2,7 @@ import { existsSync } from "fs";
 import { join } from 'path';
 import chalk from "chalk"
 import Status from '../utils/status.js'
+import OutputContext from "../data/output-context.js";
 
 export default class ModuleController {
 
@@ -14,7 +15,7 @@ export default class ModuleController {
         this.outputContext.margin += this.outputContext.margin
         this.modulesPath = join(process.cwd(), 'source', 'modules')
         this.ctx.components.module ||= {}
-        this.ctx.components.module.moduleController = this
+        this.ctx.components.moduleController = this
     }
 
     async load(moduleName, outputContext) {
@@ -43,7 +44,6 @@ export default class ModuleController {
                 o.appendLine(this.status.error(margin + 'module file not found: ' + path))
                 return null
             }
-
 
             const mod = await import(path)
             const m = new mod.default(this.ctx, module.config, oc, module)
@@ -84,7 +84,7 @@ export default class ModuleController {
             const instance = this.modules[moduleName]
 
             if (instance?.unload) {
-                await instance.unload()
+                await instance.unload(outputContext)
             }
             delete this.modules[moduleName]
             delete this.ctx.components.module[moduleName]
@@ -102,7 +102,7 @@ export default class ModuleController {
     async run() {
         const oc = this.outputContext
         const o = oc.output
-        const margin = ' '.repeat(oc.margin + 4)
+        const margin = ' '.repeat(oc.margin)
         for (const moduleName in this.ctx.modules) {
             const module = this.ctx.modules[moduleName]
             if (!module.enabled) continue
@@ -110,7 +110,8 @@ export default class ModuleController {
             o.newLine()
             o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ initializing module: ' + moduleName))
 
-            await this.load(moduleName, oc)
+            const oc2 = new OutputContext(this.ctx, o, oc.margin)
+            await this.load(moduleName, oc2)
         }
     }
 }

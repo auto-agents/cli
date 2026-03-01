@@ -1,4 +1,5 @@
 import { ESC } from "../config/consts"
+import { BoxOutputUpdatedEvent } from "../config/events"
 import OutputContext from "../data/output-context"
 
 export default class OutputController {
@@ -46,6 +47,18 @@ export default class OutputController {
 		this.getSource().rows = []
 		this.estimRowsCount = 0
 		this.updateView(skipViewUpdate)
+	}
+
+	// TODO: make this compatible (coming from box controller)
+	setLine(str, y, leftMargin = 0, skipViewUpdate = false) {
+		if (!str) return
+		const o = this.getSource()
+		if (y > o.rows.length - 1)
+			y = o.rows.length - 1
+		o.rows[y] = ' '.repeat(leftMargin) + str
+		if (!skipViewUpdate)
+			this.ctx.components.event.emit(BoxOutputUpdatedEvent)
+		return this
 	}
 
 	appendLine(str, skipViewUpdate = false, leftMargin = 0) {

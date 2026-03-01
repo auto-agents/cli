@@ -25,8 +25,10 @@ export default class AIChatModule {
     async init() {
 
         const o = this.outputContext.output
-        const margin = this.outputContext.margin + this.outputContext.marginBase
-        const margin2 = margin + this.outputContext.marginBase
+        const margin = ' '.repeat(this.outputContext.margin + this.outputContext.marginBase)
+        const margin2 = ' '.repeat(margin.length + this.outputContext.marginBase)
+
+        o.newLine()
         o.appendLine(margin + `~ loading ai chat module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
 
         // dynamically import AI Api Client

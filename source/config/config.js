@@ -738,7 +738,9 @@ export default function config(cli) {
 			dialog: null,
 			sysInfo: null,
 			module: null,
-			render: null
+			render: null,
+			moduleController: null,
+			module: {}
 		},
 		texts: {
 			dialog: {

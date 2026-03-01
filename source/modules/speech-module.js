@@ -20,8 +20,10 @@ export default class SpeechModule {
 
     async init() {
         const o = this.outputContext.output
-        const margin = this.outputContext.margin + this.outputContext.marginBase
-        const margin2 = margin + this.outputContext.marginBase
+        const margin = ' '.repeat(this.outputContext.margin + this.outputContext.marginBase)
+        const margin2 = ' '.repeat(margin.length + this.outputContext.marginBase)
+
+        o.newLine()
         o.appendLine(margin + '~ loading speech module server')
         if (!existsSync(this.modulePath))
             throw new Error('module file not found: ' + this.modulePath)
@@ -60,7 +62,13 @@ export default class SpeechModule {
         this.ctx.components.module.speech = this
     }
 
-    unload() {
+    async unload(outputContext) {
+        const oc = outputContext || this.outputContext
+        const o = oc.output
+        const margin = ' '.repeat(oc.margin + oc.marginBase)
+        o.newLine()
+        o.appendLine(margin + '- stopping server...')
+        await this.speech.stopServer()
         this.ctx.components.module.speech = null
     }
 

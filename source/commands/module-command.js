@@ -48,12 +48,12 @@ export default class ModuleCommand extends Command {
 		}
 	}
 
-	#getOutputContext() {
-		return new OutputContext(this.ctx, this.ctx.components.output, 0)
+	#getOutputContext(margin) {
+		return new OutputContext(this.ctx, this.ctx.components.output, margin)
 	}
 
 	async #getModuleController() {
-		return this.ctx.components.module.moduleController
+		return this.ctx.components.moduleController
 	}
 
 	async run(args, com) {
@@ -74,7 +74,8 @@ export default class ModuleCommand extends Command {
 					return
 
 				const mc = await this.#getModuleController()
-				await mc.load(name, this.#getOutputContext())
+
+				await mc.load(name, this.#getOutputContext(4))
 				this.#listModules()
 				break
 			}
@@ -86,7 +87,7 @@ export default class ModuleCommand extends Command {
 					return
 
 				const mc = await this.#getModuleController()
-				await mc.unload(name, this.#getOutputContext())
+				await mc.unload(name, this.#getOutputContext(4))
 				this.#listModules()
 				break
 			}
