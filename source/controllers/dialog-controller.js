@@ -13,6 +13,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
+import { isAIChatAvailable, isSpeechAvailable } from "../utils/utils.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -100,7 +101,7 @@ export default class DialogController {
 	}
 
 	async shetUp() {
-		if (!this.#isSpeechAvailable())
+		if (isSpeechAvailable(this.ctx))
 			return
 		await this.ctx.components.module.speech.shetUp()
 	}
@@ -142,7 +143,7 @@ export default class DialogController {
 		on,
 		{ agents }
 	) {
-		if (!this.#isAIChatAvailable()) return
+		if (!isAIChatAvailable(this.ctx)) return
 
 		if (on == this.duoModeEnabled) return
 		this.duoModeEnabled = on
@@ -185,7 +186,7 @@ export default class DialogController {
 
 		// wait idle
 		if (this.ctx.dialog.speakAnswers.enabled
-			&& this.#isSpeechAvailable())
+			&& isSpeechAvailable(this.ctx))
 			await sp.waitIdle()
 		// TODO: wait app idle
 		// ...
@@ -263,15 +264,13 @@ export default class DialogController {
 		[this.ctx.modules.speech.config.browser][0]
 	}
 
-	#isSpeechAvailable() {
-		return this.ctx.components.module.speech != null
-	}
-
 	#isAIChatAvailable() {
 		return this.ctx.components.module.AIChat != null
+			&& this.ctx.components.module.AIChat !== undefined
 	}
 
 	async #speakEventHandler(data) {
+
 		this.dialoger.speak(data.text,
 			{
 				voice: data.voice
@@ -281,13 +280,13 @@ export default class DialogController {
 
 	async waitSpeechIdle() {
 		if (!(this.ctx.dialog.speakAnswers.enabled
-			&& this.#isSpeechAvailable())) return
+			&& isSpeechAvailable(this.ctx))) return
 		await this.ctx.components.module.speech.waitIdle()
 	}
 
 	async waitSpeechSpeak() {
 		if (!(this.ctx.dialog.speakAnswers.enabled
-			&& this.#isSpeechAvailable())) return
+			&& isSpeechAvailable(this.ctx))) return
 		await this.ctx.components.module.speech.waitSpeak()
 	}
 
@@ -300,6 +299,7 @@ export default class DialogController {
 			waitForEnd = false,
 			interrupt = false
 		}) {
+
 		if (!text || text.length == 0) return
 
 		text = this.responseSpeechFormater.getSpeech(text)

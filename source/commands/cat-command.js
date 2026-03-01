@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'fs'
+import { copyFileSync, existsSync, readFileSync } from 'fs'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import Status from '../utils/status.js';
 import * as highlight from "cli-highlight"
@@ -6,24 +6,23 @@ import { renderComponent } from '../utils/utils.js';
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
 import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
+import Command from './command.js';
 
-export default class CatCommand {
+export default class CatCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'cat com')
 		this.status = new Status(ctx)
 	}
 
-	run(args) {
+	run(args, com) {
 		const output = this.ctx.components.output
 		const e = this.ctx.components.event
+
 		const pathArg = 'filePath'
-		const arg =
-			// path is maybe given by its argument name: cat --path path
-			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			// or as a positional not named argument: cat path
-			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
-				: null)
+		const arg = this.getPositionalArg(com, args, pathArg, 0)
+		if (!this.checkParameter(com, pathArg, arg))
+			return
 
 		var filePath = resolvePath(this.ctx.cli.currentPath, arg)
 

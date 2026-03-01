@@ -1,12 +1,11 @@
 import chalk from 'chalk';
 import { errorEvent, LogErrorEvent } from '../config/events';
+import Command from './command';
 
-export default class HelpCommand {
-
-	From = 'help'
+export default class HelpCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'help com')
 		// Factorized color functions to avoid repetition
 		this.commandsListColor = (text) => chalk.hex(this.ctx.theme.help.commandsListColor)(text)
 		this.commandsListArgsColor = (text) => chalk.hex(this.ctx.theme.help.commandsListArgsColor)(text)
@@ -22,8 +21,10 @@ export default class HelpCommand {
 
 		// Get the command name from either named argument or positional argument
 		const commandName =
-			((args?.values && args.values[commandArg]) ? args.values[commandArg] : null)
+			/*((args?.values && args.values[commandArg]) ? args.values[commandArg] : null)
 			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0] : null)
+*/
+			this.getPositionalArg(com, args, commandArg, 0)
 
 		if (commandName) {
 			// Show help for specific command
@@ -50,15 +51,15 @@ export default class HelpCommand {
 		// Display all commands with their descriptions
 		commands.forEach(cmd => {
 			const names = cmd.names.join(', ')
-			output.appendLine(`${this.commandsListColor('/' + names)}${this.commandsListArgsColor(' - ' + cmd.description)}`)
+			output.appendLine(`${this.commandsListColor(names)}${this.commandsListArgsColor(' - ' + cmd.description)}`)
 		})
 
 		output.newLine()
 		output.appendLine(`${this.commandsListColor('Usage Examples:')}`)
 		output.appendLine(`${this.borderColor('--------------')}`)
-		output.appendLine(`${this.commandsListColor('/help')}${this.commandsListArgsColor(' - Show this help message')}`)
-		output.appendLine(`${this.commandsListColor('/help <command>')}${this.commandsListArgsColor(' - Show help for a specific command')}`)
-		output.appendLine(`${this.commandsListColor('/h <command>')}${this.commandsListArgsColor(' - Alias for help command')}`)
+		output.appendLine(`${this.commandsListColor(this.ctx.cli.commandPrefix + 'help')}${this.commandsListArgsColor(' - Show this help message')}`)
+		output.appendLine(`${this.commandsListColor(this.ctx.cli.commandPrefix + 'help <command>')}${this.commandsListArgsColor(' - Show help for a specific command')}`)
+		output.appendLine(`${this.commandsListColor(this.ctx.cli.commandPrefix + 'h <command>')}${this.commandsListArgsColor(' - Alias for help command')}`)
 
 		output.newLine()
 		output.appendLine(`${this.commandsListColor('CLI Tool Information:')}`)
@@ -91,7 +92,7 @@ export default class HelpCommand {
 
 		// Show command names and description
 		const names = command.names.join(', ')
-		output.appendLine(`${this.commandsListColor('Command(s): ' + '/' + names)}`)
+		output.appendLine(`${this.commandsListColor('Command(s): ' + names)}`)
 		output.appendLine(`${this.commandsListColor('Description: ' + command.description)}`)
 		output.newLine()
 
@@ -133,19 +134,19 @@ export default class HelpCommand {
 		if (command.config && command.config.options && Object.keys(command.config.options).length > 0) {
 			// Show examples with options
 			const firstOption = Object.keys(command.config.options)[0]
-			output.appendLine(`${this.commandsListColor('/' + commandName + ' --' + firstOption + ' <value>')}`)
+			output.appendLine(`${this.commandsListColor(this.ctx.cli.commandPrefix + commandName + ' --' + firstOption + ' <value>')}`)
 			if (command.config.allowPositionals) {
-				output.appendLine(`${this.commandsListColor('/' + commandName + ' <value>')}`)
+				output.appendLine(`${this.commandsListColor(this.ctx.cli.commandPrefix + commandName + ' <value>')}`)
 			}
 		} else {
 			// Simple command without options
-			output.appendLine(`${this.commandsListColor('/' + commandName)}`)
+			output.appendLine(`${this.commandsListColor(this.ctx.cli.commandPrefix + commandName)}`)
 		}
 
 		// Show aliases if there are multiple names
 		if (command.names.length > 1) {
 			output.newLine()
-			output.appendLine(`${this.commandsListColor('Aliases: ' + command.names.slice(1).map(name => '/' + name).join(', '))}`)
+			output.appendLine(`${this.commandsListColor('Aliases: ' + command.names.slice(1).map(name => this.ctx.cli.commandPrefix + name).join(', '))}`)
 		}
 	}
 }

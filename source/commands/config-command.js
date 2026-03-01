@@ -3,17 +3,16 @@ import path from 'path'
 import { spawn } from 'child_process'
 import Status from '../utils/status.js';
 import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
+import Command from './command.js';
 
-export default class ConfigCommand {
-
-	From = 'config'
+export default class ConfigCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'config com')
 		this.status = new Status(ctx)
 	}
 
-	run() {
+	run(args, com) {
 		const output = this.ctx.components.output
 		const e = this.ctx.components.event
 

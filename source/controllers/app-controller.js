@@ -35,6 +35,7 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
 import KeyboardController from './keyboard-controller.js';
+import { isSpeechAvailable } from '../utils/utils.js';
 
 export default class AppController {
 
@@ -116,16 +117,12 @@ export default class AppController {
 			.init()
 	}
 
-	#isSpeechAvailable() {	// todo: util func
-		return this.ctx.components.module.speech != null
-	}
-
 	async handleCommandErrorEvent(reason, errorEvent) {
 		const sep = reason && reason.length > 0 ? ' : ' : ''
 		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
 		const text = reason + sm
 
-		if (this.#isSpeechAvailable
+		if (isSpeechAvailable(this.ctx)
 			&& this.ctx.dialog.speakErrors.enabled
 			&& errorEvent?.from != 'dialog')
 			this.event.emit(SpeakCommandEvent, speakEvent(
@@ -139,7 +136,7 @@ export default class AppController {
 	}
 
 	async handleLogErrorEvent(errorEvent) {
-		if (this.#isSpeechAvailable
+		if (isSpeechAvailable(this.ctx)
 			&& this.ctx.dialog.speakErrors.enabled
 			&& errorEvent?.from != 'dialog')
 			this.event.emit(SpeakCommandEvent, speakEvent(
@@ -155,7 +152,7 @@ export default class AppController {
 	async handleTaskRunErrorEvent(taskErrorEvent) {
 		this.error(`task '${taskErrorEvent.task.name}' error: ${taskErrorEvent.error?.message}`)
 
-		if (this.#isSpeechAvailable
+		if (isSpeechAvailable(this.ctx)
 			&& this.ctx.dialog.speakErrors.enabled)
 			this.event.emit(SpeakCommandEvent, speakEvent(
 				this.From,

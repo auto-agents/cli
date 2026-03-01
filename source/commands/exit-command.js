@@ -1,10 +1,13 @@
-export default class ExitCommand {
+import Command from "./command"
+
+export default class ExitCommand extends Command {
 
 	constructor(ctx) {
+		super(ctx, 'exit com')
 		this.ctx = ctx
 	}
 
-	run() {
+	run(args, com) {
 		process.exit()
 	}
 }

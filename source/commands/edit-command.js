@@ -2,24 +2,23 @@ import { spawn } from 'child_process'
 import Status from '../utils/status.js';
 import { resolvePath } from '../utils/utils.js';
 import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
+import Command from './command.js';
 
-export default class EditCommand {
-
-	From = 'edit'
+export default class EditCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'edit com')
 		this.status = new Status(ctx)
 	}
 
-	run(args) {
+	run(args, com) {
 		const output = this.ctx.components.output
 		const e = this.ctx.components.event
+
 		const pathArg = 'filePath'
-		const arg =
-			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
-				: null)
+		const arg = this.getPositionalArg(com, args, pathArg, 0)
+		if (!this.checkParameter(com, pathArg, arg))
+			return
 
 		var filePath = resolvePath(this.ctx.cli.currentPath, arg)
 

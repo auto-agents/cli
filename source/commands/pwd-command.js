@@ -1,10 +1,12 @@
-export default class PwdCommand {
+import Command from "./command"
+
+export default class PwdCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'pwd com')
 	}
 
-	run() {
+	run(args, com) {
 		const output = this.ctx.components.output
 		const currentPath = this.ctx.cli.currentPath
 

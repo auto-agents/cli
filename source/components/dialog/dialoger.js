@@ -2,6 +2,7 @@ import {
     TaskAddAssistantMessageCommandEvent
 } from "../../config/events"
 import { FifoStack, task } from "../../utils/fifo-stack"
+import { isAIChatAvailable, isSpeechAvailable, isUserSpeakEchoAvailable } from "../../utils/utils"
 
 /*
  the dialoger handle dialog behaviors
@@ -76,7 +77,7 @@ export default class Dialoger {
             ))
 
         // 2. eventually speak
-        if (this.#isUserSpeakEchoAvailable()) {
+        if (isUserSpeakEchoAvailable(this.ctx)) {
             results.push(
                 await this.fifoStack.addTask(
                     task(
@@ -93,7 +94,7 @@ export default class Dialoger {
 
         var aiResult = null
         // 3. eventually think (includes ai output response)
-        if (this.#isChatOpenAIAvailable) {
+        if (isAIChatAvailable(this.ctx)) {
             aiResult = await this.fifoStack.addTask(
                 task(
                     'user dialog: request ai response',
@@ -106,7 +107,7 @@ export default class Dialoger {
         }
 
         // eventually speak response
-        if (this.#isUserSpeakEchoAvailable()
+        if (isUserSpeakEchoAvailable(this.ctx)
             && aiResult) {
 
             //console.log(aiResult)
@@ -150,7 +151,7 @@ export default class Dialoger {
             ))
 
         // 2. eventually speak
-        if (this.#isSpeechAvailable()) {
+        if (isSpeechAvailable(this.ctx)) {
             results.push(
                 await this.fifoStack.addTask(
                     task(
@@ -176,7 +177,7 @@ export default class Dialoger {
         )
     }
 
-    async handleSpeekCommandEvent(text) {
+    async handleSpeakCommandEvent(text) {   // not used
         await this.fifoStack.addTask(task)
     }
 
@@ -185,18 +186,5 @@ export default class Dialoger {
     }
 
     // -----------------------------------------------
-
-    #isSpeechAvailable() {
-        return this.ctx.components.module.speech != null
-    }
-
-    #isUserSpeakEchoAvailable() {
-        return this.ctx.dialog.repeatUserQuery.enabled
-            && this.#isSpeechAvailable()
-    }
-
-    #isChatOpenAIAvailable() {
-        return this.ctx.components.module.AIChat != null
-    }
 
 }

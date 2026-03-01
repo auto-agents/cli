@@ -1,12 +1,13 @@
 import { ConsoleClearedEvent, HideInitBoxOutputEvent, UIFreezeStatedChangedEvent } from "../config/events.js";
+import Command from "./command.js";
 
-export default class ClearConsoleCommand {
+export default class ClearConsoleCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'cat com')
 	}
 
-	run() {
+	run(args, com) {
 		this.ctx.components.output.clear()
 		this.ctx.components.event.emit(HideInitBoxOutputEvent)
 		this.ctx.components.event.emit(ConsoleClearedEvent)

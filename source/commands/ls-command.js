@@ -5,27 +5,23 @@ import Status from '../utils/status.js'
 import { resolvePath } from '../utils/utils.js'
 import wildcard from 'wildcard'
 import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
+import Command from './command.js'
 
-export default class LsCommand {
-
-	From = 'ls'
+export default class LsCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'ls com')
 		this.status = new Status(ctx)
 	}
 
-	run(args) {
+	run(args, com) {
 		const currentPath = this.ctx.cli.currentPath
 		const output = this.ctx.components.output
 		const theme = this.ctx.theme.ls
 		const e = this.ctx.components.event
 
 		const pathArg = 'path'
-		const dirPath =
-			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
-				: currentPath)
+		const dirPath = this.getPositionalArg(com, args, pathArg, 0) || ''
 
 		var resolvedPath = resolvePath(this.ctx.cli.currentPath, dirPath)
 		const pattern = basename(resolvedPath)

@@ -4,13 +4,12 @@ import Status from '../utils/status.js'
 import { CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../config/events.js'
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
+import Command from './command.js';
 
-export default class PrintCommand {
-
-	From = 'print'
+export default class PrintCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'print com')
 		this.status = new Status(ctx)
 		// Get the extensions from the command descriptor in config
 		const printCommand = this.ctx.cli.commands.find(cmd => cmd.names.includes('print') || cmd.names.includes('pr'))
@@ -20,15 +19,14 @@ export default class PrintCommand {
 		}
 	}
 
-	async run(args) {
+	async run(args, com) {
 		const e = this.ctx.components.event
 		const output = this.ctx.components.output
 
 		const pathArg = 'filePath'
-		const arg =
-			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
-				: null)
+		const arg = this.getPositionalArg(com, args, pathArg, 0)
+		if (!this.checkParameter(com, pathArg, arg))
+			return
 
 		const resolvedPath = resolvePath(this.ctx.cli.currentPath, arg)
 

@@ -3,25 +3,23 @@ import { dirname } from 'path'
 import path from 'path'
 import Status from '../utils/status.js'
 import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
+import Command from './command.js'
 
-export default class CdCommand {
-
-	From = 'cd'
+export default class CdCommand extends Command {
 
 	constructor(ctx) {
-		this.ctx = ctx
+		super(ctx, 'cd com')
 		this.status = new Status(ctx)
 	}
 
-	run(args) {
+	run(args, com) {
 		const output = this.ctx.components.output
 		const e = this.ctx.components.event
 
 		const pathArg = 'path'
-		const dirPath =
-			((args?.values && args.values[pathArg]) ? args.values[pathArg] : null)
-			|| ((args?.positionals && args?.positionals.length > 0) ? args.positionals[0]
-				: null)
+		const dirPath = this.getPositionalArg(com, args, pathArg, 0)
+		if (!this.checkParameter(com, pathArg, dirPath))
+			return
 
 		var newPath = path.isAbsolute(dirPath) ? dirPath
 			: path.join(this.ctx.cli.currentPath, dirPath)

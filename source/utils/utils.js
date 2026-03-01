@@ -69,4 +69,28 @@ export const resolvePath = (baseBase, newPath) => {
     return path.isAbsolute(newPath) ? newPath : path.normalize(path.join(baseBase, newPath))
 }
 
-export default { callAsync, wait, renderComponent, getTmpFile, resolvePath }
+export const isSpeechAvailable = ctx => {
+    return ctx.components.module.speech != null
+        && ctx.components.module.speech !== undefined
+}
+
+export const isUserSpeakEchoAvailable = ctx => {
+    return ctx.dialog.repeatUserQuery.enabled
+        && isSpeechAvailable(ctx)
+}
+
+export const isAIChatAvailable = ctx => {
+    return ctx.components.module.AIChat != null
+        && ctx.components.module.AIChat !== undefined
+}
+
+export default {
+    callAsync,
+    wait,
+    renderComponent,
+    getTmpFile,
+    resolvePath,
+    isSpeechAvailable,
+    isUserSpeakEchoAvailable,
+    isAIChatAvailable
+}

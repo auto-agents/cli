@@ -1,11 +1,12 @@
-export default class SysinfoCommand {
+import Command from "./command"
 
-	constructor(ctx, output) {
-		this.ctx = ctx
-		this.output = output
+export default class SysinfoCommand extends Command {
+
+	constructor(ctx) {
+		super(ctx, 'sysinfo com')
 	}
 
-	run() {
-		this.ctx.components.sysInfo.dump(this.output)
+	run(com, args) {
+		this.ctx.components.sysInfo.dump(this.ctx.components.output)
 	}
 }
