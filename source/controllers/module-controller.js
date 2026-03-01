@@ -55,7 +55,7 @@ export default class ModuleController {
             this.modules[moduleName] = m
             this.ctx.components.module[moduleName] = m
             module.isLoaded = true
-            module.isEnabled = true
+            module.enabled = true
 
             if (isAppInitialized(this.ctx))
                 this.ctx.components.event.emit(ModuleLoadedEvent)
