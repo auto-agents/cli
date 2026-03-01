@@ -370,9 +370,11 @@ The command descriptor is given below:
                       description: 'list available modules and their loading status'
                     },
                     { value: 'load',
-                        description: 'load a module by its name, if it is already loaded'
+                        description: 'load a module by its name, if it is not already loaded'
                     },
-
+                    { value: 'unload',
+                        description: 'unload a module by its name, if it is already loaded'
+                    },
                 ],                
                 description: 'an action order for the module command'
             },

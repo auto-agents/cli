@@ -227,7 +227,15 @@ export default class AppController {
 
 	async appInitialized() {
 		// init modules gauges
-		const o = this.output
+		this.#setupModulesGauges()
+
+		// begin dialog
+		this.event.emit(AppStartedEvent)
+		await this.dialog.hello()
+		this.output.newLine(true)
+	}
+
+	#setupModulesGauges() {
 		const e = this.event
 		const initModuleGauge = (moduleName, gaugeName) => {
 			gaugeName ||= moduleName
@@ -236,7 +244,7 @@ export default class AppController {
 			const gauge = this.ctx.data.app.modules[gaugeName]
 			gauge.value =
 				!moduleSpec ? this.status.statusUnavailable() : (
-					(moduleInstance && moduleSpec.enabled) ?
+					(moduleInstance && moduleSpec.enabled && moduleSpec.isLoaded) ?
 						this.status.statusOn()
 						: (!moduleInstance && moduleSpec.enabled ?
 							this.status.statusUnavailable()
@@ -247,11 +255,6 @@ export default class AppController {
 		initModuleGauge('recognition')
 		initModuleGauge('AIChat')
 		initModuleGauge('AIAgents')
-
-		// begin dialog
-		this.event.emit(AppStartedEvent)
-		await this.dialog.hello()
-		this.output.newLine(true)
 	}
 
 	async runInput(inp) {

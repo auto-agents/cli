@@ -60,6 +60,10 @@ export default class SpeechModule {
         this.ctx.components.module.speech = this
     }
 
+    unload() {
+        this.ctx.components.module.speech = null
+    }
+
     async speak(text, voice = null) {
         return await this.speech.speak({
             sentence: text,

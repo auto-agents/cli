@@ -250,6 +250,40 @@ export default function config(cli) {
 					file: 'dialog-command.js'
 				},
 				{
+					names: ['module', 'mod', 'm'],
+					description: 'list the available cli tools modules, allow to unload and load them',
+					config: {
+						options: {
+							action: {
+								type: 'string',
+								required: true,
+								allowedValues: [
+									{
+										value: 'list',
+										description: 'list available modules and their loading status'
+									},
+									{
+										value: 'load',
+										description: 'load a module by its name, if it is already loaded'
+									},
+									{
+										value: 'unload',
+										description: 'unload a module by its name, if it is not already unloaded'
+									}
+								],
+								description: 'an action order for the module command'
+							},
+							name: {
+								type: 'string',
+								required: false,
+								description: 'the module name to be loaded or unloaded. required for actions load and unload'
+							}
+						},
+						allowPositionals: true
+					},
+					file: 'module-command.js'
+				},
+				{
 					names: ['app', 'a'],
 					description: 'access to settings, configuration, run-time variables',
 					config: {
@@ -505,6 +539,13 @@ export default function config(cli) {
 				commandsListArgsColor: '#00BB55',
 				argumentDescriptionColor: '#58b48e',
 				allowedValueDescriptionColor: '#99FF99'
+			},
+			module: {
+				titleColor: '#00FF00',
+				nameColor: '#DDDDDD',
+				descriptionColor: '#999999',
+				loadedColor: '#00AA00',
+				unloadedColor: '#AA5500'
 			},
 			dialog: {
 				userDialogColor: '#4499FF',
