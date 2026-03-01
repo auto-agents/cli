@@ -706,8 +706,12 @@ export default function config(cli) {
 		},
 		modules: {
 			speech: {
+				description: 'speech agent using the plateform configured speech module',
 				file: 'speech-module.js',
+
 				enabled: true,
+				isLoaded: false,
+
 				config: {
 					apiKey: "change-me",
 					platform: platform,
@@ -736,12 +740,16 @@ export default function config(cli) {
 				}
 			},
 			recognition: {
-				enabled: false
+				description: 'voice recognition agent using the plateform configured peech recognition module',
+
+				enabled: false,
+				isLoaded: false
 			},
 			openAIChat: {
 				/*
-				* openAI chat module configuration
+				* OpenAI chat module configuration
 				*/
+				description: 'OpenAI chat using OpenAI API interface (HTTP transport)',
 				file: 'ai-chat.js',
 
 				apiName: 'OpenAI',
@@ -749,6 +757,8 @@ export default function config(cli) {
 				apiClientConfig: "ctx.servers.llm.openAIApi",
 
 				enabled: true,
+				isLoaded: false,
+
 				config: {
 					//model: "qwen3:4b",
 					//model: 'qwen3-1.7b',
@@ -764,6 +774,7 @@ export default function config(cli) {
 				/*
 				* Ollama chat module configuration
 				*/
+				description: 'Ollama chat module using OpenAI API interface (HTTP transport) over Ollama-MCP-Bridge',
 				file: 'ai-chat.js',
 
 				apiName: 'Ollama',
@@ -771,6 +782,8 @@ export default function config(cli) {
 				apiClientConfig: "ctx.servers.llm.ollamaMCPBridgeAI",
 
 				enabled: false,
+				isLoaded: false,
+
 				config: {
 					apiKey: "",
 					//model: "qwen3:0.6b",
@@ -783,6 +796,7 @@ export default function config(cli) {
 				/*
 				* LM Studio chat module configuration
 				*/
+				description: 'LM Studio chat module using OpenAI API interface (HTTP transport)',
 				file: 'ai-chat.js',
 
 				apiName: 'LMStudio',
@@ -790,6 +804,8 @@ export default function config(cli) {
 				apiClientConfig: "ctx.servers.llm.lmStudioApi",
 
 				enabled: false,
+				isLoaded: false,
+
 				config: {
 					model: 'qwen3-1.7b',
 					//model: 'qwen3-0.6b',
@@ -801,6 +817,7 @@ export default function config(cli) {
 				/*
 				* LM Studio chat module configuration
 				*/
+				description: 'LM Studio chat module using JS LM Studio SDK (WebSocket transport)',
 				file: 'ai-chat.js',
 
 				apiName: 'LMStudioJS',
@@ -808,6 +825,8 @@ export default function config(cli) {
 				apiClientConfig: "ctx.servers.llm.lmStudioJSApi",
 
 				enabled: false,
+				isLoaded: false,
+
 				config: {
 					//model: "google/gemma-3-1b",
 					model: 'qwen3-0.6b',
@@ -816,8 +835,12 @@ export default function config(cli) {
 				}
 			},
 			openAIAgents: {
+				description: 'AI api for agents. not implemented yet',
 				file: 'open-ai-agents.js',
+
 				enabled: true,
+				isLoaded: false,
+
 				config: {
 
 				}

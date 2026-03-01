@@ -329,3 +329,61 @@ The command descriptor is given below:
     file: 'app-command.js'
 }
 ```
+
+### command: `module`
+
+Implements a new command named `module`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+Use as a model the command class in `cli/source/commands/dialog-command.js` and its command descriptor in the file `cli/source/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
+
+The command `module` is used to list the available cli tools modules, to unload and load a module by its name. 
+
+- modules are listed in the application context `cli/source/config/config.js`, under the property `module`. Each object in the module object is an object which describe a module. the object key is the module `id` and is the key of the object.
+
+- The action `load` implements the call to the instance of `ModuleController` in `cli/source/controllers/module-controller`, using a new instance: 
+```js
+await new ModuleController(this.ctx, outputContext)
+```
+then calling on it a new method `load` method deduced by factorization of the existing code in this class, see method `run()`
+A module might not be loaded if it is already loaded. a module is `loaded` if the module object descriptor in the application context has the property `isLoaded` setted to `true`. This method must also set the flag `loaded` to true in the module object descriptor.
+
+- the action `unload` implements the call to the instance of `ModuleController` in `cli/source/controllers/module-controller`, using a new instance: 
+```js
+await new ModuleController(this.ctx, outputContext)
+```
+then calling on it a new method `unload`, that call the new method `unload` in the module instance object. This methid must also set the flag `loaded` to false in the module object descriptor. A module might not be **unloaded** if it is not already **loaded**
+
+- the action `list` must list all modules `names` (module object descriptor **key**) and `descriptions` (module object descriptor property `description`) in a nice and colorized way, also indicating the loading status of the module (using library `chalk`). Any new color definition must be added and used from the application context `cli/source/config/config.js`, under the property `theme.module`.
+
+The command descriptor is given below:
+
+```js
+{
+    names: ['module','mod','m'],
+    description: 'list the available cli tools modules, allow to unload and load them',
+    config: {
+        options: {
+            action: {
+                type: 'string',
+                required: true,
+                allowedValues: [
+                    { value: 'list',
+                      description: 'list available modules and their loading status'
+                    },
+                    { value: 'load',
+                        description: 'load a module by its name, if it is already loaded'
+                    },
+
+                ],                
+                description: 'an action order for the module command'
+            },
+            name: {
+                type: 'string',
+                required: false,
+                description: 'the module name to be loaded or unloaded. required for actions load and unload'
+            }
+        },
+        allowPositionals: true
+    },
+    file: 'module-command.js'
+}
+```
