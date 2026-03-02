@@ -221,6 +221,10 @@ export default function config(cli) {
 									{
 										value: 'h',
 										description: 'dump the dialog history messages'
+									},
+									{
+										value: 'list',
+										description: 'list available models'
 									}
 								],
 								description: 'an action order for the dialog controller'

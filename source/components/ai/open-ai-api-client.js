@@ -23,6 +23,12 @@ export default class OpenAIApiClient extends AIApiClient {
         return this
     }
 
+    async list() {
+        const r = await this.client.models.list()
+        //console.log(r)
+        return r
+    }
+
     async completion(query) {
 
         //console.log(this.config)

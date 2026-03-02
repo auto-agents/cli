@@ -8,10 +8,12 @@ import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
 import { Action_Tool_Text_Query } from "../components/ai/response-processor.js";
 import { Role_Assistant } from "../components/ai/roles.js";
+import { CommandRunErrorEvent, errorEvent } from "../config/events.js";
 
 export default class AIChatModule {
 
     dbg = false
+    From = 'AIChatModule'
 
     constructor(ctx, config, outputContext, moduleSpec
     ) {
@@ -127,6 +129,19 @@ export default class AIChatModule {
                 .newSpinner(margin + '- stopping module AIChat: ' + this.moduleSpec.apiName, cliSpinners.sand)
         )
         await stopSrvAction.run()
+    }
+
+    async list() {
+        if (!this.api.list) {
+            this.ctx.components.event.emit(CommandRunErrorEvent,
+                {
+                    ...errorEvent(this.From,
+                        new Error("list command is not available")),
+                    com: this.From + ':list'
+                })
+            return null
+        }
+        return (await this.api.list())?.data
     }
 
     async chat(query, secondary = false) {

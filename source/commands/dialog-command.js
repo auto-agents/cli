@@ -89,6 +89,18 @@ export default class DialogCommand extends Command {
 					e.emit(RunCommandEvent, "app get components.module.AIChat.api.history.messages")
 				break
 
+			case 'list':
+				if (!isAIChatAvailable(this.ctx))
+					return
+				const o = this.ctx.components.output
+				const mlist = await this.ctx.components.module.AIChat.list()
+				if (!mlist) return
+				o.newLine()
+				mlist.forEach(mod => {
+					o.appendLine(mod.id)
+				});
+				break
+
 			default:
 				e.emit(CommandNotFoundEvent, {
 					...errorEvent(
