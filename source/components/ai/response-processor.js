@@ -1,4 +1,5 @@
 export const Action_Tool_Text_Query = 'Action_Tool_Text_Query'
+export const Action_Tool_Query = 'Action_Tool_Query'
 
 export default class ResponseProcessor {
 

@@ -823,9 +823,9 @@ export default function config(cli) {
 				isLoaded: false,
 
 				config: {
-					//model: "qwen3:4b",
+					model: "qwen3-0.6b",
 					//model: 'qwen3-1.7b',
-					model: "google/gemma-3-1b",
+					//model: "google/gemma-3-1b",
 					//model: 'google/gemma-2-9b',
 					//model: "mistralai/ministral-3-3b",
 					//model2: 'gpt2-finetuned-recipes-cooking_v2-i1',
@@ -971,16 +971,22 @@ export default function config(cli) {
 					tools: [],
 					enabledTools: [],	// all if empty
 
-					doNotStoreToolCallDialogsInHistory: true,	// avoid llm to repeat a response from history
+					enableDebugResponsesMessage: false,
+					skipToolResponseFirstLine: false,	// with gamma-1b
+
+					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
 					enableGemmaStyleToolCallParsing: true,
-					responseProcessors: ['gemma-style-tool-call-parser.js'],
+					responseProcessors: [
+						'openai-api-tool-call-processor.js',
+						'gemma-style-tool-call-parser.js'
+					],
 
 					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations:\n{data}",
 					//toolTextQueryPattern: "write a report for the user who is asking: '{query}' accordingly to the following informations: {data}",
 
 					maxRetries: 2,	// default
 					stream: false,
-					think: true,
+					think: false,
 					historyPath: join(process.cwd(), saved, 'chat-history.json')
 				},
 				ollamaMCPBridgeAI: {

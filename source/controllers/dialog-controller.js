@@ -130,11 +130,14 @@ export default class DialogController {
 			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
 			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
 		}
-
+		//console.log('ici', t.length)
+		var r = null
 		t.forEach(l => {
 			const s = l.length == 0 ? ' ' : l
-			return o.appendLine(scol(s))
+			//return o.appendLine(scol(s))
+			r = o.appendLine(scol(s))
 		})
+		return r
 	}
 
 	async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }

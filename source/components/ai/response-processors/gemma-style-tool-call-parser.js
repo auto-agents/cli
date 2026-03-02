@@ -34,7 +34,6 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
             if (s[0] == '[' && s[s.length - 1] == ']'
                 && !s.includes(requestPattern)
             ) {
-
                 if (t.length >= 1) {
                     try {
                         jsonArgs = JSON.parse(t[1])
@@ -79,8 +78,10 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                                     .trim()
 
                                 var jsp = JSON.parse(s)
-                                jsp = jsp[0].function
                                 jsonSpec = jsp
+                                jsp = jsp[0].function
+                                if (jsp)
+                                    jsonSpec = jsp
                             }
                             catch (err) {
                                 console.error(err.message)

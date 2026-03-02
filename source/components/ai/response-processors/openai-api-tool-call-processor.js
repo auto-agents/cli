@@ -1,4 +1,4 @@
-import ResponseProcessor from "../response-processor";
+import ResponseProcessor, { Action_Tool_Query } from "../response-processor";
 
 export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
@@ -14,9 +14,50 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
     async run(query, response) {
 
-        if (!response.tools) return response
+        if (!response.tool_calls || response.tool_calls.length == 0) return response
 
+        for (var i = 0; i < response.tool_calls.length; i++) {
+            const toolSpe = response.tool_calls[i]
 
+            if (this.dbg) console.log(toolSpe)
+
+            const name = toolSpe.function?.name
+            const props = toolSpe.function?.arguments
+            const tool = this.tools.getTool(name)
+
+            if (tool != null) {
+
+                var r = null
+                var error = false
+
+                try {
+                    // run the tool    
+                    r = await tool.run(props)
+
+                } catch (toolError) {
+                    r = toolError.message
+                    error = true
+                }
+
+                if (!error) {
+
+                    this.addAction(
+                        response,
+                        Action_Tool_Query,
+                        r
+                    )
+
+                    if (this.dbg) console.log(r)
+
+                } else {
+
+                    // tool error
+                    response.content = r
+                }
+
+            } else
+                console.error('unknown tool required by the model: ' + name)
+        }
 
         return response
     }

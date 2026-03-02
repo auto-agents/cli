@@ -6,8 +6,8 @@ import utils from '../utils/utils.js'
 import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
-import { Action_Tool_Text_Query } from "../components/ai/response-processor.js";
-import { Role_Assistant } from "../components/ai/roles.js";
+import { Action_Tool_Query, Action_Tool_Text_Query } from "../components/ai/response-processor.js";
+import { Role_Assistant, Role_Tool } from "../components/ai/roles.js";
 import { CommandRunErrorEvent, errorEvent } from "../config/events.js";
 
 export default class AIChatModule {
@@ -163,12 +163,12 @@ export default class AIChatModule {
                     var r2 = await capi.completion(action.arg)
                     var textRes = r2.content
 
+                    // cleanup response message
                     if (textRes)
-                        // cleanup
                         textRes = textRes.replace('[END_RESPONSE]', '')
                     r2.content = textRes
 
-                    if (this.dbg) console.log('tool response:', textRes)
+                    if (this.dbg) console.log('tool response (1):', textRes)
 
                     var h = capi.history.messages
 
@@ -183,6 +183,42 @@ export default class AIChatModule {
                                 content: textRes
                             }
                         )
+                    }
+                    r2.actions = [...r.actions]
+                    r = r2
+                }
+
+                if (action.name == Action_Tool_Query) {
+
+                    // tool query
+                    var r2 = await capi.completion(action.arg, null, Role_Tool)
+                    var textRes = r2.content
+
+                    // cleanup response message
+                    if (this.config.skipToolResponseFirstLine) {
+                        if (textRes[0] != '[') {
+                            const t = textRes.split('\n').slice(1)
+                            textRes = t.join('\n')
+                            r2.content = textRes
+                        }
+                    }
+
+                    if (this.dbg) console.log('tool response (2):', textRes)
+
+                    var h = capi.history.messages
+
+                    if (this.config.doNotStoreToolCallDialogsInHistory) {
+                        capi.history.messages = h.slice(0, -4)
+                    }
+                    else {
+                        capi.history.messages = h.slice(0, -3)
+                        capi.history.messages.push(
+                            {
+                                role: Role_Assistant,
+                                content: textRes
+                            }
+                        )
+                        // keep response
                     }
                     r2.actions = [...r.actions]
                     r = r2
