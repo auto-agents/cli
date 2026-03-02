@@ -2,6 +2,7 @@ import Command from './command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../config/events.js'
 import { isAIChatAvailable } from '../utils/utils.js'
+import chalk from 'chalk'
 
 export default class DialogCommand extends Command {
 
@@ -93,11 +94,15 @@ export default class DialogCommand extends Command {
 				if (!isAIChatAvailable(this.ctx))
 					return
 				const o = this.ctx.components.output
-				const mlist = await this.ctx.components.module.AIChat.list()
+				const aichat = this.ctx.components.module.AIChat
+				const mlist = await aichat.list()
 				if (!mlist) return
 				o.newLine()
 				mlist.forEach(mod => {
-					o.appendLine(mod.id)
+					var str = mod.id
+					if (aichat.config.model == mod.id)
+						str = chalk.hex(this.ctx.theme.warningColor)(str)
+					o.appendLine(str)
 				});
 				break
 
