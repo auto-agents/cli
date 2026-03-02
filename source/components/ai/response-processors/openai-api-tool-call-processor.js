@@ -13,6 +13,11 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
     }
 
     async run(query, response) {
+
+        if (!response.tools) return response
+
+
+
         return response
     }
 }
