@@ -79,6 +79,7 @@ export default class DialogCommand extends Command {
 				break
 
 			case 'clear':
+			case 'c':
 				if (isAIChatAvailable(this.ctx))
 					this.ctx.components.module.AIChat.clearHistory()
 				break

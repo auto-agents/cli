@@ -8,10 +8,13 @@ export default class GetTime extends AITool {
 
     async run(jsonArgs) {
         const timezone = jsonArgs?.timezone || 'UTC'
-        //console.log(timezone)
         const d = new Date(new Date().toLocaleString(timezone))
-        return d.getHours() + ' hours '
+        const r = d.getHours() + ' hours '
             + d.getMinutes() + ' minutes '
             + d.getSeconds() + ' secondes'
+
+        //console.log(r, timezone)
+
+        return r
     }
 }

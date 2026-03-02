@@ -213,6 +213,10 @@ export default function config(cli) {
 									{
 										value: 'clear',
 										description: 'clear current chat histories'
+									},
+									{
+										value: 'c',
+										description: 'same as clear'
 									}
 								],
 								description: 'an action order for the dialog controller'
