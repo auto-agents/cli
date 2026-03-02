@@ -5,8 +5,13 @@ import Status from '../utils/status.js'
 import utils from '../utils/utils.js'
 import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
+import Tools from "../components/ai/tools.js";
+import { Action_Tool_Text_Query } from "../components/ai/response-processor.js";
+import { Role_Assistant } from "../components/ai/roles.js";
 
 export default class AIChatModule {
+
+    dbg = false
 
     constructor(ctx, config, outputContext, moduleSpec
     ) {
@@ -26,8 +31,10 @@ export default class AIChatModule {
         this.spinner = new SpinnerService(ctx, outputContext.output)
         this.status = new Status(ctx)
         this.historyDuo = null
+        const ctx2 = outputContext.clone().addMargins(4)
+        this.tools = new Tools(ctx, this.config, ctx2)
         this.responseProcessors = new ResponseProcessors(
-            ctx, this.config, outputContext.clone().addMargins(4))
+            ctx, this.config, this.tools, ctx2)
     }
 
     async init() {
@@ -80,6 +87,7 @@ export default class AIChatModule {
         const initApi = async () => {
             try {
                 await this.responseProcessors.loadProcessors(this.config.responseProcessors)
+                await this.tools.loadTools()
                 await utils.wait(this.ctx.ui.initFastWait)
 
             } catch (err) {
@@ -125,7 +133,37 @@ export default class AIChatModule {
         const capi = !secondary ? this.api : this.apiSecondary
         var r = await capi.completion(query)
 
-        r = await this.responseProcessors.run(r)
+        r = await this.responseProcessors.run(query, r)
+
+        // handle response processors actions
+        if (r.actions) {
+            for (var i = 0; i < r.actions.length; i++) {
+                const action = r.actions[i]
+
+                if (this.dbg) console.log('run action:', action)
+
+                if (action.name == Action_Tool_Text_Query) {
+
+                    // tool text query
+                    var r2 = await capi.completion(action.arg)
+                    if (this.dbg) console.log('tool response:', r2.content)
+
+                    var h = capi.history.messages
+                    capi.history.messages = h.slice(0, -3)
+
+                    capi.history.messages.push(
+                        {
+                            role: Role_Assistant,
+                            content: r2.content
+                        }
+                    )
+                    r2.actions = [...r.actions]
+                    r = r2
+                }
+            }
+        }
+
+        // return the processed result
 
         return r
     }

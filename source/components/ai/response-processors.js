@@ -8,9 +8,10 @@ export default class ResponseProcessors {
 
     processors = []
 
-    constructor(ctx, config, outputContext) {
+    constructor(ctx, config, tools, outputContext) {
         this.ctx = ctx
         this.config = config
+        this.tools = tools
         this.status = new Status(ctx)
         this.outputContext = outputContext
         this.modulesPath = join(process.cwd(),
@@ -34,7 +35,7 @@ export default class ResponseProcessors {
             }
 
             const mod = await import(path)
-            const m = new mod.default(this.ctx, this.config, this.outputContext)
+            const m = new mod.default(this.ctx, this.config, this.tools, this.outputContext)
             await m.init()
             this.processors.push(m)
             o.appendLine(margin + 'response processor loaded: ' + file)
@@ -63,9 +64,9 @@ export default class ResponseProcessors {
         })
     }
 
-    async run(response) {
+    async run(query, response) {
         this.processors.forEach(async p => {
-            response = await p.run(response)
+            response = await p.run(query, response)
         })
         return response
     }

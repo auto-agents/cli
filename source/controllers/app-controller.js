@@ -220,13 +220,13 @@ export default class AppController {
 	error(message) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(this.status.error(message))
+		o.appendLine(this.status.error('💥 ' + message))
 	}
 
 	warning(message) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(this.status.warning(message))
+		o.appendLine(this.status.warning('⚠️ ' + message))
 	}
 
 	async appInitialized() {

@@ -984,7 +984,7 @@ export default function config(cli) {
 					enableGemmaStyleToolCallParsing: true,
 					responseProcessors: ['gemma-style-tool-call-parser.js'],
 
-					toolResponsePattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations: '{data}'",
+					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations: '{data}'",
 
 					maxRetries: 2,	// default
 					stream: false,
