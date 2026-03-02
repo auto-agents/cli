@@ -21,7 +21,10 @@ export default class ResponseSpeechFormater {
             .use(strip)
             .processSync(text)
             .toString()
-            .replaceAll('\_', '_')
+            // fix markdown formatter
+            .replaceAll("\\_", '_')
+            // fix speakability
+            .replaceAll('_', ' ')
         return text
     }
 }
