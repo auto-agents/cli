@@ -146,7 +146,7 @@ export default class AIChatModule {
 
     async chat(query, secondary = false) {
         const capi = !secondary ? this.api : this.apiSecondary
-        var r = await capi.completion(query)
+        var r = await capi.completion(query, this.tools)
 
         r = await this.responseProcessors.run(query, r)
 
@@ -161,7 +161,14 @@ export default class AIChatModule {
 
                     // tool text query
                     var r2 = await capi.completion(action.arg)
-                    if (this.dbg) console.log('tool response:', r2.content)
+                    var textRes = r2.content
+
+                    if (textRes)
+                        // cleanup
+                        textRes = textRes.replace('[END_RESPONSE]', '')
+                    r2.content = textRes
+
+                    if (this.dbg) console.log('tool response:', textRes)
 
                     var h = capi.history.messages
 
@@ -173,7 +180,7 @@ export default class AIChatModule {
                         capi.history.messages.push(
                             {
                                 role: Role_Assistant,
-                                content: r2.content
+                                content: textRes
                             }
                         )
                     }

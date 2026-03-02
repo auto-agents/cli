@@ -29,7 +29,7 @@ export default class OpenAIApiClient extends AIApiClient {
         return r
     }
 
-    async completion(query) {
+    async completion(query, tools) {
 
         //console.log(this.config)
 
@@ -48,7 +48,7 @@ export default class OpenAIApiClient extends AIApiClient {
             model: this.config.model,
             messages: messages,
             verbosity: 'high',
-            tools: this.config.tools,
+            tools: tools ? tools.getSpecifications(query) : this.config.tools,
             temperature: this.config.temperature,
             stream: this.config.stream,
             think: this.config.think

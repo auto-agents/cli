@@ -968,30 +968,8 @@ export default function config(cli) {
 						//completion: '/chat'
 					},
 
-					tools: [
-						{
-							type: "function",
-							function: {
-								name: "get_time",
-								description: "Get the current time",
-								parameters: {
-									type: "object",
-									properties: {
-										"timezone": {
-											"type": "string"
-										}
-									}
-								}
-							}
-						},
-						{
-							type: "function",
-							function: {
-								name: "get_date",
-								description: "Get the current date of the day"
-							}
-						}
-					],
+					tools: [],
+					enabledTools: [],	// all if empty
 
 					doNotStoreToolCallDialogsInHistory: true,	// avoid llm to repeat a response from history
 					enableGemmaStyleToolCallParsing: true,

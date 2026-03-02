@@ -1,6 +1,6 @@
 import AITool from "../../ai/ai-tool";
 
-export default class GetTime extends AITool {
+export default class GetDate extends AITool {
 
     constructor(ctx, config) {
         super(ctx, config)
@@ -8,8 +8,8 @@ export default class GetTime extends AITool {
 
     specification() {
         return {
-            name: "get_time",
-            description: "get the current time",
+            name: "get_date",
+            description: "get the current date",
             parameters: {
                 type: "object",
                 properties: {
@@ -24,9 +24,7 @@ export default class GetTime extends AITool {
     async run(jsonArgs) {
         const timezone = jsonArgs?.timezone || 'UTC'
         const d = new Date(new Date().toLocaleString(timezone))
-        const r = d.getHours() + ' hours '
-            + d.getMinutes() + ' minutes '
-            + d.getSeconds() + ' secondes'
+        const r = d.toString()
 
         //console.log(r, timezone)
 

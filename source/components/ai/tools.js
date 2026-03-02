@@ -81,6 +81,22 @@ export default class Tools {
         await walk(this.toolsPath)
     }
 
+    getSpecifications(query) {
+        const tspecs = []
+        for (const name in this.tools) {
+            const tool = this.tools[name]
+            tspecs.push(this.getToolSpec(tool))
+        }
+        return tspecs
+    }
+
+    getToolSpec(tool) {
+        return {
+            type: "function",
+            function: { ...tool.specification() }
+        }
+    }
+
     getTool(name) {
         return this.tools[name]
     }
