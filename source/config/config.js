@@ -217,6 +217,10 @@ export default function config(cli) {
 									{
 										value: 'c',
 										description: 'same as clear'
+									},
+									{
+										value: 'h',
+										description: 'dump the dialog history messages'
 									}
 								],
 								description: 'an action order for the dialog controller'
