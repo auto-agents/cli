@@ -41,7 +41,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                     try {
                         jsonArgs = JSON.parse(t[1])
                         founded = true
-                    } catch { }
+                    } catch (err) { console.error(err) }
                 }
 
             }
@@ -63,7 +63,6 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                             try {
 
                                 // ```json\n[FUNCTION_SPEC]\n```
-
                                 s = response.content
                                     .replace('```json', '')
                                     .replace('```', '')
@@ -72,7 +71,6 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                                 var jsp = JSON.parse(s)
                                 jsp = jsp[0].function
                                 jsonSpec = jsp
-                                console.log('ici', jsonSpec)
                             }
                             catch (err) {
                                 console.error(err.message)
@@ -99,12 +97,18 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                 if (this.dbg) console.log(name)
                 if (this.dbg) console.log('jsonArgs', jsonArgs)
 
+                const props = jsonArgs?.parameters || jsonArgs?.arguments
+                if (this.dbg) console.log('props', props)
+
                 if (tool) {
 
                     var r = null
                     var error = false
+
                     try {
-                        r = await tool.run(jsonArgs)
+                        // run the tool    
+                        r = await tool.run(props)
+
                     } catch (toolError) {
                         r = toolError.message
                         error = true
@@ -121,6 +125,9 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                             Action_Tool_Text_Query,
                             txt
                         )
+
+                        if (this.dbg) console.log(txt)
+
                     } else {
 
                         // tool error
