@@ -985,6 +985,7 @@ export default function config(cli) {
 						}
 					],
 
+					doNotStoreToolCallDialogsInHistory: true,	// avoid llm to repeat a response from history
 					enableGemmaStyleToolCallParsing: true,
 					responseProcessors: ['gemma-style-tool-call-parser.js'],
 

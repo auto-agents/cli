@@ -149,14 +149,19 @@ export default class AIChatModule {
                     if (this.dbg) console.log('tool response:', r2.content)
 
                     var h = capi.history.messages
-                    capi.history.messages = h.slice(0, -3)
 
-                    capi.history.messages.push(
-                        {
-                            role: Role_Assistant,
-                            content: r2.content
-                        }
-                    )
+                    if (this.config.doNotStoreToolCallDialogsInHistory) {
+                        capi.history.messages = h.slice(0, -4)
+                    }
+                    else {
+                        capi.history.messages = h.slice(0, -3)
+                        capi.history.messages.push(
+                            {
+                                role: Role_Assistant,
+                                content: r2.content
+                            }
+                        )
+                    }
                     r2.actions = [...r.actions]
                     r = r2
                 }
