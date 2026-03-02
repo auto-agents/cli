@@ -21,6 +21,7 @@ export default class ResponseSpeechFormater {
             .use(strip)
             .processSync(text)
             .toString()
+            .replaceAll('\_', '_')
         return text
     }
 }
