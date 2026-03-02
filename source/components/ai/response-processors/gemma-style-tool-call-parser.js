@@ -1,3 +1,4 @@
+import { trace } from "../../../utils/utils"
 import ResponseProcessor, { Action_Tool_Text_Query } from "../response-processor"
 
 export default class gemmaStyleToolCallParser extends ResponseProcessor {
@@ -24,6 +25,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
         var name = null
         var jsonArgs = null
         var tool = null
+        var matchCaseId = null
         const requestPattern = '_REQUEST]'
 
         if (t.length > 0) {
@@ -40,6 +42,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                         name = jsonArgs.name.toLowerCase()
                         tool = this.tools.getTool(name)
                         founded = tool != null
+                        matchCaseId = founded ? 1 : null
                     } catch {
                         try {
                             name = s.replace('[', '')
@@ -47,6 +50,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                                 .toLowerCase()
                             tool = this.tools.getTool(name)
                             founded = tool != null
+                            matchCaseId = founded ? 2 : null
                         } catch (err) {
                             console.error(err)
                         }
@@ -63,7 +67,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                         var jsonSpec = null
                         try {
                             eval('jsonSpec=' + t[1])
-
+                            matchCaseId = 3
                             // ```json\n{name: TOOL_NAME,arguments: JSON_ARGS}\n[END_TOOL_RESULT]```
                             // [NAME_REQUEST]\n{name: TOOL_NAME,arguments: JSON_ARGS}\n[END_TOOL_RESULT]```
 
@@ -79,11 +83,15 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
 
                                 var jsp = JSON.parse(s)
                                 jsonSpec = jsp
+                                matchCaseId = 4
                                 jsp = jsp[0].function
-                                if (jsp)
+                                if (jsp) {
                                     jsonSpec = jsp
+                                    matchCaseId = 5
+                                }
                             }
                             catch (err) {
+                                matchCaseId = null
                                 console.error(err.message)
                             }
                         }
@@ -98,6 +106,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                             founded = true
 
                         } catch (err) {
+                            matchCaseId = null
                             console.error(err.message)
                         }
                     }
@@ -113,6 +122,9 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
 
                 const props = jsonArgs?.parameters || jsonArgs?.arguments
                 if (this.dbg) console.log('props', props)
+
+                if (this.config.enableDebugToolsUsage)
+                    trace(this.ctx, 'tool required by model: ' + JSON.stringify(toolSpe))
 
                 if (tool) {
 
@@ -137,7 +149,9 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                         this.addAction(
                             response,
                             Action_Tool_Text_Query,
-                            txt
+                            txt,
+                            this.constructor.name,
+                            matchCaseId
                         )
 
                         if (this.dbg) console.log(txt)

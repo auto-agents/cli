@@ -4,6 +4,12 @@ import meow from 'meow';
 import AppController from './controllers/app-controller.js'
 import config from './config/config.js'
 
+var term = require('terminal-kit').terminal
+//var realTerm = require('terminal-kit').realTerminal
+
+term.fullscreen(false)
+console.clear()
+
 // TO BE DEFINED
 const cli = meow(
 	`
@@ -30,11 +36,12 @@ const {
 	values,
 	positionals,
 } = parseArgs({ args, options });
-console.log(values, positionals);
+//console.log(values, positionals);
 
 // ----- setup app -----
 
 const ctx = config(cli)
+term.windowTitle(ctx.app.name)
 
 // ---- launch app ----
 

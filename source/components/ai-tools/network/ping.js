@@ -9,8 +9,8 @@ export default class RunPing extends AITool {
 
     specification() {
         return {
-            name: "run_ping",
-            description: "run a ping to ip address or a hostname and indicates the time to connect to the target ip or hostname",
+            name: "ping",
+            description: "ping a ip address or a hostname",
             parameters: {
                 type: "object",
                 properties: {
@@ -23,7 +23,11 @@ export default class RunPing extends AITool {
         }
     }
 
-    async ping(hostname, port = 80, timeout = 2000) {
+    async ping(args) {
+
+        const hostname = args?.target
+        const port = args?.port | 80
+        const timeout = args?.timeout | 2000
         return new Promise((resolve) => {
             const start = performance.now();
             const socket = createConnection(port, hostname);
@@ -46,11 +50,11 @@ export default class RunPing extends AITool {
 
     async run(args) {
 
-        const target = args?.target
-        const r = await this.ping(target)
+        const r = await this.ping(args)
 
+        const target = args?.target
         const txt = r == -1 ? `ping '${target}' failed` :
-            `ping to target '${target}' established in in: ${r} ms`
+            `ping to target '${target}' established in: ${r} ms`
         //console.log(txt)
         return txt
     }

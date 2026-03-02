@@ -2,7 +2,7 @@ import ActionController from "../controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../utils/status.js'
-import utils from '../utils/utils.js'
+import utils, { trace } from '../utils/utils.js'
 import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
@@ -39,6 +39,9 @@ export default class AIChatModule {
             ctx, this.config, this.tools, ctx2)
     }
 
+    /**
+     * module init
+     */
     async init() {
 
         const oc = this.outputContext
@@ -111,6 +114,10 @@ export default class AIChatModule {
         this.ctx.components.module.AIChat = this
     }
 
+    /**
+     * unload module
+     * @param {Object} outputContext 
+     */
     async unload(outputContext) {
         const oc = outputContext || this.outputContext
         const o = oc.output
@@ -131,6 +138,10 @@ export default class AIChatModule {
         await stopSrvAction.run()
     }
 
+    /**
+     * list models ids
+     * @returns array
+     */
     async list() {
         if (!this.api.list) {
             this.ctx.components.event.emit(CommandRunErrorEvent,
@@ -144,11 +155,33 @@ export default class AIChatModule {
         return (await this.api.list())?.data
     }
 
+    /**
+     * chat completion
+     * @param {String} query 
+     * @param {boolean} secondary 
+     * @returns 
+     */
     async chat(query, secondary = false) {
         const capi = !secondary ? this.api : this.apiSecondary
+
+        // pre-process query
+        const preProcessQuery = txt => {
+            if (this.config.appendTextAtEndOfQuery != null)
+                txt += this.config.appendTextAtEndOfQuery
+            return txt
+        }
+
+        query = preProcessQuery(query)
+
+        // call completion
         var r = await capi.completion(query, this.tools)
 
+        // process response
         r = await this.responseProcessors.run(query, r)
+
+        const traceTools = str => {
+            if (this.config.enableDebugToolsUsage) trace(this.ctx, str)
+        }
 
         // handle response processors actions
         if (r.actions) {
@@ -156,10 +189,13 @@ export default class AIChatModule {
                 const action = r.actions[i]
 
                 if (this.dbg) console.log('run action:', action)
+                traceTools('invoke tool: ' + JSON.stringify(action))
 
                 if (action.name == Action_Tool_Text_Query) {
 
                     // tool text query
+                    action.arg = preProcessQuery(action.arg)
+
                     var r2 = await capi.completion(action.arg)
                     var textRes = r2.content
 
@@ -191,6 +227,8 @@ export default class AIChatModule {
                 if (action.name == Action_Tool_Query) {
 
                     // tool query
+                    action.arg = preProcessQuery(action.arg)
+
                     var r2 = await capi.completion(action.arg, null, Role_Tool)
                     var textRes = r2.content
 

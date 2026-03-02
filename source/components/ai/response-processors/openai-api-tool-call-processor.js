@@ -1,3 +1,4 @@
+import { trace } from "../../../utils/utils";
 import ResponseProcessor, { Action_Tool_Query } from "../response-processor";
 
 export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
@@ -20,9 +21,12 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
             const toolSpe = response.tool_calls[i]
 
             if (this.dbg) console.log(toolSpe)
+            if (this.config.enableDebugToolsUsage)
+                trace(this.ctx, 'tool required by model: ' + JSON.stringify(toolSpe))
 
             const name = toolSpe.function?.name
-            const props = toolSpe.function?.arguments
+            const props = JSON.parse(toolSpe.function?.arguments)
+
             const tool = this.tools.getTool(name)
 
             if (tool != null) {
@@ -44,7 +48,9 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                     this.addAction(
                         response,
                         Action_Tool_Query,
-                        r
+                        r,
+                        this.constructor.name,
+                        1
                     )
 
                     if (this.dbg) console.log(r)

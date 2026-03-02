@@ -3,6 +3,7 @@ import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../config/events.js'
 import { isAIChatAvailable } from '../utils/utils.js'
 import chalk from 'chalk'
+import { Table } from 'console-table-printer';
 
 export default class DialogCommand extends Command {
 
@@ -97,13 +98,25 @@ export default class DialogCommand extends Command {
 				const aichat = this.ctx.components.module.AIChat
 				const mlist = await aichat.list()
 				if (!mlist) return
+
+				const p = new Table({
+					columns: [
+						{ name: "model_id", alignment: "left" }
+					]
+				});
+
 				o.newLine()
 				mlist.forEach(mod => {
 					var str = mod.id
+					//console.log(mod)
+					var col = txt => txt
 					if (aichat.config.model == mod.id)
-						str = chalk.hex(this.ctx.theme.warningColor)(str)
-					o.appendLine(str)
+						col = x => chalk.hex(this.ctx.theme.table.highlightRow)(x)
+					//c = this.ctx.theme.table.highlightRow
+					//o.appendLine(str)
+					p.addRow({ model_id: col(str) });
 				});
+				o.appendLine(p.render())
 				break
 
 			default:

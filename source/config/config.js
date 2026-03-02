@@ -40,7 +40,7 @@ export default function config(cli) {
 
 	return {
 		app: {
-			name: cli.flags.name,
+			name: 'Auto Agents',
 			title: null,
 			subtitle: null
 		},
@@ -575,6 +575,7 @@ export default function config(cli) {
 			},
 			warningColor: '#FF7700',
 			errorColor: '#FF0000',
+			traceColor: '#9ad1ceff',
 			console: {
 				stderrColor: '#FF0000',
 				stdoutColor: '#FFFF00'
@@ -633,6 +634,9 @@ export default function config(cli) {
 			cursor: {
 				character: '█',
 				color: '#00FF00'
+			},
+			table: {
+				highlightRow: '#FF7700'
 			}
 		},
 		layout: {
@@ -960,7 +964,7 @@ export default function config(cli) {
 					//baseURL: "http://localhost:11434/api/",
 					// OLLAMA-MCP-BRIDGE
 					//baseURL: "http://localhost:8000/api/",
-					temperature: 0,
+					temperature: 0.5,
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'
@@ -971,11 +975,13 @@ export default function config(cli) {
 					tools: [],
 					enabledTools: [],	// all if empty
 
+					enableDebugToolsUsage: true,
 					enableDebugResponsesMessage: false,
 					skipToolResponseFirstLine: false,	// with gamma-1b
 
-					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
+					doNotStoreToolCallDialogsInHistory: true,	// avoid llm to repeat a response from history
 					enableGemmaStyleToolCallParsing: true,
+					appendTextAtEndOfQuery: "/no_think",
 					responseProcessors: [
 						'openai-api-tool-call-processor.js',
 						'gemma-style-tool-call-parser.js'

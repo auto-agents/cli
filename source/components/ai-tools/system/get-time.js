@@ -21,8 +21,8 @@ export default class GetTime extends AITool {
         }
     }
 
-    async run(jsonArgs) {
-        const timezone = jsonArgs?.timezone || 'UTC'
+    async run(args) {
+        const timezone = args?.timezone || 'UTC'
         const d = new Date(new Date().toLocaleString(timezone))
         const r = d.getHours() + ' hours '
             + d.getMinutes() + ' minutes '

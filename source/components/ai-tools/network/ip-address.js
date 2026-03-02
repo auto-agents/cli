@@ -1,7 +1,7 @@
 import AITool from "../../ai/ai-tool";
 import { networkInterfaces } from "os";
 
-export default class GetDate extends AITool {
+export default class IpAddress extends AITool {
 
     constructor(ctx, config) {
         super(ctx, config)
@@ -9,7 +9,7 @@ export default class GetDate extends AITool {
 
     specification() {
         return {
-            name: "get_ip",
+            name: "ip_address",
             description: "get the computer ip and mac address and sub network mask"
         }
     }

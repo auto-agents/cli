@@ -2,6 +2,7 @@ import { existsSync, readFileSync, createWriteStream } from 'fs'
 import path from 'path'
 import { render } from 'ink';
 import ansiEscapes from 'ansi-escapes';
+import chalk from 'chalk';
 
 export const callAsync = (func) => {
     (async () => {
@@ -88,6 +89,14 @@ export const isAppInitialized = ctx => {
     return ctx.components.app.isInitialized
 }
 
+export const trace = (ctx, str) => {
+    const o = ctx.components.output
+    o.newLine()
+    o.appendLine(
+        chalk.hex(ctx.theme.traceColor).italic(str)
+    )
+}
+
 export default {
     callAsync,
     wait,
@@ -96,5 +105,6 @@ export default {
     resolvePath,
     isSpeechAvailable,
     isUserSpeakEchoAvailable,
-    isAIChatAvailable
+    isAIChatAvailable,
+    trace
 }

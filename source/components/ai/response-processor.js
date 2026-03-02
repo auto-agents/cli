@@ -10,13 +10,15 @@ export default class ResponseProcessor {
         this.outputContext = outputContext
     }
 
-    addAction(response, actionName, arg) {
+    addAction(response, actionName, arg, processorId, matchCaseId) {
         if (!response.actions)
             response.actions = []
         response.actions.push(
             {
                 name: actionName,
-                arg: arg
+                arg: arg,
+                processorId: processorId,
+                matchCaseId: matchCaseId
             }
         )
     }

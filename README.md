@@ -34,6 +34,7 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[remark](https://github.com/remarkjs/remark)** A remark parser (JavaScript community version of Markdown)
   - **[strip-markdown](https://github.com/wooorm/strip-markdown)** A remark plugin to strip markdown formatting
   - **[async-mutex](https://github.com/DirtyHairy/async-mutex)** Implements primitives for synchronizing asynchronous operations in Javascript
+  - **[console-table-printer](https://console-table.netlify.app/docs)** Print colorful Tables on Console, directly from JSON string
 
 *notice: this tool has been initially hand coded, than evolved using AI*5
 
