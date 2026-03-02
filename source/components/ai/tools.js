@@ -100,4 +100,13 @@ export default class Tools {
     getTool(name) {
         return this.tools[name]
     }
+
+    getAllTools() {
+        const t = []
+        for (const name in this.tools) {
+            const tool = this.tools[name]
+            t.push(tool)
+        }
+        return t
+    }
 }

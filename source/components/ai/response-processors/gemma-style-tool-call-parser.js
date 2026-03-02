@@ -35,13 +35,23 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                 && !s.includes(requestPattern)
             ) {
 
-                name = s.replace('[', '').replace(']', '').toLowerCase()
-                tool = this.tools.getTool(name)
                 if (t.length >= 1) {
                     try {
                         jsonArgs = JSON.parse(t[1])
-                        founded = true
-                    } catch (err) { console.error(err) }
+                        name = jsonArgs.name.toLowerCase()
+                        tool = this.tools.getTool(name)
+                        founded = tool != null
+                    } catch {
+                        try {
+                            name = s.replace('[', '')
+                                .replace(']', '')
+                                .toLowerCase()
+                            tool = this.tools.getTool(name)
+                            founded = tool != null
+                        } catch (err) {
+                            console.error(err)
+                        }
+                    }
                 }
 
             }
@@ -78,6 +88,9 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                         }
 
                         try {
+                            //console.log(typeof jsonSpec)
+                            if (typeof jsonSpec == 'array') jsonSpec = jsonSpec[0]
+
                             name = jsonSpec.name?.toLowerCase()
                             tool = this.tools.getTool(name)
                             jsonArgs = jsonSpec.arguments

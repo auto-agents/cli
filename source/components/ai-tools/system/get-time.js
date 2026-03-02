@@ -9,7 +9,7 @@ export default class GetTime extends AITool {
     specification() {
         return {
             name: "get_time",
-            description: "get the current time",
+            description: "get the current time. indicates what time is it",
             parameters: {
                 type: "object",
                 properties: {

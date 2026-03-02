@@ -9,7 +9,7 @@ export default class GetDate extends AITool {
     specification() {
         return {
             name: "get_date",
-            description: "get the current date",
+            description: "get the current date. indicates what date is it",
             parameters: {
                 type: "object",
                 properties: {
