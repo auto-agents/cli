@@ -75,7 +75,7 @@ export default class OutputController {
 		t.forEach(s => rows.push(s))
 		const rowY1 = rows.length
 
-		this.estimRowsCount += 2
+		//this.estimRowsCount += 2
 		this.estimRowsCount += t.length
 
 		this.updateView(skipViewUpdate)

@@ -97,6 +97,10 @@ export const trace = (ctx, str) => {
     )
 }
 
+export const mdBlockJson = json => {
+    return "```json\n" + json + "\n```"
+}
+
 export default {
     callAsync,
     wait,
@@ -106,5 +110,6 @@ export default {
     isSpeechAvailable,
     isUserSpeakEchoAvailable,
     isAIChatAvailable,
-    trace
+    trace,
+    mdBlockJson
 }

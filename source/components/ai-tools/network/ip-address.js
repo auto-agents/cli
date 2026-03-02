@@ -1,3 +1,4 @@
+import { mdBlockJson } from "../../../utils/utils";
 import AITool from "../../ai/ai-tool";
 import { networkInterfaces } from "os";
 
@@ -35,7 +36,7 @@ export default class IpAddress extends AITool {
             }
         }
 
-        const r = JSON.stringify(results)
+        const r = mdBlockJson(JSON.stringify(results))
         //console.log(r)
 
         return r
