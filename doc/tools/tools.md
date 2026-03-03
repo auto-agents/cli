@@ -61,6 +61,19 @@ Instead, the **`agentic client`** should perform **several operations** using th
 
     - `get current time it will be in 3 hours`
 
+- indicates **format type** before **included data** in the query:
+
+    - `get files in "e://" as a text bullet list including type and size`
+    - **not** `get files in "e://" including type and size as a text bullet list`
+
+- if user need to **process tool results** after llm tool invokation, he should ask to get a response in a `json format` :
+
+    - `invoke tool get files in "e://", format response as a json object`
+
+- when asking an output formatted in a `json format`, it might be possible to indicates **filtering** on **included data** :
+
+    - `invoke tool get files in "e://", format response as a json object includes only files`
+
 ## samples of efficients queries
 
 - ask to use a specific tool

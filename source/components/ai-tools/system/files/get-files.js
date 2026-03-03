@@ -1,6 +1,7 @@
 import { mdBlockJson } from "../../../../utils/utils";
 import AITool from "../../../ai/ai-tool";
 import { existsSync, readdirSync, statSync } from 'fs'
+import path, { basename, dirname } from 'path'
 
 export default class GetFiles extends AITool {
 
@@ -26,17 +27,24 @@ export default class GetFiles extends AITool {
 
     async run(args) {
 
-        const files = readdirSync(args.path, { withFileTypes: true })
+        const tpath = args.path
+        const files = readdirSync(tpath, { withFileTypes: true })
         const fileStats = files.map(file => {
+            const fp = path.join(tpath, file.name)
+            var stats = null
+            try {
+                stats = statSync(fp)
+            }
+            catch { }
             return {
                 name: file.name,
-                size: stats.size,
-                lastModified: stats.mtime,
-                permissions: stats.mode,
-                owner: stats.uid,
-                group: stats.gid,
+                size: stats?.size,
+                lastModified: stats?.mtime,
+                permissions: stats?.mode,
+                owner: stats?.uid,
+                group: stats?.gid,
                 type: file.isDirectory() ? 'dir' : file.isFile() ? 'file' : 'other',
-                links: stats.nlink
+                links: stats?.nlink
             }
         }).filter(x => x != null)
 
