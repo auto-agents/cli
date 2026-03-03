@@ -72,6 +72,7 @@ export default class LsCommand extends Command {
 		}).filter(x => x != null)
 
 		// Helper function to format file size with appropriate unit
+
 		const formatFileSize = (bytes) => {
 			const units = ['B', 'Kb', 'Mb', 'Gb', 'Tb']
 			let size = bytes
@@ -86,6 +87,7 @@ export default class LsCommand extends Command {
 		}
 
 		// Calculate formatted file sizes for width calculation
+
 		const filesWithFormattedSizes = fileStats.map(file => ({
 			...file,
 			formattedSize: file.type === 'dir' ? '-' : formatFileSize(file.size),
@@ -93,6 +95,7 @@ export default class LsCommand extends Command {
 		}))
 
 		// Calculate column widths
+
 		const widths = {
 			name: Math.max(...filesWithFormattedSizes.map(f => f.displayName.length), 4),
 			size: Math.max(...filesWithFormattedSizes.map(f => f.formattedSize.length), 4),
@@ -105,6 +108,7 @@ export default class LsCommand extends Command {
 		}
 
 		// Helper function to colorize text
+
 		const colorize = (text, color) => {
 			return chalk.hex(color)(text)
 		}
