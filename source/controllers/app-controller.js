@@ -219,6 +219,8 @@ export default class AppController {
 		const e = this.ctx.components.event
 		if (!e) return
 		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key)
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.cols.key)
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.lines.key)
 	}
 
 	error(message) {

@@ -47,27 +47,12 @@ export default function App({ ctx }) {
 		ctx.data.layout.size.value = stdout.columns + 'x' + stdout.rows
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.size.key)
 
-		// NO MORE USED ---->
-		if (false) {
-			ctx.data.layout.output.rows.value =
-				stdout.rows
-				- ctx.layout.pageBottomMargin
-				- ctx.layout.headerHeight
-				- ctx.layout.promptAreaHeight
-				// output box borders
-				- 2
-			ctx.data.layout.output.cols.value = stdout.columns
-				// output box borders
-				- 2
-				// output right scroll bar
-				- 1
-			// <---- NO MORE USED
-		}
-
 		ctx.data.layout.rows.value = stdout.rows
 
-		// should use cursor pos if possible
-		ctx.data.layout.output.rows.value = 0 //ctx.layout.headerHeight + 1 // the min
+		// output dimensions
+		ctx.data.layout.output.rows.value = 0
+		ctx.data.layout.output.cols.value = 0
+		ctx.data.layout.output.lines.value = 0
 
 		ctx.data.layout.cols.value =
 			ctx.data.layout.output.cols.value =
@@ -75,6 +60,7 @@ export default function App({ ctx }) {
 
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.rows.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.cols.key)
+		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.output.lines.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.rows.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.cols.key)
 
@@ -244,8 +230,8 @@ export default function App({ ctx }) {
 						<RightGauge prop={ctx.data.layout.cols} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.rows} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.output.rows} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
+						<RightGauge prop={ctx.data.layout.output.cols} ctx={ctx} />
+						<RightGauge prop={ctx.data.layout.output.lines} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
@@ -274,7 +260,12 @@ export default function App({ ctx }) {
 			{
 				outputVisible &&
 				<Box flexDirection="column" flexGrow={1}>
-					<ScrollOutput ctx={ctx} source="ctx.cli.output" updateEventName="OutputUpdatedEvent" />
+					<ScrollOutput ctx={ctx} source="ctx.cli.output"
+						updateEventName="OutputUpdatedEvent"
+						rowsDataPath="ctx.data.layout.output.rows.value"
+						colsDataPath="ctx.data.layout.output.cols.value"
+						linesDataPath="ctx.data.layout.output.lines.value"
+					/>
 				</Box>
 			}
 

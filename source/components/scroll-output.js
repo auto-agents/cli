@@ -14,9 +14,11 @@ const reducer = (state, action) => {
 		case 'SET_INNER_HEIGHT':
 			r = {
 				...state,
-				innerHeight: action.innerHeight
+				innerHeight: action.innerHeight,
+				innerWidth: action.innerWidth
 			};
 			action.source.innerHeight = r.innerHeight
+			action.source.innerWidth = r.innerWidth
 			return r
 
 		case 'SCROLL_DOWN':
@@ -70,11 +72,13 @@ const reducer = (state, action) => {
 		case 'SCROLL_END':
 			r = {
 				...state,
-				scrollTop: Math.max(
-					action.source.rows.length
-					- action.source.innerHeight + 1,
-					0
-				)
+				scrollTop: action.source.rows.length <= 2 ? 0 :
+					Math.max(
+						action.source.rows.length
+						- action.source.innerHeight
+						+ 2,	// blank line after
+						0
+					)
 			}
 			action.source.scrollY = r.scrollTop
 			action.source.scrollEnd = true
@@ -96,7 +100,10 @@ const reducer = (state, action) => {
 const ScrollOutput = ({
 	ctx,
 	source,
-	updateEventName }) => {
+	updateEventName,
+	rowsDataPath,
+	colsDataPath,
+	linesDataPath }) => {
 
 	const o = eval(source)
 
@@ -131,6 +138,7 @@ const ScrollOutput = ({
 		dispatch({
 			type: 'SET_INNER_HEIGHT',
 			innerHeight: dimensions?.height,
+			innerWith: dimensions?.width,
 			source: o
 		});
 
@@ -138,9 +146,7 @@ const ScrollOutput = ({
 			textboxMeasurementUpdated()
 			autoScrollAtEnd()		// setup scrollTop , scrollY
 			setScrollbar(buildScrollbar(dimensions.height))
-			//ctx.components.event.emit(OutputResizedEvent, dimensions)
-			//if (dimensions.height > 0)
-			setText(buildText(dimensions.height))
+			setText(buildText(dimensions.height, dimensions.width))
 		}
 		return 0
 	}
@@ -151,15 +157,18 @@ const ScrollOutput = ({
 
 	var maxBoxHeight = 0
 
-	const buildText = (boxHeight) => {
+	const buildText = (boxHeight, boxWidth) => {
 		try {
 			// o.scrollY
 			if (isNaN(boxHeight)) boxHeight = 1
 			maxBoxHeight = Math.max(boxHeight, maxBoxHeight)
 			const r0 = Math.max(o.scrollY - 1, 0)
 			const r1 = Math.min(o.rows.length, boxHeight + r0 - 1 + 1)
-			//ctx.components.event.emit(OutputResizedEvent, { height: "sy=" + o.scrollY + " r0=" + r0 + " r1=" + r1 + ' h=' + boxHeight + ' mh=' + maxBoxHeight })
-			//ctx.components.event.emit(OutputResizedEvent, { height: 'h=' + boxHeight })
+
+			ctx.data.layout.output.rows.value = boxHeight
+			if (boxWidth != null && boxWidth !== undefined)
+				ctx.data.layout.output.cols.value = boxWidth
+			ctx.data.layout.output.lines.value = o.rows.length
 
 			const rows = o.rows.slice(r0, r1)
 			return rows.join('\n')
@@ -193,11 +202,6 @@ const ScrollOutput = ({
 				tb += car + '\n'
 			}
 
-			/*ctx.components.event.emit(SetStatusMessageEvent,
-				'boxHeight=' + boxHeight + ' | rows count=' + o.rows.length + ' | scrollY=' + o.scrollY + ' | yc=' + yc
-				+ ' | maxSY=' + maxSY + ' | r=' + r
-			)*/
-
 			return tb
 		} catch (err) {
 			return ''
@@ -212,10 +216,9 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
-			setText(buildText(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 		const updateCallback = () => {
-			//setText(buildText(o.innerHeight))
 			viewportMeasurementUpdated()
 		}
 		ctx.components.event.on(
@@ -272,7 +275,7 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
-			setText(buildText(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 
 		if (checkKeyFromConfig(key, keys.scrollUp)) {
@@ -281,7 +284,7 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
-			setText(buildText(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 
 		if (checkKeyFromConfig(key, keys.pageDown)) {
@@ -290,7 +293,7 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
-			setText(buildText(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 
 		if (checkKeyFromConfig(key, keys.pageUp)) {
@@ -299,7 +302,7 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
-			setText(buildText(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 	});
 

@@ -683,13 +683,19 @@ export default function config(cli) {
 					value: ''
 				},
 				output: {
+					// output width
 					cols: {
-						key: 'output cols',
+						key: 'output width',
 						value: null
 					},
-					// estimated output rows count
+					// output height
 					rows: {
-						key: 'output rows',
+						key: 'output height',
+						value: null
+					},
+					// output lines
+					lines: {
+						key: 'output lines',
 						value: null
 					}
 				},
