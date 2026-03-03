@@ -633,7 +633,7 @@ export default function config(cli) {
 			},
 			cursor: {
 				character: '█',
-				color: '#00FF00'
+				color: '#a2ffa2'
 			},
 			table: {
 				highlightRow: '#FF7700'

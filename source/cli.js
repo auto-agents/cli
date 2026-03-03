@@ -7,7 +7,10 @@ import config from './config/config.js'
 var term = require('terminal-kit').terminal
 //var realTerm = require('terminal-kit').realTerminal
 //term.fullscreen(false)
-console.clear()
+//console.clear()
+const CSI = '\x1b'
+const RSTXTA = CSI + "4m" + CSI + "0m"
+console.log(RSTXTA)
 
 // --- Global process-level error handling ---
 process.on('uncaughtException', (err) => {

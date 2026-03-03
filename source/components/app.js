@@ -27,7 +27,7 @@ export default function App({ ctx }) {
 	const { stdout } = useStdout()
 	const { stdin } = useStdin()
 
-	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
+	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin + 2
 	const [rows, setRows] = useState(layoutHeight)
 
 	const [initBoxVisible, setInitBoxVisible] = useState(true)
@@ -180,7 +180,7 @@ export default function App({ ctx }) {
 
 	return (
 
-		<Box flexDirection="column" flexShrink={0} height={rows} minHeight={rows}>
+		<Box flexDirection="column" flexShrink={0} height={rows} minHeight={rows} margin={0}>
 
 			{ /* header */}
 
@@ -297,7 +297,7 @@ export default function App({ ctx }) {
 
 			{ /* status bar */}
 
-			<Box height={3} minHeight={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+			<Box height={3} minHeight={3} margin={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
 				<Text color={ctx.theme.statusText.color} italic={true}>{statusMessage}</Text>
 			</Box>
 		</Box >
