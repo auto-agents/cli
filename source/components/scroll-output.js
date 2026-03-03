@@ -165,10 +165,10 @@ const ScrollOutput = ({
 			const r0 = Math.max(o.scrollY - 1, 0)
 			const r1 = Math.min(o.rows.length, boxHeight + r0 - 1 + 1)
 
-			ctx.data.layout.output.rows.value = boxHeight
+			eval(rowsDataPath + '=boxHeight')
 			if (boxWidth != null && boxWidth !== undefined)
-				ctx.data.layout.output.cols.value = boxWidth
-			ctx.data.layout.output.lines.value = o.rows.length
+				eval(colsDataPath + '=boxWidth')
+			eval(linesDataPath + '=o.rows.length')
 
 			const rows = o.rows.slice(r0, r1)
 			return rows.join('\n')
