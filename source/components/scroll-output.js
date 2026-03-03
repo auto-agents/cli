@@ -109,6 +109,7 @@ const ScrollOutput = ({
 
 	const [state, dispatch] = useReducer(reducer, {
 		innerHeight: 0,
+		innerWidth: 0,
 		scrollTop: 0
 	});
 	const [scrollbar, setScrollbar] = useState(0)
@@ -165,8 +166,9 @@ const ScrollOutput = ({
 			const r0 = Math.max(o.scrollY - 1, 0)
 			const r1 = Math.min(o.rows.length, boxHeight + r0 - 1 + 1)
 
-			eval(rowsDataPath + '=boxHeight')
-			if (boxWidth != null && boxWidth !== undefined)
+			if (boxHeight != null && boxHeight !== undefined && boxHeight != 0)
+				eval(rowsDataPath + '=boxHeight')
+			if (boxWidth != null && boxWidth !== undefined && boxWidth != 0)
 				eval(colsDataPath + '=boxWidth')
 			eval(linesDataPath + '=o.rows.length')
 

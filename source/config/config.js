@@ -538,7 +538,7 @@ export default function config(cli) {
 			valueColor: '#00FFFF',
 			promptColor: '#00FF00',
 			promptInputColor: '#FFFFFF',
-			promptInviteColor: '#00FF00',
+			promptInviteColor: '#a2ffa2',
 			outputBorderColor: '#555555',
 			output: {
 				borderColor: '#555555'
@@ -646,10 +646,15 @@ export default function config(cli) {
 			gaugeRightColWidth: 30,
 			gaugeLeftTextWidth: 20,
 			gaugeRightTextWidth: 15,
-			pageBottomMargin: 2,	// don't know why but else terminal add scrollbar (wt)
+			// old ink react bug: // terminal add scrollbar (wt)
+			pageBottomMargin: 0,		// patch under 6.8, fixed in 6.8 ?
 			// bad display below these limits
 			minWidth: 145,
-			minHeight: 51
+			minHeight: 51,
+			// right panel
+			rpWidth: 48,
+			imgCliAgentWidth: 48,
+			imgCliAgentHeight: 48,
 		},
 		data: {
 			app: {
@@ -982,7 +987,7 @@ export default function config(cli) {
 					tools: [],
 					enabledTools: [],	// all if empty
 
-					enableDebugToolsUsage: true,
+					enableDebugToolsUsage: false,
 					enableDebugResponsesMessage: false,
 					skipToolResponseFirstLine: false,	// with gamma-1b
 

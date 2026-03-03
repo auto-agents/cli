@@ -12,15 +12,23 @@ const CSI = '\x1b'
 const RSTXTA = CSI + "4m" + CSI + "0m"
 console.log(RSTXTA)
 
+const ignoreTkErrors = 'TerminalInfoProvider'
+
 // --- Global process-level error handling ---
 process.on('uncaughtException', (err) => {
-	console.error('Uncaught Exception:', err);
-	process.exit(1); // Exit with failure code
+	try {
+		if (err.message.includes(ignoreTkErrors)) return
+		console.error('Uncaught Exception:', err);
+		//process.exit(1)
+	} catch { }
 });
 
 process.on('unhandledRejection', (reason) => {
-	console.error('Unhandled Promise Rejection:', reason);
-	process.exit(1);
+	try {
+		if (reason.includes(ignoreTkErrors)) return
+		console.error('Unhandled Promise Rejection:', reason);
+		//process.exit(1)
+	} catch { }
 });
 
 // TO BE DEFINED

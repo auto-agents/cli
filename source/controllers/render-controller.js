@@ -1,6 +1,7 @@
 import App from '../components/app.js';
 import { withFullScreen } from "fullscreen-ink";
 import ErrorBoundary from '../components/error-boundary.js';
+import { TerminalInfoProvider } from "ink-picture";
 
 var i = require('ink')
 
@@ -20,9 +21,11 @@ export default class RenderController {
 
     show() {
         const node = withFullScreen(
-            <ErrorBoundary>
-                <App ctx={this.ctx} />
-            </ErrorBoundary>
+            <TerminalInfoProvider>
+                <ErrorBoundary>
+                    <App ctx={this.ctx} />
+                </ErrorBoundary>
+            </TerminalInfoProvider>
             , {
                 incrementalRendering: true,
                 concurrent: true,

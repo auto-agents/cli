@@ -27,6 +27,7 @@ export default class GetTime extends AITool {
         const d = new Date(new Date().toLocaleString(timezone))
 
         const obj = {
+            description: "the current time",
             hour: {
                 value: d.getHours(),
                 unit: 'hours'

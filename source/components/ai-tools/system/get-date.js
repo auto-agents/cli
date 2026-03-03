@@ -26,8 +26,28 @@ export default class GetDate extends AITool {
         const d = new Date(new Date().toLocaleString(timezone))
         const r = d.toString()
 
-        //console.log(r, timezone)
-
-        return r
+        const obj = {
+            description: "the day of the day",
+            dayOfTheWeek: {
+                value: d.getDay(),
+                unit: 'day of the week'
+            },
+            day: {
+                value: d.getDate(),
+                unit: 'day of the month'
+            },
+            month: {
+                value: d.getMonth(),
+                unit: 'seconds'
+            },
+            year: {
+                value: d.getFullYear(),
+                unit: 'year'
+            },
+            timezone: {
+                value: timezone
+            }
+        }
+        return this.jsonResult(obj)
     }
 }

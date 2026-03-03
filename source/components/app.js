@@ -18,6 +18,8 @@ import {
 } from '../config/events.js';
 import { StatusEnum, StatusMessage } from '../data/status-message.js';
 import chalk from 'chalk'
+import Image from "ink-picture";
+import path from 'path'
 
 export default function App({ ctx }) {
 
@@ -27,7 +29,7 @@ export default function App({ ctx }) {
 	const { stdout } = useStdout()
 	const { stdin } = useStdin()
 
-	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin + 2
+	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
 	const [rows, setRows] = useState(layoutHeight)
 
 	const [initBoxVisible, setInitBoxVisible] = useState(true)
@@ -35,6 +37,27 @@ export default function App({ ctx }) {
 	const [outputVisible, setOutputVisible] = useState(false)
 	const [helpVisible, setHelpVisible] = useState(false)
 	const [statusMessage, setStatusMessage] = useState('')
+
+	/* right panel */
+
+	const [cliAgentImageVisible, setCliAgentImageVisible] = useState(false)
+	const rpWidth = ctx.layout.rpWidth
+	const [imgCliAgentWidth, setImgCliAgentWidth] = useState(ctx.layout.imgCliAgentWidth)
+	const [imgCliAgentHeight, setImgCliAgentHeight] = useState(ctx.layout.imgCliAgentHeight)
+	const imgCliAgentPath = path.join(
+		process.cwd(), 'assets', 'agent-5-48x48.png')
+	ctx.imgCliAgentPath = imgCliAgentPath
+
+	const setupImgCliAgent = (visible = true) => {
+		setCliAgentImageVisible(visible)
+		var h = ctx.layout.imgCliAgentHeight
+		var w = ctx.layout.imgCliAgentWidth
+		h = Math.min(3, Math.min(h, ctx.data.layout.output.rows))
+		setImgCliAgentWidth(w)
+		setImgCliAgentHeight(h)
+	}
+
+	/* layout size */
 
 	const computeHelpHeight = () => {
 		const fh = ctx.cli.helpOutput.rows.length
@@ -67,9 +90,12 @@ export default function App({ ctx }) {
 	}
 	setPropsLayoutSize()
 
+	/* HideInitBoxOutputEvent */
+
 	useEffect(() => {
 		const listener = () => {
 			setInitBoxVisible(false)
+			setupImgCliAgent()
 		}
 		ctx.components.event.on(
 			HideInitBoxOutputEvent,
@@ -83,10 +109,14 @@ export default function App({ ctx }) {
 		}
 	}, [])
 
+	/* AppStartedEvent */
+
 	useEffect(() => {
 		const listener = () => {
 			setOutputVisible(true)
 			setPromptVisible(true)
+
+			setTimeout(() => setupImgCliAgent(), 1000)
 		}
 		ctx.components.event.on(
 			AppStartedEvent,
@@ -100,18 +130,24 @@ export default function App({ ctx }) {
 		}
 	}, [])
 
+	/* handle stdout resize event : EMIT LayoutResizedEvent */
+
 	useEffect(() => {
 		const handleResize = () => {
 			console.clear()
 			setRows(layoutHeight())
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
+
+			setTimeout(() => setupImgCliAgent(), 500)
 		}
 		stdout?.on("resize", handleResize);
 		return () => {
 			stdout?.off("resize", handleResize);
 		};
 	}, [stdout]);
+
+	/* HelpOutputUpdatedEvent */
 
 	useEffect(() => {
 		const handleHelpResize = () => {
@@ -124,7 +160,7 @@ export default function App({ ctx }) {
 		};
 	}, []);
 
-	/** handle output resized */
+	/** OutputResizedEvent */
 
 	/*useEffect(() => {		
 		const handleOutputResizedEvent = args => {
@@ -138,6 +174,8 @@ export default function App({ ctx }) {
 		}
 	})*/
 
+	/* PromptVisibilityLostEvent */
+
 	useEffect(() => {
 		const hidePrompt = () => {
 			setPromptVisible(false)
@@ -147,6 +185,8 @@ export default function App({ ctx }) {
 			e.off(PromptVisibilityLostEvent, hidePrompt)
 		}
 	}, [])
+
+	/* SetStatusMessageEvent */
 
 	const buildStatusMessageView = (statusMessage) => {
 		const sepc = chalk.hex(ctx.theme.statusMessage.separatorColor)
@@ -177,6 +217,8 @@ export default function App({ ctx }) {
 			e.off(SetStatusMessageEvent, handleSetStatusMessage)
 		}
 	}, [])
+
+	/* -------------------------------------------------------------------------------------- */
 
 	return (
 
@@ -255,30 +297,52 @@ export default function App({ ctx }) {
 				</Box>
 			}
 
-			{ /* 'console' output */}
+			{ /* middle outputs */}
 
-			{
-				outputVisible &&
-				<Box flexDirection="column" flexGrow={1}>
-					<ScrollOutput ctx={ctx} source="ctx.cli.output"
-						updateEventName="OutputUpdatedEvent"
-						rowsDataPath="ctx.data.layout.output.rows.value"
-						colsDataPath="ctx.data.layout.output.cols.value"
-						linesDataPath="ctx.data.layout.output.lines.value"
-					/>
-				</Box>
-			}
+			<Box minHeight={8} flexDirection="row" flexGrow={1}>
+				<Box flexDirection="column" flexGrow={1} >
 
-			{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
-			{
-				promptVisible &&
-				<Box minHeight={4} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor} flexDirection="column">
-					<Text color={ctx.theme.promptInviteColor} italic={true}>
-						Enter a query below or type / to enter a command :
-					</Text>
-					<Prompter ctx={ctx} />
+					{ /* 'console' output */}
+
+					{
+						outputVisible &&
+						<Box flexDirection="column" flexGrow={1}>
+							<ScrollOutput ctx={ctx} source="ctx.cli.output"
+								updateEventName="OutputUpdatedEvent"
+								rowsDataPath="ctx.data.layout.output.rows.value"
+								colsDataPath="ctx.data.layout.output.cols.value"
+								linesDataPath="ctx.data.layout.output.lines.value"
+							/>
+						</Box>
+					}
+
+					{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
+					{
+						promptVisible &&
+						<Box minHeight={4} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor} flexDirection="column">
+							<Text color={ctx.theme.promptInviteColor} italic={true}>
+								Enter a query below or type / to enter a command :
+							</Text>
+							<Prompter ctx={ctx} />
+						</Box>
+					}
+
 				</Box>
-			}
+
+				{ /* right panel */}
+
+				<Box minHeight={5} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+					{cliAgentImageVisible &&
+						<Image
+							width={imgCliAgentWidth}
+							height={imgCliAgentHeight}
+							src={imgCliAgentPath}
+							alt="agent"
+							protocol="halfBlock"
+						/>}
+				</Box>
+
+			</Box>
 
 			{ /* help output */}
 
