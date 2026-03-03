@@ -834,7 +834,8 @@ export default function config(cli) {
 					//model: "mistralai/ministral-3-3b",
 					//model2: 'gpt2-finetuned-recipes-cooking_v2-i1',
 
-					instructions: 'You are a coding assistant.',
+					instructions: 'You are a tool assistant.',
+					instructions1: 'You are a coding assistant.',
 					instructions0: 'répond en langue française',
 				}
 			},
@@ -964,7 +965,7 @@ export default function config(cli) {
 					//baseURL: "http://localhost:11434/api/",
 					// OLLAMA-MCP-BRIDGE
 					//baseURL: "http://localhost:8000/api/",
-					temperature: 0.5,
+					temperature: 0.8,
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'

@@ -91,8 +91,8 @@ export default class OutputController {
 	updateView(skipViewUpdate) {
 		if (!skipViewUpdate)
 			this.ctx.components.event.emit(this.updateEventName)
-		if (!skipViewUpdate && this.updateRowCountEventName)
-			this.ctx.components.event.emit(this.updateRowCountEventName)
+		//if (!skipViewUpdate && this.updateRowCountEventName)
+		//	this.ctx.components.event.emit(this.updateRowCountEventName)
 		if (!skipViewUpdate)
 			this.delayUpdate()
 	}
@@ -103,6 +103,7 @@ export default class OutputController {
 		rows[0] += ESC
 		this.delayUpdate()
 	}
+
 	delayUpdate() {
 		setTimeout(() => {
 			this.ctx.components.event.emit(this.updateEventName)

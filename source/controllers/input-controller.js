@@ -194,18 +194,20 @@ export default class InputController {
 			o.updateView()
 			this.ctx.components.event.emit(HelpOutputUpdatedEvent)
 		} catch (err) {
-			console.error(err)
+			//console.error(err)
 		}
 	}
 
 	#hideCommands() {
-		this.commandHelperOpened = false
-		if (!this.commandHelperStartPosition || !this.commandHelperEndPosition)
-			return
+		try {
+			this.commandHelperOpened = false
+			if (!this.commandHelperStartPosition || !this.commandHelperEndPosition)
+				return
 
-		this.helpOutput.clear()
-		this.commandHelperStartPosition
-			= this.commandHelperEndPosition = null
-		this.ctx.components.event.emit(HelpOutputUpdatedEvent)
+			this.helpOutput.clear()
+			this.commandHelperStartPosition
+				= this.commandHelperEndPosition = null
+			this.ctx.components.event.emit(HelpOutputUpdatedEvent)
+		} catch { }
 	}
 }

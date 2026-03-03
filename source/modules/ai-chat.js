@@ -196,7 +196,7 @@ export default class AIChatModule {
                     // tool text query
                     action.arg = preProcessQuery(action.arg)
 
-                    var r2 = await capi.completion(action.arg)
+                    var r2 = await capi.completion(action.arg, this.tools)
                     var textRes = r2.content
 
                     // cleanup response message
@@ -229,7 +229,7 @@ export default class AIChatModule {
                     // tool query
                     action.arg = preProcessQuery(action.arg)
 
-                    var r2 = await capi.completion(action.arg, null, Role_Tool)
+                    var r2 = await capi.completion(action.arg, this.tools, Role_Tool)
                     var textRes = r2.content
 
                     // cleanup response message

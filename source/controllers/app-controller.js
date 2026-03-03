@@ -25,7 +25,8 @@ import {
 	speakEvent,
 	TaskRunErrorEvent,
 	ModuleLoadedEvent,
-	ModuleUnloadedEvent
+	ModuleUnloadedEvent,
+	LayoutResizedEvent
 } from '../config/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -167,9 +168,9 @@ export default class AppController {
 	}
 
 	outputRowsCountUpdated() {
-		const eRowCnt =
+		/*const eRowCnt =
 			this.ctx.data.layout.output.rows.value = this.output.estimRowsCount
-			+ this.ctx.layout.headerHeight
+			+ this.ctx.layout.headerHeight*/
 
 		if (false)	// auto freeze ui
 			setTimeout(
@@ -215,6 +216,9 @@ export default class AppController {
 	}
 
 	heartbeatSecond() {
+		const e = this.ctx.components.event
+		if (!e) return
+		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key)
 	}
 
 	error(message) {

@@ -13,10 +13,8 @@ import {
 	HelpOutputUpdatedEvent,
 	AppStartedEvent,
 	PromptVisibilityLostEvent,
-	InputAddedEvent,
-	ConsoleClearedEvent,
-	KeyPressedEvent,
-	SetStatusMessageEvent
+	SetStatusMessageEvent,
+	OutputResizedEvent
 } from '../config/events.js';
 import { StatusEnum, StatusMessage } from '../data/status-message.js';
 import chalk from 'chalk'
@@ -69,7 +67,7 @@ export default function App({ ctx }) {
 		ctx.data.layout.rows.value = stdout.rows
 
 		// should use cursor pos if possible
-		ctx.data.layout.output.rows.value = ctx.layout.headerHeight + 1 // the min
+		ctx.data.layout.output.rows.value = 0 //ctx.layout.headerHeight + 1 // the min
 
 		ctx.data.layout.cols.value =
 			ctx.data.layout.output.cols.value =
@@ -140,6 +138,20 @@ export default function App({ ctx }) {
 		};
 	}, []);
 
+	/** handle output resized */
+
+	/*useEffect(() => {		
+		const handleOutputResizedEvent = args => {
+			ctx.data.layout.output.rows.value = args.height
+		}
+		// INFINITE LOOP :: max handler added ------------>
+		e.on(OutputResizedEvent, args => handleOutputResizedEvent(args[0]))
+		/<------------------------------------------------ 
+		return () => {
+			e.off(OutputResizedEvent, handleOutputResizedEvent)
+		}
+	})*/
+
 	useEffect(() => {
 		const hidePrompt = () => {
 			setPromptVisible(false)
@@ -182,7 +194,7 @@ export default function App({ ctx }) {
 
 	return (
 
-		<Box flexDirection="column" height={rows}>
+		<Box flexDirection="column" flexShrink={0} height={rows} minHeight={rows}>
 
 			{ /* header */}
 

@@ -6,9 +6,19 @@ import config from './config/config.js'
 
 var term = require('terminal-kit').terminal
 //var realTerm = require('terminal-kit').realTerminal
-
-term.fullscreen(false)
+//term.fullscreen(false)
 console.clear()
+
+// --- Global process-level error handling ---
+process.on('uncaughtException', (err) => {
+	console.error('Uncaught Exception:', err);
+	process.exit(1); // Exit with failure code
+});
+
+process.on('unhandledRejection', (reason) => {
+	console.error('Unhandled Promise Rejection:', reason);
+	process.exit(1);
+});
 
 // TO BE DEFINED
 const cli = meow(

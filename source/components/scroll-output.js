@@ -4,6 +4,7 @@ import {
 	ConsoleClearedEvent,
 	HelpOutputUpdatedEvent,
 	LayoutResizedEvent,
+	OutputResizedEvent,
 	SetStatusMessageEvent
 } from '../config/events';
 
@@ -135,8 +136,11 @@ const ScrollOutput = ({
 
 		if (dimensions) {
 			textboxMeasurementUpdated()
-			autoScrollAtEnd()
+			autoScrollAtEnd()		// setup scrollTop , scrollY
 			setScrollbar(buildScrollbar(dimensions.height))
+			//ctx.components.event.emit(OutputResizedEvent, dimensions)
+			//if (dimensions.height > 0)
+			setText(buildText(dimensions.height))
 		}
 		return 0
 	}
@@ -145,42 +149,59 @@ const ScrollOutput = ({
 		viewportMeasurementUpdated()
 	}, []);
 
-	const buildText = () => {
+	var maxBoxHeight = 0
 
-		const rows = o.rows
-		return rows.join('\n')
+	const buildText = (boxHeight) => {
+		try {
+			// o.scrollY
+			if (isNaN(boxHeight)) boxHeight = 1
+			maxBoxHeight = Math.max(boxHeight, maxBoxHeight)
+			const r0 = Math.max(o.scrollY - 1, 0)
+			const r1 = Math.min(o.rows.length, boxHeight + r0 - 1 + 1)
+			//ctx.components.event.emit(OutputResizedEvent, { height: "sy=" + o.scrollY + " r0=" + r0 + " r1=" + r1 + ' h=' + boxHeight + ' mh=' + maxBoxHeight })
+			//ctx.components.event.emit(OutputResizedEvent, { height: 'h=' + boxHeight })
+
+			const rows = o.rows.slice(r0, r1)
+			return rows.join('\n')
+		} catch (err) {
+			return ''
+		}
 	}
 
 	const [text, setText] = useState(buildText);
 
 	const buildScrollbar = (boxHeight) => {
 
-		const maxSY = o.rows.length - boxHeight + 1
-		o.maxScrollY = maxSY
-		var noScroll = maxSY <= 0
-		var yc = 0
-		if (!noScroll) {
-			var r = o.scrollY / maxSY
-			yc = Math.max(0, Math.ceil(r * boxHeight) - 1)
-		}
-		var tb = ''
-
-		for (var i = 0; i < boxHeight; i++) {
-			var car = ctx.theme.scrollbar.trackBackground
+		try {
+			const maxSY = o.rows.length - boxHeight + 1
+			o.maxScrollY = maxSY
+			var noScroll = maxSY <= 0
+			var yc = 0
 			if (!noScroll) {
-				if (i == yc - 1) car = ctx.theme.scrollbar.carretTop
-				if (i == yc + 1) car = ctx.theme.scrollbar.carretBottom
-				if (i == yc) car = ctx.theme.scrollbar.carret
+				var r = o.scrollY / maxSY
+				yc = Math.max(0, Math.ceil(r * boxHeight) - 1)
 			}
-			tb += car + '\n'
+			var tb = ''
+
+			for (var i = 0; i < boxHeight; i++) {
+				var car = ctx.theme.scrollbar.trackBackground
+				if (!noScroll) {
+					if (i == yc - 1) car = ctx.theme.scrollbar.carretTop
+					if (i == yc + 1) car = ctx.theme.scrollbar.carretBottom
+					if (i == yc) car = ctx.theme.scrollbar.carret
+				}
+				tb += car + '\n'
+			}
+
+			/*ctx.components.event.emit(SetStatusMessageEvent,
+				'boxHeight=' + boxHeight + ' | rows count=' + o.rows.length + ' | scrollY=' + o.scrollY + ' | yc=' + yc
+				+ ' | maxSY=' + maxSY + ' | r=' + r
+			)*/
+
+			return tb
+		} catch (err) {
+			return ''
 		}
-
-		/*ctx.components.event.emit(SetStatusMessageEvent,
-			'boxHeight=' + boxHeight + ' | rows count=' + o.rows.length + ' | scrollY=' + o.scrollY + ' | yc=' + yc
-			+ ' | maxSY=' + maxSY + ' | r=' + r
-		)*/
-
-		return tb
 	}
 
 	useEffect(() => {
@@ -191,9 +212,10 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight))
 		}
 		const updateCallback = () => {
-			setText(buildText())
+			//setText(buildText(o.innerHeight))
 			viewportMeasurementUpdated()
 		}
 		ctx.components.event.on(
@@ -250,6 +272,7 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight))
 		}
 
 		if (checkKeyFromConfig(key, keys.scrollUp)) {
@@ -258,6 +281,7 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight))
 		}
 
 		if (checkKeyFromConfig(key, keys.pageDown)) {
@@ -266,6 +290,7 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight))
 		}
 
 		if (checkKeyFromConfig(key, keys.pageUp)) {
@@ -274,13 +299,15 @@ const ScrollOutput = ({
 				source: o
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight))
 		}
 	});
 
 	return (
 		<Box ref={viewportRef} flexGrow={1} flexDirection="column" overflow="hidden" >
 			<Box flexDirection="row" flexGrow={0}>
-				<Box flexDirection="column" flexGrow={1} marginTop={-state.scrollTop}>
+				{/* marginTop={-state.scrollTop} */}
+				<Box flexDirection="column" flexGrow={1} >
 					<Box ref={textboxRef} marginBottom={2}>
 						<Text>{text}</Text>
 					</Box>
