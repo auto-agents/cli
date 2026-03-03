@@ -67,7 +67,7 @@ export default class LsCommand extends Command {
 				owner: stats?.uid || '',
 				group: stats?.gid || '',
 				type: file.isDirectory() ? 'dir' : file.isFile() ? 'file' : 'other',
-				links: stats?.nlink
+				links: stats?.nlink || ''
 			}
 		}).filter(x => x != null)
 
