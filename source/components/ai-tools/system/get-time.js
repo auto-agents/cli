@@ -1,3 +1,4 @@
+import { mdBlockJson } from "../../../utils/utils";
 import AITool from "../../ai/ai-tool";
 
 export default class GetTime extends AITool {
@@ -24,12 +25,24 @@ export default class GetTime extends AITool {
     async run(args) {
         const timezone = args?.timezone || 'UTC'
         const d = new Date(new Date().toLocaleString(timezone))
-        const r = d.getHours() + ' hours '
-            + d.getMinutes() + ' minutes '
-            + d.getSeconds() + ' secondes'
 
-        //console.log(r, timezone)
-
-        return r
+        const obj = {
+            hour: {
+                value: d.getHours(),
+                unit: 'hours'
+            },
+            minutes: {
+                value: d.getMinutes(),
+                unit: 'minutes'
+            },
+            seconds: {
+                value: d.getSeconds(),
+                unit: 'seconds'
+            },
+            timezone: {
+                value: timezone
+            }
+        }
+        return this.jsonResult(obj)
     }
 }

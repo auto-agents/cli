@@ -1,6 +1,6 @@
-# Tools using OpenAI Api completions tools
+# Tools : using tools in OpenAI Api completion query
 
-**paradigms (observated on `qwen3-0.6b`):**
+## paradigms (observated on `qwen3-0.6b`):
 
 - simple conversation may invoke tools and products (when working) bad or medium quality textual responses. the LLM may inject Json sometimes despite it is not asked to do it
 
@@ -30,8 +30,9 @@
     - `get list of tools as a text bullet list including description`
 
 - tools should provide results in a **json** formatted markdown using **using explicit names** for a better understanding by the model. example for a `get_time` tool:
-```
-    ```md
+
+```md
+    ```json
     {
         hour: {
             value: 24,
@@ -51,7 +52,14 @@
 
 - when providing a **tool response** to the model, you should ask the model to **analyse data** to enforce a proper and accurate response:
 
-    - **`analyse data`** of my ip address. use tool ip_address
+    - **`analyse data`** of my ip address **using** tool ip_address
+
+- **avoid to split queries in multiple sentences** separated by a `.`
+
+- user should not ask to **perform operations on tool result** when providing tool result to the model, except a **formating** or **schema transforms** order. 
+Instead, the **`agentic client`** should perform **several operations** using the model to reach his goals. Such query should not works:
+
+    - `get current time it will be in 3 hours`
 
 ## samples of efficients queries
 
