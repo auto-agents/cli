@@ -54,17 +54,20 @@ export default class LsCommand extends Command {
 			if (wc && !wildcard(pattern, file.name))
 				return null
 			const fp = path.join(tpath, file.name)
-			const stats = statSync(fp)
+			var stats = null
+			try {
+				stats = statSync(fp)
+			} catch { }
 
 			return {
 				name: file.name,
-				size: stats.size,
-				lastModified: stats.mtime,
-				permissions: stats.mode,
-				owner: stats.uid,
-				group: stats.gid,
+				size: stats?.size || 0,
+				lastModified: stats?.mtime || '',
+				permissions: stats?.mode || '',
+				owner: stats?.uid || '',
+				group: stats?.gid || '',
 				type: file.isDirectory() ? 'dir' : file.isFile() ? 'file' : 'other',
-				links: stats.nlink
+				links: stats?.nlink
 			}
 		}).filter(x => x != null)
 
