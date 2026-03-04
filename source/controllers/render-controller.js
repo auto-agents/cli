@@ -19,7 +19,7 @@ export default class RenderController {
         return this
     }
 
-    show() {
+    show0() {
         const node = withFullScreen(
             <TerminalInfoProvider>
                 <ErrorBoundary>
@@ -37,10 +37,12 @@ export default class RenderController {
 
     show() {
         const node = <App ctx={this.ctx} />
+        //const node = <ErrorBoundary><App ctx={this.ctx} /></ErrorBoundary>
         this.renderer = i.render(node
             , {
                 incrementalRendering: true,
-                concurrent: true
+                concurrent: true,
+                maxFps: 1
             });
         this.mounted = true
         return this

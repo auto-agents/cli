@@ -341,11 +341,11 @@ export default function App({ ctx }) {
 				{ /* right panel */}
 
 				<Box minHeight={3} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
-					<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false} borderRight={false}>
+					<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false} borderRight={false}>
 
 						{/* tui agent tab */}
 
-						<Box borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false}>
+						<Box borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
 							<Text>TUI Agent</Text>
 						</Box>
 

@@ -17,16 +17,18 @@ const ignoreTkErrors = 'TerminalInfoProvider'
 // --- Global process-level error handling ---
 process.on('uncaughtException', (err) => {
 	try {
+		fs.appendFileSync(path.join(process.cwd(), 'errors.log'), err)
 		if (err.message.includes(ignoreTkErrors)) return
-		console.error('Uncaught Exception:', err);
+		//console.error('Uncaught Exception:', err);
 		//process.exit(1)
 	} catch { }
 });
 
 process.on('unhandledRejection', (reason) => {
 	try {
+		fs.appendFileSync(path.join(process.cwd(), 'errors.log'), reason)
 		if (reason.includes(ignoreTkErrors)) return
-		console.error('Unhandled Promise Rejection:', reason);
+		//console.error('Unhandled Promise Rejection:', reason);
 		//process.exit(1)
 	} catch { }
 });

@@ -9,7 +9,7 @@ export default class GetToolsList extends AITool {
     specification() {
         return {
             name: "get_tools_list",
-            description: "get the full list of available tools"
+            description: "get the list of tools"
         }
     }
 
@@ -20,11 +20,8 @@ export default class GetToolsList extends AITool {
         const lst = []
         t.forEach(tool => {
             const sp = tool.specification()
-            const s = sp.name + ': ' + sp.description
-            lst.push(s)
+            lst.push(sp)
         });
-        const txt = lst.join('\n')
-        //console.log(txt)
-        return txt
+        return this.jsonResult(lst)
     }
 }

@@ -33,6 +33,7 @@ const platform = getPlatform()
 
 const longInterval = 4000
 const saved = 'saved'
+export const TUIAgentId = 'TUI'
 
 // app OutputContext
 
@@ -436,25 +437,46 @@ export default function config(cli) {
 			}
 		},
 		dialog: {
-			repeatUserQuery: {
-				enabled: true,
-				preferredVoices: {
-					edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
+			agents: [
+				{
+					id: TUIAgentId,
+					name: 'TUI Agent',
+					chatName: 'seraphina',
+					enabled: true,
+					system: true,
+					speak: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
+						}
+					},
+					repeatUserQuery: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
+						}
+					},
+					speakErrors: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
+						}
+					},
+				},
+				{
+					id: '...',
+					name: '...',
+					enabled: false,
+					instructions: '',
+					/* profile refers to a set of properties (overloaded by local definitions)
+						- chatName
+						- speak,preferredVoices
+						- instructions
+					*/
+					profile: ''
 				}
-			},
-			speakAnswers: {
-				name: 'seraphina',
-				enabled: true,
-				preferredVoices: {
-					edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
-				}
-			},
-			speakErrors: {
-				enabled: true,
-				preferredVoices: {
-					edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
-				}
-			},
+			],
+
 			speakDuo: {
 				name: 'guy',
 				preferredVoices: {
@@ -766,6 +788,11 @@ export default function config(cli) {
 				value: '',
 				interval: 0,
 				isDisabled: true
+			},
+			agents: {
+				profiles: {
+
+				}
 			}
 		},
 		components: {
@@ -999,7 +1026,7 @@ export default function config(cli) {
 
 					doNotStoreToolCallDialogsInHistory: true,	// avoid llm to repeat a response from history
 					enableGemmaStyleToolCallParsing: true,
-					appendTextAtEndOfQuery: " /no_think",
+					appendTextAtEndOfQuery: "", //" /no_think",
 					responseProcessors: [
 						'openai-api-tool-call-processor.js',
 						'gemma-style-tool-call-parser.js'
@@ -1010,7 +1037,7 @@ export default function config(cli) {
 
 					maxRetries: 2,	// default
 					stream: false,
-					think: false,
+					think: true,
 					historyPath: join(process.cwd(), saved, 'chat-history.json')
 				},
 				ollamaMCPBridgeAI: {

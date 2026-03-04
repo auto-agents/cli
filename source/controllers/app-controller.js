@@ -38,7 +38,8 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
 import KeyboardController from './keyboard-controller.js';
-import { isSpeechAvailable } from '../utils/utils.js';
+import { getDialogAgent, isSpeakErrorsEnabled, isSpeechAvailable } from '../utils/utils.js';
+import { TUIAgentId } from '../config/config.js';
 
 export default class AppController {
 
@@ -122,35 +123,32 @@ export default class AppController {
 			.init()
 	}
 
+	async speakError(text) {
+		this.ctx.components.event.emit(SpeakCommandEvent, speakEvent(
+			this.From,
+			text,
+			getDialogAgent(this.ctx, TUIAgentId).speakErrors.preferredVoices
+			[this.ctx.modules.speech.config.browser][0],
+			true));
+	}
+
 	async handleCommandErrorEvent(reason, errorEvent) {
 		const sep = reason && reason.length > 0 ? ' : ' : ''
 		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
 		const text = reason + sm
 
 		if (isSpeechAvailable(this.ctx)
-			&& this.ctx.dialog.speakErrors.enabled
+			&& isSpeakErrorsEnabled(this.ctx)
 			&& errorEvent?.from != 'speak')
-			this.event.emit(SpeakCommandEvent, speakEvent(
-				this.From,
-				text,
-				this.ctx.dialog.speakErrors.preferredVoices
-				[this.ctx.modules.speech.config.browser][0],
-				true));
-
+			this.speakError(text)
 		this.error(text)
 	}
 
 	async handleLogErrorEvent(errorEvent) {
 		if (isSpeechAvailable(this.ctx)
-			&& this.ctx.dialog.speakErrors.enabled
+			&& isSpeakErrorsEnabled(this.ctx)
 			&& errorEvent?.from != 'speak')
-			this.event.emit(SpeakCommandEvent, speakEvent(
-				this.From,
-				errorEvent.error?.message,
-				this.ctx.dialog.speakErrors.preferredVoices
-				[this.ctx.modules.speech.config.browser][0],
-				true));
-
+			this.speakError(errorEvent.error?.message)
 		this.error(errorEvent.error?.message)
 	}
 
@@ -158,13 +156,8 @@ export default class AppController {
 		this.error(`task '${taskErrorEvent.task.name}' error: ${taskErrorEvent.error?.message}`)
 
 		if (isSpeechAvailable(this.ctx)
-			&& this.ctx.dialog.speakErrors.enabled)
-			this.event.emit(SpeakCommandEvent, speakEvent(
-				this.From,
-				taskErrorEvent.error?.message,
-				this.ctx.dialog.speakErrors.preferredVoices
-				[this.ctx.modules.speech.config.browser][0],
-				true));
+			&& isSpeakErrorsEnabled(this.ctx))
+			this.speakError(taskErrorEvent.error?.message)
 	}
 
 	outputRowsCountUpdated() {

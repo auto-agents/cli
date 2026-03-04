@@ -13,7 +13,8 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
-import { isAIChatAvailable, isSpeechAvailable } from "../utils/utils.js"
+import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled } from "../utils/utils.js"
+import { TUIAgentId } from "../config/config.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -126,7 +127,7 @@ export default class DialogController {
 
 		if (t.length > 0) {
 			// add role symbol
-			if (!name) name = this.ctx.dialog.speakAnswers.name
+			if (!name) name = getDialogAgent(this.ctx, TUIAgentId).chatName
 			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
 			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
 		}
@@ -188,7 +189,7 @@ export default class DialogController {
 		primaryChat.history.reset()
 
 		// wait idle
-		if (this.ctx.dialog.speakAnswers.enabled
+		if (isTUIAgentSpeakEnabled(this.ctx)
 			&& isSpeechAvailable(this.ctx))
 			await sp.waitIdle()
 		// TODO: wait app idle
@@ -258,12 +259,12 @@ export default class DialogController {
 	// ----- speak ---------------------------------------------------
 
 	#getSystemVoice() {
-		return this.ctx.dialog.speakAnswers.preferredVoices
+		return getDialogAgent(this.ctx, TUIAgentId).speak.preferredVoices
 		[this.ctx.modules.speech.config.browser][0]
 	}
 
 	#getUserVoice() {
-		return this.ctx.dialog.repeatUserQuery.preferredVoices
+		return getDialogAgent(this.ctx, TUIAgentId).repeatUserQuery.preferredVoices
 		[this.ctx.modules.speech.config.browser][0]
 	}
 
@@ -273,7 +274,6 @@ export default class DialogController {
 	}
 
 	async #speakEventHandler(data) {
-
 		this.dialoger.speak(data.text,
 			{
 				voice: data.voice
@@ -282,13 +282,13 @@ export default class DialogController {
 	}
 
 	async waitSpeechIdle() {
-		if (!(this.ctx.dialog.speakAnswers.enabled
+		if (!(isTUIAgentSpeakEnabled(this.ctx)
 			&& isSpeechAvailable(this.ctx))) return
 		await this.ctx.components.module.speech.waitIdle()
 	}
 
 	async waitSpeechSpeak() {
-		if (!(this.ctx.dialog.speakAnswers.enabled
+		if (!(isTUIAgentSpeakEnabled(this.ctx)
 			&& isSpeechAvailable(this.ctx))) return
 		await this.ctx.components.module.speech.waitSpeak()
 	}

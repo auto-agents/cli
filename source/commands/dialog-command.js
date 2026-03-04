@@ -1,9 +1,10 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../config/events.js'
-import { isAIChatAvailable } from '../utils/utils.js'
+import { getDialogAgent, isAIChatAvailable } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
+import { TUIAgentId } from '../config/config.js'
 
 export default class DialogCommand extends Command {
 
@@ -43,7 +44,7 @@ export default class DialogCommand extends Command {
 				const agents = {
 					agent1: {
 						...this.ctx.dialog.roles.agent1,
-						name: this.ctx.dialog.speakAnswers.name
+						name: getDialogAgent(this.ctx, TUIAgentId).chatName
 					},
 					agent2: {
 						...this.ctx.dialog.roles.agent2,

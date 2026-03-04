@@ -3,6 +3,7 @@ import path from 'path'
 import { render } from 'ink';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
+import { TUIAgentId } from '../config/config';
 
 export const callAsync = (func) => {
     (async () => {
@@ -76,7 +77,22 @@ export const isSpeechAvailable = ctx => {
 }
 
 export const isUserSpeakEchoAvailable = ctx => {
-    return ctx.dialog.repeatUserQuery.enabled
+    return getDialogAgent(ctx, TUIAgentId).repeatUserQuery.enabled
+        && isSpeechAvailable(ctx)
+}
+
+export const isTUIAgentSpeakEnabled = ctx => {
+    return getDialogAgent(ctx, TUIAgentId).speak.enabled
+        && isSpeechAvailable(ctx)
+}
+
+export const getDialogAgent = (ctx, id) => {
+    const t = ctx.dialog.agents.filter(x => x.id == id)
+    return t.length > 0 ? t[0] : null
+}
+
+export const isSpeakErrorsEnabled = ctx => {
+    return getDialogAgent(this.ctx, TUIAgentId)?.speakErrors.enabled
         && isSpeechAvailable(ctx)
 }
 
@@ -111,5 +127,7 @@ export default {
     isUserSpeakEchoAvailable,
     isAIChatAvailable,
     trace,
-    mdBlockJson
+    mdBlockJson,
+    isSpeakErrorsEnabled,
+    getDialogAgent
 }
