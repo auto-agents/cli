@@ -93,6 +93,7 @@ Instead, the **`agentic client`** should perform **several operations** using th
 
 ## invoke a tool and ask to get a json object with the specified schema
 
+### example 1 :
 > `get current time, format response as json with the schema: { hour, minute }`
 
 **response:**
@@ -100,3 +101,24 @@ Instead, the **`agentic client`** should perform **several operations** using th
 ```json
 {"hour": 12, "minute": 30}
 ```
+
+### example 2 :
+> `get tools list, format response as json with schema { [{name,description}, ...] }`
+
+**response:**
+
+```json
+[{"name": "ip_address", "description": "get the computer ip and mac address and sub network mask"}, {"name": "ping", "description": "ping a ip address or a hostname"}, {"name": "list_files", "description": "get the list of files in the given path"}, {"name": "get_date", "description": "get the date of the day"}, {"name": "get_time", "description": "get the current time"}, {"name": "get_tools_list", "description": "get the full list of available tools"}]
+```
+
+## wrap a tool call in a NL query
+
+> `if there a file named 'hiberfil.sys' in c:/// ?`
+
+**response:**
+
+`The file named hiberfil.sys exists in the directory c://.`
+
+## wrap a tool call in a NL query + format output as json
+
+`if there a file named 'vfcompat.dll' in c:/// ?, format response as json with the schema: { file: <filename>, exists:<true|false> }`

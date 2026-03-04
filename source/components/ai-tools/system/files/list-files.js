@@ -11,7 +11,7 @@ export default class GetFiles extends AITool {
 
     specification() {
         return {
-            name: "get_files",
+            name: "list_files",
             description: "get the list of files in the given path",
             parameters: {
                 type: "object",
