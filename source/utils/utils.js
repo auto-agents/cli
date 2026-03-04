@@ -92,7 +92,7 @@ export const getDialogAgent = (ctx, id) => {
 }
 
 export const isSpeakErrorsEnabled = ctx => {
-    return getDialogAgent(this.ctx, TUIAgentId)?.speakErrors.enabled
+    return getDialogAgent(ctx, TUIAgentId)?.speakErrors.enabled
         && isSpeechAvailable(ctx)
 }
 

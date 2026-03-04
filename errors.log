@@ -1,1 +1,0 @@
-[2J[3J[HCannot update a component (`RightGauge`) while rendering a different component (`App`). To locate the bad setState() call inside `App`, follow the stack trace as described in https://react.dev/link/setstate-in-render

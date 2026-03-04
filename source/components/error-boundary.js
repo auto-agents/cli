@@ -2,50 +2,37 @@ import React from 'react';
 import { render, Text } from 'ink';
 import fs from 'fs';
 import path from 'path';
+import { ERROR_LOG_FILE } from '../config/config';
 
 class ErrorBoundary extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            isCrashed: false
+            isCrashed: false,
+            error: null
         };
-
     }
 
     static getDerivedStateFromError(error) {
-        //console.log(error.message)
-        fs.appendFileSync(path.join(process.cwd(), 'errors.log'), 'zizi fesse')
-        //process.exit(1)
         return {
-            isCrashed: true
+            isCrashed: true,
+            error: error
         };
     }
 
     render() {
-        /*if (this.state.isCrashed) {
-            //process.exit(1)
-            return <Text color="red">Oh no, app crashed</Text>;
-        }*/
+        if (this.state.isCrashed) {
+            return <Text color="red">{this.state.error.toString()}</Text>;
+        }
 
         return this.props.children;
     }
 
     componentDidCatch(error, errorInfo) {
         // Errored while rendering components
-        //console.log(error.message)
-        fs.appendFileSync(path.join(process.cwd(), 'errors.log'), 'zizi fesse')
-        //process.exit(1)
+        fs.appendFileSync(path.join(process.cwd(), ERROR_LOG_FILE), error.toString())
     }
-    /*
-        componentDidMount() {
-            process.setUncaughtExceptionCaptureCallback(this.crashed)
-        }
-    
-        componentWillUnmount() {
-            process.setUncaughtExceptionCaptureCallback(null)
-        }
-    */
 }
 
 export default ErrorBoundary

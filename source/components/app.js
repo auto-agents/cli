@@ -214,7 +214,7 @@ export default function App({ ctx }) {
 			if (!statusMessage)
 				statusMessage = new StatusMessage(
 					From,
-					StatusEnum.idle,
+					this.ctx.cli.statusMessages[StatusEnum.idle],
 					'', ''
 				)
 

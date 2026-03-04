@@ -99,7 +99,7 @@ export default class InitService {
 			(SetStatusMessageEvent,
 				new StatusMessage(
 					this.From,
-					StatusEnum.ready,
+					this.ctx.cli.statusMessages[StatusEnum.ready],
 					'cli ready'
 				)
 			)

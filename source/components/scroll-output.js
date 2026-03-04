@@ -3,9 +3,7 @@ import { Box, Text, measureElement, useInput } from 'ink';
 import {
 	ConsoleClearedEvent,
 	HelpOutputUpdatedEvent,
-	LayoutResizedEvent,
-	OutputResizedEvent,
-	SetStatusMessageEvent
+	LayoutResizedEvent
 } from '../config/events';
 
 const reducer = (state, action) => {

@@ -5,7 +5,6 @@ import {
 	LogErrorEvent,
 	SetStatusMessageEvent,
 	SpeakCommandEvent,
-	TaskAddAssistantMessageCommandEvent,
 	errorEvent
 } from "../config/events.js"
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
@@ -360,8 +359,8 @@ export default class DialogController {
 
 		e.emit(SetStatusMessageEvent, new StatusMessage(
 			this.From,
-			StatusEnum.waiting,
-			'🤖 thinking ...',
+			this.ctx.cli.statusMessages[StatusEnum.waiting],
+			this.ctx.cli.statusMessages.completing,
 			this.ctx.components.module.AIChat.config.model
 		))
 

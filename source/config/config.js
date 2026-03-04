@@ -17,6 +17,8 @@ import {
 import { join } from 'path'
 import os from "os";
 
+export const ERROR_LOG_FILE = 'errors.log'
+
 const getPlatform = () => {
 	const osplatform = os.platform()
 	var platform = Platforms.linux
@@ -434,6 +436,15 @@ export default function config(cli) {
 					description: 'clear the console output',
 					cmd: 'clear'
 				}
+			},
+			statusMessages: {
+				completing: '🤖 completing ...',
+				on: 'on',
+				off: 'off',
+				unavailable: 'unavailable',
+				waiting: 'waiting',
+				idle: 'idle',
+				ready: 'ready'
 			}
 		},
 		dialog: {
