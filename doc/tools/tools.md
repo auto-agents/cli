@@ -76,4 +76,17 @@ Instead, the **`agentic client`** should perform **several operations** using th
 
 ## samples of efficients queries
 
-- ask to use a specific tool
+### ask for the tool to use to perform a specific task:
+
+> `how to check the network device with ip 192.168.15.24 is connected using tools? format response as json, indicates the tool name in a property named 'action_name' and the required arguments in a property named 'arguments'`
+
+**response:**
+
+```json
+{
+    "action_name": "ping",
+    "arguments": {
+        "target": "192.168.1.1"
+    }
+}
+```
