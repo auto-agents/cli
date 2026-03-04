@@ -339,7 +339,7 @@ export default class DialogController {
 		} catch (err) {
 			this.ctx.components.event.emit(SetStatusMessageEvent)
 
-			e.emit(LogErrorEvent, errorEvent(this.From, err))
+			e.emit(LogErrorEvent, errorEvent('speak', err))
 		}
 	}
 

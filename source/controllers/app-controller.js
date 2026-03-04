@@ -129,7 +129,7 @@ export default class AppController {
 
 		if (isSpeechAvailable(this.ctx)
 			&& this.ctx.dialog.speakErrors.enabled
-			&& errorEvent?.from != 'dialog')
+			&& errorEvent?.from != 'speak')
 			this.event.emit(SpeakCommandEvent, speakEvent(
 				this.From,
 				text,
@@ -143,7 +143,7 @@ export default class AppController {
 	async handleLogErrorEvent(errorEvent) {
 		if (isSpeechAvailable(this.ctx)
 			&& this.ctx.dialog.speakErrors.enabled
-			&& errorEvent?.from != 'dialog')
+			&& errorEvent?.from != 'speak')
 			this.event.emit(SpeakCommandEvent, speakEvent(
 				this.From,
 				errorEvent.error?.message,

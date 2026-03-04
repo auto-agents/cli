@@ -113,7 +113,7 @@ Instead, the **`agentic client`** should perform **several operations** using th
 
 ## wrap a tool call in a NL query
 
-> `if there a file named 'hiberfil.sys' in c:/// ?`
+> `is there a file named 'hiberfil.sys' in c:/// ?`
 
 **response:**
 
@@ -121,4 +121,4 @@ Instead, the **`agentic client`** should perform **several operations** using th
 
 ## wrap a tool call in a NL query + format output as json
 
-`if there a file named 'vfcompat.dll' in c:/// ?, format response as json with the schema: { file: <filename>, exists:<true|false> }`
+`is there a file named 'vfcompat.dll' in c:/// ?, format response as json with the schema: { file: <filename>, exists:<true|false> }`
