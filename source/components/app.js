@@ -38,26 +38,38 @@ export default function App({ ctx }) {
 	const [helpVisible, setHelpVisible] = useState(false)
 	const [statusMessage, setStatusMessage] = useState('')
 
+	const promptHeight = ctx.layout.promptHeight
+
 	/* right panel */
 
 	const [cliAgentImageVisible, setCliAgentImageVisible] = useState(false)
-	const rpWidth = ctx.layout.rpWidth
-	const [imgCliAgentWidth, setImgCliAgentWidth] = useState(ctx.layout.imgCliAgentWidth)
-	const [imgCliAgentHeight, setImgCliAgentHeight] = useState(ctx.layout.imgCliAgentHeight)
+	const rpWidth = ctx.layout.rightPanel.width
+	const [imgCliAgentWidth, setImgCliAgentWidth] = useState(ctx.layout.rightPanel.agentImage.cliAgentWidth)
+	const [imgCliAgentHeight, setImgCliAgentHeight] = useState(ctx.layout.rightPanel.agentImage.cliAgentHeight)
 	const imgCliAgentPath = path.join(
 		process.cwd(), 'assets', 'agent-5-48x48.png')
 	ctx.imgCliAgentPath = imgCliAgentPath
 
+	const setupImgCliAgentDelay = 250
+	const setupImgCliAgentMediumDelay = 500
+	const setupImgCliAgentAppStartedDelay = 1000
 	const setupImgCliAgent = (visible = true) => {
 		setCliAgentImageVisible(visible)
-		var h = ctx.layout.imgCliAgentHeight
-		var w = ctx.layout.imgCliAgentWidth
-		h = Math.min(3, Math.min(h, ctx.data.layout.output.rows))
+		var h = ctx.layout.rightPanel.agentImage.cliAgentWidth
+		var w = ctx.layout.rightPanel.agentImage.cliAgentHeight
+		h = h / 2	// /2 is pixel ratio (half box)
+		h = Math.min(h, ctx.data.layout.output.rows.value + promptHeight)
+		h = Math.max(h, 3)	// img min height
+		const dh = h * 2
+		const bs = Math.min(dh, w)
+		w = bs
+		h = bs / 2
+		//console.log(h)
 		setImgCliAgentWidth(w)
 		setImgCliAgentHeight(h)
 	}
 
-	/* layout size */
+	/* ----- layout size ----- */
 
 	const computeHelpHeight = () => {
 		const fh = ctx.cli.helpOutput.rows.length
@@ -71,12 +83,6 @@ export default function App({ ctx }) {
 		e.emitTarget(GaugeSourceUpdatedEvent, ctx.data.layout.size.key)
 
 		ctx.data.layout.rows.value = stdout.rows
-
-		// output dimensions
-		ctx.data.layout.output.rows.value = 0
-		ctx.data.layout.output.cols.value = 0
-		ctx.data.layout.output.lines.value = 0
-
 		ctx.data.layout.cols.value =
 			ctx.data.layout.output.cols.value =
 			stdout.columns
@@ -90,12 +96,12 @@ export default function App({ ctx }) {
 	}
 	setPropsLayoutSize()
 
-	/* HideInitBoxOutputEvent */
+	/* ----- HideInitBoxOutputEvent ----- */
 
 	useEffect(() => {
 		const listener = () => {
 			setInitBoxVisible(false)
-			setupImgCliAgent()
+			setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
 		}
 		ctx.components.event.on(
 			HideInitBoxOutputEvent,
@@ -109,14 +115,14 @@ export default function App({ ctx }) {
 		}
 	}, [])
 
-	/* AppStartedEvent */
+	/* ----- AppStartedEvent ----- */
 
 	useEffect(() => {
 		const listener = () => {
 			setOutputVisible(true)
 			setPromptVisible(true)
 
-			setTimeout(() => setupImgCliAgent(), 1000)
+			setTimeout(() => setupImgCliAgent(), setupImgCliAgentAppStartedDelay)
 		}
 		ctx.components.event.on(
 			AppStartedEvent,
@@ -130,7 +136,7 @@ export default function App({ ctx }) {
 		}
 	}, [])
 
-	/* handle stdout resize event : EMIT LayoutResizedEvent */
+	/* ----- handle stdout resize event : EMIT LayoutResizedEvent ----- */
 
 	useEffect(() => {
 		const handleResize = () => {
@@ -139,7 +145,7 @@ export default function App({ ctx }) {
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
 
-			setTimeout(() => setupImgCliAgent(), 500)
+			setTimeout(() => setupImgCliAgent(), setupImgCliAgentMediumDelay)
 		}
 		stdout?.on("resize", handleResize);
 		return () => {
@@ -147,12 +153,15 @@ export default function App({ ctx }) {
 		};
 	}, [stdout]);
 
-	/* HelpOutputUpdatedEvent */
+	/* ----- HelpOutputUpdatedEvent ----- */
 
 	useEffect(() => {
 		const handleHelpResize = () => {
 			setHelpHeight(computeHelpHeight())
 			setHelpVisible(ctx.cli.helpOutput.rows.length > 0)
+
+			setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
+
 		}
 		e.on(HelpOutputUpdatedEvent, handleHelpResize);
 		return () => {
@@ -160,7 +169,7 @@ export default function App({ ctx }) {
 		};
 	}, []);
 
-	/** OutputResizedEvent */
+	/** ----- OutputResizedEvent ----- */
 
 	/*useEffect(() => {		
 		const handleOutputResizedEvent = args => {
@@ -174,7 +183,7 @@ export default function App({ ctx }) {
 		}
 	})*/
 
-	/* PromptVisibilityLostEvent */
+	/* ----- PromptVisibilityLostEvent ----- */
 
 	useEffect(() => {
 		const hidePrompt = () => {
@@ -186,7 +195,7 @@ export default function App({ ctx }) {
 		}
 	}, [])
 
-	/* SetStatusMessageEvent */
+	/* ----- SetStatusMessageEvent ----- */
 
 	const buildStatusMessageView = (statusMessage) => {
 		const sepc = chalk.hex(ctx.theme.statusMessage.separatorColor)

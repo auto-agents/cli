@@ -652,9 +652,14 @@ export default function config(cli) {
 			minWidth: 145,
 			minHeight: 51,
 			// right panel
-			rpWidth: 48,
-			imgCliAgentWidth: 48,
-			imgCliAgentHeight: 48,
+			rightPanel: {
+				width: 48,
+				agentImage: {
+					cliAgentWidth: 48,
+					cliAgentHeight: 48,
+				}
+			},
+			promptHeight: 2
 		},
 		data: {
 			app: {
@@ -691,17 +696,17 @@ export default function config(cli) {
 					// output width
 					cols: {
 						key: 'output width',
-						value: null
+						value: 0
 					},
 					// output height
 					rows: {
 						key: 'output height',
-						value: null
+						value: 0
 					},
 					// output lines
 					lines: {
 						key: 'output lines',
-						value: null
+						value: 0
 					}
 				},
 				// terminal viewport rows count
