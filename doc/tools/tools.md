@@ -76,7 +76,7 @@ Instead, the **`agentic client`** should perform **several operations** using th
 
 ## samples of efficients queries
 
-### ask for the tool to use to perform a specific task:
+### ask for the tool to use to perform a specific task
 
 > `how to check the network device with ip 192.168.15.24 is connected using tools? format response as json, indicates the tool name in a property named 'action_name' and the required arguments in a property named 'arguments'`
 
@@ -89,4 +89,14 @@ Instead, the **`agentic client`** should perform **several operations** using th
         "target": "192.168.1.1"
     }
 }
+```
+
+## invoke a tool and ask to get a json object with the specified schema
+
+> `get current time, format response as json with the schema: { hour, minute }`
+
+**response:**
+
+```json
+{"hour": 12, "minute": 30}
 ```

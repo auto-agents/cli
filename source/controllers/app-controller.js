@@ -200,7 +200,7 @@ export default class AppController {
 				transitionGradient: true,
 				space: false
 			}),
-			subtitle: cfonts.render('CLI Tool v1.0 Feb 2026', {
+			subtitle: cfonts.render('TUI v1.0 Feb 2026', {
 				font: 'console',
 				/*align: 'center',*/
 				gradient: '#FF5500,yellow',
