@@ -308,7 +308,7 @@ export default function App({ ctx }) {
 
 			{ /* middle outputs */}
 
-			<Box minHeight={8} flexDirection="row" flexGrow={1}>
+			<Box minHeight={10} flexDirection="row" flexGrow={1}>
 				<Box flexDirection="column" flexGrow={1} >
 
 					{ /* 'console' output */}
@@ -340,7 +340,19 @@ export default function App({ ctx }) {
 
 				{ /* right panel */}
 
-				<Box minHeight={5} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+				<Box minHeight={3} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+					<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false} borderRight={false}>
+
+						{/* tui agent tab */}
+
+						<Box borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false}>
+							<Text>TUI Agent</Text>
+						</Box>
+
+					</Box>
+
+					{/* agent image */}
+
 					{cliAgentImageVisible &&
 						<Image
 							width={imgCliAgentWidth}
@@ -349,6 +361,13 @@ export default function App({ ctx }) {
 							alt="agent"
 							protocol="halfBlock"
 						/>}
+
+					{ /* agent log */}
+
+					<Box minHeight={1}>
+						<Text italic={true}>TUI Agent Log</Text>
+					</Box>
+
 				</Box>
 
 			</Box>
