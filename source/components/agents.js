@@ -1,25 +1,12 @@
 import { Text, Box, useStdout, useStdin } from 'ink';
 import { useState, useEffect, useRef } from 'react';
-import Prompter from './prompter.js'
-import LeftGauge from './left-gauge.js';
-import RightGauge from './right-gauge.js';
-import ScrollOutput from './scroll-output.js'
-import BoxOutput from './box-output.js'
-import Output from './output.js';
 import {
-	GaugeSourceUpdatedEvent,
-	LayoutResizedEvent,
 	HideInitBoxOutputEvent,
 	HelpOutputUpdatedEvent,
 	AppStartedEvent,
-	PromptVisibilityLostEvent,
-	SetStatusMessageEvent,
-	OutputResizedEvent,
 	AgentAddedEvent,
 	ModuleUnloadedEvent
 } from '../config/events.js';
-import { StatusEnum, StatusMessage } from '../data/status-message.js';
-import chalk from 'chalk'
 import Image from "ink-picture";
 import path from 'path'
 import { TUIAgentId } from '../config/config.js';

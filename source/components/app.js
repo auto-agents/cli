@@ -19,6 +19,7 @@ import {
 	AgentAddedEvent,
 	ModuleUnloadedEvent
 } from '../config/events.js';
+import SelectInput from 'ink-select-input';
 import { StatusEnum, StatusMessage } from '../data/status-message.js';
 import chalk from 'chalk'
 import Image from "ink-picture";
@@ -47,6 +48,29 @@ export default function App({ ctx }) {
 	/* right panel */
 
 	const rpWidth = ctx.layout.rightPanel.width
+
+	/* input selector */
+
+	const [listSelectorVisible, setListSelectorVisible] = useState(true)
+	const [listSelectorItems, setListSelectorItems] = useState(
+		[{
+			label: 'First',
+			value: 'first'
+		},
+		{
+			label: 'Second',
+			value: 'second'
+		},
+		{
+			label: 'Third',
+			value: 'third'
+		}]
+	)
+
+	const listSelectorHandleSelect = item => {
+		// `item` = { label: 'First', value: 'first' }
+		console.log(item)
+	};
 
 	/* ----- layout size ----- */
 
@@ -304,6 +328,13 @@ export default function App({ ctx }) {
 						</Box>
 					}
 
+					{
+						listSelectorVisible &&
+						<Box minHeight={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor} flexDirection="column">
+							<SelectInput items={listSelectorItems} onSelect={listSelectorHandleSelect} />
+						</Box>
+					}
+
 					{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
 					{
 						promptVisible &&
@@ -320,9 +351,7 @@ export default function App({ ctx }) {
 				{ /* right panel */}
 
 				<Box minHeight={3} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
-
 					<Agents ctx={ctx} />
-
 				</Box>
 
 			</Box>
