@@ -57,8 +57,7 @@ export default class ModuleController {
             module.isLoaded = true
             module.enabled = true
 
-            if (isAppInitialized(this.ctx))
-                this.ctx.components.event.emit(ModuleLoadedEvent)
+            this.ctx.components.event.emit(ModuleLoadedEvent, moduleName)
             return m
         }
         catch (err) {
@@ -99,7 +98,7 @@ export default class ModuleController {
 
             module.isLoaded = false
             if (isAppInitialized(this.ctx))
-                this.ctx.components.event.emit(ModuleUnloadedEvent)
+                this.ctx.components.event.emit(ModuleUnloadedEvent, moduleName)
 
             return true
         }

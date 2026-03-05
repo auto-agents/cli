@@ -14,12 +14,15 @@ import {
 	AppStartedEvent,
 	PromptVisibilityLostEvent,
 	SetStatusMessageEvent,
-	OutputResizedEvent
+	OutputResizedEvent,
+	AgentAddedEvent,
+	ModuleUnloadedEvent
 } from '../config/events.js';
 import { StatusEnum, StatusMessage } from '../data/status-message.js';
 import chalk from 'chalk'
 import Image from "ink-picture";
 import path from 'path'
+import { TUIAgentId } from '../config/config.js';
 
 export default function App({ ctx }) {
 
@@ -42,28 +45,44 @@ export default function App({ ctx }) {
 
 	/* right panel */
 
-	const [cliAgentImageVisible, setCliAgentImageVisible] = useState(false)
 	const rpWidth = ctx.layout.rightPanel.width
-	const [imgCliAgentSize, setImgCliAgentSize] = useState(
+	const agents = ctx.components.agents
+	const agent = agents.getAgentInView()
+	const [agentViewState, setAgentViewState] = useState(
 		{
 			width: 0,
 			height: 0,
+			visible: false
 		})
-	const prevImgCliAgentSize = useRef({ width: 0, height: 0 });
-	const [agentName, setAgentName] = useState('jean')
-	const [agentProfile, setAgentProfile] = useState('ai expert')
-	const [agentLog, setAgentLog] = useState('agent log...')
+	const prevAgentViewState = useRef(
+		{
+			width: 0,
+			height: 0,
+			visible: false
+		});
 
-	const imgCliAgentPath = path.join(
-		process.cwd(), 'assets', 'agent-5-48x48.png')
-	ctx.imgCliAgentPath = imgCliAgentPath
+	const getAgentImgPath = img => path.join(
+		process.cwd(), 'assets', img)
+
+	const getAgentViewProps = agent => {
+		return {
+			name: agent?.chatName || '',
+			profile: agent?.profileName || '',
+			log: 'agent log...',
+			img: agent != null ? getAgentImgPath(agent.imgPath) : null
+		}
+	}
+
+	const [agentProps, setAgentProps] = useState(getAgentViewProps)
 
 	const setupImgCliAgentDelay = 250
 	const setupImgCliAgentMediumDelay = 500
 	const setupImgCliAgentAppStartedDelay = 1000
 
-	const setupImgCliAgent = (visible = true) => {
-		setCliAgentImageVisible(visible)
+	const setupImgCliAgent = visible => {
+
+		if (visible === undefined) visible = prevAgentViewState.current.visible
+
 		var h = ctx.layout.rightPanel.agentImage.cliAgentWidth
 		var w = ctx.layout.rightPanel.agentImage.cliAgentHeight
 		h = h / 2	// /2 is pixel ratio (half box)
@@ -74,19 +93,77 @@ export default function App({ ctx }) {
 		w = bs
 		h = bs / 2
 
-		const prvW = prevImgCliAgentSize.current.width
-		const prvH = prevImgCliAgentSize.current.height
+		const prvW = prevAgentViewState.current.width
+		const prvH = prevAgentViewState.current.height
+		const prvVis = prevAgentViewState.current.visible
 
-		if (w != prvW || h != prvH) {
+		if (prvVis != visible || w != prvW || h != prvH) {
 			/*
 			console.log(prvW + ' ' + prvH
 				+ ' | '
 				+ w + ' | ' + h)
 			*/
-			prevImgCliAgentSize.current = { width: w, height: h }
-			setImgCliAgentSize({ width: w, height: h })
+			prevAgentViewState.current = { width: w, height: h, visible: visible }
+			setAgentViewState({ width: w, height: h, visible: visible })
 		}
 	}
+
+	const updateAgentView = agent => {
+		setAgentProps(
+			getAgentViewProps(agent)
+		)
+	}
+
+	/* ----- AgentAddedEvent ----- */
+
+	useEffect(() => {
+		const listener = args => {
+			if (args[0].agentId == TUIAgentId) {
+				// setup first agent in view: TUI Agent
+				setTimeout(() => {
+					setupImgCliAgent(true)
+					updateAgentView(args[0])
+				}, setupImgCliAgentDelay)
+			}
+		}
+		ctx.components.event.on(
+			AgentAddedEvent,
+			args => listener(args)
+		)
+		return () => {
+			ctx.components.event.off(
+				AgentAddedEvent,
+				listener
+			)
+		}
+	}, [])
+
+	/* ----- module AIChat unloaded ----- */
+
+	useEffect(() => {
+		const listener = args => {
+			console.log(args[0])
+			if (ctx.components.module.AIChat == null
+				|| ctx.components.module.AIChat === undefined
+			) {
+				// cleanup agent view
+				setTimeout(() => {
+					updateAgentView(null)
+					setupImgCliAgent(false)
+				}, setupImgCliAgentDelay)
+			}
+		}
+		ctx.components.event.on(
+			ModuleUnloadedEvent,
+			args => listener(args)
+		)
+		return () => {
+			ctx.components.event.off(
+				ModuleUnloadedEvent,
+				listener
+			)
+		}
+	}, [])
 
 	/* ----- layout size ----- */
 
@@ -365,38 +442,43 @@ export default function App({ ctx }) {
 						{/* tui agent tab */}
 
 						<Box borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
-							<Text>TUI Agent</Text>
+							{
+								agentViewState.visible && <Text>TUI Agent</Text>
+							}
 						</Box>
 
 					</Box>
 
 					{/* agent image */}
 
-					{cliAgentImageVisible &&
-						<Box height={imgCliAgentSize.height}>
+					{agentViewState.visible &&
+						<Box height={agentViewState.height}>
 							<Image
-								width={imgCliAgentSize.width}
-								height={imgCliAgentSize.height}
-								src={imgCliAgentPath}
-								alt="agent"
+								width={agentViewState.width}
+								height={agentViewState.height}
+								src={agentProps.img}
+								alt="agent photo"
 								protocol="halfBlock"
 							/>
 						</Box>
 					}
 
-					<Box flexDirection="column" flexGrow={1}>
-						{ /* agent title */}
+					{agentViewState.visible &&
+						<Box flexDirection="column" flexGrow={1}>
 
-						<Box minHeight={1} height={1} backgroundColor="blue" >
-							<Text color="white">{agentName} | {agentProfile}</Text>
+							{ /* agent title */}
+
+							<Box minHeight={1} height={1} backgroundColor="blue" >
+								<Text color="white">{agentProps.name} | {agentProps.profile}</Text>
+							</Box>
+
+							{ /* agent log */}
+
+							<Box minHeight={1} flexDirection="column" flexGrow={1}>
+								<Text italic={true}>{agentProps.log}</Text>
+							</Box>
 						</Box>
-
-						{ /* agent log */}
-
-						<Box minHeight={1} flexDirection="column" flexGrow={1}>
-							<Text italic={true}>{agentLog}</Text>
-						</Box>
-					</Box>
+					}
 
 				</Box>
 

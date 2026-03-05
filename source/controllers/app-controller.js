@@ -38,8 +38,9 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
 import KeyboardController from './keyboard-controller.js';
-import { getDialogAgent, isSpeakErrorsEnabled, isSpeechAvailable } from '../utils/utils.js';
+import { getDialogAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../utils/utils.js';
 import { TUIAgentId } from '../config/config.js';
+import AgentsController from './agents-controller.js';
 
 export default class AppController {
 
@@ -83,6 +84,7 @@ export default class AppController {
 		this.inputController = ctx.components.input = new InputController(ctx, this.helpOutput, this.output)
 		this.commandController = ctx.components.command = new CommandController(ctx, this.output)
 		this.dialog = ctx.components.dialog = new DialogController(ctx, this.output)
+		this.agents = ctx.components.agents = new AgentsController(ctx, this.output)
 
 		this.ramService = new RamService(ctx)
 		this.timeService = new TimeService(ctx)
@@ -242,6 +244,8 @@ export default class AppController {
 	}
 
 	#setupModulesGauges() {
+		if (!isAppInitialized(this.ctx))
+			return
 		const e = this.event
 		const initModuleGauge = (moduleName, gaugeName) => {
 			gaugeName ||= moduleName

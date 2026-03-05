@@ -453,6 +453,8 @@ export default function config(cli) {
 					id: TUIAgentId,
 					name: 'TUI Agent',
 					chatName: 'seraphina',
+					profileName: 'AI Expert',
+					imgPath: 'agent-5-48x48.png',
 					enabled: true,
 					system: true,
 					speak: {
@@ -817,6 +819,7 @@ export default function config(cli) {
 			sysInfo: null,
 			module: null,
 			render: null,
+			agents: null,
 			moduleController: null,
 			module: {}
 		},

@@ -29,7 +29,7 @@ export default class RenderController {
             , {
                 incrementalRendering: true,
                 concurrent: true,
-                maxFps: 0
+                maxFps: 100
             });
         this.mounted = true
         return this
@@ -42,7 +42,7 @@ export default class RenderController {
             , {
                 incrementalRendering: true,
                 concurrent: true,
-                maxFps: 1
+                //maxFps: 1
             });
         this.mounted = true
         return this
