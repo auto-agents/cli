@@ -1041,7 +1041,7 @@ export default function config(cli) {
 
 					doNotStoreToolCallDialogsInHistory: true,	// avoid llm to repeat a response from history
 					enableGemmaStyleToolCallParsing: true,
-					appendTextAtEndOfQuery: "", //" /no_think",
+					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
 					responseProcessors: [
 						'openai-api-tool-call-processor.js',
 						'gemma-style-tool-call-parser.js'
