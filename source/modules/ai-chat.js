@@ -221,7 +221,6 @@ export default class AIChatModule {
                 const action = r.actions[i]
                 const actionHandler = this.#getResponseProcessorActionHandler(action)
 
-                if (this.dbg) console.log('run action:', action)
                 traceTools('invoke tool: ' + JSON.stringify(action))
                 r = await actionHandler.run(action, r, capi, capi.history)
             }
