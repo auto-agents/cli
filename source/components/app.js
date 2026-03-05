@@ -6,6 +6,7 @@ import RightGauge from './right-gauge.js';
 import ScrollOutput from './scroll-output.js'
 import BoxOutput from './box-output.js'
 import Output from './output.js';
+import Agents from './agents.js';
 import {
 	GaugeSourceUpdatedEvent,
 	LayoutResizedEvent,
@@ -46,124 +47,6 @@ export default function App({ ctx }) {
 	/* right panel */
 
 	const rpWidth = ctx.layout.rightPanel.width
-	const agents = ctx.components.agents
-	const agent = agents.getAgentInView()
-	const [agentViewState, setAgentViewState] = useState(
-		{
-			width: 0,
-			height: 0,
-			visible: false
-		})
-	const prevAgentViewState = useRef(
-		{
-			width: 0,
-			height: 0,
-			visible: false
-		});
-
-	const getAgentImgPath = img => path.join(
-		process.cwd(), 'assets', img)
-
-	const getAgentViewProps = agent => {
-		return {
-			name: agent?.chatName || '',
-			profile: agent?.profileName || '',
-			log: 'agent log...',
-			img: agent != null ? getAgentImgPath(agent.imgPath) : null
-		}
-	}
-
-	const [agentProps, setAgentProps] = useState(getAgentViewProps)
-
-	const setupImgCliAgentDelay = 250
-	const setupImgCliAgentMediumDelay = 500
-	const setupImgCliAgentAppStartedDelay = 1000
-
-	const setupImgCliAgent = visible => {
-
-		if (visible === undefined) visible = prevAgentViewState.current.visible
-
-		var h = ctx.layout.rightPanel.agentImage.cliAgentWidth
-		var w = ctx.layout.rightPanel.agentImage.cliAgentHeight
-		h = h / 2	// /2 is pixel ratio (half box)
-		h = Math.min(h, ctx.data.layout.output.rows.value + promptHeight)
-		h = Math.max(h, 3)	// img min height
-		const dh = h * 2
-		const bs = Math.min(dh, w)
-		w = bs
-		h = bs / 2
-
-		const prvW = prevAgentViewState.current.width
-		const prvH = prevAgentViewState.current.height
-		const prvVis = prevAgentViewState.current.visible
-
-		if (prvVis != visible || w != prvW || h != prvH) {
-			/*
-			console.log(prvW + ' ' + prvH
-				+ ' | '
-				+ w + ' | ' + h)
-			*/
-			prevAgentViewState.current = { width: w, height: h, visible: visible }
-			setAgentViewState({ width: w, height: h, visible: visible })
-		}
-	}
-
-	const updateAgentView = agent => {
-		setAgentProps(
-			getAgentViewProps(agent)
-		)
-	}
-
-	/* ----- AgentAddedEvent ----- */
-
-	useEffect(() => {
-		const listener = args => {
-			if (args[0].agentId == TUIAgentId) {
-				// setup first agent in view: TUI Agent
-				setTimeout(() => {
-					setupImgCliAgent(true)
-					updateAgentView(args[0])
-				}, setupImgCliAgentDelay)
-			}
-		}
-		ctx.components.event.on(
-			AgentAddedEvent,
-			args => listener(args)
-		)
-		return () => {
-			ctx.components.event.off(
-				AgentAddedEvent,
-				listener
-			)
-		}
-	}, [])
-
-	/* ----- module AIChat unloaded ----- */
-
-	useEffect(() => {
-		const listener = args => {
-			console.log(args[0])
-			if (ctx.components.module.AIChat == null
-				|| ctx.components.module.AIChat === undefined
-			) {
-				// cleanup agent view
-				setTimeout(() => {
-					updateAgentView(null)
-					setupImgCliAgent(false)
-				}, setupImgCliAgentDelay)
-			}
-		}
-		ctx.components.event.on(
-			ModuleUnloadedEvent,
-			args => listener(args)
-		)
-		return () => {
-			ctx.components.event.off(
-				ModuleUnloadedEvent,
-				listener
-			)
-		}
-	}, [])
 
 	/* ----- layout size ----- */
 
@@ -197,7 +80,7 @@ export default function App({ ctx }) {
 	useEffect(() => {
 		const listener = () => {
 			setInitBoxVisible(false)
-			setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
+			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
 		}
 		ctx.components.event.on(
 			HideInitBoxOutputEvent,
@@ -218,7 +101,7 @@ export default function App({ ctx }) {
 			setOutputVisible(true)
 			setPromptVisible(true)
 
-			setTimeout(() => setupImgCliAgent(), setupImgCliAgentAppStartedDelay)
+			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentAppStartedDelay)
 		}
 		ctx.components.event.on(
 			AppStartedEvent,
@@ -241,7 +124,7 @@ export default function App({ ctx }) {
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
 
-			setTimeout(() => setupImgCliAgent(), setupImgCliAgentMediumDelay)
+			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentMediumDelay)
 		}
 		stdout?.on("resize", handleResize);
 		return () => {
@@ -256,7 +139,7 @@ export default function App({ ctx }) {
 			setHelpHeight(computeHelpHeight())
 			setHelpVisible(ctx.cli.helpOutput.rows.length > 0)
 
-			setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
+			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
 
 		}
 		e.on(HelpOutputUpdatedEvent, handleHelpResize);
@@ -437,48 +320,8 @@ export default function App({ ctx }) {
 				{ /* right panel */}
 
 				<Box minHeight={3} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
-					<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false} borderRight={false}>
 
-						{/* tui agent tab */}
-
-						<Box borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
-							{
-								agentViewState.visible && <Text>TUI Agent</Text>
-							}
-						</Box>
-
-					</Box>
-
-					{/* agent image */}
-
-					{agentViewState.visible &&
-						<Box height={agentViewState.height}>
-							<Image
-								width={agentViewState.width}
-								height={agentViewState.height}
-								src={agentProps.img}
-								alt="agent photo"
-								protocol="halfBlock"
-							/>
-						</Box>
-					}
-
-					{agentViewState.visible &&
-						<Box flexDirection="column" flexGrow={1}>
-
-							{ /* agent title */}
-
-							<Box minHeight={1} height={1} backgroundColor="blue" >
-								<Text color="white">{agentProps.name} | {agentProps.profile}</Text>
-							</Box>
-
-							{ /* agent log */}
-
-							<Box minHeight={1} flexDirection="column" flexGrow={1}>
-								<Text italic={true}>{agentProps.log}</Text>
-							</Box>
-						</Box>
-					}
+					<Agents ctx={ctx} />
 
 				</Box>
 
