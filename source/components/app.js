@@ -1,5 +1,5 @@
 import { Text, Box, useStdout, useStdin } from 'ink';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Prompter from './prompter.js'
 import LeftGauge from './left-gauge.js';
 import RightGauge from './right-gauge.js';
@@ -44,8 +44,16 @@ export default function App({ ctx }) {
 
 	const [cliAgentImageVisible, setCliAgentImageVisible] = useState(false)
 	const rpWidth = ctx.layout.rightPanel.width
-	const [imgCliAgentWidth, setImgCliAgentWidth] = useState(ctx.layout.rightPanel.agentImage.cliAgentWidth)
-	const [imgCliAgentHeight, setImgCliAgentHeight] = useState(ctx.layout.rightPanel.agentImage.cliAgentHeight)
+	const [imgCliAgentSize, setImgCliAgentSize] = useState(
+		{
+			width: 0,
+			height: 0,
+		})
+	const prevImgCliAgentSize = useRef({ width: 0, height: 0 });
+	const [agentName, setAgentName] = useState('jean')
+	const [agentProfile, setAgentProfile] = useState('ai expert')
+	const [agentLog, setAgentLog] = useState('agent log...')
+
 	const imgCliAgentPath = path.join(
 		process.cwd(), 'assets', 'agent-5-48x48.png')
 	ctx.imgCliAgentPath = imgCliAgentPath
@@ -53,6 +61,7 @@ export default function App({ ctx }) {
 	const setupImgCliAgentDelay = 250
 	const setupImgCliAgentMediumDelay = 500
 	const setupImgCliAgentAppStartedDelay = 1000
+
 	const setupImgCliAgent = (visible = true) => {
 		setCliAgentImageVisible(visible)
 		var h = ctx.layout.rightPanel.agentImage.cliAgentWidth
@@ -64,9 +73,19 @@ export default function App({ ctx }) {
 		const bs = Math.min(dh, w)
 		w = bs
 		h = bs / 2
-		//console.log(h)
-		setImgCliAgentWidth(w)
-		setImgCliAgentHeight(h)
+
+		const prvW = prevImgCliAgentSize.current.width
+		const prvH = prevImgCliAgentSize.current.height
+
+		if (w != prvW || h != prvH) {
+			/*
+			console.log(prvW + ' ' + prvH
+				+ ' | '
+				+ w + ' | ' + h)
+			*/
+			prevImgCliAgentSize.current = { width: w, height: h }
+			setImgCliAgentSize({ width: w, height: h })
+		}
 	}
 
 	/* ----- layout size ----- */
@@ -354,18 +373,29 @@ export default function App({ ctx }) {
 					{/* agent image */}
 
 					{cliAgentImageVisible &&
-						<Image
-							width={imgCliAgentWidth}
-							height={imgCliAgentHeight}
-							src={imgCliAgentPath}
-							alt="agent"
-							protocol="halfBlock"
-						/>}
+						<Box height={imgCliAgentSize.height}>
+							<Image
+								width={imgCliAgentSize.width}
+								height={imgCliAgentSize.height}
+								src={imgCliAgentPath}
+								alt="agent"
+								protocol="halfBlock"
+							/>
+						</Box>
+					}
 
-					{ /* agent log */}
+					<Box flexDirection="column" flexGrow={1}>
+						{ /* agent title */}
 
-					<Box minHeight={1}>
-						<Text italic={true}>TUI Agent Log</Text>
+						<Box minHeight={1} height={1} backgroundColor="blue" >
+							<Text color="white">{agentName} | {agentProfile}</Text>
+						</Box>
+
+						{ /* agent log */}
+
+						<Box minHeight={1} flexDirection="column" flexGrow={1}>
+							<Text italic={true}>{agentLog}</Text>
+						</Box>
 					</Box>
 
 				</Box>
