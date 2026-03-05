@@ -9,11 +9,21 @@ import Tools from "../components/ai/tools.js";
 import { Action_Tool_Query, Action_Tool_Text_Query } from "../components/ai/response-processor.js";
 import { Role_Assistant, Role_Tool } from "../components/ai/roles.js";
 import { CommandRunErrorEvent, errorEvent } from "../config/events.js";
+import path from "path";
 
 export default class AIChatModule {
 
     dbg = false
     From = 'AIChatModule'
+
+    responseProcessorsActionsHandlers = {}
+    queryPreProcessors = [
+        txt => {
+            if (this.config.appendTextAtEndOfQuery != null)
+                txt += this.config.appendTextAtEndOfQuery
+            return txt
+        }
+    ]
 
     constructor(ctx, config, outputContext, moduleSpec
     ) {
@@ -155,6 +165,26 @@ export default class AIChatModule {
         return (await this.api.list())?.data
     }
 
+    #getResponseProcessorActionHandler(action) {
+        const n = action.name
+        if (this.responseProcessorsActionsHandlers[n])
+            return this.responseProcessorsActionsHandlers[n]
+
+        const file = n.replaceAll('_', '-').toLowerCase() + '.js'
+        const fpath = path.join(
+            process.cwd(),
+            'source',
+            'components',
+            'ai',
+            'response-processors',
+            'response-processors-actions-handlers',
+            file)
+        const cl = require(fpath)
+        const o = new cl.default(this.ctx, this.config, this.tools, this.queryPreProcessors)
+        this.responseProcessorsActionsHandlers[n] = o
+        return o
+    }
+
     /**
      * chat completion
      * @param {String} query 
@@ -171,7 +201,8 @@ export default class AIChatModule {
             return txt
         }
 
-        query = preProcessQuery(query)
+        for (var i = 0; i < this.queryPreProcessors; i++)
+            query = this.queryPreProcessors(query)
 
         // call completion
         var r = await capi.completion(query, this.tools)
@@ -186,81 +217,85 @@ export default class AIChatModule {
         // handle response processors actions
         if (r.actions) {
             for (var i = 0; i < r.actions.length; i++) {
+
                 const action = r.actions[i]
+                const actionHandler = this.#getResponseProcessorActionHandler(action)
 
                 if (this.dbg) console.log('run action:', action)
                 traceTools('invoke tool: ' + JSON.stringify(action))
-
-                if (action.name == Action_Tool_Text_Query) {
-
-                    // tool text query
-                    action.arg = preProcessQuery(action.arg)
-
-                    var r2 = await capi.completion(action.arg, this.tools)
-                    var textRes = r2.content
-
-                    // cleanup response message
-                    if (textRes)
-                        textRes = textRes.replace('[END_RESPONSE]', '')
-                    r2.content = textRes
-
-                    if (this.dbg) console.log('tool response (1):', textRes)
-
-                    var h = capi.history.messages
-
-                    if (this.config.doNotStoreToolCallDialogsInHistory) {
-                        capi.history.messages = h.slice(0, -4)
-                    }
-                    else {
-                        capi.history.messages = h.slice(0, -3)
-                        capi.history.messages.push(
-                            {
-                                role: Role_Assistant,
-                                content: textRes
-                            }
-                        )
-                    }
-                    r2.actions = [...r.actions]
-                    r = r2
-                }
-
-                if (action.name == Action_Tool_Query) {
-
-                    // tool query
-                    action.arg = preProcessQuery(action.arg)
-
-                    var r2 = await capi.completion(action.arg, this.tools, Role_Tool)
-                    var textRes = r2.content
-
-                    // cleanup response message
-                    if (this.config.skipToolResponseFirstLine) {
-                        if (textRes[0] != '[') {
-                            const t = textRes.split('\n').slice(1)
-                            textRes = t.join('\n')
-                            r2.content = textRes
-                        }
-                    }
-
-                    if (this.dbg) console.log('tool response (2):', textRes)
-
-                    var h = capi.history.messages
-
-                    if (this.config.doNotStoreToolCallDialogsInHistory) {
-                        capi.history.messages = h.slice(0, -4)
-                    }
-                    else {
-                        capi.history.messages = h.slice(0, -3)
-                        capi.history.messages.push(
-                            {
-                                role: Role_Assistant,
-                                content: textRes
-                            }
-                        )
-                        // keep response
-                    }
-                    r2.actions = [...r.actions]
-                    r = r2
-                }
+                r = await actionHandler.run(action, r, capi, capi.history)
+                /*
+                                if (action.name == Action_Tool_Text_Query) {
+                
+                                    // tool text query
+                                    action.arg = preProcessQuery(action.arg)
+                
+                                    var r2 = await capi.completion(action.arg, this.tools)
+                                    var textRes = r2.content
+                
+                                    // cleanup response message
+                                    if (textRes)
+                                        textRes = textRes.replace('[END_RESPONSE]', '')
+                                    r2.content = textRes
+                
+                                    if (this.dbg) console.log('tool response (1):', textRes)
+                
+                                    var h = capi.history.messages
+                
+                                    if (this.config.doNotStoreToolCallDialogsInHistory) {
+                                        capi.history.messages = h.slice(0, -4)
+                                    }
+                                    else {
+                                        capi.history.messages = h.slice(0, -3)
+                                        capi.history.messages.push(
+                                            {
+                                                role: Role_Assistant,
+                                                content: textRes
+                                            }
+                                        )
+                                    }
+                                    r2.actions = [...r.actions]
+                                    r = r2
+                                }
+                
+                                if (action.name == Action_Tool_Query) {
+                
+                                    // tool query
+                                    action.arg = preProcessQuery(action.arg)
+                
+                                    var r2 = await capi.completion(action.arg, this.tools, Role_Tool)
+                                    var textRes = r2.content
+                
+                                    // cleanup response message
+                                    if (this.config.skipToolResponseFirstLine) {
+                                        if (textRes[0] != '[') {
+                                            const t = textRes.split('\n').slice(1)
+                                            textRes = t.join('\n')
+                                            r2.content = textRes
+                                        }
+                                    }
+                
+                                    if (this.dbg) console.log('tool response (2):', textRes)
+                
+                                    var h = capi.history.messages
+                
+                                    if (this.config.doNotStoreToolCallDialogsInHistory) {
+                                        capi.history.messages = h.slice(0, -4)
+                                    }
+                                    else {
+                                        capi.history.messages = h.slice(0, -3)
+                                        capi.history.messages.push(
+                                            {
+                                                role: Role_Assistant,
+                                                content: textRes
+                                            }
+                                        )
+                                        // keep response
+                                    }
+                                    r2.actions = [...r.actions]
+                                    r = r2
+                                }
+                                */
             }
         }
 

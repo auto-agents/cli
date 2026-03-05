@@ -1,0 +1,55 @@
+export default class ActionTool {
+
+    dbg = false
+
+    constructor(ctx, config, tools, queryPreProcessors) {
+        this.ctx = ctx
+        this.config = config
+        this.tools = tools
+        this.queryPreProcessors = queryPreProcessors
+    }
+
+    async run(
+        action,
+        response,
+        capi,
+        history,
+        toolResponseHandlers,
+        useRole) {
+
+        // tool text query
+        for (var i = 0; i < this.queryPreProcessors; i++)
+            action.arg = this.queryPreProcessors(action.arg)
+
+
+        var r2 = await capi.completion(action.arg, this.tools, useRole)
+        var textRes = r2.content
+
+        // call tool response handlers
+        if (toolResponseHandlers) {
+            for (var i = 0; i < toolResponseHandlers.length; i++) {
+                r2.content = textRes = toolResponseHandlers[i](textRes)
+            }
+        }
+
+        if (this.dbg) console.log('tool response (1):', textRes)
+
+        var h = history.messages
+
+        if (this.config.doNotStoreToolCallDialogsInHistory) {
+            history.messages = h.slice(0, -4)
+        }
+        else {
+            history.messages = h.slice(0, -3)
+            history.messages.push(
+                {
+                    role: Role_Assistant,
+                    content: textRes
+                }
+            )
+        }
+        r2.actions = [...response.actions]
+
+        return r2
+    }
+}
