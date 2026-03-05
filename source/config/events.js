@@ -33,6 +33,8 @@ export const InputToStartEvent = 'InputToStartEvent'
 export const InputToEndEvent = 'InputToEndEvent'
 export const SpeakCommandEvent = 'SpeakCommandEvent'
 
+export const ListSelectorOpenCommandEvent = 'ListSelectorOpenCommandEvent'
+
 export const AgentAddedEvent = 'AgentAddedEvent'
 
 export const ModuleLoadedEvent = 'ModuleLoadedEvent'

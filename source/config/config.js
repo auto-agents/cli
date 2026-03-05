@@ -61,7 +61,10 @@ export default function config(cli) {
 			delayedMediumTime: 250,
 			delayedLongTime: 800,
 			initWait: 500,
-			initFastWait: 250
+			initFastWait: 250,
+			states: {
+				initBoxVisible: true
+			}
 		},
 		cli: {
 			commandPrefix: '/',
@@ -673,6 +676,21 @@ export default function config(cli) {
 			},
 			table: {
 				highlightRow: '#FF7700'
+			},
+			itemSelector: {
+				color: '#DDDDDD',
+				background: undefined,
+				highlight: {
+					color: '#000000',
+					background: '#FFFFFF'
+				},
+				selected: {
+					color: '#ff6f1bff',
+					background: undefined
+				},
+				indicator: {
+					color: '#FFFFFF'
+				}
 			}
 		},
 		layout: {

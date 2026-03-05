@@ -1,4 +1,4 @@
-import { Text, Box, useStdout, useStdin } from 'ink';
+import { Text, Box, useStdout, useStdin, Newline } from 'ink';
 import { useState, useEffect, useRef } from 'react';
 import Prompter from './prompter.js'
 import LeftGauge from './left-gauge.js';
@@ -19,12 +19,12 @@ import {
 	AgentAddedEvent,
 	ModuleUnloadedEvent
 } from '../config/events.js';
-import SelectInput from 'ink-select-input';
 import { StatusEnum, StatusMessage } from '../data/status-message.js';
 import chalk from 'chalk'
 import Image from "ink-picture";
 import path from 'path'
 import { TUIAgentId } from '../config/config.js';
+import ListSelector from './list-selector.js';
 
 export default function App({ ctx }) {
 
@@ -48,29 +48,6 @@ export default function App({ ctx }) {
 	/* right panel */
 
 	const rpWidth = ctx.layout.rightPanel.width
-
-	/* input selector */
-
-	const [listSelectorVisible, setListSelectorVisible] = useState(true)
-	const [listSelectorItems, setListSelectorItems] = useState(
-		[{
-			label: 'First',
-			value: 'first'
-		},
-		{
-			label: 'Second',
-			value: 'second'
-		},
-		{
-			label: 'Third',
-			value: 'third'
-		}]
-	)
-
-	const listSelectorHandleSelect = item => {
-		// `item` = { label: 'First', value: 'first' }
-		console.log(item)
-	};
 
 	/* ----- layout size ----- */
 
@@ -104,7 +81,7 @@ export default function App({ ctx }) {
 	useEffect(() => {
 		const listener = () => {
 			setInitBoxVisible(false)
-			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
+			ctx.initBoxVisible = false
 		}
 		ctx.components.event.on(
 			HideInitBoxOutputEvent,
@@ -124,8 +101,6 @@ export default function App({ ctx }) {
 		const listener = () => {
 			setOutputVisible(true)
 			setPromptVisible(true)
-
-			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentAppStartedDelay)
 		}
 		ctx.components.event.on(
 			AppStartedEvent,
@@ -148,7 +123,6 @@ export default function App({ ctx }) {
 			setPropsLayoutSize()
 			e.emit(LayoutResizedEvent)
 
-			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentMediumDelay)
 		}
 		stdout?.on("resize", handleResize);
 		return () => {
@@ -162,9 +136,6 @@ export default function App({ ctx }) {
 		const handleHelpResize = () => {
 			setHelpHeight(computeHelpHeight())
 			setHelpVisible(ctx.cli.helpOutput.rows.length > 0)
-
-			//setTimeout(() => setupImgCliAgent(), setupImgCliAgentDelay)
-
 		}
 		e.on(HelpOutputUpdatedEvent, handleHelpResize);
 		return () => {
@@ -328,12 +299,9 @@ export default function App({ ctx }) {
 						</Box>
 					}
 
-					{
-						listSelectorVisible &&
-						<Box minHeight={3} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor} flexDirection="column">
-							<SelectInput items={listSelectorItems} onSelect={listSelectorHandleSelect} />
-						</Box>
-					}
+					{ /* list selector */}
+
+					<ListSelector ctx={ctx} />
 
 					{ /* prompt input - notice: the prompter enable the stdout resize event (!) */}
 					{

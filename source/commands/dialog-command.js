@@ -1,10 +1,11 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
-import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../config/events.js'
+import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../config/events.js'
 import { getDialogAgent, isAIChatAvailable } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { TUIAgentId } from '../config/config.js'
+import { openSelectorProps } from '../components/list-selector.js'
 
 export default class DialogCommand extends Command {
 
@@ -118,6 +119,28 @@ export default class DialogCommand extends Command {
 					p.addRow({ model_id: col(str) });
 				});
 				o.appendLine(p.render())
+
+				const modelsItems = []
+				mlist.forEach(mod => {
+					modelsItems.push(
+						{
+							label: mod.id,
+							value: mod.id
+						}
+					)
+				})
+
+				// selector version
+				const props = openSelectorProps(
+					'select a model:',
+					modelsItems,
+					aichat.config.model,
+					100,
+					null,
+					true
+				)
+				e.emit(ListSelectorOpenCommandEvent, props)
+
 				break
 
 			default:
