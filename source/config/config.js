@@ -1057,7 +1057,7 @@ export default function config(cli) {
 					enableDebugResponsesMessage: false,
 					skipToolResponseFirstLine: false,	// with gamma-1b
 
-					doNotStoreToolCallDialogsInHistory: true,	// avoid llm to repeat a response from history
+					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
 					enableGemmaStyleToolCallParsing: true,
 					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
 					responseProcessors: [
