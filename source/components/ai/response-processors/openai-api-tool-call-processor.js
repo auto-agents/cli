@@ -22,7 +22,10 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
             if (this.dbg) console.log(toolSpe)
             if (this.config.enableDebugToolsUsage)
-                trace(this.ctx, 'tool required by model: ' + JSON.stringify(toolSpe))
+                trace(this.ctx, 'tool required by model: '
+                    + toolSpe?.function?.name
+                    + ' '
+                    + toolSpe?.function?.arguments)
 
             const name = toolSpe.function?.name
             const props = JSON.parse(toolSpe.function?.arguments)
@@ -42,6 +45,9 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                     r = toolError.message
                     error = true
                 }
+
+                if (this.config.enableDebugToolsResults)
+                    console.log('--> ' + r)
 
                 if (!error) {
 

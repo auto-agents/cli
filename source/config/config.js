@@ -1042,7 +1042,7 @@ export default function config(cli) {
 					//baseURL: "http://localhost:11434/api/",
 					// OLLAMA-MCP-BRIDGE
 					//baseURL: "http://localhost:8000/api/",
-					temperature: 0.8,
+					temperature: 0,
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'
@@ -1053,11 +1053,16 @@ export default function config(cli) {
 					tools: [],
 					enabledTools: [],	// all if empty
 
-					enableDebugToolsUsage: false,
+					enableDebugToolsUsage: true,
+					enableDebugToolsResults: true,
+					enableDebugResponseToolsUsage: false,
 					enableDebugResponsesMessage: false,
 					skipToolResponseFirstLine: false,	// with gamma-1b
 
+					// ------- history necessary for (auto) agentic ? --------
 					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
+					// -------------------------------------------------------
+
 					enableGemmaStyleToolCallParsing: true,
 					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
 					responseProcessors: [

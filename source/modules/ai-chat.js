@@ -210,20 +210,23 @@ export default class AIChatModule {
         // process response
         r = await this.responseProcessors.run(query, r)
 
-        const traceTools = str => {
-            if (this.config.enableDebugToolsUsage) trace(this.ctx, str)
-        }
+        // /!\ TODO: HERE LOOSE r.content (replaced by actions callbacks! no good)
 
         // handle response processors actions
         if (r.actions) {
+            var lastContent = ''
             for (var i = 0; i < r.actions.length; i++) {
 
                 const action = r.actions[i]
                 const actionHandler = this.#getResponseProcessorActionHandler(action)
 
-                traceTools('invoke tool: ' + JSON.stringify(action))
-                r = await actionHandler.run(action, r, capi, capi.history)
+                r = await actionHandler.run(action, r, capi, capi.history)              // -------> THIS MUST ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
+                if (lastContent != '') lastContent += '\n'
+                lastContent += r.content
             }
+            r.content = lastContent
+
+            if (this.config.enableDebugResponseToolsUsage) console.log(lastContent)
         }
 
         // return the processed result

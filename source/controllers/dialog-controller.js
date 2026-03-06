@@ -367,6 +367,8 @@ export default class DialogController {
 			this.ctx.components.module.AIChat.config.model
 		))
 
+		// TODO : THIS CALL MAY LOOP INSIDE AND ALTERNATE QUERY / RESPONSE /!\
+
 		const r = await this.ctx.components.module.AIChat
 			.chat(query, secondary)
 			.then(async resp => {

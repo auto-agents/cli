@@ -42,7 +42,7 @@ export default class OpenAIApiClient extends AIApiClient {
             queryMessage
         ]
 
-        //console.log('messages=', messages)
+        this.history.messages.push(queryMessage)
 
         const r = await this.client.chat.completions.create({
             model: this.config.model,
@@ -63,13 +63,21 @@ export default class OpenAIApiClient extends AIApiClient {
         if (this.ctx.servers.llm.openAIApi.enableDebugResponsesMessage)
             console.log(message)
 
-        this.history.messages.push(queryMessage)
+        // /!\ TODO: SKIP THE ORIGINAL RESPONSE
+        // separate 2 cases :
+        // - text completion response in lastContent
+        // - tool response or not
+        // --> may ask for tools again
+
         const rq = {
             role: Role_Assistant,
             content: message.content
         }
         const u = r.usage
-        this.history.messages.push(rq)
+
+        //this.history.messages.push(rq)
+        this.history.messages.push(message)
+
         return {
             response: r,
             content: rq.content,

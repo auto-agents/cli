@@ -65,6 +65,8 @@ export default class Dialoger {
         options ||= {}
         const results = []
 
+        // ----- USER -----------------------------------------------------------------------
+
         // 1. echo output
         results.push(
             await this.fifoStack.addTask(
@@ -92,6 +94,8 @@ export default class Dialoger {
                 ))
         }
 
+        // ----- ASSISTANT -----------------------------------------------------------------
+
         var aiResult = null
         // 3. eventually think (includes ai output response)
         if (isAIChatAvailable(this.ctx)) {
@@ -107,7 +111,7 @@ export default class Dialoger {
         }
 
         // eventually speak response
-        if (isUserSpeakEchoAvailable(this.ctx)
+        if (isSpeechAvailable(this.ctx)
             && aiResult) {
 
             //console.log(aiResult)
@@ -126,6 +130,8 @@ export default class Dialoger {
                     )
                 ))
         }
+
+        // TODO: A NEW SEQUENCE QUERY/RESPONSE COULD BE ENGAGED AUTOMATICALLY BY THE THINKER!!
 
         return results
     }

@@ -30,11 +30,13 @@ export default class ActionTool {
         // call tool response handlers
         if (toolResponseHandlers) {
             for (var i = 0; i < toolResponseHandlers.length; i++) {
-                r2.content = textRes = toolResponseHandlers[i](textRes)
+                textRes = toolResponseHandlers[i](textRes)
             }
         }
 
-        if (this.dbg) console.log('tool response (1):', textRes)
+        r2.content = textRes
+
+        if (this.config.enableDebugResponseToolsUsage) console.log('-> ' + textRes)
 
         var h = history.messages
 
