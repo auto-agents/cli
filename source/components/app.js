@@ -172,6 +172,7 @@ export default function App({ ctx }) {
 	/* ----- SetStatusMessageEvent ----- */
 
 	const buildStatusMessageView = (statusMessage) => {
+
 		const sepc = chalk.hex(ctx.theme.statusMessage.separatorColor)
 		const textc = chalk.hex(ctx.theme.statusMessage.messageColor)
 		const subtextc = chalk.hex(ctx.theme.statusMessage.submessageColor)
@@ -184,13 +185,15 @@ export default function App({ ctx }) {
 
 	useEffect(() => {
 		const handleSetStatusMessage = args => {
-			var statusMessage = args.length > 0 ? args[0] : null
-			if (!statusMessage)
+
+			var statusMessage = (args && args.length > 0) ? args[0] : null
+			if (!statusMessage) {
 				statusMessage = new StatusMessage(
 					From,
-					this.ctx.cli.statusMessages[StatusEnum.idle],
+					ctx.cli.statusMessages[StatusEnum.idle],
 					'', ''
 				)
+			}
 
 			setStatusMessage(
 				buildStatusMessageView(statusMessage))

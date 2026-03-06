@@ -137,6 +137,9 @@ export default class DialogController {
 			//return o.appendLine(scol(s))
 			r = o.appendLine(scol(s))
 		})
+
+		this.ctx.components.event.emit(SetStatusMessageEvent)
+
 		return r
 	}
 
