@@ -44,7 +44,7 @@ export default class ActionTool {
             history.messages = h.slice(0, -4)
         }
         else {
-            history.messages = h.slice(0, -3)
+            //history.messages = h.slice(0, -3)
             history.messages.push(
                 {
                     role: Role_Assistant,

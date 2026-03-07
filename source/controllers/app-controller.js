@@ -115,7 +115,7 @@ export default class AppController {
 		)
 		this.heartbeatGaugesInterval = setInterval(
 			() => this.heartbeatGauges(),
-			ctx.ui.heartbeatGaugesInterval
+			ctx.ui.heartbeatGaugesInterval	// 1000
 		)
 		this.heartbeatSecond()
 		this.heartbeatGauges()

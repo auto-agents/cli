@@ -244,6 +244,7 @@ export default class AIChatModule {
             for (var i = 0; i < r.actions.length; i++) {
 
                 const action = r.actions[i]
+                // TODO: separate tool run and provide results to model (must be done in 1 step when multiple tools)
                 const actionHandler = this.#getResponseProcessorActionHandler(action)
 
                 r = await actionHandler.run(action, r, capi, capi.history)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
