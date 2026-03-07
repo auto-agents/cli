@@ -6,12 +6,6 @@ export default class ActionToolTextQuery extends ActionTool {
         super(ctx, config, tools, queryPreProcessors)
     }
 
-    cleanUpToolResponse(textRes) {
-        if (textRes)
-            textRes = textRes.replace('[END_RESPONSE]', '')
-        return textRes
-    }
-
     async run(action, response, capi, history) {
 
         return await super.run(

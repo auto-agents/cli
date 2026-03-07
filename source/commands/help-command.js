@@ -76,7 +76,7 @@ export default class HelpCommand extends Command {
 		const command = commands.find(cmd => cmd.names.includes(commandName))
 
 		if (!command) {
-			const err = 'Error: Command \'' + commandName + '\' not found.'
+			const err = 'Command \'' + commandName + '\' not found.'
 			this.ctx.components.event.emit(LogErrorEvent, errorEvent(this.From,
 				new Error(err)))
 			output.newLine()

@@ -14,7 +14,7 @@ export default class TimeService {
 			clearInterval(this.interval)
 		this.interval = setInterval(
 			() => this.collectMemory(),
-			this.ctx.data.app.uptime.interval
+			this.ctx.ui.hearbeatUptimeInterval
 		)
 	}
 
@@ -39,8 +39,8 @@ export default class TimeService {
 		str += unit('h ')
 		str += num(minutes)
 		str += unit('m ')
-		str += num(seconds)
-		str += unit('s')
+		//str += num(seconds)
+		//str += unit('s')
 
 		c.data.app.uptime.value = str
 		e.emitTarget(

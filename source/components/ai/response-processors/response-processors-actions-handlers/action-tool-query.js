@@ -21,7 +21,6 @@ export default class ActionToolQuery extends ActionTool {
                         if (textRes && textRes[0] != '[') {
                             const t = textRes.split('\n').slice(1)
                             textRes = t.join('\n')
-                            r2.content = textRes
                         }
                     }
                     return textRes

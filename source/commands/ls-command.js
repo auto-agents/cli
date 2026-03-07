@@ -37,7 +37,7 @@ export default class LsCommand extends Command {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
-						new Error(`Error: path '${resolvedPath}' does not exist`)),
+						new Error(`path '${resolvedPath}' does not exist`)),
 					cmd: this.From
 				}
 			)

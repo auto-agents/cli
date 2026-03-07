@@ -67,9 +67,8 @@ export default class ResponseProcessors {
     async run(query, response) {
         for (var i = 0; i < this.processors.length; i++) {
             const p = this.processors[i]
-            response = await p.run(query, response)
+            await p.run(query, response)
         }
-        return response
     }
 
     output({ message }) {

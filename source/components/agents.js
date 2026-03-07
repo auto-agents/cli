@@ -204,7 +204,7 @@ const Agents = ({ ctx }) => {
 				{/* tui agent tab */}
 				{
 					agentViewState.visible &&
-					<Box borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
+					<Box minHeight={2} borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
 						<Text>TUI Agent</Text>
 
 					</Box>

@@ -47,30 +47,31 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                 }
 
                 if (this.config.enableDebugToolsResults)
-                    console.log('--> ' + r)
+                    console.log('tool --> ' + r)
 
-                if (!error) {
+                this.addAction(
+                    response,
+                    Action_Tool_Query,
+                    props,
+                    r,
+                    error,
+                    this.constructor.name,
+                    1
+                )
 
-                    this.addAction(
-                        response,
-                        Action_Tool_Query,
-                        r,
-                        this.constructor.name,
-                        1
-                    )
-
-                    if (this.dbg) console.log(r)
-
-                } else {
-
-                    // tool error
-                    response.content = r
-                }
-
-            } else
+                if (this.dbg) console.log(r)
+            } else {
                 console.error('unknown tool required by the model: ' + name)
-        }
 
-        return response
+                this.addAction(
+                    Action_Tool_Query,
+                    props,
+                    'unknown tool: ' + name,
+                    true,
+                    this.constructor.name,
+                    1
+                )
+            }
+        }
     }
 }

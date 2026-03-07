@@ -35,7 +35,7 @@ export default class PrintCommand extends Command {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
-						new Error(`Error: file '${resolvedPath}' does not exist`)),
+						new Error(`file '${resolvedPath}' does not exist`)),
 					com: this.From
 				})
 			return

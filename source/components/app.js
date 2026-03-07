@@ -285,7 +285,7 @@ export default function App({ ctx }) {
 
 			{ /* middle outputs */}
 
-			<Box minHeight={10} flexDirection="row" flexGrow={1}>
+			<Box minHeight={11} flexDirection="row" flexGrow={1}>
 				<Box flexDirection="column" flexGrow={1} >
 
 					{ /* 'console' output */}

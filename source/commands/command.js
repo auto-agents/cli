@@ -35,7 +35,7 @@ export default class Command {
                 this.ctx.components.event.emit(CommandRunErrorEvent,
                     {
                         ...errorEvent(this.From,
-                            new Error(`Error: invalid value for '${name}' : '${value}'. Allowed values are: ${allowedValues.join(', ')}`)),
+                            new Error(`invalid value for '${name}' : '${value}'. Allowed values are: ${allowedValues.join(', ')}`)),
                         cmd: this.From
                     }
                 )
@@ -49,7 +49,7 @@ export default class Command {
         this.ctx.components.event.emit(CommandRunErrorEvent,
             {
                 ...errorEvent(this.From,
-                    new Error(`Error: parameter '${name}' is required`)),
+                    new Error(`parameter '${name}' is required`)),
                 cmd: this.From
             }
         )

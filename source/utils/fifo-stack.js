@@ -109,6 +109,7 @@ export class FifoStack {
                 try {
 
                     await currentTask.fun(
+                        currentTask,
                         previousTaskResult,
                         previousTaskError) // Execute the async function
                         .then(

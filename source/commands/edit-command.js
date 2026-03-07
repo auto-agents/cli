@@ -33,7 +33,7 @@ export default class EditCommand extends Command {
 				e.emit(CommandRunErrorEvent,
 					{
 						...errorEvent(this.From,
-							new Error(`Error: no editor configured for platform '${platform}'`)),
+							new Error(`no editor configured for platform '${platform}'`)),
 						cmd: this.From
 					}
 				)

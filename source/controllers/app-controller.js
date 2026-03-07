@@ -47,6 +47,7 @@ export default class AppController {
 	From = 'app'
 
 	heartbeatSecondInterval = null
+	heartbeatGaugesInterval = null
 	ramInterval = null
 	ctx = null
 	startTime = null
@@ -112,7 +113,12 @@ export default class AppController {
 			() => this.heartbeatSecond(),
 			1000
 		)
+		this.heartbeatGaugesInterval = setInterval(
+			() => this.heartbeatGauges(),
+			ctx.ui.heartbeatGaugesInterval
+		)
 		this.heartbeatSecond()
+		this.heartbeatGauges()
 		this.ramService.run()
 		this.timeService.run()
 
@@ -136,26 +142,30 @@ export default class AppController {
 
 	async handleCommandErrorEvent(reason, errorEvent) {
 		const sep = reason && reason.length > 0 ? ' : ' : ''
-		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
+		const stack = errorEvent.error?.stack
+		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.toString()) : ''
 		const text = reason + sm
 
 		if (isSpeechAvailable(this.ctx)
 			&& isSpeakErrorsEnabled(this.ctx)
 			&& errorEvent?.from != 'speak')
 			this.speakError(text)
-		this.error(text)
+
+		this.error(text, stack)
 	}
 
 	async handleLogErrorEvent(errorEvent) {
 		if (isSpeechAvailable(this.ctx)
 			&& isSpeakErrorsEnabled(this.ctx)
 			&& errorEvent?.from != 'speak')
-			this.speakError(errorEvent.error?.message)
+			this.speakError(errorEvent.error?.toString(),
+				errorEvent.error?.stack)
 		this.error(errorEvent.error?.message)
 	}
 
 	async handleTaskRunErrorEvent(taskErrorEvent) {
-		this.error(`task '${taskErrorEvent.task.name}' error: ${taskErrorEvent.error?.message}`)
+		const stack = taskErrorEvent.error?.stack
+		this.error(`task '${taskErrorEvent.task.name}' error: ${taskErrorEvent.error?.toString()}`, stack)
 
 		if (isSpeechAvailable(this.ctx)
 			&& isSpeakErrorsEnabled(this.ctx))
@@ -211,6 +221,9 @@ export default class AppController {
 	}
 
 	heartbeatSecond() {
+	}
+
+	heartbeatGauges() {
 		const e = this.ctx.components.event
 		if (!e) return
 		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.rows.key)
@@ -218,10 +231,12 @@ export default class AppController {
 		e.emitTarget(GaugeSourceUpdatedEvent, this.ctx.data.layout.output.lines.key)
 	}
 
-	error(message) {
+	error(message, stack) {
 		const o = this.output
 		o.newLine()
 		o.appendLine(this.status.error('💥 ' + message))
+		if (stack && this.ctx.cli.dumpStackTraces)
+			o.appendLine(this.status.warning('\n' + stack))
 	}
 
 	warning(message) {

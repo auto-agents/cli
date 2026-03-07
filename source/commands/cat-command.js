@@ -31,7 +31,7 @@ export default class CatCommand extends Command {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
-						new Error(`Error: file '${filePath}' does not exist`)),
+						new Error(`file '${filePath}' does not exist`)),
 					com: this.From
 				})
 			return

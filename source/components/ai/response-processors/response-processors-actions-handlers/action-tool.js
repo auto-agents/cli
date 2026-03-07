@@ -23,8 +23,8 @@ export default class ActionTool {
         for (var i = 0; i < this.queryPreProcessors; i++)
             action.arg = this.queryPreProcessors(action.arg)
 
-
-        var r2 = await capi.completion(action.arg, this.tools, useRole)
+        // call model with tool result
+        var r2 = await capi.completion(action.result, this.tools, useRole)
         var textRes = r2.content
 
         // call tool response handlers

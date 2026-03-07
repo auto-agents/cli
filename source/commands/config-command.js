@@ -24,7 +24,7 @@ export default class ConfigCommand extends Command {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
-						new Error(`Error: config file '${configFilePath}' does not exist`)),
+						new Error(`config file '${configFilePath}' does not exist`)),
 					com: this.From
 				})
 			return
@@ -39,7 +39,7 @@ export default class ConfigCommand extends Command {
 				e.emit(CommandRunErrorEvent,
 					{
 						...errorEvent(this.From,
-							new Error(`Error: no editor configured for platform '${platform}'`)),
+							new Error(`no editor configured for platform '${platform}'`)),
 						com: this.From
 					})
 				return

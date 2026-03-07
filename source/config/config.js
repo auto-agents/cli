@@ -64,7 +64,9 @@ export default function config(cli) {
 			initFastWait: 250,
 			states: {
 				initBoxVisible: true
-			}
+			},
+			heartbeatGaugesInterval: 30000,
+			hearbeatUptimeInterval: 60000
 		},
 		cli: {
 			commandPrefix: '/',
@@ -449,7 +451,8 @@ export default function config(cli) {
 				waiting: 'waiting',
 				idle: 'idle',
 				ready: 'ready'
-			}
+			},
+			dumpStackTraces: true
 		},
 		dialog: {
 			agents: [
@@ -719,8 +722,7 @@ export default function config(cli) {
 			app: {
 				uptime: {
 					key: 'uptime',
-					value: '',
-					interval: 1000
+					value: ''
 				},
 				modules: {
 					speech: {

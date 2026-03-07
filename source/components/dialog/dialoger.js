@@ -1,6 +1,7 @@
 import {
     TaskAddAssistantMessageCommandEvent
 } from "../../config/events"
+import DialogContext from "../../data/dialog-context"
 import { FifoStack, task } from "../../utils/fifo-stack"
 import { isAIChatAvailable, isSpeechAvailable, isUserSpeakEchoAvailable } from "../../utils/utils"
 
@@ -56,10 +57,11 @@ export default class Dialoger {
     #initEvents() {
         const e = this.ctx.components.event
         // on echo system message
-        e.on(TaskAddAssistantMessageCommandEvent, async args => {
+        /*e.on(TaskAddAssistantMessageCommandEvent, async args => {
             await this.addSystemMessage(args[0])
-        })
+        })*/
     }
+
 
     async addUserDialog(text, options, outputContext) {
         options ||= {}
@@ -98,17 +100,39 @@ export default class Dialoger {
 
         var aiResult = null
         // 3. eventually think (includes ai output response)
+
+        const dialogContext = new DialogContext(
+            this
+        )
+
+        // AWAIT ...
         if (isAIChatAvailable(this.ctx)) {
             aiResult = await this.fifoStack.addTask(
                 task(
-                    'user dialog: request ai response',
-                    async () => {
-                        return await this.thinkFun(text, options)
+                    'user dialog: request ai completion',
+                    async task => {
+
+                        // TODO: 
+                        //      - call with agent (all infos: id,api,settings...) 
+                        //      - and task
+                        // + CALLBACKS DIALOGER BY EVENT (/!\ BREAK AWAIT & // threads)
+                        //      --> ECHO + SPEAK
+
+                        // must not break await here (task await via addTask)
+                        return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
+                            // THE FIFO,
+                            // AGENT
+                            // TASK
+                            dialogContext,
+                            text,
+                            options)    // then...
                     }
                 )
             )
             results.push(aiResult)
+
         }
+        // THEN : end of all loops
 
         // eventually speak response
         if (isSpeechAvailable(this.ctx)
@@ -136,14 +160,26 @@ export default class Dialoger {
         return results
     }
 
+    async addAssistantToolingQuestion(text, options) {
+        options ||= {}
+        // 1. echo output
+        await this.assistantEchoFun(text, options)
+        // 2. eventually speak
+        if (isSpeechAvailable(this.ctx)) {
+            await this.speakFun(text, options)
+        }
+    }
+
     /**
-     * add a system message (speak, no think)
+     * add a system message (echo + speak, no think)
      * @param {String} text 
      * @param {object} options
      */
-    async addSystemMessage(text, options, outputContext) {
+    async addSystemMessage(dialogContext, text, options, outputContext) {
         options ||= {}
         const results = []
+
+        // 0. eventually speech synchro ...
 
         // 1. echo output
         results.push(
@@ -183,9 +219,9 @@ export default class Dialoger {
         )
     }
 
-    async handleSpeakCommandEvent(text) {   // not used
+    /*async handleSpeakCommandEvent(text) {   // not used
         await this.fifoStack.addTask(task)
-    }
+    }*/
 
     async run() {
         this.fifoStack.processTaskes()  // non blocking ?

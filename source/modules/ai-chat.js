@@ -10,6 +10,7 @@ import { Action_Tool_Query, Action_Tool_Text_Query } from "../components/ai/resp
 import { Role_Assistant, Role_Tool } from "../components/ai/roles.js";
 import { CommandRunErrorEvent, errorEvent } from "../config/events.js";
 import path from "path";
+import DialogContext from "../data/dialog-context.js";
 
 export default class AIChatModule {
 
@@ -17,6 +18,7 @@ export default class AIChatModule {
     From = 'AIChatModule'
 
     responseProcessorsActionsHandlers = {}
+    // TODO: put in config
     queryPreProcessors = [
         txt => {
             if (this.config.appendTextAtEndOfQuery != null)
@@ -187,11 +189,12 @@ export default class AIChatModule {
 
     /**
      * chat completion
+     * @param {DialogContext} dialogContext
      * @param {String} query 
      * @param {boolean} secondary 
      * @returns 
      */
-    async chat(query, secondary = false) {
+    async chat(dialogContext, query, secondary = false) {
         const capi = !secondary ? this.api : this.apiSecondary
 
         // pre-process query
@@ -202,36 +205,68 @@ export default class AIChatModule {
         }
 
         for (var i = 0; i < this.queryPreProcessors; i++)
-            query = this.queryPreProcessors(query)
+            query = this.queryPreProcessors[i](query)
 
         // call completion
         var r = await capi.completion(query, this.tools)
 
-        // process response
-        r = await this.responseProcessors.run(query, r)
+        const hasActions = r.actions && r.actions.length > 0
+        const hasContent = r.content != null && r.content.length > 0
+        const hasActionsAndContent = hasActions && hasContent
+        const hasToolsCalls = r.tool_calls?.length > 0
 
         // /!\ TODO: HERE LOOSE r.content (replaced by actions callbacks! no good)
+        if (hasContent && hasToolsCalls) {
+            // avoid tool call coz message + tools indication. still in dialog
+            //await dialogContext.dialoger.addAssistantToolingQuestion(r.content)
 
-        // handle response processors actions
-        if (r.actions) {
-            var lastContent = ''
+            // indicates actions if no action be not perform it
+            const toolsList = r.tool_calls.map(x => '- ' + x.function.name + ' ' + x.function.arguments)
+                .join('\n')
+            this.ctx.components.output.appendLine('the model wants to use the tools: \n' + toolsList)
+        }
+
+        /*
+        console.log('has actions: ' + hasActions)
+        console.log('has content: ' + hasContent)
+        console.log('has tool calls: ' + hasToolsCalls)
+        */
+
+        // handle response processors actions : perform actions if no content
+        if (hasToolsCalls && !hasContent) {
+
+            //console.log('run tools')
+
+            // process response. get tools results in actions. original response unchanged
+            await this.responseProcessors.run(query, r)
+
+            var content = ''
             for (var i = 0; i < r.actions.length; i++) {
 
                 const action = r.actions[i]
                 const actionHandler = this.#getResponseProcessorActionHandler(action)
 
-                r = await actionHandler.run(action, r, capi, capi.history)              // -------> THIS MUST ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
-                if (lastContent != '') lastContent += '\n'
-                lastContent += r.content
+                r = await actionHandler.run(action, r, capi, capi.history)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
+                if (content != '') content += '\n'
+                content += r.content
             }
-            r.content = lastContent
 
-            if (this.config.enableDebugResponseToolsUsage) console.log(lastContent)
+            // agent text result: content
+            if (this.config.enableDebugResponseToolsUsage) console.log(content)
         }
 
-        // return the processed result
+        // return the original with the processed result
 
         return r
+    }
+
+    /**
+     * perform tool calls indicated in the response
+     * @param {Object} dialogContext
+     * @param {Object} response 
+     */
+    toolCall(dialogContet, response) {
+
     }
 
     saveHistory(filePath, format) {

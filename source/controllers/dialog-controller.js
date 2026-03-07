@@ -14,6 +14,7 @@ import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
 import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled } from "../utils/utils.js"
 import { TUIAgentId } from "../config/config.js"
+import DialogContext from "../data/dialog-context.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -43,7 +44,7 @@ export default class DialogController {
 			async (text, options) => await this.speak(text, options),
 
 			// thinkFun
-			async (text, options) => await this.queryOpenAIChat(text, options)
+			async (dialogContext, text, options) => await this.queryOpenAIChat(dialogContext, text, options)
 		)
 
 		this.dialoger.run()
@@ -65,6 +66,10 @@ export default class DialogController {
 			.replace('%username%', chalk.bold(username))
 
 		await this.dialoger.addSystemMessage(
+			new DialogContext(
+				this.dialoger,
+				null, /*agent*/
+			),
 			text,
 			{
 				skipPrependNewLine: true,
@@ -106,13 +111,15 @@ export default class DialogController {
 		await this.ctx.components.module.speech.shetUp()
 	}
 
-	async echoSystem(text, {
-		skipPrependNewLine = false,
-		secondary = false,
-		name = null,
-		voice = null,
-		color = null
-	}) {
+	async echoSystem(
+		text,
+		{
+			skipPrependNewLine = false,
+			secondary = false,
+			name = null,
+			voice = null,
+			color = null
+		}) {
 		const o = this.output
 		if (!skipPrependNewLine)
 			o.newLine(false)
@@ -346,6 +353,7 @@ export default class DialogController {
 	}
 
 	async queryOpenAIChat(
+		dialogContext,
 		query,
 		{
 			skipPrependNewLine = false,
@@ -370,12 +378,18 @@ export default class DialogController {
 		// TODO : THIS CALL MAY LOOP INSIDE AND ALTERNATE QUERY / RESPONSE /!\
 
 		const r = await this.ctx.components.module.AIChat
-			.chat(query, secondary)
+
+			// need CALLING CONTEXT
+			.chat(dialogContext, query, secondary)
+
 			.then(async resp => {
 				this.ctx.components.module.AIChat.lastResponse = resp
 				const txt = resp.content
 				e.emit(SetStatusMessageEvent)
-				await this.echoSystem(txt,
+
+				// echo
+				await this.echoSystem(
+					txt,
 					skipPrependNewLine,
 					{
 						secondary: secondary,
@@ -383,6 +397,12 @@ export default class DialogController {
 						voice: voice,
 						color: color
 					})
+
+				// ##### LOOP FOR TOOLS CALLS #####
+
+				// ...
+
+				// TURN END
 
 				return resp
 			})

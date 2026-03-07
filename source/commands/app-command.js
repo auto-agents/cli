@@ -97,7 +97,7 @@ export default class AppCommand extends Command {
 			}
 
 			default:
-				this.emitCommandError(`Error: invalid action '${action}'`)
+				this.emitCommandError(`invalid action '${action}'`)
 		}
 	}
 }
