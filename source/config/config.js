@@ -1138,31 +1138,6 @@ export default function config(cli) {
 					tools: [],
 					enabledTools: [],	// all if empty
 
-					/*enableDebugToolsUsage: true,
-					enableDebugToolsResults: false,
-					enableDebugResponseToolsUsage: false,
-					enableDebugResponsesMessage: false,
-					skipToolResponseFirstLine: false,	// with gamma-1b
-
-					// ------- history necessary for (auto) agentic ? --------
-					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
-					// -------------------------------------------------------
-
-					enableGemmaStyleToolCallParsing: true,
-					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
-					responseProcessors: [
-						'openai-api-tool-call-processor.js',
-						'gemma-style-tool-call-parser.js'
-					],
-
-					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations:\n{data}",
-					//toolTextQueryPattern: "write a report for the user who is asking: '{query}' accordingly to the following informations: {data}",
-
-					maxRetries: 2,	// default
-					stream: false,
-					think: true,
-					historyPath: join(process.cwd(), saved, 'chat-history.json')
-*/
 				},
 				ollamaMCPBridgeAI: {
 					/*
@@ -1188,6 +1163,14 @@ export default function config(cli) {
 				[Platforms.windows]: 'notepad %1',
 				[Platforms.mac]: null,
 				[Platforms.linux]: null
+			},
+			browser: {
+				com: {
+					[Platforms.windows]: "cmd /c start \"\" chrome \"{url}\"",
+					[Platforms.linux]: "google-chrome-stable \"{url}\"",
+					[Platforms.mac]: "open -a \"Google Chrome\" \"{url}\""
+				},
+				defaultUrl: "www.google.com"
 			}
 		}
 	};

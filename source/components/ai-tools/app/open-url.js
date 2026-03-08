@@ -1,9 +1,9 @@
-import AITool from '../../../ai/ai-tool';
+import AITool from '../../ai/ai-tool';
 
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
-export default class ShellExec extends AITool {
+export default class OpenUrl extends AITool {
 
     constructor(ctx, config) {
         super(ctx, config)
@@ -11,25 +11,25 @@ export default class ShellExec extends AITool {
 
     specification() {
         return {
-            name: "shell_exec",
-            description: "run a system command line using the shell",
+            name: "open_url",
+            description: "opens an url in the browser",
             parameters: {
                 type: "object",
                 properties: {
-                    "command": {
+                    "url": {
                         "type": "string"
                     }
                 }
-            },
-            required: ["command"]
+            }
         }
     }
 
     async run(args) {
-        const com = args?.command
-        //const stdout = execSync("wsl " + com + pars).toString();
+        const url = args?.url || this.ctx.shell.browser.defaultUrl
+        const platform = this.ctx.shell.platform
+        const com = this.ctx.shell.browser.com[platform]
+            .replace('{url}', url)
         const { stdout, stderr } = await exec(com)
-        //console.log(stdout)
         return stdout
     }
 }
