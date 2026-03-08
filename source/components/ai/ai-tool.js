@@ -1,4 +1,4 @@
-import { mdBlockJson } from "../../utils/utils"
+import { mdBlockJson, mdTextBlock } from "../../utils/utils"
 
 export default class AITool {
 
@@ -13,5 +13,9 @@ export default class AITool {
      */
     jsonMDResult(obj) {
         return mdBlockJson(JSON.stringify(obj))
+    }
+
+    textMDResult(text) {
+        return mdTextBlock(text)
     }
 }

@@ -117,6 +117,10 @@ export const mdBlockJson = json => {
     return "```json\n" + json + "\n```"
 }
 
+export const mdTextBlock = text => {
+    return "```\n" + text + "\n```"
+}
+
 export default {
     callAsync,
     wait,
