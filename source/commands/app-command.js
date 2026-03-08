@@ -1,6 +1,6 @@
 import Command from './command.js'
 import SyntaxHighlight from 'ink-syntax-highlight';
-import { renderComponent } from '../utils/utils.js';
+import { renderComponent, toJson } from '../utils/utils.js';
 import * as highlight from "cli-highlight"
 import { box } from '../utils/decorators.js';
 
@@ -58,7 +58,7 @@ export default class AppCommand extends Command {
 				try {
 					const content = this.#getByPath(this.ctx, path)
 						|| 'undefined'
-					const v = JSON.stringify(content, null, 2)
+					const v = toJson(content)
 					//output.appendLine(v)
 					const theme = highlight.DEFAULT_THEME
 					renderComponent(

@@ -136,6 +136,27 @@ export const mdBlockJson = json => {
 export const mdTextBlock = text => {
     return "```\n" + text + "\n```"
 }
+const ValueObjectsKeys = [
+]
+
+const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+
+        if (!ValueObjectsKeys.includes(key)
+            && (typeof value === "object" && value !== null)) {
+            if (seen.has(value)) {
+                return 'null' //"[Circular]";
+            }
+            seen.add(value);
+        }
+        return value;
+    };
+};
+
+export const toJson = (o, tab = 2) => {
+    return JSON.stringify(o, getCircularReplacer(), tab)
+}
 
 export default {
     callAsync,

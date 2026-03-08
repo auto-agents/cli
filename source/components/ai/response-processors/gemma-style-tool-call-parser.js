@@ -1,4 +1,4 @@
-import { trace } from "../../../utils/utils"
+import { toJson, trace } from "../../../utils/utils"
 import ResponseProcessor, { Action_Tool_Text_Query } from "../response-processor"
 
 export default class gemmaStyleToolCallParser extends ResponseProcessor {
@@ -124,7 +124,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                 if (this.dbg) console.log('props', props)
 
                 if (this.config.enableDebugToolsUsage)
-                    trace(this.ctx, '⚙️ tool required by model: ' + JSON.stringify(toolSpe))
+                    trace(this.ctx, '⚙️ tool required by model: ' + toJson(toolSpe))
 
                 if (tool) {
 

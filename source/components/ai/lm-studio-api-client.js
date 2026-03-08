@@ -1,6 +1,7 @@
 import { Role_Assistant, Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
+import { toJson } from '../../utils/utils.js'
 
 export default class LMStudioApiClient extends AIApiClient {
 
@@ -56,7 +57,7 @@ export default class LMStudioApiClient extends AIApiClient {
                 var tx = outp.output //.replaceAll("\\n", '')
                 const obj = JSON.parse(tx)
                 console.log(obj)
-                tx = JSON.stringify(JSON.parse(tx), null, 2)
+                tx = toJson(JSON.parse(tx), 2)
                 output += tx + "\n\n"
             }
             if (outp.type == 'message')
