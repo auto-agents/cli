@@ -11,7 +11,7 @@ export default class AITool {
      * return a text for a response formatted in markdown json
      * @param {Object} obj 
      */
-    jsonResult(obj) {
+    jsonMDResult(obj) {
         return mdBlockJson(JSON.stringify(obj))
     }
 }

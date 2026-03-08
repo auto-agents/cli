@@ -51,7 +51,9 @@ export default class OpenAIApiClient extends AIApiClient {
             tools: tools ? tools.getSpecifications(query) : this.config.tools,
             temperature: this.config.temperature,
             stream: this.config.stream,
-            think: this.config.think
+            think: this.config.think,
+            tool_chioce: this.config.tool_chioce,
+            parallel_tool_calls: this.config.parallel_tool_calls
         }, {
             path: this.config.paths.completion
         })

@@ -37,6 +37,7 @@ export default class AIChatModule {
 
         this.config = config
         this.config = {
+            ...ctx.servers.llm.common,
             ...this.apiClientConfig,
             ...this.config
         }

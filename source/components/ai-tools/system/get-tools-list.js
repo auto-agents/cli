@@ -22,6 +22,6 @@ export default class GetToolsList extends AITool {
             const sp = tool.specification()
             lst.push(sp)
         });
-        return this.jsonResult(lst)
+        return this.jsonMDResult(lst)
     }
 }

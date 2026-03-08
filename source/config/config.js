@@ -17,6 +17,7 @@ import {
 import { join } from 'path'
 import os from "os";
 import { Action_Tool_Query, Action_Tool_Text_Query } from '../components/ai/response-processor.js';
+import { Tool_Output_Format_JsonMD, Tool_Output_Format_PlainText } from '../components/ai/tools.js';
 
 export const ERROR_LOG_FILE = 'errors.log'
 
@@ -460,7 +461,7 @@ export default function config(cli) {
 					id: TUIAgentId,
 					name: 'TUI Agent',
 					chatName: 'seraphina',
-					profileName: 'AI Expert',
+					profileName: 'Assistant',
 					imgPath: 'agent-5-48x48.png',
 					enabled: true,
 					system: true,
@@ -515,7 +516,7 @@ export default function config(cli) {
 			roles: {
 
 				agent1: {
-					instructions: "you are a AI expert researcher."
+					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions related to payment transactions.",
 				},
 				agent2: {
 					instructions: "you are a AI expert developer."
@@ -913,9 +914,18 @@ export default function config(cli) {
 					//model: 'gpt2-finetuned-recipes-cooking_v2-i1',
 					//model: 'claude-3.7-sonnet-reasoning-gemma3-12b',
 
-					instructions: 'You are a tool assistant.',
-					instructions1: 'You are a coding assistant.',
-					instructions0: 'répond en langue française',
+					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions related to payment transactions.",
+					//instructions1: 'You are a coding assistant.',
+					//instructions0: 'répond en langue française',
+
+					// ministralai settings
+					enableGemmaStyleToolCallParsing: false,
+					responseProcessors: [
+						'openai-api-tool-call-processor.js'
+					],
+					temperature: 0.1,
+					tool_choice: "any",	// auto (default) | any | none
+					parallel_tool_calls: true,	// true (default) | false
 				}
 			},
 			ollamaAIChat: {
@@ -937,7 +947,7 @@ export default function config(cli) {
 					//model: "qwen3:0.6b",
 					//model: "gemma3:1b",
 					temperature: 0.7,
-					instructions: 'You are a coding assistant.',
+					instructions: 'You are a coding assistant.'
 				}
 			},
 			lmStudioAIChat: {
@@ -998,6 +1008,41 @@ export default function config(cli) {
 		},
 		servers: {
 			llm: {
+				common: {
+					// base conf for all apis
+
+					temperature: 0.7,
+					tools: [],
+					enabledTools: [],	// all if empty
+
+					tool_choice: "any",	// auto (default) | any | none
+					parallel_tool_calls: true,	// true (default) | false
+
+					tool_output_preferred_format: Tool_Output_Format_JsonMD,
+
+					enableDebugToolsUsage: true,
+					enableDebugToolsResults: false,
+					enableDebugResponseToolsUsage: false,
+					enableDebugResponsesMessage: false,
+					skipToolResponseFirstLine: false,	// with gamma-1b
+					// ------- history necessary for (auto) agentic ? --------
+					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
+					// -------------------------------------------------------
+
+					enableGemmaStyleToolCallParsing: true,
+					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
+					responseProcessors: [
+						'openai-api-tool-call-processor.js',
+						'gemma-style-tool-call-parser.js'
+					],
+
+					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations:\n{data}",
+
+					maxRetries: 2,	// default
+					stream: false,
+					think: true,
+					historyPath: join(process.cwd(), saved, 'chat-history.json')
+				},
 				lmStudioApi: {
 					/*
 					* LM Studio API configuration
@@ -1044,7 +1089,7 @@ export default function config(cli) {
 					//baseURL: "http://localhost:11434/api/",
 					// OLLAMA-MCP-BRIDGE
 					//baseURL: "http://localhost:8000/api/",
-					temperature: 0,
+					//temperature: 0.1,
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'
@@ -1052,10 +1097,13 @@ export default function config(cli) {
 						//completion: '/chat'
 					},
 
+					tool_choice: "auto",	// auto (default) | any | none
+					parallel_tool_calls: true,	// true (default) | false
+
 					tools: [],
 					enabledTools: [],	// all if empty
 
-					enableDebugToolsUsage: true,
+					/*enableDebugToolsUsage: true,
 					enableDebugToolsResults: false,
 					enableDebugResponseToolsUsage: false,
 					enableDebugResponsesMessage: false,
@@ -1079,6 +1127,7 @@ export default function config(cli) {
 					stream: false,
 					think: true,
 					historyPath: join(process.cwd(), saved, 'chat-history.json')
+*/
 				},
 				ollamaMCPBridgeAI: {
 					/*

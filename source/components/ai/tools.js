@@ -6,6 +6,9 @@ import { readdir } from 'fs/promises'
 import { join } from 'path';
 import { pathToFileURL } from 'url'
 
+export const Tool_Output_Format_JsonMD = 'Tool_Output_Format_JsonMD'
+export const Tool_Output_Format_PlainText = 'Tool_Output_Format_PlainText'
+
 export default class Tools {
 
     tools = {}
