@@ -117,15 +117,18 @@ export default class DialogController {
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
 
+		options ||= {
+			skipPrependNewLine: true,
+			userVoice: this.#getUserVoice(),
+			assistantVoice: this.#getSystemVoice()
+		}
+		options.skipPrependNewLine ||= true
+
 		var r = await this.dialoger.addUserDialog(
 			dialogContext,
 			text,
 			tools,
-			options || {
-				skipPrependNewLine: true,
-				userVoice: this.#getUserVoice(),
-				assistantVoice: this.#getSystemVoice()
-			},
+			options,
 			outputContext || this.output.getOutputContext())
 
 		var end = false
@@ -414,13 +417,7 @@ export default class DialogController {
 		dialogContext,
 		query,
 		tool_calls,
-		{
-			skipPrependNewLine = false,
-			secondary = false,
-			name = null,
-			voice = null,
-			color = null
-		}) {
+		options) {
 		if (!this.#isAIChatAvailable())
 			return
 		const e = this.ctx.components.event
@@ -434,12 +431,20 @@ export default class DialogController {
 			this.ctx.components.module.AIChat.api.config.model
 		))
 
-		// TODO : THIS CALL MAY LOOP INSIDE AND ALTERNATE QUERY / RESPONSE /!\
+
+		options ||= {
+			skipPrependNewLine: false,
+			secondary: false,
+			name: null,
+			voice: null,
+			color: null,
+			response_format: null,
+			secondary: false
+		}
 
 		const r = await this.ctx.components.module.AIChat
 
-			// need CALLING CONTEXT
-			.chat(dialogContext, query, tool_calls, secondary)
+			.chat(dialogContext, query, tool_calls, options)
 
 			.then(async resp => {
 				this.ctx.components.module.AIChat.lastResponse = resp

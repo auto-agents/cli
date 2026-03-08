@@ -192,11 +192,11 @@ export default class AIChatModule {
      * chat completion
      * @param {DialogContext} dialogContext
      * @param {String} query 
-     * @param {boolean} secondary 
+     * @param {object} options 
      * @returns 
      */
-    async chat(dialogContext, query, tool_calls, secondary = false) {
-        const capi = !secondary ? this.api : this.apiSecondary
+    async chat(dialogContext, query, tool_calls, options) {
+        const capi = !options.secondary ? this.api : this.apiSecondary
         var r = null
 
         if (query != null) {
@@ -212,7 +212,7 @@ export default class AIChatModule {
                 query = this.queryPreProcessors[i](query)
 
             // call completion
-            r = await capi.completion(query, this.tools)
+            r = await capi.completion(query, this.tools, options)
         }
         else {
             // tool_calls mandatory
@@ -252,7 +252,7 @@ export default class AIChatModule {
             // - assistant responds no content + require tool calls
             const actionHandler = this.#getResponseProcessorActionHandler(action)
 
-            const r2 = await actionHandler.run(r.actions, r, capi, capi.history)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
+            const r2 = await actionHandler.run(r.actions, r, capi, capi.history, options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
             //if (content != '') content += '\n'
             //content += r.content
 

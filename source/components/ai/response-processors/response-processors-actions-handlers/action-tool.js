@@ -16,7 +16,8 @@ export default class ActionTool {
         response,
         capi,
         history,
-        toolResponseHandlers) {
+        toolResponseHandlers,
+        options) {
 
         // tool text query
         // TODO: must operate on content, and use config
@@ -35,7 +36,7 @@ export default class ActionTool {
         }
 
         // call model with tool result
-        var r2 = await capi.completionFromMessages(this.tools)
+        var r2 = await capi.completionFromMessages(this.tools, options)
         var textRes = r2.content
 
         // call tool response handlers

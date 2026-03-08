@@ -29,18 +29,19 @@ export default class OpenAIApiClient extends AIApiClient {
         return r
     }
 
-    async completion(query, tools, role = Role_User) {
+    async completion(query, tools, options, role = Role_User) {
 
         const queryMessage = {
             role: role, content: query
         }
         this.history.messages.push(queryMessage)
-        return await this.completionFromMessages(tools)
+        return await this.completionFromMessages(tools, options)
     }
 
-    async completionFromMessages(tools) {
+    async completionFromMessages(tools, options) {
 
-        const r = await this.client.chat.completions.create({
+        const props = {
+
             model: this.config.model,
             messages: this.history.messages,
             verbosity: 'high',
@@ -50,7 +51,12 @@ export default class OpenAIApiClient extends AIApiClient {
             think: this.config.think,
             tool_chioce: this.config.tool_chioce,
             parallel_tool_calls: this.config.parallel_tool_calls
-        }, {
+        }
+
+        if (options.response_format) props.response_format = options.response_format
+
+        const r = await this.client.chat.completions.create(
+            props, {
             path: this.config.paths.completion
         })
 

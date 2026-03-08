@@ -15,7 +15,7 @@ export default class ActionToolQuery extends ActionTool {
      * @param {*} history history
      * @returns 
      */
-    async run(actions, response, capi, history) {
+    async run(actions, response, capi, history, options) {
 
         return await super.run(
             actions,
@@ -33,7 +33,8 @@ export default class ActionToolQuery extends ActionTool {
                     }
                     return textRes
                 }
-            ])
+            ],
+            options)
     }
 
 }
