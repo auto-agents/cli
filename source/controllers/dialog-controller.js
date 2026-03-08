@@ -44,7 +44,8 @@ export default class DialogController {
 			async (text, options) => await this.speak(text, options),
 
 			// thinkFun
-			async (dialogContext, text, options) => await this.queryOpenAIChat(dialogContext, text, options)
+			async (dialogContext, text, tool_calls, options) =>
+				await this.queryOpenAIChat(dialogContext, text, tool_calls, options)
 		)
 
 		this.dialoger.run()
@@ -86,6 +87,7 @@ export default class DialogController {
 	async addUserPrompt(text) {
 		await this.dialoger.addUserDialog(
 			text,
+			null,
 			{
 				skipPrependNewLine: true,
 				userVoice: this.#getUserVoice(),
@@ -355,6 +357,7 @@ export default class DialogController {
 	async queryOpenAIChat(
 		dialogContext,
 		query,
+		tool_calls,
 		{
 			skipPrependNewLine = false,
 			secondary = false,
@@ -380,7 +383,7 @@ export default class DialogController {
 		const r = await this.ctx.components.module.AIChat
 
 			// need CALLING CONTEXT
-			.chat(dialogContext, query, secondary)
+			.chat(dialogContext, query, tool_calls, secondary)
 
 			.then(async resp => {
 				this.ctx.components.module.AIChat.lastResponse = resp
@@ -388,19 +391,15 @@ export default class DialogController {
 				e.emit(SetStatusMessageEvent)
 
 				// echo
-				await this.echoSystem(
+				/*await this.echoSystem(
 					txt,
-					skipPrependNewLine,
 					{
+						skipPrependNewLine: skipPrependNewLine,
 						secondary: secondary,
 						name: name,
 						voice: voice,
 						color: color
-					})
-
-				// ##### LOOP FOR TOOLS CALLS #####
-
-				// ...
+					})*/
 
 				// TURN END
 

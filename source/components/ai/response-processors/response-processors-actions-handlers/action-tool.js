@@ -12,7 +12,8 @@ export default class ActionTool {
     }
 
     async run(
-        action,
+        //action,
+        content,
         response,
         capi,
         history,
@@ -20,11 +21,13 @@ export default class ActionTool {
         useRole) {
 
         // tool text query
-        for (var i = 0; i < this.queryPreProcessors; i++)
-            action.arg = this.queryPreProcessors(action.arg)
+        // TODO: must operate on content, and use config
+        //for (var i = 0; i < this.queryPreProcessors; i++)
+        //    action.arg = this.queryPreProcessors(action.arg)
 
         // call model with tool result
-        var r2 = await capi.completion(action.result, this.tools, useRole)
+        var r2 = await capi.completion(
+            /*action.result*/ content, this.tools, useRole)
         var textRes = r2.content
 
         // call tool response handlers
@@ -32,15 +35,14 @@ export default class ActionTool {
             for (var i = 0; i < toolResponseHandlers.length; i++) {
                 textRes = toolResponseHandlers[i](textRes)
             }
+            r2.content = textRes
         }
-
-        r2.content = textRes
 
         if (this.config.enableDebugResponseToolsUsage) console.log('-> ' + textRes)
 
         var h = history.messages
 
-        if (this.config.doNotStoreToolCallDialogsInHistory) {
+        /*if (this.config.doNotStoreToolCallDialogsInHistory) {
             history.messages = h.slice(0, -4)
         }
         else {
@@ -51,8 +53,9 @@ export default class ActionTool {
                     content: textRes
                 }
             )
-        }
-        r2.actions = [...response.actions]
+            //history.messages.push(r2)
+        }*/
+        //r2.actions = [...response.actions]
 
         return r2
     }

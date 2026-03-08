@@ -62,38 +62,39 @@ export default class Dialoger {
         })*/
     }
 
-
-    async addUserDialog(text, options, outputContext) {
+    async addUserDialog(text, tool_calls, options, outputContext) {
         options ||= {}
-        const results = []
+        var results = []
 
         // ----- USER -----------------------------------------------------------------------
 
-        // 1. echo output
-        results.push(
-            await this.fifoStack.addTask(
-                task(
-                    'user dialog : echo',
-                    async () => {
-                        await this.userEchoFun(text, options)
-                    }
-                )
-            ))
-
-        // 2. eventually speak
-        if (isUserSpeakEchoAvailable(this.ctx)) {
+        if (text != null) {
+            // 1. echo output
             results.push(
                 await this.fifoStack.addTask(
                     task(
-                        'user dialog: speak',
+                        'user dialog : echo',
                         async () => {
-                            await this.speakFun(text, {
-                                ...options,
-                                voice: options.userVoice
-                            })
+                            await this.userEchoFun(text, options)
                         }
                     )
                 ))
+
+            // 2. eventually speak
+            if (isUserSpeakEchoAvailable(this.ctx)) {
+                results.push(
+                    await this.fifoStack.addTask(
+                        task(
+                            'user dialog: speak',
+                            async () => {
+                                await this.speakFun(text, {
+                                    ...options,
+                                    voice: options.userVoice
+                                })
+                            }
+                        )
+                    ))
+            }
         }
 
         // ----- ASSISTANT -----------------------------------------------------------------
@@ -112,12 +113,6 @@ export default class Dialoger {
                     'user dialog: request ai completion',
                     async task => {
 
-                        // TODO: 
-                        //      - call with agent (all infos: id,api,settings...) 
-                        //      - and task
-                        // + CALLBACKS DIALOGER BY EVENT (/!\ BREAK AWAIT & // threads)
-                        //      --> ECHO + SPEAK
-
                         // must not break await here (task await via addTask)
                         return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
                             // THE FIFO,
@@ -125,6 +120,7 @@ export default class Dialoger {
                             // TASK
                             dialogContext,
                             text,
+                            tool_calls,
                             options)    // then...
                     }
                 )
@@ -134,28 +130,49 @@ export default class Dialoger {
         }
         // THEN : end of all loops
 
-        // eventually speak response
-        if (isSpeechAvailable(this.ctx)
-            && aiResult) {
-
-            //console.log(aiResult)
+        if (aiResult && aiResult?.result) {
             const aiText = aiResult.result?.content
+            if (aiText && aiText.length > 0
+            )
+                results.push(
+                    await this.fifoStack.addTask(
+                        task(
+                            'assistant dialog: echo + speak',
+                            async () => {
 
-            results.push(
-                await this.fifoStack.addTask(
-                    task(
-                        'assistant dialog: speak',
-                        async () => {
-                            await this.speakFun(aiText, {
-                                ...options,
-                                voice: options.assistantVoice
-                            })
-                        }
-                    )
-                ))
+                                // echo assistant response
+
+                                options.skipPrependNewLine = false
+                                await this.assistantEchoFun(
+                                    aiResult.result?.content,
+                                    options
+                                )
+
+                                // eventually speak
+                                if (isSpeechAvailable(this.ctx))
+                                    await this.speakFun(aiText, {
+                                        ...options,
+                                        voice: options.assistantVoice
+                                    })
+                            }
+                        )
+                    ))
+
         }
 
         // TODO: A NEW SEQUENCE QUERY/RESPONSE COULD BE ENGAGED AUTOMATICALLY BY THE THINKER!!
+
+        if (aiResult?.result?.message?.tool_calls
+            && aiResult?.result?.message?.tool_calls.length > 0
+        ) {
+            // loop for tools
+            const result2 = await this.addUserDialog(
+                null,
+                aiResult?.result?.message?.tool_calls,
+                options,
+                outputContext
+            )
+        }
 
         return results
     }

@@ -7,10 +7,11 @@ export default class ActionToolQuery extends ActionTool {
         super(ctx, config, tools, queryPreProcessors)
     }
 
-    async run(action, response, capi, history) {
+    async run(/*action,*/content, response, capi, history) {
 
         return await super.run(
-            action,
+            //action,
+            content,
             response,
             capi,
             history,

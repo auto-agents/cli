@@ -194,43 +194,43 @@ export default class AIChatModule {
      * @param {boolean} secondary 
      * @returns 
      */
-    async chat(dialogContext, query, secondary = false) {
+    async chat(dialogContext, query, tool_calls, secondary = false) {
         const capi = !secondary ? this.api : this.apiSecondary
+        var r = null
 
-        // pre-process query
-        const preProcessQuery = txt => {
-            if (this.config.appendTextAtEndOfQuery != null)
-                txt += this.config.appendTextAtEndOfQuery
-            return txt
+        if (query != null) {
+
+            // pre-process query
+            const preProcessQuery = txt => {
+                if (this.config.appendTextAtEndOfQuery != null)
+                    txt += this.config.appendTextAtEndOfQuery
+                return txt
+            }
+
+            for (var i = 0; i < this.queryPreProcessors; i++)
+                query = this.queryPreProcessors[i](query)
+
+            // call completion
+            r = await capi.completion(query, this.tools)
+        }
+        else {
+            // tool_calls mandatory
+            r = {
+                response: null,
+                message: {
+                    content: '',
+                    role: Role_Assistant
+                },
+                content: '',
+                tool_calls: tool_calls,
+                stats: {}
+            }
         }
 
-        for (var i = 0; i < this.queryPreProcessors; i++)
-            query = this.queryPreProcessors[i](query)
-
-        // call completion
-        var r = await capi.completion(query, this.tools)
-
-        const hasActions = r.actions && r.actions.length > 0
+        //const hasActions = r.actions && r.actions.length > 0
         const hasContent = r.content != null && r.content.length > 0
-        const hasActionsAndContent = hasActions && hasContent
+        //const hasActionsAndContent = hasActions && hasContent
         const hasToolsCalls = r.tool_calls?.length > 0
-
-        // /!\ TODO: HERE LOOSE r.content (replaced by actions callbacks! no good)
-        if (hasContent && hasToolsCalls) {
-            // avoid tool call coz message + tools indication. still in dialog
-            //await dialogContext.dialoger.addAssistantToolingQuestion(r.content)
-
-            // indicates actions if no action be not perform it
-            const toolsList = r.tool_calls.map(x => '- ' + x.function.name + ' ' + x.function.arguments)
-                .join('\n')
-            this.ctx.components.output.appendLine('the model wants to use the tools: \n' + toolsList)
-        }
-
-        /*
-        console.log('has actions: ' + hasActions)
-        console.log('has content: ' + hasContent)
-        console.log('has tool calls: ' + hasToolsCalls)
-        */
 
         // handle response processors actions : perform actions if no content
         if (hasToolsCalls && !hasContent) {
@@ -244,16 +244,24 @@ export default class AIChatModule {
             for (var i = 0; i < r.actions.length; i++) {
 
                 const action = r.actions[i]
-                // TODO: separate tool run and provide results to model (must be done in 1 step when multiple tools)
-                const actionHandler = this.#getResponseProcessorActionHandler(action)
-
-                r = await actionHandler.run(action, r, capi, capi.history)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
                 if (content != '') content += '\n'
-                content += r.content
+                content += action.result
             }
+
+            const action = r.actions[0]
+            // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER : done via Dialoger
+            // CASE : after tool result provided call:
+            // - assistant responds no content + require tool calls
+            const actionHandler = this.#getResponseProcessorActionHandler(action)
+
+            const r2 = await actionHandler.run(/*action*/ content, r, capi, capi.history)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
+            if (content != '') content += '\n'
+            content += r.content
 
             // agent text result: content
             if (this.config.enableDebugResponseToolsUsage) console.log(content)
+
+            return r2
         }
 
         // return the original with the processed result

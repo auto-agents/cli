@@ -37,16 +37,16 @@ export default class OpenAIApiClient extends AIApiClient {
             role: role, content: query
         }
 
-        const messages = [
-            ...this.history.messages,
-            queryMessage
-        ]
+        /*const messages = [
+             ...this.history.messages,
+             queryMessage
+         ]*/
 
         this.history.messages.push(queryMessage)
 
         const r = await this.client.chat.completions.create({
             model: this.config.model,
-            messages: messages,
+            messages: this.history.messages,
             verbosity: 'high',
             tools: tools ? tools.getSpecifications(query) : this.config.tools,
             temperature: this.config.temperature,
@@ -80,6 +80,7 @@ export default class OpenAIApiClient extends AIApiClient {
 
         return {
             response: r,
+            message: message,
             content: rq.content,
             tool_calls: message.tool_calls,
             stats: {
