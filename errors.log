@@ -1,0 +1,8 @@
+[2J[3J[HReferenceError: taskErrorEvent is not defined
+    at handleLogErrorEvent (E:\DEV\repos\auto-agents\cli\source\controllers\app-controller.js:163:17)
+    at <anonymous> (E:\DEV\repos\auto-agents\cli\source\controllers\app-controller.js:106:50)
+    at emit (node:events:95:22)
+    at emit (E:\DEV\repos\auto-agents\cli\source\services\event-service.js:22:22)
+    at <anonymous> (E:\DEV\repos\auto-agents\cli\source\controllers\dialog-controller.js:455:7)
+    at processTicksAndRejections (native:7:39)
+

@@ -70,7 +70,8 @@ export default function config(cli) {
 			hearbeatUptimeInterval: 60000,
 			decorators: {
 				replaceUnicodes: [
-					['✅', '✔️']
+					['✅', '✔️'],
+					['❌', '💥']
 				]
 			}
 		},

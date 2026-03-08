@@ -131,9 +131,10 @@ export default class DialogController {
 			if (r && r.length > 0 && r[r.length - 1] > 0) {
 				// a task must be performed at the end
 				// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
+				console.log('-- Loop Tools --')
 				const dialogContext = r[0]
 				const task = r[1]
-				const r2 = this.dialoger.AddChatLoop(
+				const r2 = await this.dialoger.AddChatLoop(
 					dialogContext, task
 				)
 			} else end = true

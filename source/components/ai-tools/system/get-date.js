@@ -26,7 +26,7 @@ export default class GetDate extends AITool {
         const timezone = jsonArgs?.timezone || 'UTC'
         const d = new Date(new Date().toLocaleString(timezone))
         const r = d.toString()
-        console.log(r)
+        //console.log(r)
 
         if (this.config.tool_output_preferred_format == Tool_Output_Format_PlainText)
             return r

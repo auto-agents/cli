@@ -160,7 +160,7 @@ export default class AppController {
 			&& errorEvent?.from != 'speak')
 			this.speakError(errorEvent.error?.toString(),
 				errorEvent.error?.stack)
-		const stack = taskErrorEvent.error?.stack
+		const stack = errorEvent.error?.stack
 		this.error(errorEvent.error?.message, stack)
 	}
 

@@ -1,6 +1,9 @@
 import AITool from "../../../ai/ai-tool"
 import { execSync } from 'child_process'
 
+const util = require('node:util');
+const exec = util.promisify(require('node:child_process').exec);
+
 export default class ShellExec extends AITool {
 
     constructor(ctx, config) {
@@ -16,9 +19,6 @@ export default class ShellExec extends AITool {
                 properties: {
                     "command": {
                         "type": "string"
-                    },
-                    "arguments": {
-                        "type": "string"
                     }
                 }
             },
@@ -28,9 +28,8 @@ export default class ShellExec extends AITool {
 
     async run(args) {
         const com = args?.command
-        var pars = args?.parameters || ''
-        if (pars.length > 0) pars = ' ' + pars
-        const stdout = execSync(com + pars).toString();
+        //const stdout = execSync("wsl " + com + pars).toString();
+        const { stdout, stderr } = await exec(com)
         return stdout
     }
 }
