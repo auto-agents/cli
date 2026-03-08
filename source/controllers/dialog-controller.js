@@ -128,10 +128,10 @@ export default class DialogController {
 
 		var end = false
 		while (!end) {
-			if (r && r.length > 0 && r[r.length - 1] > 0) {
+			if (r && r.length > 0 && r[r.length - 1].length > 0) {
 				// a task must be performed at the end
 				// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
-				console.log('-- Loop Tools --')
+				//console.log('-- Loop Tools --')
 				const dialogContext = r[0]
 				const task = r[1]
 				const r2 = await this.dialoger.AddChatLoop(

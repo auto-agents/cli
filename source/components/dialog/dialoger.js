@@ -133,7 +133,8 @@ export default class Dialoger {
             results.push(aiResult)
 
         }
-        // THEN : end of all loops
+
+        // THEN
 
         if (aiResult && aiResult?.result) {
             const aiText = aiResult.result?.content

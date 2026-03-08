@@ -236,8 +236,12 @@ export default class AppController {
 		const o = this.output
 		o.newLine()
 		o.appendLine(this.status.error('💥 ' + message))
-		if (stack && this.ctx.cli.dumpStackTraces)
+		if (stack && this.ctx.cli.dumpStackTraces) {
+			var t = stack.split('\n')
+			t = t.slice(1, t.length)
+			stack = t.join('\n')
 			o.appendLine(this.status.warning('\n' + stack))
+		}
 	}
 
 	warning(message) {
