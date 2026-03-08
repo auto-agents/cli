@@ -110,9 +110,7 @@ const ScrollOutput = ({
 		innerWidth: 0,
 		scrollTop: 0
 	});
-
-	const [props, setProps] = useState({ scrollbar: 0, text: '' })
-
+	const [scrollbar, setScrollbar] = useState(0)
 	const viewportRef = useRef();
 	const textboxRef = useRef();
 
@@ -146,8 +144,8 @@ const ScrollOutput = ({
 		if (dimensions) {
 			textboxMeasurementUpdated()
 			autoScrollAtEnd()		// setup scrollTop , scrollY
-			upateView(dimensions.height, dimensions.width)
-
+			setScrollbar(buildScrollbar(dimensions.height))
+			setText(buildText(dimensions.height, dimensions.width))
 		}
 		return 0
 	}
@@ -179,6 +177,8 @@ const ScrollOutput = ({
 		}
 	}
 
+	const [text, setText] = useState(buildText);
+
 	const buildScrollbar = (boxHeight) => {
 
 		try {
@@ -208,12 +208,6 @@ const ScrollOutput = ({
 		}
 	}
 
-	const upateView = (width, height) => {
-		const scrollbar = buildScrollbar(height)
-		const text = buildText(height, width)
-		setProps({ scrollbar: scrollbar, text: text })
-	}
-
 	useEffect(() => {
 
 		const scrollToTop = () => {
@@ -221,7 +215,8 @@ const ScrollOutput = ({
 				type: 'SCROLL_TOP',
 				source: o
 			});
-			upateView(o.innerHeight, o.innerWidth)
+			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 		const updateCallback = () => {
 			viewportMeasurementUpdated()
@@ -279,7 +274,8 @@ const ScrollOutput = ({
 				type: 'SCROLL_DOWN',
 				source: o
 			});
-			upateView(o.innerHeight, o.innerWidth)
+			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 
 		if (checkKeyFromConfig(key, keys.scrollUp)) {
@@ -287,7 +283,8 @@ const ScrollOutput = ({
 				type: 'SCROLL_UP',
 				source: o
 			});
-			upateView(o.innerHeight, o.innerWidth)
+			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 
 		if (checkKeyFromConfig(key, keys.pageDown)) {
@@ -295,7 +292,8 @@ const ScrollOutput = ({
 				type: 'SCROLL_PAGE_DOWN',
 				source: o
 			});
-			upateView(o.innerHeight, o.innerWidth)
+			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 
 		if (checkKeyFromConfig(key, keys.pageUp)) {
@@ -303,7 +301,8 @@ const ScrollOutput = ({
 				type: 'SCROLL_PAGE_UP',
 				source: o
 			});
-			upateView(o.innerHeight, o.innerWidth)
+			setScrollbar(buildScrollbar(o.innerHeight))
+			setText(buildText(o.innerHeight, o.innerWidth))
 		}
 	});
 
@@ -313,12 +312,12 @@ const ScrollOutput = ({
 				{/* marginTop={-state.scrollTop} */}
 				<Box flexDirection="column" flexGrow={1} >
 					<Box ref={textboxRef} marginBottom={2}>
-						<Text>{props.text}</Text>
+						<Text>{text}</Text>
 					</Box>
 				</Box>
 
 				<Box width={1} height={state.innerHeight}>
-					<Text color={ctx.theme.scrollbar.color}>{props.scrollbar}</Text>
+					<Text color={ctx.theme.scrollbar.color}>{scrollbar}</Text>
 				</Box>
 
 			</Box>
