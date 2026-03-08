@@ -17,7 +17,11 @@ import {
 import { join } from 'path'
 import os from "os";
 import { Action_Tool_Query, Action_Tool_Text_Query } from '../components/ai/response-processor.js';
-import { Tool_Output_Format_JsonMD, Tool_Output_Format_PlainText } from '../components/ai/tools.js';
+import {
+	Tool_Output_Format_JsonMD,
+	Tool_Output_Format_PlainText,
+	Tool_Output_Format_Json
+} from '../components/ai/tools.js';
 
 export const ERROR_LOG_FILE = 'errors.log'
 
@@ -483,7 +487,8 @@ export default function config(cli) {
 				idle: 'idle',
 				ready: 'ready'
 			},
-			dumpStackTraces: true
+			dumpStackTraces: true,
+			enableDebugLoopTools: true
 		},
 		dialog: {
 			agents: [
@@ -1048,7 +1053,7 @@ export default function config(cli) {
 					tool_choice: "any",	// auto (default) | any | none
 					parallel_tool_calls: true,	// true (default) | false
 
-					tool_output_preferred_format: Tool_Output_Format_JsonMD,
+					tool_output_preferred_format: Tool_Output_Format_Json,
 
 					enableDebugToolsUsage: true,
 					enableDebugToolsResults: false,

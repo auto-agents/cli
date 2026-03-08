@@ -301,7 +301,7 @@ export default class AppController {
 		}
 		else {
 			// run dialog
-			await this.dialog.addUserPrompt(inp)
+			await this.dialog.addUserDialog(inp)
 		}
 
 		this.event.emit(InputExecutedEvent)

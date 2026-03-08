@@ -174,43 +174,23 @@ export default class Dialoger {
         ) {
             // loop for tools
 
+            if (this.ctx.cli.enableDebugLoopTools)
+                console.log('-- Dialoger: Loop Tools --')
+
             results.push(
-                // returns next task to perform
-                [
-                    dialogContext,
-                    async () => {
-                        const result2 = await this.addUserDialog(
-                            dialogContext,
-                            null,
-                            aiResult?.result?.message?.tool_calls,
-                            options,
-                            outputContext
-                        )
-                    }
-                ]
+                // returns props indicatif next dialog to perform
+                {
+                    loop: true,
+                    dialogContext: dialogContext,
+                    outputContext: outputContext,
+                    options: options,
+                    tool_calls: aiResult?.result?.message?.tool_calls
+                }
             )
         }
 
+        // release first await lock
         return results
-    }
-
-    // chat loop
-    async AddChatLoop(dialogContext, task) {
-        const results = []
-        results.push(
-            await task()
-        )
-        return results
-    }
-
-    async addAssistantToolingQuestion(text, options) {
-        options ||= {}
-        // 1. echo output
-        await this.assistantEchoFun(text, options)
-        // 2. eventually speak
-        if (isSpeechAvailable(this.ctx)) {
-            await this.speakFun(text, options)
-        }
     }
 
     /**

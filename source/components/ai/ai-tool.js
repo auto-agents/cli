@@ -1,4 +1,8 @@
 import { mdBlockJson, mdTextBlock, toJson } from "../../utils/utils"
+import {
+    Tool_Output_Format_JsonMD,
+    Tool_Output_Format_Json
+} from "./tools"
 
 export default class AITool {
 
@@ -15,8 +19,14 @@ export default class AITool {
         return mdBlockJson(toJson(obj, null))
     }
 
-    jsonResult(obj) {
+    jsonPlainResult(obj) {
         return toJson(obj, null)
+    }
+
+    jsonResult(obj) {
+        return this.config.tool_output_preferred_format ==
+            Tool_Output_Format_JsonMD ? this.jsonMDResult(obj)
+            : this.jsonPlainResult(obj)
     }
 
     textMDResult(text) {

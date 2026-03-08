@@ -1,7 +1,6 @@
-import { mdBlockJson } from "../../../../utils/utils";
 import AITool from "../../../ai/ai-tool";
-import { existsSync, readdirSync, statSync } from 'fs'
-import path, { basename, dirname } from 'path'
+import { readdirSync, statSync } from 'fs'
+import path from 'path'
 
 export default class GetFiles extends AITool {
 
@@ -48,8 +47,6 @@ export default class GetFiles extends AITool {
             }
         }).filter(x => x != null)
 
-        const r = mdBlockJson(JSON.stringify(fileStats))
-
-        return r
+        return this.jsonResult(fileStats)
     }
 }

@@ -1,6 +1,5 @@
 import AITool from "../../../ai/ai-tool";
-import { existsSync, readdirSync, readFileSync, statSync } from 'fs'
-import path, { basename, dirname } from 'path'
+import { readFileSync } from 'fs'
 
 export default class ReadFile extends AITool {
 
@@ -26,7 +25,7 @@ export default class ReadFile extends AITool {
 
     async run(args) {
         const tpath = args?.file_path
-        const text = readFileSync(tpath)
-        return this.textMDResult(text)
+        const text = readFileSync(tpath).toString()
+        return text
     }
 }

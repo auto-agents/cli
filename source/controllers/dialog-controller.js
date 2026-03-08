@@ -115,29 +115,37 @@ export default class DialogController {
 	 * add a user prompt
 	 * @param {String} text 
 	 */
-	async addUserPrompt(text) {
+	async addUserDialog(text, dialogContext, tools, options, outputContext) {
+
 		var r = await this.dialoger.addUserDialog(
-			null,
+			dialogContext,
 			text,
-			null,
-			{
+			tools,
+			options || {
 				skipPrependNewLine: true,
 				userVoice: this.#getUserVoice(),
 				assistantVoice: this.#getSystemVoice()
 			},
-			this.output.getOutputContext())
+			outputContext || this.output.getOutputContext())
 
 		var end = false
 		while (!end) {
-			if (r && r.length > 0 && r[r.length - 1].length > 0) {
+			if (r && r.length > 0 && r[r.length - 1].loop) {
+
 				// a task must be performed at the end
 				// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
-				//console.log('-- Loop Tools --')
-				const dialogContext = r[r.length - 1][0]
-				const task = r[r.length - 1][1]
-				r = r.slice(0, r.length - 1)
-				const r2 = await this.dialoger.AddChatLoop(
-					dialogContext, task
+
+				if (this.ctx.cli.enableDebugLoopTools)
+					console.log('-- DialgController: Loop Tools --')
+
+				const props = r[r.length - 1]
+
+				r = await this.addUserDialog(
+					null,
+					props.dialogContext,
+					props.tool_calls,
+					props.options,
+					props.outputContext
 				)
 			} else end = true
 		}

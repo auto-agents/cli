@@ -55,7 +55,7 @@ export default class GetDate extends AITool {
                     unit: 'timzone'
                 }
             }
-            return this.jsonMDResult(obj)
+            return this.jsonResult(obj)
         }
     }
 }

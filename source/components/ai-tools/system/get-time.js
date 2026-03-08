@@ -43,6 +43,6 @@ export default class GetTime extends AITool {
                 value: timezone
             }
         }
-        return this.jsonMDResult(obj)
+        return this.jsonResult(obj)
     }
 }
