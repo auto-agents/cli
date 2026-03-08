@@ -2,20 +2,22 @@ import { Text, Box, useStdout, useStdin } from 'ink';
 import { useState, useEffect, useRef } from 'react';
 import {
 	HideInitBoxOutputEvent,
+	LayoutResizedEvent,
 	ListSelectorOpenCommandEvent
 } from '../config/events.js';
 import SelectInput from 'ink-select-input';
 import ListItem from './list-item.js';
 import ListItemIndicator from './list-item-indicator.js';
 
-export const openSelectorProps = (title, items, selection, limit, minHeight, visible) => {
+export const openSelectorProps = (title, items, selection, limit, minHeight, visible, selectCb) => {
 	return {
 		title: title,
 		items: items,
 		selection: selection,
 		limit: limit,
 		minHeight: minHeight,
-		visible: visible
+		visible: visible,
+		selectCb: selectCb
 	}
 }
 
@@ -37,16 +39,18 @@ const ListSelector = ({
 	const e = ctx.components.event
 	const { stdout } = useStdout()
 
-	const getConf = (width, selectedLabel) => {
+	const getConf = (width, selectedLabel, selectCb) => {
 		const conf = {
 			onSelect: item => {
-				// TODO: update global view
 				setListSelectorProps({
 					...listSelectorProps,
 					... {
 						visible: false
 					}
 				})
+				e.emit(LayoutResizedEvent)
+				if (selectCb)
+					selectCb(item)
 			},
 			itemComponent: ({ isSelected, label }) => {
 				return ListItem({ ctx, width, isSelected, selectedLabel, label })
@@ -83,7 +87,7 @@ const ListSelector = ({
 			props.minHeight = props.items.length + 2
 			setListSelectorProps({
 				...props,
-				...getConf(width + 2, props.selection)
+				...getConf(width + 2, props.selection, props.selectCb)
 			})
 		}
 		e.on(ListSelectorOpenCommandEvent, handleOpenCommandEvent);

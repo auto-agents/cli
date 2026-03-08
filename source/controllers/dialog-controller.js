@@ -423,7 +423,7 @@ export default class DialogController {
 			this.From,
 			this.ctx.cli.statusMessages[StatusEnum.waiting],
 			this.ctx.cli.statusMessages.completing,
-			this.ctx.components.module.AIChat.config.model
+			this.ctx.components.module.AIChat.api.config.model
 		))
 
 		// TODO : THIS CALL MAY LOOP INSIDE AND ALTERNATE QUERY / RESPONSE /!\

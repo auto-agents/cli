@@ -212,7 +212,7 @@ export default function config(cli) {
 									},
 									{
 										value: 'su',
-										description: 'same as shet-up'
+										description: 'alias for shet-up'
 									},
 									{
 										value: 'duo-on',
@@ -232,18 +232,42 @@ export default function config(cli) {
 									},
 									{
 										value: 'c',
-										description: 'same as clear'
+										description: 'alias for clear'
 									},
 									{
 										value: 'h',
+										description: 'alias for history'
+									},
+									{
+										value: 'history',
 										description: 'dump the dialog history messages'
 									},
 									{
-										value: 'list',
-										description: 'list available models'
+										value: 'model',
+										description: 'action about dialog model. require --list or --select'
 									}
 								],
 								description: 'an action order for the dialog controller'
+							},
+							list: {
+								type: "boolean",
+								required: false,
+								description: "list models with if action is 'model'"
+							},
+							l: {
+								type: "boolean",
+								required: false,
+								description: "alias for list"
+							},
+							select: {
+								type: "boolean",
+								required: false,
+								description: "allows to select a model with if action is 'model'"
+							},
+							s: {
+								type: "boolean",
+								required: false,
+								description: "alias for select"
 							},
 							agent1_instructions: {
 								type: 'string',
@@ -522,7 +546,7 @@ export default function config(cli) {
 			roles: {
 
 				agent1: {
-					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions related to payment transactions.",
+					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions.",
 				},
 				agent2: {
 					instructions: "you are a AI expert developer."

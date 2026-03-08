@@ -89,11 +89,12 @@ export default class DialogCommand extends Command {
 				break
 
 			case 'h':
+			case 'history':
 				if (isAIChatAvailable(this.ctx))
 					e.emit(RunCommandEvent, "app get components.module.AIChat.api.history.messages")
 				break
 
-			case 'list':
+			case 'model':
 				if (!isAIChatAvailable(this.ctx))
 					return
 				const o = this.ctx.components.output
@@ -101,45 +102,69 @@ export default class DialogCommand extends Command {
 				const mlist = await aichat.list()
 				if (!mlist) return
 
-				const p = new Table({
-					columns: [
-						{ name: "model_id", alignment: "left" }
-					]
-				});
+				const list = this.getValue(com, args, 'list')
+					|| this.getValue(com, args, 'l')
+				const select = this.getValue(com, args, 'select')
+					|| this.getValue(com, args, 's')
+				//console.log(list)
 
-				o.newLine()
-				mlist.forEach(mod => {
-					var str = mod.id
-					//console.log(mod)
-					var col = txt => txt
-					if (aichat.config.model == mod.id)
-						col = x => chalk.hex(this.ctx.theme.table.highlightRow)(x)
-					//c = this.ctx.theme.table.highlightRow
-					//o.appendLine(str)
-					p.addRow({ model_id: col(str) });
-				});
-				o.appendLine(p.render())
+				if (list === true) {
 
-				const modelsItems = []
-				mlist.forEach(mod => {
-					modelsItems.push(
-						{
-							label: mod.id,
-							value: mod.id
+					// list models
+
+					const p = new Table({
+						columns: [
+							{ name: "model_id", alignment: "left" }
+						]
+					});
+
+					o.newLine()
+					mlist.forEach(mod => {
+						var str = mod.id
+						//console.log(mod)
+						var col = txt => txt
+						if (aichat.api.config.model == mod.id)
+							col = x => chalk.hex(this.ctx.theme.table.highlightRow)(x)
+						//c = this.ctx.theme.table.highlightRow
+						//o.appendLine(str)
+						p.addRow({ model_id: col(str) });
+					});
+					o.appendLine(p.render())
+				}
+
+				if (select === true) {
+
+					// select a model
+
+					const modelsItems = []
+					mlist.forEach(mod => {
+						modelsItems.push(
+							{
+								label: mod.id,
+								value: mod.id
+							}
+						)
+					})
+
+					const props = openSelectorProps(
+						'select a model:',
+						modelsItems,
+						aichat.api.config.model,
+						100,
+						null,
+						true,
+						(item) => {
+							this.ctx.components.module.AIChat.api.config.model = item.label
+							o.newLine()
+							o.appendLine('dialog model set to: ' + item.label)
 						}
 					)
-				})
+					e.emit(ListSelectorOpenCommandEvent, props)
+				}
 
-				// selector version
-				const props = openSelectorProps(
-					'select a model:',
-					modelsItems,
-					aichat.config.model,
-					100,
-					null,
-					true
-				)
-				e.emit(ListSelectorOpenCommandEvent, props)
+				if (!select && !list) {
+					this.flagsMissing('--list | -l | --select | -s')
+				}
 
 				break
 

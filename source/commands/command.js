@@ -55,6 +55,16 @@ export default class Command {
         )
     }
 
+    flagsMissing(flags) {
+        this.ctx.components.event.emit(CommandRunErrorEvent,
+            {
+                ...errorEvent(this.From,
+                    new Error(`flags ${flags} are required`)),
+                cmd: this.From
+            }
+        )
+    }
+
     checkModuleAvailable(name) {
         const r = !this.ctx.components.module[name]
         if (!r)
