@@ -171,7 +171,6 @@ export default class Dialoger {
         if (aiResult?.result?.message?.tool_calls
             && aiResult?.result?.message?.tool_calls.length > 0
         ) {
-            console.log('-- CHAT LOOP --')
             // loop for tools
 
             results.push(
