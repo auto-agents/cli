@@ -9,6 +9,7 @@ import { pathToFileURL } from 'url'
 export default class Tools {
 
     tools = {}
+    ts = []
 
     constructor(ctx, config, outputContext) {
         this.ctx = ctx
@@ -25,6 +26,7 @@ export default class Tools {
         const oc = outputContext || this.outputContext
         const o = oc.output
         const margin = ' '.repeat(oc.margin)
+        var m = null
 
         try {
             if (!existsSync(filepath)) {
@@ -34,28 +36,31 @@ export default class Tools {
             }
 
             const mod = await import(pathToFileURL(filepath).href)
-            const m = new mod.default(this.ctx, this.config, this.outputContext)
+            m = new mod.default(this.ctx, this.config, this.outputContext)
             if (m.init) await m.init()
 
             const name = file.toLowerCase().replace('.js', '').replaceAll('-', '_')
             this.tools[name] = m
 
-            o.appendLine(margin + 'tool loaded: ' + file)
+            //o.appendLine(margin + 'tool loaded: ' + file)
+            this.ts.push(file)
 
             if (isAppInitialized(this.ctx))
                 this.ctx.components.event.emit(ResponseProcessorLoadedEvent)
-            return m
         }
         catch (err) {
             o.newLine()
             o.appendLine(this.status.error(margin + 'tool load error: ' + err))
             return null
         }
+        return m
     }
 
     async loadTools() {
 
         const oc = this.outputContext
+        const o = oc.output
+        const margin = ' '.repeat(oc.margin)
         const oc2 = oc.clone().addMargin()
 
         const walk = async (dir) => {
@@ -79,6 +84,7 @@ export default class Tools {
         }
 
         await walk(this.toolsPath)
+        o.appendLine(margin + 'tools loaded: ' + this.ts.join(','))
     }
 
     getSpecifications(query) {
