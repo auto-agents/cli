@@ -40,6 +40,7 @@ const ListSelector = ({
 	const getConf = (width, selectedLabel) => {
 		const conf = {
 			onSelect: item => {
+				// TODO: update global view
 				setListSelectorProps({
 					...listSelectorProps,
 					... {
@@ -79,7 +80,7 @@ const ListSelector = ({
 			const width = items.map(item => item.label.length)
 				.reduce((p, c) => Math.max(p, c))
 
-			props.minHeight = props.items.length + 4
+			props.minHeight = props.items.length + 2
 			setListSelectorProps({
 				...props,
 				...getConf(width + 2, props.selection)
@@ -95,10 +96,17 @@ const ListSelector = ({
 
 	return (
 		listSelectorProps.visible &&
-		<Box marginBottom={0} flexDirection="row" flexGrow={0}>
+		<Box minHeight={listSelectorProps.minHeight + 2}
+			height={listSelectorProps.height + 2}
+			marginBottom={0} marginTop={1} flexDirection="row" flexGrow={0}>
 			<Box flexDirection="column">
 				<Text marginBottom={0}>{listSelectorProps.title}</Text>
-				<Box flexDirection="column" marginTop={1} marginLeft={1} marginRight={1} flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+				<Box minHeight={listSelectorProps.minHeight}
+					height={listSelectorProps.minHeight}
+					flexDirection="column"
+					marginLeft={1} marginRight={1}
+					flexGrow={0} borderStyle={ctx.theme.borderStyle}
+					borderColor={ctx.theme.borderMainColor}>
 					<SelectInput
 						limit={listSelectorProps.limit}
 						itemComponent={listSelectorProps.itemComponent}
