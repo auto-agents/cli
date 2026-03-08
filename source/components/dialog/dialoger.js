@@ -63,11 +63,11 @@ export default class Dialoger {
         })*/
     }
 
-    async addUserDialog(text, tool_calls, options, outputContext) {
+    async addUserDialog(dialogContext, text, tool_calls, options, outputContext) {
         options ||= {}
         var results = []
 
-        const dialogContext = new DialogContext(
+        dialogContext ||= new DialogContext(
             outputContext,
             this
         )
@@ -178,17 +178,16 @@ export default class Dialoger {
                 // returns next task to perform
                 [
                     dialogContext,
-                    task(
-                        'assistant dialog: tools call loop',
-                        async () => {
-                            const result2 = await this.addUserDialog(
-                                null,
-                                aiResult?.result?.message?.tool_calls,
-                                options,
-                                outputContext
-                            )
-                        }
-                    )]
+                    async () => {
+                        const result2 = await this.addUserDialog(
+                            dialogContext,
+                            null,
+                            aiResult?.result?.message?.tool_calls,
+                            options,
+                            outputContext
+                        )
+                    }
+                ]
             )
         }
 
@@ -197,12 +196,11 @@ export default class Dialoger {
 
     // chat loop
     async AddChatLoop(dialogContext, task) {
+        const results = []
         results.push(
-            await this.fifoStack.addTask(
-                dialogContext.setCurrentTask(
-                    task).task
-            )
+            await task()
         )
+        return results
     }
 
     async addAssistantToolingQuestion(text, options) {

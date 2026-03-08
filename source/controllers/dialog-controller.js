@@ -116,7 +116,8 @@ export default class DialogController {
 	 * @param {String} text 
 	 */
 	async addUserPrompt(text) {
-		const r = await this.dialoger.addUserDialog(
+		var r = await this.dialoger.addUserDialog(
+			null,
 			text,
 			null,
 			{
@@ -132,8 +133,9 @@ export default class DialogController {
 				// a task must be performed at the end
 				// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
 				//console.log('-- Loop Tools --')
-				const dialogContext = r[0]
-				const task = r[1]
+				const dialogContext = r[r.length - 1][0]
+				const task = r[r.length - 1][1]
+				r = r.slice(0, r.length - 1)
 				const r2 = await this.dialoger.AddChatLoop(
 					dialogContext, task
 				)
