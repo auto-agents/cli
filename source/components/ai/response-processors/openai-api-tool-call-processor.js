@@ -22,7 +22,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
             if (this.dbg) console.log(toolSpe)
             if (this.config.enableDebugToolsUsage)
-                trace(this.ctx, 'tool required by model: '
+                trace(this.ctx, '⚙️ tool required by model: '
                     + toolSpe?.function?.name
                     + ' '
                     + toolSpe?.function?.arguments)

@@ -1056,7 +1056,7 @@ export default function config(cli) {
 					enabledTools: [],	// all if empty
 
 					enableDebugToolsUsage: true,
-					enableDebugToolsResults: true,
+					enableDebugToolsResults: false,
 					enableDebugResponseToolsUsage: false,
 					enableDebugResponsesMessage: false,
 					skipToolResponseFirstLine: false,	// with gamma-1b

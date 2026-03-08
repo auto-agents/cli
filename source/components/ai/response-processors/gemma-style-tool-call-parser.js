@@ -124,7 +124,7 @@ export default class gemmaStyleToolCallParser extends ResponseProcessor {
                 if (this.dbg) console.log('props', props)
 
                 if (this.config.enableDebugToolsUsage)
-                    trace(this.ctx, 'tool required by model: ' + JSON.stringify(toolSpe))
+                    trace(this.ctx, '⚙️ tool required by model: ' + JSON.stringify(toolSpe))
 
                 if (tool) {
 
