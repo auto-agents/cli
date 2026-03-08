@@ -67,7 +67,12 @@ export default function config(cli) {
 				initBoxVisible: true
 			},
 			heartbeatGaugesInterval: 30000,
-			hearbeatUptimeInterval: 60000
+			hearbeatUptimeInterval: 60000,
+			decorators: {
+				replaceUnicodes: [
+					['✅', '✔️']
+				]
+			}
 		},
 		cli: {
 			commandPrefix: '/',

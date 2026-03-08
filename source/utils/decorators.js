@@ -1,10 +1,19 @@
 import util from "util"
 import chalk from "chalk"
 
+export const replaceUnicodes = (ctx, str) => {
+    ctx.ui.decorators.replaceUnicodes.forEach(t => [
+        str = str.replaceAll(t[0], t[1])
+    ])
+    return str
+}
+
 export const box = (ctx, title, lines, output, backgroundColor, borderColor) => {
 
     backgroundColor = chalk.bgHex(backgroundColor || ctx.theme.fileView.backgroundColor)
     borderColor = chalk.hex(borderColor || ctx.theme.fileView.borderColor)
+
+    title = replaceUnicodes(ctx, title)
 
     var tw = util.stripVTControlCharacters(title).length
     var mw = 0
@@ -26,7 +35,7 @@ export const box = (ctx, title, lines, output, backgroundColor, borderColor) => 
     t.push(sideRow(w, bottomRow(w - 2), 0))
 
     lines.forEach(line => {
-        const s = line
+        const s = replaceUnicodes(ctx, line)
         const ts = util.stripVTControlCharacters(s)
         const l = ts.length
         t.push(sideRow(w, s, w - l))

@@ -2,6 +2,7 @@ import { join } from 'path';
 import Status from '../../utils/status.js'
 import utils from '../../utils/utils.js'
 import { renderHTML, renderMarkdown } from 'cli-html';
+import { replaceUnicodes } from '../../utils/decorators.js';
 
 export default class ResponseTextFormater {
 
@@ -13,6 +14,7 @@ export default class ResponseTextFormater {
 
     getRendered(text) {
         //console.log(text)
+        text = replaceUnicodes(this.ctx, text)
         const r = renderMarkdown(text)
         return r
     }

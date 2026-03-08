@@ -15,6 +15,7 @@ import OutputContext from "../data/output-context.js"
 import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled } from "../utils/utils.js"
 import { TUIAgentId } from "../config/config.js"
 import DialogContext from "../data/dialog-context.js"
+import { replaceUnicodes } from "../utils/decorators.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -101,6 +102,7 @@ export default class DialogController {
 	async echoUser(text) {
 		if (!this.output.isEmpty())
 			this.output.newLine(false)
+		text = replaceUnicodes(this.ctx, text)
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
 		this.output.appendLine(
 			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)
