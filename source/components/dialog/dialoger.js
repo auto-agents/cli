@@ -18,7 +18,8 @@ export default class Dialoger {
 
     dialogContexts = {}
 
-    constructor(ctx,
+    constructor(
+        ctx,
         // text -> void
         userEchoFun,
 
@@ -66,33 +67,40 @@ export default class Dialoger {
         options ||= {}
         var results = []
 
+        const dialogContext = new DialogContext(
+            outputContext,
+            this
+        )
+
         // ----- USER -----------------------------------------------------------------------
 
         if (text != null) {
             // 1. echo output
             results.push(
                 await this.fifoStack.addTask(
-                    task(
-                        'user dialog : echo',
-                        async () => {
-                            await this.userEchoFun(text, options)
-                        }
-                    )
+                    dialogContext.setCurrentTask(
+                        task(
+                            'user dialog : echo',
+                            async () => {
+                                await this.userEchoFun(text, options)
+                            }
+                        )).task
                 ))
 
             // 2. eventually speak
             if (isUserSpeakEchoAvailable(this.ctx)) {
                 results.push(
                     await this.fifoStack.addTask(
-                        task(
-                            'user dialog: speak',
-                            async () => {
-                                await this.speakFun(text, {
-                                    ...options,
-                                    voice: options.userVoice
-                                })
-                            }
-                        )
+                        dialogContext.setCurrentTask(
+                            task(
+                                'user dialog: speak',
+                                async () => {
+                                    await this.speakFun(text, {
+                                        ...options,
+                                        voice: options.userVoice
+                                    })
+                                }
+                            )).task
                     ))
             }
         }
@@ -102,28 +110,25 @@ export default class Dialoger {
         var aiResult = null
         // 3. eventually think (includes ai output response)
 
-        const dialogContext = new DialogContext(
-            this
-        )
-
         // AWAIT ...
         if (isAIChatAvailable(this.ctx)) {
             aiResult = await this.fifoStack.addTask(
-                task(
-                    'user dialog: request ai completion',
-                    async task => {
+                dialogContext.setCurrentTask(
+                    task(
+                        'user dialog: request ai completion',
+                        async task => {
 
-                        // must not break await here (task await via addTask)
-                        return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
-                            // THE FIFO,
-                            // AGENT
-                            // TASK
-                            dialogContext,
-                            text,
-                            tool_calls,
-                            options)    // then...
-                    }
-                )
+                            // must not break await here (task await via addTask)
+                            return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
+                                // THE FIFO,
+                                // AGENT
+                                // TASK
+                                dialogContext,
+                                text,
+                                tool_calls,
+                                options)    // then...
+                        }
+                    )).task
             )
             results.push(aiResult)
 
@@ -136,45 +141,68 @@ export default class Dialoger {
             )
                 results.push(
                     await this.fifoStack.addTask(
-                        task(
-                            'assistant dialog: echo + speak',
-                            async () => {
+                        dialogContext.setCurrentTask(
+                            task(
+                                'assistant dialog: echo + speak',
+                                async () => {
 
-                                // echo assistant response
+                                    // echo assistant response
 
-                                options.skipPrependNewLine = false
-                                await this.assistantEchoFun(
-                                    aiResult.result?.content,
-                                    options
-                                )
+                                    options.skipPrependNewLine = false
+                                    await this.assistantEchoFun(
+                                        aiResult.result?.content,
+                                        options
+                                    )
 
-                                // eventually speak
-                                if (isSpeechAvailable(this.ctx))
-                                    await this.speakFun(aiText, {
-                                        ...options,
-                                        voice: options.assistantVoice
-                                    })
-                            }
-                        )
+                                    // eventually speak
+                                    if (isSpeechAvailable(this.ctx))
+                                        await this.speakFun(aiText, {
+                                            ...options,
+                                            voice: options.assistantVoice
+                                        })
+                                }
+                            )).task
                     ))
 
         }
 
-        // TODO: A NEW SEQUENCE QUERY/RESPONSE COULD BE ENGAGED AUTOMATICALLY BY THE THINKER!!
+        // TODO: 
 
         if (aiResult?.result?.message?.tool_calls
             && aiResult?.result?.message?.tool_calls.length > 0
         ) {
+            console.log('-- CHAT LOOP --')
             // loop for tools
-            const result2 = await this.addUserDialog(
-                null,
-                aiResult?.result?.message?.tool_calls,
-                options,
-                outputContext
+
+            results.push(
+                // returns next task to perform
+                [
+                    dialogContext,
+                    task(
+                        'assistant dialog: tools call loop',
+                        async () => {
+                            const result2 = await this.addUserDialog(
+                                null,
+                                aiResult?.result?.message?.tool_calls,
+                                options,
+                                outputContext
+                            )
+                        }
+                    )]
             )
         }
 
         return results
+    }
+
+    // chat loop
+    async AddChatLoop(dialogContext, task) {
+        results.push(
+            await this.fifoStack.addTask(
+                dialogContext.setCurrentTask(
+                    task).task
+            )
+        )
     }
 
     async addAssistantToolingQuestion(text, options) {

@@ -1,9 +1,17 @@
-import { trace } from "../../../utils/utils";
+import {
+    dialogEvent,
+    ToolRequiredByModelDialogEvent,
+    ToolRunCompletedDialogEvent,
+    ToolRunErrorDialogEvent,
+    ToolUnknownDialogEvent
+} from "../../../config/events";
+
 import ResponseProcessor, { Action_Tool_Query } from "../response-processor";
 
 export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
     dbg = false
+    from = 'OpenAIApiToolCallProcessor'
 
     constructor(ctx, config, tools, outputContext) {
         super(ctx, config, tools, outputContext)
@@ -13,19 +21,20 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
     }
 
-    async run(query, response) {
+    async run(dialogContext, response) {
 
         if (!response.tool_calls || response.tool_calls.length == 0) return response
+        const e = this.ctx.components.event
 
         for (var i = 0; i < response.tool_calls.length; i++) {
             const toolSpe = response.tool_calls[i]
 
             if (this.dbg) console.log(toolSpe)
+
             if (this.config.enableDebugToolsUsage)
-                trace(this.ctx, '⚙️ tool required by model: '
-                    + toolSpe?.function?.name
-                    + ' '
-                    + toolSpe?.function?.arguments)
+                e.emit(ToolRequiredByModelDialogEvent,
+                    dialogEvent({ dialogContext: dialogContext, toolSpec: toolSpe })
+                )
 
             const name = toolSpe.function?.name
             const props = JSON.parse(toolSpe.function?.arguments)
@@ -40,10 +49,16 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                 try {
                     // run the tool    
                     r = await tool.run(props)
+                    e.emit(ToolRunCompletedDialogEvent, dialogEvent({
+                        dialogContext: dialogContext, toolSpec: toolSpe, result: r
+                    }))
 
                 } catch (toolError) {
                     r = toolError.message
                     error = true
+                    e.emit(ToolRunErrorDialogEvent, dialogEvent({
+                        dialogContext: dialogContext, toolSpec: toolSpe, error: r
+                    }))
                 }
 
                 if (this.config.enableDebugToolsResults)
@@ -52,16 +67,22 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                 this.addAction(
                     response,
                     Action_Tool_Query,
+                    name,
                     props,
                     r,
                     error,
                     this.constructor.name,
-                    1
+                    1,
+                    toolSpe?.id
                 )
 
                 if (this.dbg) console.log(r)
+
             } else {
-                console.error('unknown tool required by the model: ' + name)
+                e.emit(ToolUnknownDialogEvent, dialogEvent({
+                    dialogContext: dialogContext, toolSpec: toolSpe, message:
+                        'unknown tool required by the model: ' + name
+                }))
 
                 this.addAction(
                     Action_Tool_Query,
@@ -69,7 +90,8 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                     'unknown tool: ' + name,
                     true,
                     this.constructor.name,
-                    1
+                    1,
+                    toolSpe?.id
                 )
             }
         }

@@ -236,28 +236,25 @@ export default class AIChatModule {
         // handle response processors actions : perform actions if no content
         if (hasToolsCalls && !hasContent) {
 
-            //console.log('run tools')
-
             // process response. get tools results in actions. original response unchanged
-            await this.responseProcessors.run(query, r)
+            await this.responseProcessors.run(dialogContext, r)
 
-            var content = ''
+            /*var content = ''
             for (var i = 0; i < r.actions.length; i++) {
 
                 const action = r.actions[i]
                 if (content != '') content += '\n'
                 content += action.result
-            }
-
+            }*/
             const action = r.actions[0]
             // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER : done via Dialoger
             // CASE : after tool result provided call:
             // - assistant responds no content + require tool calls
             const actionHandler = this.#getResponseProcessorActionHandler(action)
 
-            const r2 = await actionHandler.run(/*action*/ content, r, capi, capi.history)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
-            if (content != '') content += '\n'
-            content += r.content
+            const r2 = await actionHandler.run(r.actions, r, capi, capi.history)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
+            //if (content != '') content += '\n'
+            //content += r.content
 
             // agent text result: content
             if (this.config.enableDebugResponseToolsUsage) console.log(content)

@@ -7,11 +7,18 @@ export default class ActionToolQuery extends ActionTool {
         super(ctx, config, tools, queryPreProcessors)
     }
 
-    async run(/*action,*/content, response, capi, history) {
+    /**
+     * run a tool query
+     * @param {Array} actions array of actions
+     * @param {*} response last response (tool require)
+     * @param {*} capi client api
+     * @param {*} history history
+     * @returns 
+     */
+    async run(actions, response, capi, history) {
 
         return await super.run(
-            //action,
-            content,
+            actions,
             response,
             capi,
             history,
@@ -26,7 +33,7 @@ export default class ActionToolQuery extends ActionTool {
                     }
                     return textRes
                 }
-            ], Role_Tool)
+            ])
     }
 
 }

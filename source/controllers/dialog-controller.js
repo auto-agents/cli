@@ -5,6 +5,10 @@ import {
 	LogErrorEvent,
 	SetStatusMessageEvent,
 	SpeakCommandEvent,
+	ToolRequiredByModelDialogEvent,
+	ToolRunCompletedDialogEvent,
+	ToolRunErrorDialogEvent,
+	ToolUnknownDialogEvent,
 	errorEvent
 } from "../config/events.js"
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
@@ -12,7 +16,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
-import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled } from "../utils/utils.js"
+import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning } from "../utils/utils.js"
 import { TUIAgentId } from "../config/config.js"
 import DialogContext from "../data/dialog-context.js"
 import { replaceUnicodes } from "../utils/decorators.js"
@@ -49,12 +53,38 @@ export default class DialogController {
 				await this.queryOpenAIChat(dialogContext, text, tool_calls, options)
 		)
 
-		this.dialoger.run()
+		// -----------------------------------------------------------------
 
-		this.ctx.components.event.on(
-			SpeakCommandEvent,
-			async data => await this.#speakEventHandler(data[0])
-		)
+		this.ctx.components.event
+
+			.on(SpeakCommandEvent,
+				async data => await this.#speakEventHandler(data[0])
+			)
+			.on(ToolRequiredByModelDialogEvent, args => {
+				const ev = args[0]
+				trace(this.ctx, '⚙️ tool required by model: '
+					+ ev.toolSpec?.function?.name
+					+ ' '
+					+ ev.toolSpec?.function?.arguments)
+			})
+			.on(ToolRunCompletedDialogEvent, args => {
+				const ev = args[0]
+				trace(this.ctx, '⚙️ tool run completed: '
+					+ ev.toolSpec?.function?.name)
+			})
+			.on(ToolRunErrorDialogEvent, args => {
+				const ev = args[0]
+				traceWarning(this.ctx, '⚙️ tool run error: '
+					+ ev.error)
+			})
+			.on(ToolUnknownDialogEvent, args => {
+				const ev = args[0]
+				traceError(this.ctx, '⚙️ ' + ev.message)
+			})
+
+		// -----------------------------------------------------------------
+
+		this.dialoger.run()
 	}
 
 	// ------------------------------------------------------
@@ -86,7 +116,7 @@ export default class DialogController {
 	 * @param {String} text 
 	 */
 	async addUserPrompt(text) {
-		await this.dialoger.addUserDialog(
+		const r = await this.dialoger.addUserDialog(
 			text,
 			null,
 			{
@@ -95,6 +125,19 @@ export default class DialogController {
 				assistantVoice: this.#getSystemVoice()
 			},
 			this.output.getOutputContext())
+
+		var end = false
+		while (!end) {
+			if (r && r.length > 0 && r[r.length - 1] > 0) {
+				// a task must be performed at the end
+				// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
+				const dialogContext = r[0]
+				const task = r[1]
+				const r2 = this.dialoger.AddChatLoop(
+					dialogContext, task
+				)
+			} else end = true
+		}
 	}
 
 	// ------------------------------------------------------

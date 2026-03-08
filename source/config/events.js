@@ -48,8 +48,29 @@ export const TaskAddAssistantMessageCommandEvent = 'TaskAddAssistantMessageComma
 export const TaskAddThinkCommandEvent = 'TaskAddThinkCommandEvent'
 export const TaskAddSpeakCommandEvent = 'TaskAddSpeakCommandEvent'
 
+export const ToolUnknownDialogEvent = 'ToolUnknownDialogEvent'
+export const ToolRunCompletedDialogEvent = 'ToolRunCompletedDialogEvent'
+export const ToolRunErrorDialogEvent = 'ToolRunEventDialogEvent'
+export const ToolRequiredByModelDialogEvent = 'ToolRequiredByModelDialogEvent'
+
 export const LogErrorEvent = 'LogErrorEvent'
 export const LogWarningEvent = 'LogWarningEvent'
+
+export const dialogEvent = ({
+    dialogContext,
+    message = null,
+    toolSpec = null,
+    result = null,
+    error = null
+}) => {
+    return {
+        dialogContext: dialogContext,
+        message: message,
+        toolSpec: toolSpec,
+        result: result,
+        error: error
+    }
+}
 
 export const errorEvent = (from, err) => {
     return {

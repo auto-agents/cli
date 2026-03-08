@@ -113,6 +113,22 @@ export const trace = (ctx, str) => {
     )
 }
 
+export const traceWarning = (ctx, str) => {
+    const o = ctx.components.output
+    o.newLine()
+    o.appendLine('⚠️ ' +
+        chalk.hex(ctx.theme.warningColor).italic(str)
+    )
+}
+
+export const traceError = (ctx, str) => {
+    const o = ctx.components.output
+    o.newLine()
+    o.appendLine('💥 ' +
+        chalk.hex(ctx.theme.errorColor).italic(str)
+    )
+}
+
 export const mdBlockJson = json => {
     return "```json\n" + json + "\n```"
 }

@@ -1029,7 +1029,7 @@ export default function config(cli) {
 					enableDebugToolsResults: false,
 					enableDebugResponseToolsUsage: false,
 					enableDebugResponsesMessage: false,
-					skipToolResponseFirstLine: false,	// with gamma-1b
+					skipToolResponseFirstLine: false,	// with gamma-1b true
 					// ------- history necessary for (auto) agentic ? --------
 					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
 					// -------------------------------------------------------

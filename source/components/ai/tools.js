@@ -90,7 +90,7 @@ export default class Tools {
         o.appendLine(margin + 'tools loaded: ' + this.ts.join(','))
     }
 
-    getSpecifications(query) {
+    getSpecifications() {
         const tspecs = []
         for (const name in this.tools) {
             const tool = this.tools[name]

@@ -31,24 +31,20 @@ export default class OpenAIApiClient extends AIApiClient {
 
     async completion(query, tools, role = Role_User) {
 
-        //console.log(this.config)
-
         const queryMessage = {
             role: role, content: query
         }
-
-        /*const messages = [
-             ...this.history.messages,
-             queryMessage
-         ]*/
-
         this.history.messages.push(queryMessage)
+        return await this.completionFromMessages(tools)
+    }
+
+    async completionFromMessages(tools) {
 
         const r = await this.client.chat.completions.create({
             model: this.config.model,
             messages: this.history.messages,
             verbosity: 'high',
-            tools: tools ? tools.getSpecifications(query) : this.config.tools,
+            tools: tools ? tools.getSpecifications() : this.config.tools,
             temperature: this.config.temperature,
             stream: this.config.stream,
             think: this.config.think,
@@ -58,18 +54,10 @@ export default class OpenAIApiClient extends AIApiClient {
             path: this.config.paths.completion
         })
 
-        //console.log(r)
-
         const message = r.choices[0].message
 
         if (this.ctx.servers.llm.openAIApi.enableDebugResponsesMessage)
             console.log(message)
-
-        // /!\ TODO: SKIP THE ORIGINAL RESPONSE
-        // separate 2 cases :
-        // - text completion response in lastContent
-        // - tool response or not
-        // --> may ask for tools again
 
         const rq = {
             role: Role_Assistant,
@@ -77,13 +65,12 @@ export default class OpenAIApiClient extends AIApiClient {
         }
         const u = r.usage
 
-        //this.history.messages.push(rq)
         this.history.messages.push(message)
 
         return {
             response: r,
             message: message,
-            content: rq.content,
+            content: message.content,
             tool_calls: message.tool_calls,
             stats: {
                 tokensPerSecond: null,

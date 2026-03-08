@@ -13,23 +13,28 @@ export default class ResponseProcessor {
     addAction(
         response,
         actionName,
+        functionName,
         arg,
         result,
         error,
         processorId,
-        matchCaseId) {
+        matchCaseId,
+        toolCallId
+    ) {
 
         if (!response.actions)
             response.actions = []
 
         response.actions.push(
             {
+                functionName: functionName,
                 name: actionName,
                 arg: arg,
                 result: result,
                 toolError: error,
                 processorId: processorId,
-                matchCaseId: matchCaseId
+                matchCaseId: matchCaseId,
+                toolCallId: toolCallId
             }
         )
     }
