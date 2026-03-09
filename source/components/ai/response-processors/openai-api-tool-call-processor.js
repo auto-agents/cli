@@ -85,7 +85,9 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                 }))
 
                 this.addAction(
+                    response,
                     Action_Tool_Query,
+                    name,
                     props,
                     'unknown tool: ' + name,
                     true,

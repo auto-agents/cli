@@ -92,10 +92,7 @@ export default class DialogController {
 	/**
 	 * engage dialog
 	 */
-	async hello() {
-		const username = this.ctx.components.sysInfo.username
-		const text = this.ctx.texts.dialog.hello
-			.replace('%username%', chalk.bold(username))
+	async addAssistantMessage(text) {
 
 		await this.dialoger.addSystemMessage(
 			new DialogContext(

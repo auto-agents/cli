@@ -41,6 +41,7 @@ import KeyboardController from './keyboard-controller.js';
 import { getDialogAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../utils/utils.js';
 import { TUIAgentId } from '../config/config.js';
 import AgentsController from './agents-controller.js';
+import chalk from 'chalk';
 
 export default class AppController {
 
@@ -259,7 +260,11 @@ export default class AppController {
 
 		// begin dialog
 		this.event.emit(AppStartedEvent)
-		await this.dialog.hello()
+		const username = this.ctx.components.sysInfo.username
+		await this.dialog.addAssistantMessage(
+			this.ctx.texts.dialog.hello
+				.replace('%username%', chalk.bold(username))
+		)
 		this.output.newLine(true)
 	}
 

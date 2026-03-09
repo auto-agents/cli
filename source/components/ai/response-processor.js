@@ -21,7 +21,6 @@ export default class ResponseProcessor {
         matchCaseId,
         toolCallId
     ) {
-
         if (!response.actions)
             response.actions = []
 

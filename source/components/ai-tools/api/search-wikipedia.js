@@ -1,8 +1,5 @@
 import AITool from '../../ai/ai-tool';
 
-const util = require('node:util');
-const exec = util.promisify(require('node:child_process').exec);
-
 export default class SearchWikipedia extends AITool {
 
     constructor(ctx, config) {

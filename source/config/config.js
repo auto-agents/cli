@@ -888,6 +888,7 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				description: 'speech agent using the plateform configured speech module',
+				id: 'browser-speaker',
 				file: 'speech-module.js',
 
 				enabled: false,
@@ -1169,6 +1170,7 @@ export default function config(cli) {
 		},
 		shell: {
 			platform: platform,
+			commandLaunhcer: null,
 			edit: {
 				[Platforms.windows]: 'notepad %1',
 				[Platforms.mac]: null,
