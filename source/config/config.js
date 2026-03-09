@@ -488,7 +488,7 @@ export default function config(cli) {
 				ready: 'ready'
 			},
 			dumpStackTraces: true,
-			enableDebugLoopTools: true
+			enableDebugLoopTools: false
 		},
 		dialog: {
 			agents: [
@@ -1155,6 +1155,16 @@ export default function config(cli) {
 					think: true,
 					historyPath: join(process.cwd(), saved, 'chat-history.json')
 				},
+			},
+			api: {
+				wikipedia: {
+					urls: {
+						base: 'https://en.wikipedia.org/w/rest.php/v1/',
+						search: 'search/page'
+					},
+					limitPerPage: 10,
+					accessToken: ''
+				}
 			}
 		},
 		shell: {
