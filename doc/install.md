@@ -5,12 +5,9 @@
 ### dependencies
 
 ```shell
-# node js
+# node js (includes npx)
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
 nvm install --lts
-
-# npx
-npm i npx
 
 # bun
 curl -fsSL https://bun.com/install | bash
