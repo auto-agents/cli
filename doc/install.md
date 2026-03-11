@@ -31,6 +31,47 @@ npx -v
 curl -fsSL https://bun.com/install | bash
 ```
 
+### terminal
+
+```shell
+# kitty required for Ink React or other compatible terminal
+# windows terminals works pretty well on windows
+curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+# or
+sudo apt install kitty
+
+# pacman
+sudo apt install pacman     # may not work on wsl ubuntu
+# or
+# ubuntu (wsl)
+sudo apt install fonts-firacode
+sudo apt install font-manager
+
+# emoji support:
+# download font from here: https://fonts.google.com/noto/specimen/Noto+Color+Emoji
+```
+
+### WSL (Windows) Mirrored mode networking
+
+```shell
+## using admin powershell
+# Configure Hyper-V firewall settings to allow inbound connections:
+Set-NetFirewallHyperVVMSetting -Name '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -DefaultInboundAction Allow
+# or
+New-NetFirewallHyperVRule -Name "MyWebServer" -DisplayName "My Web Server" -Direction Inbound -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -Protocol TCP -LocalPorts 80
+
+# wsl setup
+wsl --shutdown
+
+# edit %UserProfile%\.wslconfig
+# setup mirror mode
+[wsl2]
+memory=4GB
+swap=2GB
+networkingMode=mirrored
+
+```
+
 ### code
 
 ```shell

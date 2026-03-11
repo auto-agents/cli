@@ -740,7 +740,7 @@ export default function config(cli) {
 			gaugeLeftTextWidth: 20,
 			gaugeRightTextWidth: 15,
 			// old ink react bug: // terminal add scrollbar (wt)
-			pageBottomMargin: 0,		// patch under 6.8, fixed in 6.8 ?
+			pageBottomMargin: 0,		// patch under 6.8, fixed in 6.8
 			// bad display below these limits
 			minWidth: 145,
 			minHeight: 51,
@@ -1121,6 +1121,7 @@ export default function config(cli) {
 					model: "google/gemma-3-1b",
 					// LM STUDIO
 					baseURL: "http://localhost:1234/v1/",
+					//baseURL: "http://192.168.56.1:1234/v1/",
 					// OLLAMA
 					//baseURL: "http://localhost:11434/api/",
 					// OLLAMA-MCP-BRIDGE
