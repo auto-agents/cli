@@ -496,7 +496,7 @@ export default function config(cli) {
 					id: TUIAgentId,
 					name: 'TUI Agent',
 					chatName: 'seraphina',
-					profileName: 'Assistant',
+					profileName: 'Coding Assistant',
 					imgPath: 'agent-5-48x48.png',
 					enabled: true,
 					system: true,
@@ -950,7 +950,7 @@ export default function config(cli) {
 					//model: 'gpt2-finetuned-recipes-cooking_v2-i1',
 					//model: 'claude-3.7-sonnet-reasoning-gemma3-12b',
 
-					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions related to payment transactions.",
+					instructions: "You are a coding assistant. You can use the following tools to help code and use system tools and applications",
 					//instructions1: 'You are a coding assistant.',
 					//instructions0: 'répond en langue française',
 
