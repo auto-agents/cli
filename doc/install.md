@@ -37,8 +37,11 @@ curl -fsSL https://bun.com/install | bash
 # kitty required for Ink React or other compatible terminal
 # windows terminals works pretty well on windows
 curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
-# or
-sudo apt install kitty
+sudo ln -sf ~/.local/kitty.app/bin/kitty ~/.local/kitty.app/bin/kitten usr/bin/
+sudo cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/
+sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/kitty*.desktop
+sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.local/share/kitty*.desktop
+echo 'kitty.desktop' > ~/.config/xdg-terminals.list
 
 # pacman
 sudo apt install pacman     # may not work on wsl ubuntu

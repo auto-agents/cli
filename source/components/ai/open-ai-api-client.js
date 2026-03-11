@@ -49,8 +49,9 @@ export default class OpenAIApiClient extends AIApiClient {
             temperature: this.config.temperature,
             stream: this.config.stream,
             think: this.config.think,
-            tool_chioce: this.config.tool_chioce,
-            parallel_tool_calls: this.config.parallel_tool_calls
+            tool_choice: this.config.tool_choice,
+            parallel_tool_calls: this.config.parallel_tool_calls,
+            integrations: this.config.integrations
         }
 
         if (options.response_format) props.response_format = options.response_format

@@ -1072,6 +1072,8 @@ export default function config(cli) {
 						'gemma-style-tool-call-parser.js'
 					],
 
+					integrations: ['mcp/chrome-devtools'],	// LM STUDIO
+
 					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations:\n{data}",
 
 					maxRetries: 2,	// default
