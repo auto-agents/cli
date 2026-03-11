@@ -16,7 +16,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
-import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning } from "../utils/utils.js"
+import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
 import { TUIAgentId } from "../config/config.js"
 import DialogContext from "../data/dialog-context.js"
 import { replaceUnicodes } from "../utils/decorators.js"
@@ -326,18 +326,18 @@ export default class DialogController {
 	// ----- speak ---------------------------------------------------
 
 	#getSystemVoice() {
-		return getDialogAgent(this.ctx, TUIAgentId).speak.preferredVoices
-		[this.ctx.modules.speech.config.browser][0]
+		return getDialogAgent(this.ctx, TUIAgentId)
+			.speak.preferredVoices[this.ctx.modules.speech.config.browser][0];
 	}
 
 	#getUserVoice() {
-		return getDialogAgent(this.ctx, TUIAgentId).repeatUserQuery.preferredVoices
-		[this.ctx.modules.speech.config.browser][0]
+		return getDialogAgent(this.ctx, TUIAgentId)
+			.repeatUserQuery.preferredVoices[this.ctx.modules.speech.config.browser][0];
 	}
 
 	#isAIChatAvailable() {
 		return this.ctx.components.module.AIChat != null
-			&& this.ctx.components.module.AIChat !== undefined
+			&& this.ctx.components.module.AIChat !== undefined;
 	}
 
 	async #speakEventHandler(data) {

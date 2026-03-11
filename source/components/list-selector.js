@@ -33,7 +33,6 @@ const ListSelector = ({
 	items ||= []
 	limit ||= 8
 	minHeight ||= 3
-	limit ||= 5
 	title ||= 'select an item:'
 
 	const e = ctx.components.event
@@ -81,8 +80,9 @@ const ListSelector = ({
 				e.emit(HideInitBoxOutputEvent)
 			const props = args[0]
 			const items = props.items
-			const width = items.map(item => item.label.length)
-				.reduce((p, c) => Math.max(p, c))
+			const width = items.length == 0 ? 0 :
+				items.map(item => item.label.length)
+					.reduce((p, c) => Math.max(p, c))
 
 			props.minHeight = props.items.length + 2
 			setListSelectorProps({
@@ -101,7 +101,7 @@ const ListSelector = ({
 	return (
 		listSelectorProps.visible &&
 		<Box minHeight={listSelectorProps.minHeight + 2}
-			height={listSelectorProps.height + 2}
+			height={listSelectorProps.minHeight + 2}
 			marginBottom={0} marginTop={1} flexDirection="row" flexGrow={0}>
 			<Box flexDirection="column">
 				<Text marginBottom={0}>{listSelectorProps.title}</Text>

@@ -110,7 +110,7 @@ const ScrollOutput = ({
 		innerWidth: 0,
 		scrollTop: 0
 	});
-	const [scrollbar, setScrollbar] = useState(0)
+	const [scrollbar, setScrollbar] = useState("")
 	const viewportRef = useRef();
 	const textboxRef = useRef();
 
@@ -137,7 +137,7 @@ const ScrollOutput = ({
 		dispatch({
 			type: 'SET_INNER_HEIGHT',
 			innerHeight: dimensions?.height,
-			innerWith: dimensions?.width,
+			innerWidth: dimensions?.width,
 			source: o
 		});
 
