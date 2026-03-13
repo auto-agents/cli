@@ -1,6 +1,6 @@
 import { Role_Assistant, Role_User } from './roles.js'
 import { LMStudioClient, tool } from "@lmstudio/sdk";
-import { Chat } from "@lmstudio/sdk";
+import { Agent } from "@lmstudio/sdk";
 import AIApiClient from './ai-api-client.js'
 import { z } from "zod";
 
@@ -35,7 +35,7 @@ export default class LMStudioJSApiClient extends AIApiClient {
             queryMessage
         ]
 
-        const chat = Chat.from(messages)
+        const chat = Agent.from(messages)
 
         const model = await this.client.llm.model(this.config.model)
 

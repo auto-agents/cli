@@ -96,9 +96,9 @@ export const isSpeakErrorsEnabled = ctx => {
         && isSpeechAvailable(ctx)
 }
 
-export const isAIChatAvailable = ctx => {
-    return ctx.components.module.AIChat != null
-        && ctx.components.module.AIChat !== undefined
+export const isAIAgentAvailable = ctx => {
+    return ctx.components.module.AIAgent != null
+        && ctx.components.module.AIAgent !== undefined
 }
 
 export const isAppInitialized = ctx => {
@@ -166,7 +166,7 @@ export default {
     resolvePath,
     isSpeechAvailable,
     isUserSpeakEchoAvailable,
-    isAIChatAvailable,
+    isAIAgentAvailable,
     trace,
     mdBlockJson,
     isSpeakErrorsEnabled,

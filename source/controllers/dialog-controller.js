@@ -16,7 +16,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
-import { getAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
+import { getAgent, isAIAgentAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
 import { TUIAgentId } from "../config/config.js"
 import DialogContext from "../data/dialog-context.js"
 import { replaceUnicodes } from "../utils/decorators.js"
@@ -50,7 +50,7 @@ export default class DialogController {
 
 			// thinkFun
 			async (dialogContext, text, tool_calls, options) =>
-				await this.queryOpenAIChat(dialogContext, text, tool_calls, options)
+				await this.queryOpenAIAgent(dialogContext, text, tool_calls, options)
 		)
 
 		// -----------------------------------------------------------------
@@ -214,7 +214,7 @@ export default class DialogController {
 		on,
 		{ agents }
 	) {
-		if (!isAIChatAvailable(this.ctx)) return
+		if (!isAIAgentAvailable(this.ctx)) return
 
 		if (on == this.duoModeEnabled) return
 		this.duoModeEnabled = on
@@ -232,12 +232,12 @@ export default class DialogController {
 		o.newLine()
 		o.appendLine(cmtCol(`agent 2 is '${chalk.bold(agent1.name)}' with instructions: ${agent2.instructions}`))
 
-		const chat = this.ctx.components.module.AIChat
-		const primaryChat = chat.api
-		const secondaryChat = chat.apiSecondary
+		const chat = this.ctx.components.module.AIAgent
+		const primaryAgent = chat.api
+		const secondaryAgent = chat.apiSecondary
 		const sp = this.ctx.components.module.speech
 
-		//var lastAssistMessage = primaryChat.history.getLastAssistantMessage()
+		//var lastAssistMessage = primaryAgent.history.getLastAssistantMessage()
 		//if (!lastAssistMessage) {
 		var lastAssistMessage = {
 			role: Role_Assistant,
@@ -250,10 +250,10 @@ export default class DialogController {
 			}
 		}*/
 
-		secondaryChat.history.instructions = agent2.instructions
-		secondaryChat.history.reset()
-		primaryChat.history.instructions = agent1.instructions
-		primaryChat.history.reset()
+		secondaryAgent.history.instructions = agent2.instructions
+		secondaryAgent.history.reset()
+		primaryAgent.history.instructions = agent1.instructions
+		primaryAgent.history.reset()
 
 		// wait idle
 		if (isTUIAgentSpeakEnabled(this.ctx)
@@ -286,7 +286,7 @@ export default class DialogController {
 
 			// 2 ------ query	1 ----- speak
 
-			await this.queryOpenAIChat(message, false,
+			await this.queryOpenAIAgent(message, false,
 				{
 					secondary: true,
 					// who responds
@@ -299,7 +299,7 @@ export default class DialogController {
 			//await this.waitSpeechIdle()
 
 			// build the primary history from the secondary history
-			message = secondaryChat.history.getLastAssistantMessage()
+			message = secondaryAgent.history.getLastAssistantMessage()
 
 			await this.sleep(250)
 
@@ -308,7 +308,7 @@ export default class DialogController {
 			// 1 ----- query	2 ----- speak
 
 			// chat from the primary history
-			await this.queryOpenAIChat(message, false, {
+			await this.queryOpenAIAgent(message, false, {
 				secondary: false,
 				// who speaks
 				voice: this.ctx.agents.speakDuo.preferredVoices,
@@ -319,7 +319,7 @@ export default class DialogController {
 			//await this.waitSpeechSpeak()
 			//await this.waitSpeechIdle()
 
-			message = primaryChat.history.getLastAssistantMessage()
+			message = primaryAgent.history.getLastAssistantMessage()
 		}
 	}
 
@@ -335,9 +335,9 @@ export default class DialogController {
 			.repeatUserQuery.preferredVoices[this.ctx.modules.speech.config.browser][0];
 	}
 
-	#isAIChatAvailable() {
-		return this.ctx.components.module.AIChat != null
-			&& this.ctx.components.module.AIChat !== undefined;
+	#isAIAgentAvailable() {
+		return this.ctx.components.module.AIAgent != null
+			&& this.ctx.components.module.AIAgent !== undefined;
 	}
 
 	async #speakEventHandler(data) {
@@ -410,12 +410,12 @@ export default class DialogController {
 		}
 	}
 
-	async queryOpenAIChat(
+	async queryOpenAIAgent(
 		dialogContext,
 		query,
 		tool_calls,
 		options) {
-		if (!this.#isAIChatAvailable())
+		if (!this.#isAIAgentAvailable())
 			return
 		const e = this.ctx.components.event
 
@@ -425,7 +425,7 @@ export default class DialogController {
 			this.From,
 			this.ctx.cli.statusMessages[StatusEnum.waiting],
 			this.ctx.cli.statusMessages.completing,
-			this.ctx.components.module.AIChat.api.config.model
+			this.ctx.components.module.AIAgent.api.config.model
 		))
 
 
@@ -439,12 +439,12 @@ export default class DialogController {
 			secondary: false
 		}
 
-		const r = await this.ctx.components.module.AIChat
+		const r = await this.ctx.components.module.AIAgent
 
 			.chat(dialogContext, query, tool_calls, options)
 
 			.then(async resp => {
-				this.ctx.components.module.AIChat.lastResponse = resp
+				this.ctx.components.module.AIAgent.lastResponse = resp
 				const txt = resp.content
 				e.emit(SetStatusMessageEvent)
 

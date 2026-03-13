@@ -203,7 +203,7 @@ export default function config(cli) {
 				},
 				{
 					names: ['agent', 'ag', 'a'],
-					description: 'configure and control the agents (use agent id from --id agentId, default agent "tui"',
+					description: 'configure and control the agents (use agent id from --id agentId, default to agent "TUI"',
 					config: {
 						options: {
 							action: {
@@ -262,7 +262,7 @@ export default function config(cli) {
 							list: {
 								type: "boolean",
 								required: false,
-								description: "list models with if action is 'model'"
+								description: "list models when action is 'model'"
 							},
 							l: {
 								type: "boolean",
@@ -272,7 +272,7 @@ export default function config(cli) {
 							select: {
 								type: "boolean",
 								required: false,
-								description: "allows to select a model with if action is 'model'"
+								description: "allows to select a model when action is 'model'"
 							},
 							s: {
 								type: "boolean",
@@ -504,8 +504,10 @@ export default function config(cli) {
 				{
 					id: TUIAgentId,
 					name: 'TUI Agent',
-					moduleName: 'openAIChat',
-					provider: 'lmStudioOpenAIEndPoints',
+					moduleName: 'anythingLLMAIAgent',
+					//moduleName: 'openAIAgent',
+					//provider: 'lmStudioOpenAIEndPoints',
+					provider: 'anythingLLMDesktop',
 					module: null,
 
 					chatName: 'seraphina',
@@ -745,7 +747,7 @@ export default function config(cli) {
 			}
 		},
 		layout: {
-			headerHeight: 15,
+			headerHeight: 14,
 			promptAreaHeight: 5,
 			gaugeLeftColWidth: 45,
 			gaugeRightColWidth: 30,
@@ -781,14 +783,14 @@ export default function config(cli) {
 						key: 'voice recognition',
 						value: ''
 					},
-					AIChat: {
-						key: 'AI Api chat',
+					AIAgent: {
+						key: 'TUI AI Api agent',
 						value: ''
 					},
-					AIAgents: {
+					/*AIAgents: {
 						key: 'AI Api agents',
 						value: ''
-					}
+					}*/
 				}
 			},
 			layout: {
@@ -944,7 +946,7 @@ export default function config(cli) {
 				enabled: false,
 				isLoaded: false
 			},
-			openAIChat: {
+			openAIAgent: {
 				/*
 				* OpenAI chat module configuration
 				*/
@@ -982,7 +984,7 @@ export default function config(cli) {
 					parallel_tool_calls: true,	// true (default) | false
 				}
 			},
-			ollamaAIChat: {
+			ollamaAIAgent: {
 				/*
 				* Ollama chat module configuration
 				*/
@@ -998,14 +1000,13 @@ export default function config(cli) {
 				internal: true,
 
 				config: {
-					apiKey: "",
 					//model: "qwen3:0.6b",
 					//model: "gemma3:1b",
 					temperature: 0.7,
 					instructions: 'You are a coding assistant.'
 				}
 			},
-			lmStudioAIChat: {
+			lmStudioAIAgent: {
 				/*
 				* LM Studio chat module configuration
 				*/
@@ -1029,7 +1030,7 @@ export default function config(cli) {
 					instructions: 'You are a coding assistant.',
 				}
 			},
-			lmStudioJSAIChat: {
+			lmStudioJSAIAgent: {
 				/*
 				* LM Studio chat module configuration
 				*/
@@ -1052,7 +1053,7 @@ export default function config(cli) {
 					instructions: 'You are a coding assistant.',
 				}
 			},
-			anythingLLMAIChat: {
+			anythingLLMAIAgent: {
 				/*
 				* Anything LLM chat module configuration
 				*/
@@ -1069,7 +1070,7 @@ export default function config(cli) {
 
 				config: {
 					//model: 'google/gemma-2-9b',
-					model: "mistralai/ministral-3-3b",
+					//model: "mistralai/ministral-3-3b",
 					//model: 'qwen3-1.7b',
 					//model: 'qwen3-0.6b',
 					temperature: 0,
@@ -1130,7 +1131,6 @@ export default function config(cli) {
 					/*
 					* LM Studio API configuration
 					*/
-					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
 					provider: 'lmStudioApiEndPoints',
 					integrations: ['mcp/chrome-devtools'],	// LM STUDIO
@@ -1147,7 +1147,6 @@ export default function config(cli) {
 					/*
 					* openAI API configuration
 					*/
-					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
 					provider: 'lmStudioOpenAIEndPoints',
 					tool_choice: "auto",	// auto (default) | any | none
@@ -1163,6 +1162,8 @@ export default function config(cli) {
 				},
 				anythingLLMDesktop: {
 					provider: 'anythingLLMDesktop',
+					//model: 'qwen3-vl:4b-instruct'
+					model: 'mon-espace-de-travail'
 				},
 
 				// models providers
@@ -1171,7 +1172,7 @@ export default function config(cli) {
 					lmStudioApiEndPoints: {
 						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
 						port: 1234,
-						baseUrl: 'http://localhost:{port}/api/v1',
+						baseURL: 'http://localhost:{port}/api/v1',
 						paths: {
 							completion: '/chat'
 						}
@@ -1179,7 +1180,7 @@ export default function config(cli) {
 					lmStudioJSApiEndPoints: {
 						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
 						port: 1234,
-						baseUrl: 'ws://localhost:{port}',
+						baseURL: 'ws://localhost:{port}',
 						paths: {
 							completion: '/chat'
 						}
@@ -1195,7 +1196,7 @@ export default function config(cli) {
 					ollamaOpenAIEndPoints: {
 						apiKey: null,
 						port: 11434,
-						baseUrl: 'http://localhost:{port}/api/',
+						baseURL: 'http://localhost:{port}/api/',
 						paths: {
 							completion: '/chat/completions'
 						}
@@ -1203,7 +1204,7 @@ export default function config(cli) {
 					ollamaMCPBridgeOpenAIEndPoints: {
 						apiKey: 'change-me',
 						port: 8000,
-						baseUrl: 'http://localhost:{port}/',
+						baseURL: 'http://localhost:{port}/',
 						paths: {
 							completion: '/chat/completions'
 						}
@@ -1211,9 +1212,10 @@ export default function config(cli) {
 					anythingLLMDesktop: {
 						apiKey: 'ZF7K5TV-Z7Y42ZW-KFEPZDZ-NQ6KYR9',
 						port: 3001,
-						baseUrl: 'http://localhost:{port}/v1/',
+						baseURL: 'http://localhost:{port}/api/v1/',
 						paths: {
-							completion: '/openai/chat/completions'
+							completion: '/openai/chat/completions',
+							list: '/openai/models'
 						}
 					}
 				}

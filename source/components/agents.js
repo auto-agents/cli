@@ -170,13 +170,13 @@ const Agents = ({ ctx }) => {
 		}
 	}, [])
 
-	/* ----- module AIChat unloaded ----- */
+	/* ----- module AIAgent unloaded ----- */
 
 	useEffect(() => {
 		const listener = args => {
 
-			if (ctx.components.module.AIChat == null
-				|| ctx.components.module.AIChat === undefined
+			if (ctx.components.module.AIAgent == null
+				|| ctx.components.module.AIAgent === undefined
 			) {
 				// cleanup agent view
 				setTimeout(() => {

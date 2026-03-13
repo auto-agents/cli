@@ -228,8 +228,7 @@ export default function App({ ctx }) {
 						<LeftGauge prop={ctx.data.ram.usage} ctx={ctx} />
 						<LeftGauge prop={ctx.data.app.modules.speech} ctx={ctx} />
 						<LeftGauge prop={ctx.data.app.modules.recognition} ctx={ctx} />
-						<LeftGauge prop={ctx.data.app.modules.AIChat} ctx={ctx} />
-						<LeftGauge prop={ctx.data.app.modules.AIAgents} ctx={ctx} />
+						<LeftGauge prop={ctx.data.app.modules.AIAgent} ctx={ctx} />
 					</Box>
 
 					{ /* title */}
@@ -260,7 +259,6 @@ export default function App({ ctx }) {
 						<RightGauge prop={ctx.data.layout.output.rows} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.output.cols} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.output.lines} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />

@@ -14,7 +14,7 @@ export default class GetToolsList extends AITool {
     }
 
     async run() {
-        const tools = this.ctx.components.module.AIChat?.tools
+        const tools = this.ctx.components.module.AIAgent?.tools
         if (!tools) return
         const t = tools.getAllTools()
         const lst = []

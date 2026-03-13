@@ -288,8 +288,7 @@ export default class AppController {
 		}
 		initModuleGauge('speech')
 		initModuleGauge('recognition')
-		initModuleGauge('AIChat')
-		initModuleGauge('AIAgents')
+		initModuleGauge('AIAgent')
 	}
 
 	async runInput(inp) {

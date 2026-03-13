@@ -17,8 +17,8 @@ export default class AgentsController {
 
         e.on(ModuleLoadedEvent, args => {
             const mn = args[0]
-            if (ctx.components.module.AIChat != null
-                && ctx.components.module.AIChat !== undefined
+            if (ctx.components.module.AIAgent != null
+                && ctx.components.module.AIAgent !== undefined
             ) {
                 // ai chat module loaded
                 // add view agent : TUI Agent

@@ -1,7 +1,7 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../config/events.js'
-import { getAgent, isAIChatAvailable } from '../utils/utils.js'
+import { getAgent, isAIAgentAvailable } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { TUIAgentId } from '../config/config.js'
@@ -93,30 +93,30 @@ export default class AgentCommand extends Command {
 				const format = this.getValue(com, args, argFormat)
 				if (!this.checkParameter(com, argFormat, format))
 					return
-				if (!this.checkModuleAvailable('OpenAIChat'))
+				if (!this.checkModuleAvailable('OpenAIAgent'))
 					return
-				if (isAIChatAvailable(this.ctx))
-					this.ctx.components.module.AIChat.saveHistory(file, format)
+				if (isAIAgentAvailable(this.ctx))
+					this.ctx.components.module.AIAgent.saveHistory(file, format)
 				break
 
 			case 'clear':
 			case 'c':
-				if (isAIChatAvailable(this.ctx))
-					this.ctx.components.module.AIChat.clearHistory()
+				if (isAIAgentAvailable(this.ctx))
+					this.ctx.components.module.AIAgent.clearHistory()
 				break
 
 			case 'h':
 			case 'history':
-				if (isAIChatAvailable(this.ctx)) {
+				if (isAIAgentAvailable(this.ctx)) {
 					dumpAgent(o, 'history')
-					e.emit(RunCommandEvent, "app get components.module.AIChat.api.history.messages")
+					e.emit(RunCommandEvent, "app get components.module.AIAgent.api.history.messages")
 				}
 				break
 
 			case 'model':
-				if (!isAIChatAvailable(this.ctx))
+				if (!isAIAgentAvailable(this.ctx))
 					return
-				const aichat = this.ctx.components.module.AIChat
+				const aichat = this.ctx.components.module.AIAgent
 				const mlist = await aichat.list()
 				if (!mlist) return
 
@@ -173,7 +173,7 @@ export default class AgentCommand extends Command {
 						null,
 						true,
 						(item) => {
-							this.ctx.components.module.AIChat.api.config.model = item.label
+							this.ctx.components.module.AIAgent.api.config.model = item.label
 							o.newLine()
 							o.appendLine('agent model set to: ' + item.label)
 						}

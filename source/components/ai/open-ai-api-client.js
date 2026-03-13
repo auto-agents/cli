@@ -24,8 +24,10 @@ export default class OpenAIApiClient extends AIApiClient {
     }
 
     async list() {
-        const r = await this.client.models.list()
-        //console.log(r)
+        const opts = {}
+        if (this.config.paths.list)
+            opts.path = this.config.paths.list
+        const r = await this.client.models.list(opts)
         return r
     }
 
