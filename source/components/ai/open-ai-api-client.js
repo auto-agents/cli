@@ -17,7 +17,7 @@ export default class OpenAIApiClient extends AIApiClient {
         this.client = new OpenAiApi({
             apiKey: c.apiKey,
             maxRetries: c.maxRetries,
-            baseURL: c.baseURL
+            baseURL: c.baseURL.replace('{port}', c.port)
         })
 
         return this
@@ -44,7 +44,7 @@ export default class OpenAIApiClient extends AIApiClient {
 
             model: this.config.model,
             messages: this.history.messages,
-            verbosity: 'high',
+            verbosity: 'high',  // no effect in openai api
             tools: tools ? tools.getSpecifications() : this.config.tools,
             temperature: this.config.temperature,
             stream: this.config.stream,

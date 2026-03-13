@@ -1031,6 +1031,29 @@ export default function config(cli) {
 					instructions: 'You are a coding assistant.',
 				}
 			},
+			anythingLLMAIChat: {
+				/*
+				* Anything LLM chat module configuration
+				*/
+				description: 'Anything LLM chat module using OpenAI API interface (HTTP transport)',
+				file: 'ai-chat.js',
+
+				apiName: 'AnythingLLM',
+				apiClientFilepath: "../components/ai/lm-studio-api-client.js",
+				apiClientConfig: "ctx.servers.llm.anythingLLMDesktop",
+
+				enabled: false,
+				isLoaded: false,
+
+				config: {
+					//model: 'google/gemma-2-9b',
+					model: "mistralai/ministral-3-3b",
+					//model: 'qwen3-1.7b',
+					//model: 'qwen3-0.6b',
+					temperature: 0,
+					instructions: 'You are a coding assistant.',
+				}
+			},
 			openAIAgents: {
 				description: 'AI api for agents. not implemented yet',
 				file: 'open-ai-agents.js',
@@ -1073,14 +1096,12 @@ export default function config(cli) {
 						'gemma-style-tool-call-parser.js'
 					],
 
-					integrations: ['mcp/chrome-devtools'],	// LM STUDIO
-
 					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations:\n{data}",
 
 					maxRetries: 2,	// default
 					stream: false,
 					think: true,
-					historyPath: join(process.cwd(), saved, 'chat-history.json')
+					historyPath: join(process.cwd(), saved, 'chat-history.json'),
 				},
 				// SETTING TO RUN MCP WITH LM STUDIO. NO TOOLS. NO MESSAGES
 				lmStudioApi: {
@@ -1091,14 +1112,11 @@ export default function config(cli) {
 					model: "google/gemma-3-1b",
 					port: 1234,
 					baseURL: "http://localhost:{port}/api/v1",
-					temperature: 0.7,
+					provider: 'lmStudioApiEndPoints',
 					paths: {
 						completion: '/chat'
 					},
 					integrations: ['mcp/chrome-devtools'],	// LM STUDIO
-					maxRetries: 2,	// default
-					stream: false,
-					think: true
 				},
 				lmStudioJSApi: {
 					/*
@@ -1107,14 +1125,11 @@ export default function config(cli) {
 					model: "google/gemma-3-1b",
 					// LM STUDIO
 					baseURL: "ws://localhost:1234",
-					temperature: 0.7,
+					provider: 'lmStudioAJSApiEndPoints',
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'
-					},
-					maxRetries: 2,	// default
-					stream: false,
-					think: true
+					}
 				},
 				// SETTING TO RUN TOOLS WITH LM STUDIO / OLLAMA / ETC... NO MCP. MESSAGES
 				openAIApi: {
@@ -1123,45 +1138,38 @@ export default function config(cli) {
 					*/
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
-					// LM STUDIO
-					port: 1234,
 					baseURL: "http://localhost:{port}/v1/",
-					provider: 'lmStudioApiEndPoints',
-					paths: {
-						// LM STUDIO
-						completion: '/chat/completions'
-					},
-
+					provider: 'lmStudioOpenAIEndPoints',
 					tool_choice: "auto",	// auto (default) | any | none
 					parallel_tool_calls: true,	// true (default) | false
-					tools: [],
-					enabledTools: [],	// all if empty
 				},
 				ollamaMCPBridgeAI: {
 					/*
 					* ollama MCP Bridge API configuration
 					*/
-					apiKey: 'change-me',
 					model: "qwen3:4b",
 					// OLLAMA-MCP-BRIDGE
-					port: 8000,
-					baseURL: "http://localhost:{port}",
-					//baseURL: "http://localhost:11434/",	// ollama direct
-					temperature: 0.7,
-					maxRetries: 2,	// default
-					stream: false,
-					// true,false (swen3) low,medium,high (gpt-oss)
-					think: true
+					provider: 'ollamaMCPBridgeOpenAIEndPoints',
 				},
 				anythingLLMDesktop: {
-
+					provider: 'anythingLLMDesktop',
 				},
+
 				// models providers
+
 				providers: {
 					lmStudioApiEndPoints: {
 						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
 						port: 1234,
 						baseUrl: 'http://localhost:{port}/api/v1',
+						paths: {
+							completion: '/chat'
+						}
+					},
+					lmStudioJSApiEndPoints: {
+						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
+						port: 1234,
+						baseUrl: 'ws://localhost:{port}',
 						paths: {
 							completion: '/chat'
 						}

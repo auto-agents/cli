@@ -41,6 +41,10 @@ export default class AIChatModule {
             ...this.apiClientConfig,
             ...this.config
         }
+        this.config = {
+            ... this.config,
+            ...ctx.servers.llm.providers[this.config.provider]
+        }
 
         this.outputContext = outputContext
         this.spinner = new SpinnerService(ctx, outputContext.output)
