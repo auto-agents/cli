@@ -28,7 +28,7 @@ export default class ModuleCommand extends Command {
 		output.appendLine(margin + c.title('Available modules:'))
 		output.newLine()
 
-		const dump = (name, module, pad) => {
+		const dump = (name, module, w) => {
 			const isLoaded = module.isLoaded
 			const isInternal = module.internal
 			const st =
