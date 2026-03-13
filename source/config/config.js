@@ -202,8 +202,8 @@ export default function config(cli) {
 					file: 'config-command.js'
 				},
 				{
-					names: ['dialog', 'dial', 'd'],
-					description: 'configure and control the dialog with the cli tool',
+					names: ['agent', 'ag', 'a'],
+					description: 'configure and control the agents (use agent id from --id agentId, default agent "tui"',
 					config: {
 						options: {
 							action: {
@@ -218,21 +218,21 @@ export default function config(cli) {
 										value: 'su',
 										description: 'alias for shet-up'
 									},
-									{
+									/*{
 										value: 'duo-on',
 										description: 'activate the agent chat dialog duo mode'
 									},
 									{
 										value: 'duo-off',
 										description: 'stop the agent chat dialog duo mode'
-									},
+									},*/
 									{
 										value: 'save',
-										description: 'save the current dialog history into a file. eg: --action save --file myfile.txt'
+										description: 'save the dialog history into a file. eg: --action save --file myfile.txt'
 									},
 									{
 										value: 'clear',
-										description: 'clear current chat histories'
+										description: 'clear chat history'
 									},
 									{
 										value: 'c',
@@ -252,6 +252,12 @@ export default function config(cli) {
 									}
 								],
 								description: 'an action order for the dialog controller'
+							},
+							id: {
+								type: "string",
+								required: false,
+								default: "tui",
+								description: "the agent id, default is 'tui'"
 							},
 							list: {
 								type: "boolean",
@@ -273,7 +279,7 @@ export default function config(cli) {
 								required: false,
 								description: "alias for select"
 							},
-							agent1_instructions: {
+							/*agent1_instructions: {
 								type: 'string',
 								required: false,
 								description: 'instructions for the agent 1 when duo mode enabled'
@@ -282,7 +288,7 @@ export default function config(cli) {
 								type: 'string',
 								required: false,
 								description: 'instructions for the agent 2 when duo mode enabled'
-							},
+							},*/
 							file: {
 								type: 'string',
 								required: false,
@@ -348,7 +354,7 @@ export default function config(cli) {
 					file: 'module-command.js'
 				},
 				{
-					names: ['app', 'a'],
+					names: ['app'],
 					description: 'access to settings, configuration, run-time variables',
 					config: {
 						options: {
