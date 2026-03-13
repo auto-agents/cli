@@ -27,8 +27,8 @@ export default class ShellExec extends AITool {
 
     async run(args) {
         const com = args?.command
-        //const stdout = execSync("wsl " + com + pars).toString();
         let { stdout, stderr } = await exec(com)
+        //console.log('ici')
         //console.log(stdout)
         if (!stdout || stdout.length == 0)
             stdout = "command has been executed successfully"

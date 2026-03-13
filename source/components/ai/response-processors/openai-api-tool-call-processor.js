@@ -79,6 +79,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                 if (this.dbg) console.log(r)
 
             } else {
+
                 e.emit(ToolUnknownDialogEvent, dialogEvent({
                     dialogContext: dialogContext, toolSpec: toolSpe, message:
                         'unknown tool required by the model: ' + name
