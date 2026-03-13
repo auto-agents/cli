@@ -959,8 +959,8 @@ export default function config(cli) {
 					responseProcessors: [
 						'openai-api-tool-call-processor.js'
 					],
-					temperature: 0.1,
-					tool_choice: "any",	// auto (default) | any | none
+					temperature: 0,
+					tool_choice: "auto",	// auto (default) | any | none
 					parallel_tool_calls: true,	// true (default) | false
 				}
 			},
@@ -1001,10 +1001,11 @@ export default function config(cli) {
 				isLoaded: false,
 
 				config: {
-					model: 'google/gemma-2-9b',
+					//model: 'google/gemma-2-9b',
+					model: "mistralai/ministral-3-3b",
 					//model: 'qwen3-1.7b',
 					//model: 'qwen3-0.6b',
-					temperature: 0.7,
+					temperature: 0,
 					instructions: 'You are a coding assistant.',
 				}
 			},
@@ -1051,7 +1052,7 @@ export default function config(cli) {
 					tools: [],
 					enabledTools: [],	// all if empty
 
-					tool_choice: "any",	// auto (default) | any | none
+					tool_choice: "auto",	// auto (default) | any (ministral) | none | required (lm studio)
 					parallel_tool_calls: true,	// true (default) | false
 
 					tool_output_preferred_format: Tool_Output_Format_Json,
@@ -1081,6 +1082,7 @@ export default function config(cli) {
 					think: true,
 					historyPath: join(process.cwd(), saved, 'chat-history.json')
 				},
+				// SETTING TO RUN MCP WITH LM STUDIO. NO TOOLS. NO MESSAGES
 				lmStudioApi: {
 					/*
 					* LM Studio API configuration
@@ -1092,7 +1094,7 @@ export default function config(cli) {
 					paths: {
 						completion: '/chat'
 					},
-					integrations: ["mcp/desktop-commander"],
+					integrations: ['mcp/chrome-devtools'],	// LM STUDIO
 					maxRetries: 2,	// default
 					stream: false,
 					think: true,
@@ -1115,6 +1117,7 @@ export default function config(cli) {
 					think: true,
 					historyPath: join(process.cwd(), saved, 'chat-history.json')
 				},
+				// SETTING TO RUN TOOLS WITH LM STUDIO / OLLAMA / ETC... NO MCP. MESSAGES
 				openAIApi: {
 					/*
 					* openAI API configuration
@@ -1132,6 +1135,7 @@ export default function config(cli) {
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'
+						//completion: '/responses'
 						// OLLAMA
 						//completion: '/chat'
 					},
@@ -1159,6 +1163,14 @@ export default function config(cli) {
 					think: true,
 					historyPath: join(process.cwd(), saved, 'chat-history.json')
 				},
+				anythingLLMDesktop: {
+					runtime: {
+						[Platforms.windows]: 'C:/Users/{username}/AppData/Local/Programs/AnythingLLM',
+						[Platforms.mac]: null,
+						[Platforms.linux]: null
+					},
+					port: 3001
+				}
 			},
 			api: {
 				wikipedia: {

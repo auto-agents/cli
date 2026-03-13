@@ -29,6 +29,15 @@ npx -v
 
 # bun
 curl -fsSL https://bun.com/install | bash
+
+# yarn
+npm install --global yarn
+# issues on windows 11
+cd c:\program files\nodejs
+rm yarn
+rm yarn.cmd
+rm yarn.ps1
+
 ```
 
 ### terminal
@@ -95,4 +104,13 @@ bun install
 
 ```shell
 ./run.sh
+```
+
+### Anything LLM for auto agents
+
+```shell
+
+# setup for auto-agents
+source/config/config.js
+
 ```

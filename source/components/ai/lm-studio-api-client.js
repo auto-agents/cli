@@ -32,7 +32,7 @@ export default class LMStudioApiClient extends AIApiClient {
 
         const messages = [
             ...this.history.messages,
-            queryMessage
+            queryMessageget
         ]
 
         //console.log('messages=', messages)
