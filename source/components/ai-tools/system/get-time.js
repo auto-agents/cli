@@ -1,4 +1,5 @@
 import AITool from "../../ai/ai-tool";
+import { Tool_Output_Format_PlainText } from "../../ai/tools";
 
 export default class GetTime extends AITool {
 
@@ -47,16 +48,7 @@ export default class GetTime extends AITool {
                 adjustedDate = new Date(date.getTime() + (offset * 60 * 60 * 1000));
             }
 
-            // Format as HH:mm:ss
-            const hours = String(adjustedDate.getHours()).padStart(2, '0');
-            const minutes = String(adjustedDate.getMinutes()).padStart(2, '0');
-            const seconds = String(adjustedDate.getSeconds()).padStart(2, '0');
-
-            return {
-                hours: hours,
-                minutes: minutes,
-                seconds: seconds
-            };
+            return adjustedDate
 
         } catch (error) {
             // Fallback to basic formatting
@@ -68,21 +60,28 @@ export default class GetTime extends AITool {
         const timezone = args?.timezone || 'UTC'
         const d = new Date()
         // Format time according to timezone
-        const formattedTime = this.formatTime(d, timezone);
-        if (formattedTime.constructor.name == 'string') return formattedTime
+        const adjustedDate = this.formatTime(d, timezone);
+        if (adjustedDate.constructor.name == 'string') return formattedTime
+
+        if (this.config.tool_output_preferred_format == Tool_Output_Format_PlainText) {
+            const hours = String(adjustedDate.getHours()).padStart(2, '0');
+            const minutes = String(adjustedDate.getMinutes()).padStart(2, '0');
+            const seconds = String(adjustedDate.getSeconds()).padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`
+        }
 
         const obj = {
             description: "the current time",
             hour: {
-                value: formattedTime.hours,
+                value: adjustedDate.getHours(),
                 unit: 'hours'
             },
             minutes: {
-                value: formattedTime.minutes,
+                value: adjustedDate.getMinutes(),
                 unit: 'minutes'
             },
             seconds: {
-                value: formattedTime.seconds,
+                value: adjustedDate.getSeconds(),
                 unit: 'seconds'
             },
             timezone: {
