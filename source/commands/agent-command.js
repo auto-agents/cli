@@ -1,7 +1,7 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../config/events.js'
-import { getAgent, isAIAgentAvailable } from '../utils/utils.js'
+import { dumpAgent, getAgent, isAIAgentAvailable } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { TUIAgentId } from '../config/config.js'
@@ -35,13 +35,6 @@ export default class AgentCommand extends Command {
 		const mod = agent.module
 		const o = this.ctx.components.output
 
-		const dumpAgent = (o, txt) => {
-			if (txt != null) txt = ': ' + txt
-			txt ||= ''
-			o.newLine()
-			o.appendLine(`agent '${agentId}' on ${agent.module} (provider: ${agent.provider}) ${txt}`)
-		}
-
 		// Execute the dialog action based on the action value
 		const dialogController = this.ctx.components.dialog
 		switch (action) {
@@ -49,7 +42,7 @@ export default class AgentCommand extends Command {
 			case 'su':
 			case 'shet-up':
 				await dialogController.shetUp()
-				dumpAgent(o, 'shet up')
+				dumpAgent(this.ctx, agentId, o, 'shet up')
 				break
 
 			/*case 'duo-on':
@@ -108,7 +101,7 @@ export default class AgentCommand extends Command {
 			case 'h':
 			case 'history':
 				if (isAIAgentAvailable(this.ctx)) {
-					dumpAgent(o, 'history')
+					dumpAgent(this.ctx, agentId, o, 'history')
 					e.emit(RunCommandEvent, "app get components.module.AIAgent.api.history.messages")
 				}
 				break
@@ -126,7 +119,7 @@ export default class AgentCommand extends Command {
 					|| this.getValue(com, args, 's')
 				//console.log(list)
 
-				dumpAgent(o)
+				dumpAgent(this.ctx, agentId, o)
 
 				if (list === true) {
 

@@ -507,7 +507,7 @@ export default function config(cli) {
 					moduleName: 'anythingLLMAIAgent',
 					//moduleName: 'openAIAgent',
 					//provider: 'lmStudioOpenAIEndPoints',
-					provider: 'anythingLLMDesktop',
+					//provider: 'anythingLLMDesktop',
 					module: null,
 
 					chatName: 'seraphina',

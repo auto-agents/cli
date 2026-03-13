@@ -91,6 +91,14 @@ export const getAgent = (ctx, id) => {
     return t.length > 0 ? t[0] : null
 }
 
+export const dumpAgent = (ctx, agentId, o, txt) => {
+    const agent = getAgent(ctx, agentId)
+    if (txt != null) txt = ': ' + txt
+    txt ||= ''
+    o.newLine()
+    o.appendLine(`agent '${agentId}' on ${agent?.moduleName} (provider: ${agent?.module?.config?.provider}) ${txt}`)
+}
+
 export const isSpeakErrorsEnabled = ctx => {
     return getAgent(ctx, TUIAgentId)?.speakErrors.enabled
         && isSpeechAvailable(ctx)
