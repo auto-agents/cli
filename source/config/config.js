@@ -1089,7 +1089,8 @@ export default function config(cli) {
 					*/
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
-					baseURL: "http://localhost:1234/api/v1",
+					port: 1234,
+					baseURL: "http://localhost:{port}/api/v1",
 					temperature: 0.7,
 					paths: {
 						completion: '/chat'
@@ -1097,8 +1098,7 @@ export default function config(cli) {
 					integrations: ['mcp/chrome-devtools'],	// LM STUDIO
 					maxRetries: 2,	// default
 					stream: false,
-					think: true,
-					historyPath: join(process.cwd(), saved, 'chat-history.json')
+					think: true
 				},
 				lmStudioJSApi: {
 					/*
@@ -1114,8 +1114,7 @@ export default function config(cli) {
 					},
 					maxRetries: 2,	// default
 					stream: false,
-					think: true,
-					historyPath: join(process.cwd(), saved, 'chat-history.json')
+					think: true
 				},
 				// SETTING TO RUN TOOLS WITH LM STUDIO / OLLAMA / ETC... NO MCP. MESSAGES
 				openAIApi: {
@@ -1125,27 +1124,18 @@ export default function config(cli) {
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
 					// LM STUDIO
-					baseURL: "http://localhost:1234/v1/",
-					//baseURL: "http://192.168.56.1:1234/v1/",
-					// OLLAMA
-					//baseURL: "http://localhost:11434/api/",
-					// OLLAMA-MCP-BRIDGE
-					//baseURL: "http://localhost:8000/api/",
-					//temperature: 0.1,
+					port: 1234,
+					baseURL: "http://localhost:{port}/v1/",
+					provider: 'lmStudioApiEndPoints',
 					paths: {
 						// LM STUDIO
 						completion: '/chat/completions'
-						//completion: '/responses'
-						// OLLAMA
-						//completion: '/chat'
 					},
 
 					tool_choice: "auto",	// auto (default) | any | none
 					parallel_tool_calls: true,	// true (default) | false
-
 					tools: [],
 					enabledTools: [],	// all if empty
-
 				},
 				ollamaMCPBridgeAI: {
 					/*
@@ -1154,22 +1144,60 @@ export default function config(cli) {
 					apiKey: 'change-me',
 					model: "qwen3:4b",
 					// OLLAMA-MCP-BRIDGE
-					baseURL: "http://localhost:8000",
+					port: 8000,
+					baseURL: "http://localhost:{port}",
 					//baseURL: "http://localhost:11434/",	// ollama direct
 					temperature: 0.7,
 					maxRetries: 2,	// default
 					stream: false,
 					// true,false (swen3) low,medium,high (gpt-oss)
-					think: true,
-					historyPath: join(process.cwd(), saved, 'chat-history.json')
+					think: true
 				},
 				anythingLLMDesktop: {
-					runtime: {
-						[Platforms.windows]: 'C:/Users/{username}/AppData/Local/Programs/AnythingLLM',
-						[Platforms.mac]: null,
-						[Platforms.linux]: null
+
+				},
+				// models providers
+				providers: {
+					lmStudioApiEndPoints: {
+						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
+						port: 1234,
+						baseUrl: 'http://localhost:{port}/api/v1',
+						paths: {
+							completion: '/chat'
+						}
 					},
-					port: 3001
+					lmStudioOpenAIEndPoints: {
+						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
+						port: 1234,
+						baseURL: 'http://localhost:{port}/v1/',
+						paths: {
+							completion: '/chat/completions'
+						}
+					},
+					ollamaOpenAIEndPoints: {
+						apiKey: null,
+						port: 11434,
+						baseUrl: 'http://localhost:{port}/api/',
+						paths: {
+							completion: '/chat/completions'
+						}
+					},
+					ollamaMCPBridgeOpenAIEndPoints: {
+						apiKey: 'change-me',
+						port: 8000,
+						baseUrl: 'http://localhost:{port}/',
+						paths: {
+							completion: '/chat/completions'
+						}
+					},
+					anythingLLMDesktop: {
+						apiKey: 'ZF7K5TV-Z7Y42ZW-KFEPZDZ-NQ6KYR9',
+						port: 3001,
+						baseUrl: 'http://localhost:{port}/v1/',
+						paths: {
+							completion: '/openai/chat/completions'
+						}
+					}
 				}
 			},
 			api: {
