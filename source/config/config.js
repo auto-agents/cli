@@ -1039,7 +1039,7 @@ export default function config(cli) {
 				file: 'ai-chat.js',
 
 				apiName: 'AnythingLLM',
-				apiClientFilepath: "../components/ai/lm-studio-api-client.js",
+				apiClientFilepath: "../components/ai/open-ai-api-client.js",
 				apiClientConfig: "ctx.servers.llm.anythingLLMDesktop",
 
 				enabled: false,
@@ -1110,12 +1110,7 @@ export default function config(cli) {
 					*/
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
-					port: 1234,
-					baseURL: "http://localhost:{port}/api/v1",
 					provider: 'lmStudioApiEndPoints',
-					paths: {
-						completion: '/chat'
-					},
 					integrations: ['mcp/chrome-devtools'],	// LM STUDIO
 				},
 				lmStudioJSApi: {
@@ -1123,13 +1118,7 @@ export default function config(cli) {
 					* LM Studio JS API configuration
 					*/
 					model: "google/gemma-3-1b",
-					// LM STUDIO
-					baseURL: "ws://localhost:1234",
 					provider: 'lmStudioAJSApiEndPoints',
-					paths: {
-						// LM STUDIO
-						completion: '/chat/completions'
-					}
 				},
 				// SETTING TO RUN TOOLS WITH LM STUDIO / OLLAMA / ETC... NO MCP. MESSAGES
 				openAIApi: {
@@ -1138,7 +1127,6 @@ export default function config(cli) {
 					*/
 					apiKey: "sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1",
 					model: "google/gemma-3-1b",
-					baseURL: "http://localhost:{port}/v1/",
 					provider: 'lmStudioOpenAIEndPoints',
 					tool_choice: "auto",	// auto (default) | any | none
 					parallel_tool_calls: true,	// true (default) | false

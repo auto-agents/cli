@@ -13,7 +13,7 @@ export default class OllamaApiClient extends AIApiClient {
         await super.init(options)
 
         this.client = new Ollama(
-            { host: this.config.baseURL }
+            { host: this.config.baseURL.replace('{port}', this.config.port) }
         )
 
         return this

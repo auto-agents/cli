@@ -18,7 +18,7 @@ export default class LMStudioJSApiClient extends AIApiClient {
         const c = this.config
         this.client = new LMStudioClient({
             verboseErrorMessages: false,
-            baseUrl: c.baseURL
+            baseUrl: c.baseURL.replace('{port}', c.port)
         })
 
         return this

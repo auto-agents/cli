@@ -18,7 +18,7 @@ export default class LMStudioApiClient extends AIApiClient {
         this.client = new OpenAiApi({
             apiKey: c.apiKey,
             maxRetries: c.maxRetries,
-            baseURL: c.baseURL
+            baseURL: c.baseURL.replace('{port}', c.port)
         })
 
         return this
@@ -32,7 +32,7 @@ export default class LMStudioApiClient extends AIApiClient {
 
         const messages = [
             ...this.history.messages,
-            queryMessageget
+            queryMessage
         ]
 
         //console.log('messages=', messages)
