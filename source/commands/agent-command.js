@@ -1,16 +1,16 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../config/events.js'
-import { getDialogAgent, isAIChatAvailable } from '../utils/utils.js'
+import { getAgent, isAIChatAvailable } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { TUIAgentId } from '../config/config.js'
 import { openSelectorProps } from '../components/list-selector.js'
 
-export default class DialogCommand extends Command {
+export default class AgentCommand extends Command {
 
 	constructor(ctx) {
-		super(ctx, 'dialog com')
+		super(ctx, 'agents com')
 		this.status = new Status(ctx)
 	}
 
@@ -26,6 +26,22 @@ export default class DialogCommand extends Command {
 		if (!this.checkParameter(com, argAction, action))
 			return
 
+		const agentId = this.getValue(com, args, 'id')
+		const agent = getAgent(this.ctx, agentId)
+		if (!agent) {
+			this.emitCommandError('agent not found: ' + agentId)
+			return
+		}
+		const mod = agent.module
+		const o = this.ctx.components.output
+
+		const dumpAgent = (o, txt) => {
+			if (txt != null) txt = ': ' + txt
+			txt ||= ''
+			o.newLine()
+			o.appendLine(`agent '${agentId}' on ${agent.module} (provider: ${agent.provider}) ${txt}`)
+		}
+
 		// Execute the dialog action based on the action value
 		const dialogController = this.ctx.components.dialog
 		switch (action) {
@@ -33,9 +49,10 @@ export default class DialogCommand extends Command {
 			case 'su':
 			case 'shet-up':
 				await dialogController.shetUp()
+				dumpAgent(o, 'shet up')
 				break
 
-			case 'duo-on':
+			/*case 'duo-on':
 
 				const ag1InstArg = 'agent1_instructions'
 				const ag1Inst = this.getValue(com, args, ag1InstArg)
@@ -45,7 +62,7 @@ export default class DialogCommand extends Command {
 				const agents = {
 					agent1: {
 						...this.ctx.dialog.roles.agent1,
-						name: getDialogAgent(this.ctx, TUIAgentId).chatName
+						name: getAgent(this.ctx, TUIAgentId).chatName
 					},
 					agent2: {
 						...this.ctx.dialog.roles.agent2,
@@ -65,7 +82,7 @@ export default class DialogCommand extends Command {
 
 			case 'duo-off':
 				await dialogController.setDuoModeEnabled(false, {})
-				break
+				break*/
 
 			case 'save':
 				const argFile = 'file'
@@ -90,14 +107,15 @@ export default class DialogCommand extends Command {
 
 			case 'h':
 			case 'history':
-				if (isAIChatAvailable(this.ctx))
+				if (isAIChatAvailable(this.ctx)) {
+					dumpAgent(o, 'history')
 					e.emit(RunCommandEvent, "app get components.module.AIChat.api.history.messages")
+				}
 				break
 
 			case 'model':
 				if (!isAIChatAvailable(this.ctx))
 					return
-				const o = this.ctx.components.output
 				const aichat = this.ctx.components.module.AIChat
 				const mlist = await aichat.list()
 				if (!mlist) return
@@ -107,6 +125,8 @@ export default class DialogCommand extends Command {
 				const select = this.getValue(com, args, 'select')
 					|| this.getValue(com, args, 's')
 				//console.log(list)
+
+				dumpAgent(o)
 
 				if (list === true) {
 
@@ -118,7 +138,6 @@ export default class DialogCommand extends Command {
 						]
 					});
 
-					o.newLine()
 					mlist.forEach(mod => {
 						var str = mod.id
 						//console.log(mod)
@@ -156,7 +175,7 @@ export default class DialogCommand extends Command {
 						(item) => {
 							this.ctx.components.module.AIChat.api.config.model = item.label
 							o.newLine()
-							o.appendLine('dialog model set to: ' + item.label)
+							o.appendLine('agent model set to: ' + item.label)
 						}
 					)
 					e.emit(ListSelectorOpenCommandEvent, props)

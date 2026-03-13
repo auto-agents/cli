@@ -8,8 +8,9 @@ import { AppInitializedEvent, SetStatusMessageEvent } from '../config/events.js'
 import SysInfoService from './sys-info-service.js';
 import ModuleController from '../controllers/module-controller.js';
 import OutputContext from '../data/output-context.js';
-import utils from '../utils/utils.js';
+import utils, { getAgent } from '../utils/utils.js';
 import { StatusEnum, StatusMessage } from '../data/status-message.js';
+import { TUIAgentId } from '../config/config.js';
 
 export default class InitService {
 
@@ -55,6 +56,9 @@ export default class InitService {
 	async #runInternal() {
 		const mg = 4
 		const margin = ' '.repeat(mg)
+		this.moduleController = new ModuleController(
+			this.ctx,
+			this.#getOutputContext(mg))
 
 		this.hatActionController = new ActionController(
 			this.ctx,
@@ -70,8 +74,12 @@ export default class InitService {
 				uiFunc: this.spinner.newSpinner(margin + '- gathering system informations', cliSpinners.sand)
 			},
 			{
-				func: async () => this.#initModules(this.#getOutputContext(mg)),
+				func: async () => this.#initModules(),
 				uiFunc: this.spinner.newSpinner(margin + '- initializing modules', cliSpinners.sand)
+			},
+			{
+				func: async () => this.#initAgents(this.#getOutputContext(mg)),
+				uiFunc: this.spinner.newSpinner(margin + '- initializing ai agents', cliSpinners.sand)
 			}
 		]
 		const actionSeq = actions.map((e, _) => {
@@ -116,8 +124,16 @@ export default class InitService {
 		await utils.wait(this.ctx.ui.initWait)
 	}
 
-	async #initModules(outputContext) {
-		await new ModuleController(this.ctx, outputContext).run()
+	async #initModules() {
+		await this.moduleController.run()
+	}
+
+	async #initAgents(outputContext) {
+		if (!this.ctx.cli.TUIAgentEnabled) return
+		await this.ctx.components.agents.loadAgent(
+			getAgent(this.ctx, TUIAgentId),
+			outputContext
+		)
 	}
 
 	#getOutputContext(margin) {

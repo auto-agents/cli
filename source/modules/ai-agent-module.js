@@ -6,16 +6,15 @@ import utils, { trace } from '../utils/utils.js'
 import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
-import { Action_Tool_Query, Action_Tool_Text_Query } from "../components/ai/response-processor.js";
 import { Role_Assistant, Role_Tool } from "../components/ai/roles.js";
 import { CommandRunErrorEvent, errorEvent } from "../config/events.js";
 import path from "path";
 import DialogContext from "../data/dialog-context.js";
 
-export default class AIChatModule {
+export default class AIAgentModule {
 
     dbg = false
-    From = 'AIChatModule'
+    From = 'AIAgentModule'
 
     responseProcessorsActionsHandlers = {}
     // TODO: put in config
@@ -75,7 +74,7 @@ export default class AIChatModule {
         }
 
         o.newLine()
-        o.appendLine(margin + `~ loading ai chat module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
+        o.appendLine(margin + `~ loading ai agent module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
 
         // dynamically import AI Api Client
         const apiClient = await import(this.apiClientFilepath)
@@ -87,14 +86,14 @@ export default class AIChatModule {
             {
                 ...this.config,
                 id: 1,
-                instructions: this.ctx.dialog.roles.agent1.instructions
+                instructions: this.ctx.agents.roles.agent1.instructions
             },
             this.outputContext
         )
         await this.api.init()
 
         // secondary open ai chat (duo mode)
-
+        /*
         this.apiSecondary = new apiClient.default(
             this.ctx,
             {
@@ -105,6 +104,7 @@ export default class AIChatModule {
             this.outputContext
         )
         await this.apiSecondary.init(true)
+        */
 
         const initApi = async () => {
             try {
@@ -113,7 +113,7 @@ export default class AIChatModule {
                 await utils.wait(this.ctx.ui.initFastWait)
 
             } catch (err) {
-                o.appendLine(this.status.error(margin + this.apiName + ' chat module init error: ' + err))
+                o.appendLine(this.status.error(margin + this.apiName + ' ai agent module init error: ' + err))
             }
         }
 
@@ -121,7 +121,7 @@ export default class AIChatModule {
             this.ctx,
             this.outputContext.output,
             initApi,
-            this.spinner.newSpinner(margin2 + '- initializing ' + this.apiName + ' chat module', cliSpinners.sand),
+            this.spinner.newSpinner(margin2 + '- initializing ' + this.apiName + ' ai agent module', cliSpinners.sand),
             async () => {
             }
         )
@@ -150,7 +150,7 @@ export default class AIChatModule {
             o,
             stopSrv,
             new SpinnerService(this.ctx, o)
-                .newSpinner(margin + '- stopping module AIChat: ' + this.moduleSpec.apiName, cliSpinners.sand)
+                .newSpinner(margin + '- stopping module ai agent: ' + this.moduleSpec.apiName, cliSpinners.sand)
         )
         await stopSrvAction.run()
     }

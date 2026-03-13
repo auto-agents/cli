@@ -20,7 +20,8 @@ export default class ModuleController {
         this.ctx.components.moduleController = this
     }
 
-    async load(moduleName, outputContext) {
+    async load(moduleName, moduleStoreName = null, outputContext) {
+        moduleStoreName ||= moduleName
         const oc = outputContext || this.outputContext
         const o = oc.output
         const str = " "
@@ -50,12 +51,15 @@ export default class ModuleController {
             module.moduleName = moduleName
             const mod = await import(path)
             const m = new mod.default(this.ctx, module.config, oc, module)
-            m.moduleName = moduleName
+            m.moduleName = moduleStoreName
+
             await m.init()
-            this.modules[moduleName] = m
-            this.ctx.components.module[moduleName] = m
+            this.modules[moduleStoreName] = m
+            this.ctx.components.module[moduleStoreName] = m
             module.isLoaded = true
             module.enabled = true
+            m.specification = { ...module }
+            m.specification.internal = false
 
             this.ctx.components.event.emit(ModuleLoadedEvent, moduleName)
             return m
@@ -116,13 +120,13 @@ export default class ModuleController {
 
         for (const moduleName in this.ctx.modules) {
             const module = this.ctx.modules[moduleName]
-            if (!module.enabled) continue
+            if (!module.enabled || !module.autoLoad) continue
 
             o.newLine()
             o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ initializing module: ' + moduleName))
 
             const oc2 = new OutputContext(this.ctx, o, oc.margin)
-            await this.load(moduleName, oc2)
+            await this.load(moduleName, null, oc2)
         }
     }
 }

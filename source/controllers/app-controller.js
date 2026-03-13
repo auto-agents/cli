@@ -38,7 +38,7 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
 import KeyboardController from './keyboard-controller.js';
-import { getDialogAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../utils/utils.js';
+import { getAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../utils/utils.js';
 import { TUIAgentId } from '../config/config.js';
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
@@ -136,7 +136,7 @@ export default class AppController {
 		this.ctx.components.event.emit(SpeakCommandEvent, speakEvent(
 			this.From,
 			text,
-			getDialogAgent(this.ctx, TUIAgentId).speakErrors.preferredVoices
+			getAgent(this.ctx, TUIAgentId).speakErrors.preferredVoices
 			[this.ctx.modules.speech.config.browser][0],
 			true));
 	}

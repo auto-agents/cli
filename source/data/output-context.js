@@ -27,4 +27,8 @@ export default class OutputContext {
         this.margin += repeat * margin
         return this
     }
+
+    getMargin() {
+        return ' '.repeat(this.margin)
+    }
 }

@@ -28,12 +28,24 @@ export default class ModuleCommand extends Command {
 		output.appendLine(margin + c.title('Available modules:'))
 		output.newLine()
 
-		for (const [name, module] of Object.entries(this.ctx.modules)) {
-			const isLoaded = !!module.isLoaded
-			const st = (isLoaded ? '● loaded' : '○ not loaded').padEnd(16)
-			const status = isLoaded ? c.loaded(st) : c.unloaded(st)
+		const dump = (name, module) => {
+			const isLoaded = module.isLoaded
+			const isInternal = module.internal
+			const st =
+				(isInternal ? '| internal' :
+					(isLoaded ? '● loaded' : '○ not loaded')).padEnd(16)
+			const status = (isLoaded && !isInternal) ? c.loaded(st) : c.unloaded(st)
 			const desc = module.description || ''
 			output.appendLine(margin + `  ${c.name(name.padEnd(18))} ${status} ${c.description(desc)}`)
+		}
+
+		for (const [name, module] of Object.entries(this.ctx.modules)) {
+			dump(name, module)
+		}
+		for (const [name, module] of Object.entries(this.ctx.components.module.agents)) {
+			const specification = module.specification
+			if (specification.isBase || specification.autoLoad || specification.internal) continue
+			dump(name, specification)
 		}
 	}
 

@@ -1,6 +1,7 @@
 import { TUIAgentId } from "../config/config"
 import { AgentAddedEvent, ModuleLoadedEvent } from "../config/events"
-import { getDialogAgent } from "../utils/utils"
+import { getAgent } from "../utils/utils"
+import Status from '../utils/status.js'
 
 export default class AgentsController {
 
@@ -12,6 +13,7 @@ export default class AgentsController {
         this.ctx = ctx
         this.output = output
         const e = ctx.components.event
+        this.status = new Status(ctx)
 
         e.on(ModuleLoadedEvent, args => {
             const mn = args[0]
@@ -31,6 +33,36 @@ export default class AgentsController {
 
     getAgentInView() {
         if (this.viewAgentId == null) return null
-        return getDialogAgent(this.ctx, this.viewAgentId)
+        return getAgent(this.ctx, this.viewAgentId)
+    }
+
+    getModule(agent) {
+
+    }
+
+    getModuleStoreName(agent) {
+        return agent.moduleName + '-' + agent.id
+    }
+
+    async loadAgent(agent, outputContext) {
+        try {
+            const initSrv = this.ctx.components.init
+            const moduleCtrl = initSrv.moduleController
+            const moduleStoreName = this.getModuleStoreName(agent)
+            if (this.ctx.components.module.agents[moduleStoreName])
+                throw new Error(`a module with the same id: '${moduleStoreName}' is already loaded`)
+            agent.module = await moduleCtrl.load(
+                agent.moduleName,
+                moduleStoreName,
+                outputContext
+            )
+            this.ctx.components.module.agents[moduleStoreName] = agent.module
+        }
+        catch (err) {
+            const o = outputContext.output
+            o.newLine()
+            o.appendLine(this.status.error(outputContext.getMargin() + 'load agent error: ' + err))
+            return false
+        }
     }
 }

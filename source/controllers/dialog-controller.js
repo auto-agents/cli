@@ -16,7 +16,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../data/output-context.js"
-import { getDialogAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
+import { getAgent, isAIChatAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
 import { TUIAgentId } from "../config/config.js"
 import DialogContext from "../data/dialog-context.js"
 import { replaceUnicodes } from "../utils/decorators.js"
@@ -191,7 +191,7 @@ export default class DialogController {
 
 		if (t.length > 0) {
 			// add role symbol
-			if (!name) name = getDialogAgent(this.ctx, TUIAgentId).chatName
+			if (!name) name = getAgent(this.ctx, TUIAgentId).chatName
 			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
 			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
 		}
@@ -241,7 +241,7 @@ export default class DialogController {
 		//if (!lastAssistMessage) {
 		var lastAssistMessage = {
 			role: Role_Assistant,
-			content: this.ctx.dialog.sentences.dualModeInitialSystemSentence
+			content: this.ctx.agents.sentences.dualModeInitialSystemSentence
 		}
 		/*} else {
 			lastAssistMessage = {
@@ -269,8 +269,8 @@ export default class DialogController {
 			{
 				secondary: true,
 				// who speaks
-				voice: this.ctx.dialog.speakDuo.preferredVoices,
-				name: this.ctx.dialog.speakDuo.name,
+				voice: this.ctx.agents.speakDuo.preferredVoices,
+				name: this.ctx.agents.speakDuo.name,
 				color: this.ctx.theme.dialog.duoAssistantDialogColor
 			}
 		)
@@ -311,8 +311,8 @@ export default class DialogController {
 			await this.queryOpenAIChat(message, false, {
 				secondary: false,
 				// who speaks
-				voice: this.ctx.dialog.speakDuo.preferredVoices,
-				name: this.ctx.dialog.speakDuo.name,
+				voice: this.ctx.agents.speakDuo.preferredVoices,
+				name: this.ctx.agents.speakDuo.name,
 				color: this.ctx.theme.dialog.duoAssistantDialogColor
 			})
 
@@ -326,12 +326,12 @@ export default class DialogController {
 	// ----- speak ---------------------------------------------------
 
 	#getSystemVoice() {
-		return getDialogAgent(this.ctx, TUIAgentId)
+		return getAgent(this.ctx, TUIAgentId)
 			.speak.preferredVoices[this.ctx.modules.speech.config.browser][0];
 	}
 
 	#getUserVoice() {
-		return getDialogAgent(this.ctx, TUIAgentId)
+		return getAgent(this.ctx, TUIAgentId)
 			.repeatUserQuery.preferredVoices[this.ctx.modules.speech.config.browser][0];
 	}
 

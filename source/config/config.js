@@ -256,8 +256,8 @@ export default function config(cli) {
 							id: {
 								type: "string",
 								required: false,
-								default: "tui",
-								description: "the agent id, default is 'tui'"
+								default: TUIAgentId,
+								description: `the agent id, default is '${TUIAgentId}'`
 							},
 							list: {
 								type: "boolean",
@@ -313,7 +313,7 @@ export default function config(cli) {
 						},
 						allowPositionals: true
 					},
-					file: 'dialog-command.js'
+					file: 'agent-command.js'
 				},
 				{
 					names: ['module', 'mod', 'm'],
@@ -494,13 +494,19 @@ export default function config(cli) {
 				ready: 'ready'
 			},
 			dumpStackTraces: true,
-			enableDebugLoopTools: false
+			enableDebugLoopTools: false,
+			TUIAgentEnabled: true
 		},
-		dialog: {
-			agents: [
+		agents: {
+
+			list: [
 				{
 					id: TUIAgentId,
 					name: 'TUI Agent',
+					moduleName: 'openAIChat',
+					provider: 'lmStudioOpenAIEndPoints',
+					module: null,
+
 					chatName: 'seraphina',
 					profileName: 'Coding Assistant',
 					imgPath: 'agent-5-48x48.png',
@@ -562,7 +568,6 @@ export default function config(cli) {
 				agent2: {
 					instructions: "you are a AI expert developer."
 				},
-
 				buddhism: {
 					agent1: {
 						instructions: "you are philosophical student."
@@ -872,6 +877,7 @@ export default function config(cli) {
 			}
 		},
 		components: {
+			init: null,
 			app: null,
 			output: null,
 			input: null,
@@ -884,7 +890,9 @@ export default function config(cli) {
 			render: null,
 			agents: null,
 			moduleController: null,
-			module: {}
+			module: {
+				agents: {}
+			}
 		},
 		texts: {
 			dialog: {
@@ -897,6 +905,7 @@ export default function config(cli) {
 				id: 'browser-speaker',
 				file: 'speech-module.js',
 
+				autoLoad: true,
 				enabled: false,
 				isLoaded: false,
 
@@ -930,6 +939,7 @@ export default function config(cli) {
 			recognition: {
 				description: 'voice recognition agent using the plateform configured peech recognition module',
 
+				autoLoad: true,
 				enabled: false,
 				isLoaded: false
 			},
@@ -938,13 +948,14 @@ export default function config(cli) {
 				* OpenAI chat module configuration
 				*/
 				description: 'OpenAI chat using OpenAI API interface (HTTP transport)',
-				file: 'ai-chat.js',
+				file: 'ai-agent-module.js',
 
 				apiName: 'OpenAI',
 				apiClientFilepath: "../components/ai/open-ai-api-client.js",
 				apiClientConfig: "ctx.servers.llm.openAIApi",
 
-				enabled: true,
+				internal: true,
+				enabled: false,
 				isLoaded: false,
 
 				config: {
@@ -975,7 +986,7 @@ export default function config(cli) {
 				* Ollama chat module configuration
 				*/
 				description: 'Ollama chat module using OpenAI API interface (HTTP transport) over Ollama-MCP-Bridge',
-				file: 'ai-chat.js',
+				file: 'ai-agent-module.js',
 
 				apiName: 'Ollama',
 				apiClientFilepath: "../components/ai/ollama-api-client.js",
@@ -983,6 +994,7 @@ export default function config(cli) {
 
 				enabled: false,
 				isLoaded: false,
+				internal: true,
 
 				config: {
 					apiKey: "",
@@ -997,7 +1009,7 @@ export default function config(cli) {
 				* LM Studio chat module configuration
 				*/
 				description: 'LM Studio chat module using OpenAI API interface (HTTP transport)',
-				file: 'ai-chat.js',
+				file: 'ai-agent-module.js',
 
 				apiName: 'LMStudio',
 				apiClientFilepath: "../components/ai/lm-studio-api-client.js",
@@ -1005,6 +1017,7 @@ export default function config(cli) {
 
 				enabled: false,
 				isLoaded: false,
+				internal: true,
 
 				config: {
 					//model: 'google/gemma-2-9b',
@@ -1020,7 +1033,7 @@ export default function config(cli) {
 				* LM Studio chat module configuration
 				*/
 				description: 'LM Studio chat module using JS LM Studio SDK (WebSocket transport)',
-				file: 'ai-chat.js',
+				file: 'ai-agent-module.js',
 
 				apiName: 'LMStudioJS',
 				apiClientFilepath: "../components/ai/lm-studio-js-api-client.js",
@@ -1028,6 +1041,7 @@ export default function config(cli) {
 
 				enabled: false,
 				isLoaded: false,
+				internal: true,
 
 				config: {
 					//model: "google/gemma-3-1b",
@@ -1042,7 +1056,7 @@ export default function config(cli) {
 				* Anything LLM chat module configuration
 				*/
 				description: 'Anything LLM chat module using OpenAI API interface (HTTP transport)',
-				file: 'ai-chat.js',
+				file: 'ai-agent-module.js',
 
 				apiName: 'AnythingLLM',
 				apiClientFilepath: "../components/ai/open-ai-api-client.js",
@@ -1050,6 +1064,7 @@ export default function config(cli) {
 
 				enabled: false,
 				isLoaded: false,
+				internal: true,
 
 				config: {
 					//model: 'google/gemma-2-9b',
@@ -1060,7 +1075,7 @@ export default function config(cli) {
 					instructions: 'You are a coding assistant.',
 				}
 			},
-			openAIAgents: {
+			/*openAIAgents: {
 				description: 'AI api for agents. not implemented yet',
 				file: 'open-ai-agents.js',
 
@@ -1070,7 +1085,7 @@ export default function config(cli) {
 				config: {
 
 				}
-			}
+			}*/
 		},
 		servers: {
 			llm: {

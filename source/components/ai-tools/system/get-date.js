@@ -10,7 +10,7 @@ export default class GetDate extends AITool {
     specification() {
         return {
             name: "get_date",
-            description: "get the date of the day",
+            description: "get the date of the day. allowed time zone values are: UTC,EST,EDT,CST,CDT,MST,MDT,PST,PDT",
             parameters: {
                 type: "object",
                 properties: {

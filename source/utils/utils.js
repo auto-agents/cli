@@ -77,22 +77,22 @@ export const isSpeechAvailable = ctx => {
 }
 
 export const isUserSpeakEchoAvailable = ctx => {
-    return getDialogAgent(ctx, TUIAgentId).repeatUserQuery.enabled
+    return getAgent(ctx, TUIAgentId).repeatUserQuery.enabled
         && isSpeechAvailable(ctx)
 }
 
 export const isTUIAgentSpeakEnabled = ctx => {
-    return getDialogAgent(ctx, TUIAgentId).speak.enabled
+    return getAgent(ctx, TUIAgentId).speak.enabled
         && isSpeechAvailable(ctx)
 }
 
-export const getDialogAgent = (ctx, id) => {
-    const t = ctx.dialog.agents.filter(x => x.id == id)
+export const getAgent = (ctx, id) => {
+    const t = ctx.agents.list.filter(x => x.id == id)
     return t.length > 0 ? t[0] : null
 }
 
 export const isSpeakErrorsEnabled = ctx => {
-    return getDialogAgent(ctx, TUIAgentId)?.speakErrors.enabled
+    return getAgent(ctx, TUIAgentId)?.speakErrors.enabled
         && isSpeechAvailable(ctx)
 }
 
@@ -170,5 +170,5 @@ export default {
     trace,
     mdBlockJson,
     isSpeakErrorsEnabled,
-    getDialogAgent
+    getAgent
 }
