@@ -27,8 +27,11 @@ export default class ShellExec extends AITool {
 
     async run(args) {
         const com = args?.command
-        let { stdout, stderr } = await exec(com)
-        //console.log('ici')
+        let { stdout, stderr } = await exec(com,
+            {
+                shell: true,
+                timeout: this.ctx.cli.toolRunTimeout
+            })
         //console.log(stdout)
         if (!stdout || stdout.length == 0)
             stdout = "command has been executed successfully"
