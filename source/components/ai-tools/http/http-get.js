@@ -22,7 +22,7 @@ export default class HttpGet extends AITool {
     specification() {
         return {
             name: "http_get",
-            description: "get a web page at url using http",
+            description: "fetch a web page at url using http",
             parameters: {
                 type: "object",
                 properties: {

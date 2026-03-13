@@ -92,20 +92,6 @@ export default class AIAgentModule {
         )
         await this.api.init()
 
-        // secondary open ai chat (duo mode)
-        /*
-        this.apiSecondary = new apiClient.default(
-            this.ctx,
-            {
-                ...this.config,
-                id: 2,
-                instructions: this.ctx.dialog.roles.agent2.instructions
-            },
-            this.outputContext
-        )
-        await this.apiSecondary.init(true)
-        */
-
         const initApi = async () => {
             try {
                 await this.responseProcessors.loadProcessors(this.config.responseProcessors)
@@ -205,13 +191,6 @@ export default class AIAgentModule {
 
         if (query != null) {
 
-            // pre-process query
-            const preProcessQuery = txt => {
-                if (this.config.appendTextAtEndOfQuery != null)
-                    txt += this.config.appendTextAtEndOfQuery
-                return txt
-            }
-
             for (var i = 0; i < this.queryPreProcessors; i++)
                 query = this.queryPreProcessors[i](query)
 
@@ -232,9 +211,7 @@ export default class AIAgentModule {
             }
         }
 
-        //const hasActions = r.actions && r.actions.length > 0
         const hasContent = r.content != null && r.content.length > 0
-        //const hasActionsAndContent = hasActions && hasContent
         const hasToolsCalls = r.tool_calls?.length > 0
 
         // handle response processors actions : perform actions if no content
@@ -243,13 +220,6 @@ export default class AIAgentModule {
             // process response. get tools results in actions. original response unchanged
             await this.responseProcessors.run(dialogContext, r)
 
-            /*var content = ''
-            for (var i = 0; i < r.actions.length; i++) {
-
-                const action = r.actions[i]
-                if (content != '') content += '\n'
-                content += action.result
-            }*/
             const action = r.actions[0]
             // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER : done via Dialoger
             // CASE : after tool result provided call:
@@ -257,8 +227,6 @@ export default class AIAgentModule {
             const actionHandler = this.#getResponseProcessorActionHandler(action)
 
             const r2 = await actionHandler.run(r.actions, r, capi, capi.history, options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
-            //if (content != '') content += '\n'
-            //content += r.content
 
             // agent text result: content
             if (this.config.enableDebugResponseToolsUsage) console.log(content)
@@ -271,15 +239,6 @@ export default class AIAgentModule {
         return r
     }
 
-    /**
-     * perform tool calls indicated in the response
-     * @param {Object} dialogContext
-     * @param {Object} response 
-     */
-    toolCall(dialogContet, response) {
-
-    }
-
     saveHistory(filePath, format) {
         const h =
             (!format || format == 'json') ?
@@ -290,6 +249,5 @@ export default class AIAgentModule {
 
     clearHistory() {
         this.api.history.reset()
-        this.apiSecondary.history.reset()
     }
 }
