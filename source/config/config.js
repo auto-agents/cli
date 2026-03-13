@@ -504,16 +504,15 @@ export default function config(cli) {
 				{
 					id: TUIAgentId,
 					name: 'TUI Agent',
-					moduleName: 'anythingLLMAIAgent',
-					//moduleName: 'openAIAgent',
-					//provider: 'lmStudioOpenAIEndPoints',
+					moduleName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					//moduleName: 'anythingLLMAIAgent',
 					//provider: 'anythingLLMDesktop',
 					module: null,
 
 					chatName: 'seraphina',
 					profileName: 'Coding Assistant',
 					imgPath: 'agent-5-48x48.png',
-					enabled: true,
 					system: true,
 					speak: {
 						enabled: true,
@@ -548,6 +547,25 @@ export default function config(cli) {
 				}
 			],
 
+			profile: {
+				['Coding Assistant']: {
+					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions."
+				}
+			},
+
+			personas: {
+
+				seraphina: {
+					imgPath: 'agent-5-48x48.png',
+					speak: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
+						}
+					},
+				}
+			},
+
 			speakDuo: {
 				name: 'guy',
 				preferredVoices: {
@@ -579,7 +597,6 @@ export default function config(cli) {
 						instructions: "you are a buddhist and a philosophical teacher."
 					}
 				},
-
 				loveGame: {
 					agent1: {
 						instructions: "you are a love learner. you meat a woman that fall in love with you"
@@ -588,7 +605,6 @@ export default function config(cli) {
 						instructions: "you are a woman falling in love with a fresh lover"
 					}
 				},
-
 				cook: {
 					agent1: {
 						instructions: "you are a cook learner. you don't know how to cook. you ask to a woman how to cook asian food."
@@ -597,7 +613,6 @@ export default function config(cli) {
 						instructions: "you are a cook specialist of asian food with high reputation. you try to learn to a young man, the asian food fundamental principles and how to cook perfect reciepes."
 					}
 				},
-
 				dialog1: {
 					agent2: {
 						instructions: "tu est une jeune fille américaine qui rencontre un cuisiner ivre qui te questionne afin de savoir si tu viendrais manger dans son futur restaurant, et pour savoir ce que tu aimes manger, et si tu aimes la cuisine française. tu ne sais pas si tu aimes la cuisine française. tu a peur de ne pas aimer."

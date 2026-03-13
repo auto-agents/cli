@@ -36,10 +36,6 @@ export default class AgentsController {
         return getAgent(this.ctx, this.viewAgentId)
     }
 
-    getModule(agent) {
-
-    }
-
     getModuleStoreName(agent) {
         return agent.moduleName + '-' + agent.id
     }
