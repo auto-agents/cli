@@ -12,6 +12,9 @@ test 1:
 
 test 2:
 
-- save RSS at https://www.lemonde.fr/rss/en_continu.xml in file `./tmp/feed.xml` using shell exec and tools
+- ALWAYS use linux shell commands
+- NEVER add text before and after the explicit response of the request
+- the workpath folder is /mnt/e/dev/repos/auto-agents/cli/tmp/
+- save RSS at https://www.lemonde.fr/rss/en_continu.xml in file `feed.xml` using shell exec and tools
 - extract fields title from the file './tmp/feed.xml' using shell_exec
 

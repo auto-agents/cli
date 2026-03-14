@@ -222,9 +222,6 @@ export default function App({ ctx }) {
 						<LeftGauge prop={ctx.data.app.uptime} ctx={ctx} />
 						<LeftGauge prop={ctx.data.ram.rss} ctx={ctx} />
 						<LeftGauge prop={ctx.data.ram.heapTotal} ctx={ctx} />
-						<LeftGauge prop={ctx.data.ram.heapUsed} ctx={ctx} />
-						<LeftGauge prop={ctx.data.ram.external} ctx={ctx} />
-						<LeftGauge prop={ctx.data.ram.arrayBuffers} ctx={ctx} />
 						<LeftGauge prop={ctx.data.ram.usage} ctx={ctx} />
 						<LeftGauge prop={ctx.data.app.modules.speech} ctx={ctx} />
 						<LeftGauge prop={ctx.data.app.modules.recognition} ctx={ctx} />
@@ -259,9 +256,6 @@ export default function App({ ctx }) {
 						<RightGauge prop={ctx.data.layout.output.rows} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.output.cols} ctx={ctx} />
 						<RightGauge prop={ctx.data.layout.output.lines} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
-						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 						<RightGauge prop={ctx.data.emptyGauge} ctx={ctx} />
 
 					</Box>

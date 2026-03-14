@@ -17,7 +17,7 @@ export default class Command {
 
     getValue(com, args, name) {
         return (args?.values && args.values[name]) ?
-            args.values[name] : (com.config.options[name].default || null)
+            args.values[name] : (com.config.options[name]?.default || null)
     }
 
     checkParameter(com, name, value) {

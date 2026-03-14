@@ -49,9 +49,9 @@ export default class RamService {
 		const e = c.components.event
 		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.rss.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.heapTotal.key)
-		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.heapUsed.key)
-		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.external.key)
-		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.arrayBuffers.key)
+		//e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.heapUsed.key)
+		//e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.external.key)
+		//e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.arrayBuffers.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.total.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.free.key)
 		e.emitTarget(GaugeSourceUpdatedEvent, c.data.ram.usage.key)

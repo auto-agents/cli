@@ -199,7 +199,7 @@ export default class AppController {
 	}
 
 	#getTitle() {
-		return {
+		const r = {
 			title: cfonts.render('  Auto Agents  ', {
 				font: 'shade',
 				/*align: 'center',*/
@@ -216,6 +216,8 @@ export default class AppController {
 				space: false
 			})
 		}
+		r.title.string = r.title.string.trim()
+		return r
 	}
 
 	async run() {

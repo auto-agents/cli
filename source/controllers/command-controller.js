@@ -62,10 +62,10 @@ export default class CommandController {
 		const withOptions = comArgs && comArgsNames.length > 0
 
 		// too much args
-		if (args.length > 0 && !withOptions) {
+		/*if (args.length > 0 && !withOptions) {
 			e.emit(CommandArgsCountErrorEvent, comd)
 			return
-		}
+		}*/
 
 		var parsedArgs = null
 
@@ -74,7 +74,7 @@ export default class CommandController {
 
 			const optNames = Object.getOwnPropertyNames(comd.config.options)
 			const maxArgsCount = optNames.length
-			const positionalsCount = optNames.filter(
+			/*const positionalsCount = optNames.filter(
 				optName => comd.config.options[optName].type == 'string')
 				.length
 			const flagsCounts = optNames.filter(
@@ -99,7 +99,7 @@ export default class CommandController {
 					args: arg
 				})
 				return
-			}
+			}*/
 
 			try {
 				const o = {

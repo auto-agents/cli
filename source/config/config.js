@@ -270,44 +270,22 @@ export default function config(cli) {
 							},
 							list: {
 								type: "boolean",
+								short: 'l',
 								required: false,
 								description: "list models when action is 'model'"
 							},
 							files: {
 								type: 'string',
+								short: 'f',
 								required: false,
 								description: "set files list when action is 'instruct'"
-							},
-							f: {
-								type: 'string',
-								required: false,
-								description: "alias for --files"
-							},
-							l: {
-								type: "boolean",
-								required: false,
-								description: "alias for --list"
 							},
 							select: {
 								type: "boolean",
 								required: false,
+								short: 's',
 								description: "allows to select a model when action is 'model'"
 							},
-							s: {
-								type: "boolean",
-								required: false,
-								description: "alias for --select"
-							},
-							/*agent1_instructions: {
-								type: 'string',
-								required: false,
-								description: 'instructions for the agent 1 when duo mode enabled'
-							},
-							agent2_instructions: {
-								type: 'string',
-								required: false,
-								description: 'instructions for the agent 2 when duo mode enabled'
-							},*/
 							file: {
 								type: 'string',
 								required: false,
@@ -781,7 +759,7 @@ export default function config(cli) {
 			}
 		},
 		layout: {
-			headerHeight: 14,
+			headerHeight: 11,
 			promptAreaHeight: 5,
 			gaugeLeftColWidth: 45,
 			gaugeRightColWidth: 30,

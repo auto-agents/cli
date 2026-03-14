@@ -133,7 +133,6 @@ export default class AgentCommand extends Command {
 
 			case 'instruct':
 				const flist = this.getValue(com, args, 'files')
-					|| this.getValue(com, args, 'f')
 				if (!flist) {
 					this.flagsMissing('--files | -f')
 					return
@@ -159,10 +158,7 @@ export default class AgentCommand extends Command {
 				if (!mlist) return
 
 				const list = this.getValue(com, args, 'list')
-					|| this.getValue(com, args, 'l')
 				const select = this.getValue(com, args, 'select')
-					|| this.getValue(com, args, 's')
-				//console.log(list)
 
 				dumpAgent(this.ctx, agentId, o)
 
