@@ -249,6 +249,10 @@ export default function config(cli) {
 									{
 										value: 'model',
 										description: 'action about dialog model. require --list or --select'
+									},
+									{
+										value: 'config',
+										description: 'output the configuration of the agent'
 									}
 								],
 								description: 'an action order for the dialog controller'

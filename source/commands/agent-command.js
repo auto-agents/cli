@@ -1,11 +1,14 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../config/events.js'
-import { dumpAgent, getAgent, isAIAgentAvailable } from '../utils/utils.js'
+import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, renderComponent, toJson } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { TUIAgentId } from '../config/config.js'
 import { openSelectorProps } from '../components/list-selector.js'
+import SyntaxHighlight from 'ink-syntax-highlight'
+import highlight from 'cli-highlight'
+import { box } from '../utils/decorators.js'
 
 export default class AgentCommand extends Command {
 
@@ -106,6 +109,24 @@ export default class AgentCommand extends Command {
 					dumpAgent(this.ctx, agentId, o, 'history')
 					e.emit(RunCommandEvent, "app get components.module.AIAgent.api.history.messages")
 				}
+				break
+
+			case 'config':
+				const conf = agent.module.config
+				const v = toJson(conf)
+				const theme = highlight.DEFAULT_THEME
+				renderComponent(
+
+					< SyntaxHighlight
+						code={v}
+						theme={theme}
+					/>
+					,
+					o,
+					(lines) => {
+						box(this.ctx, getAgentDump(this.ctx, agentId, 'config'), lines, o)
+					}
+				)
 				break
 
 			case 'model':

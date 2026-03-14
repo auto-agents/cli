@@ -92,11 +92,15 @@ export const getAgent = (ctx, id) => {
 }
 
 export const dumpAgent = (ctx, agentId, o, txt) => {
+    o.newLine()
+    o.appendLine(getAgentDump(ctx, agentId, txt))
+}
+
+export const getAgentDump = (ctx, agentId, txt) => {
     const agent = getAgent(ctx, agentId)
     if (txt != null) txt = ': ' + txt
     txt ||= ''
-    o.newLine()
-    o.appendLine(`agent '${agentId}' on ${agent?.moduleName} (provider: ${agent?.module?.config?.provider}) ${txt}`)
+    return `agent '${agentId}' on ${agent?.moduleName} (provider: ${agent?.module?.config?.provider}) ${txt}`
 }
 
 export const isSpeakErrorsEnabled = ctx => {
