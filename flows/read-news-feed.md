@@ -6,5 +6,12 @@
 
 `/agent clear`
 
-get the rss feed at https://www.lemonde.fr/rss/en_continu.xml, extract all fields "title", output response as a numbered bullet text list, don't add any text before and after the list.
+test 1:
+
+- get the rss feed at https://www.lemonde.fr/rss/en_continu.xml, extract all fields "title", output response as a numbered bullet text list, don't add any text before and after the list.
+
+test 2:
+
+- save RSS at https://www.lemonde.fr/rss/en_continu.xml in file `./tmp/feed.xml` using shell exec and tools
+- extract fields title from the file './tmp/feed.xml' using shell_exec
 

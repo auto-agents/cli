@@ -9,6 +9,8 @@ import { openSelectorProps } from '../components/list-selector.js'
 import SyntaxHighlight from 'ink-syntax-highlight'
 import highlight from 'cli-highlight'
 import { box } from '../utils/decorators.js'
+import path from 'path'
+import fs from 'fs'
 
 export default class AgentCommand extends Command {
 
@@ -127,6 +129,26 @@ export default class AgentCommand extends Command {
 						box(this.ctx, getAgentDump(this.ctx, agentId, 'config'), lines, o)
 					}
 				)
+				break
+
+			case 'instruct':
+				const flist = this.getValue(com, args, 'files')
+					|| this.getValue(com, args, 'f')
+				if (!flist) {
+					this.flagsMissing('--files | -f')
+					return
+				}
+				const t = flist.split(',')
+				const paths = t.map(x => path.join(
+					process.cwd(), this.ctx.paths.instructions, x
+				))
+				const texts = []
+				paths.forEach(fp => {
+					texts.push(fs.readFileSync(fp))
+				})
+				const text = texts.join('\n')
+				//console.log(text)
+				await this.ctx.components.dialog.addUserDialog(text)
 				break
 
 			case 'model':

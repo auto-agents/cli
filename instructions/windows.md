@@ -1,5 +1,4 @@
-# instructions to work on the environment: windows / powershell
-
 - my os is **windows**, my shell is **powershell**
-- use the command **Chocolatey** to install new shell commands
-- use the command **pyhton** to run python scripts and not **python3**
+- if you need to install a shell command, then use the command **Chocolatey** to install new shell commands
+- if you need to run a **pyhton** script, then use the command **pyhton** to run python scripts and not **python3**
+- always prefers to use **shell_exec**, when it is possible, instead of using a **tool**

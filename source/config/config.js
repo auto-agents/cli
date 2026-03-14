@@ -56,6 +56,7 @@ export default function config(cli) {
 		paths: {
 			agents: '../agents',
 			modules: '../modules',
+			instructions: 'instructions',
 			saved: saved,
 			tmp: 'tmp'
 		},
@@ -253,6 +254,10 @@ export default function config(cli) {
 									{
 										value: 'config',
 										description: 'output the configuration of the agent'
+									},
+									{
+										value: 'instruct',
+										description: 'add one or several instructions files content to the thread from a list using comma separator. require --list'
 									}
 								],
 								description: 'an action order for the dialog controller'
@@ -268,10 +273,20 @@ export default function config(cli) {
 								required: false,
 								description: "list models when action is 'model'"
 							},
+							files: {
+								type: 'string',
+								required: false,
+								description: "set files list when action is 'instruct'"
+							},
+							f: {
+								type: 'string',
+								required: false,
+								description: "alias for --files"
+							},
 							l: {
 								type: "boolean",
 								required: false,
-								description: "alias for list"
+								description: "alias for --list"
 							},
 							select: {
 								type: "boolean",
@@ -281,7 +296,7 @@ export default function config(cli) {
 							s: {
 								type: "boolean",
 								required: false,
-								description: "alias for select"
+								description: "alias for --select"
 							},
 							/*agent1_instructions: {
 								type: 'string',
