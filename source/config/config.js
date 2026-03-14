@@ -499,18 +499,28 @@ export default function config(cli) {
 
 			list: [
 				{
+					// specification
 					id: TUIAgentId,
 					name: 'TUI Agent',
 					moduleName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					//moduleName: 'anythingLLMAIAgent',
-					//provider: 'anythingLLMDesktop',
 					module: null,
-
+					// model config
+					config: {
+					},
+					// characteristics
+					avatar: 'seraphina',
+					profile: 'Coding assistant',
+					TTS: {
+						enabled: true,
+						moduleName: 'speech',
+						profile: 'TUI'
+					},
 					chatName: 'seraphina',
 					profileName: 'Coding Assistant',
 					imgPath: 'agent-5-48x48.png',
 					system: true,
+
 					speak: {
 						enabled: true,
 						preferredVoices: {
@@ -550,14 +560,49 @@ export default function config(cli) {
 				}
 			},
 
-			personas: {
+			voiceProfiles: {
+				speech: {
+					speak: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
+						}
+					},
+					repeatUserQuery: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
+						}
+					},
+					speakErrors: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
+						}
+					},
+				}
+			},
 
+			avatars: {
 				seraphina: {
+					chatName: 'seraphina',
 					imgPath: 'agent-5-48x48.png',
 					speak: {
 						enabled: true,
 						preferredVoices: {
 							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
+						}
+					},
+					repeatUserQuery: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
+						}
+					},
+					speakErrors: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
 						}
 					},
 				}
