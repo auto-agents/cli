@@ -788,11 +788,11 @@ export default function config(cli) {
 				},
 				modules: {
 					speech: {
-						key: 'speech',
+						key: 'TUI TTS',
 						value: ''
 					},
 					recognition: {
-						key: 'voice recognition',
+						key: 'TUI STT',
 						value: ''
 					},
 					AIAgent: {
