@@ -547,7 +547,7 @@ export default function config(cli) {
 				}
 			],
 
-			profile: {
+			profiles: {
 				['Coding Assistant']: {
 					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions."
 				}
