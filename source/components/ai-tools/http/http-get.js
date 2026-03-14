@@ -2,6 +2,7 @@ import AITool from '../../ai/ai-tool';
 const htmlparser2 = require('htmlparser2');
 
 // http get https://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Accueil_principal, extract main text from page
+// https://www.lemonde.fr/rss/en_continu.xml
 
 export default class HttpGet extends AITool {
 

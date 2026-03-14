@@ -94,8 +94,10 @@ export default class AgentCommand extends Command {
 
 			case 'clear':
 			case 'c':
-				if (isAIAgentAvailable(this.ctx))
+				if (isAIAgentAvailable(this.ctx)) {
 					this.ctx.components.module.AIAgent.clearHistory()
+					dumpAgent(this.ctx, agentId, o, 'history cleared')
+				}
 				break
 
 			case 'h':

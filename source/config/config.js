@@ -1241,8 +1241,15 @@ export default function config(cli) {
 						base: 'https://en.wikipedia.org/w/rest.php/v1/',
 						search: 'search/page'
 					},
-					limitPerPage: 10,
-					accessToken: ''
+					limitPerPage: 10
+				},
+				serpApi: {
+					duckduckgoSearch: {
+						// &q=<query>>&kl=<lang-iso-2>
+						endPoint: 'https://serpapi.com/search?engine=duckduckgo',
+						// put SERP_API_KEY in .env
+						api_key: process.env.SERP_API_KEY
+					}
 				}
 			}
 		},
