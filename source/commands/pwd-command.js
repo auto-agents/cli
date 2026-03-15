@@ -1,4 +1,4 @@
-import Command from "./command"
+import Command from '../../../shared/src/commands/command.js'
 
 export default class PwdCommand extends Command {
 

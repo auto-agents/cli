@@ -6,7 +6,7 @@ import { renderComponent } from '../utils/utils.js';
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
 import { CommandRunErrorEvent, errorEvent } from '../../../shared/src/data/events.js';
-import Command from './command.js';
+import Command from '../../../shared/src/commands/command.js';
 
 export default class CatCommand extends Command {
 

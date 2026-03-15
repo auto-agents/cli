@@ -1,4 +1,4 @@
-import Command from './command.js'
+import Command from '../../../shared/src/commands/command.js'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import { renderComponent, toJson } from '../utils/utils.js';
 import * as highlight from "cli-highlight"

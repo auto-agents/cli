@@ -1,4 +1,4 @@
-import Command from './command.js'
+import Command from '../../../shared/src/commands/command.js'
 import chalk from 'chalk'
 import OutputContext from '../data/output-context.js'
 

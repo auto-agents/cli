@@ -4,7 +4,7 @@ import Status from '../utils/status.js'
 import { CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
-import Command from './command.js';
+import Command from '../../../shared/src/commands/command.js';
 
 export default class PrintCommand extends Command {
 

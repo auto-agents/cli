@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { errorEvent, LogErrorEvent } from '../../../shared/src/data/events';
-import Command from './command';
+import Command from '../../../shared/src/commands/command.js'
 
 export default class HelpCommand extends Command {
 

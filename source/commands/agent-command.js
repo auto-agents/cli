@@ -1,4 +1,4 @@
-import Command from './command.js'
+import Command from '../../../shared/src/commands/command.js'
 import Status from '../utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
 import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, renderComponent, toJson } from '../utils/utils.js'

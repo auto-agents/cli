@@ -1,4 +1,4 @@
-import { ESC } from "../config/consts"
+import { ESC } from "../../../shared/src/config/consts.js"
 import { BoxOutputUpdatedEvent } from "../../../shared/src/data/events"
 import OutputContext from "../data/output-context"
 

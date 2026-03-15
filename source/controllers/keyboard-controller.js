@@ -7,7 +7,7 @@ import {
 } from "../../../shared/src/data/events"
 import {
     ESC
-} from '../config/consts'
+} from '../../../shared/src/config/consts.js'
 
 export default class KeyboardController {
 

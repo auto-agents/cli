@@ -5,7 +5,7 @@ import Status from '../utils/status.js'
 import { resolvePath } from '../utils/utils.js'
 import wildcard from 'wildcard'
 import { CommandRunErrorEvent, errorEvent } from '../../../shared/src/data/events.js'
-import Command from './command.js'
+import Command from '../../../shared/src/commands/command.js'
 
 export default class LsCommand extends Command {
 

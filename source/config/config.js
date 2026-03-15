@@ -13,7 +13,7 @@ import {
 	CTRL_F9,
 	SHIFT_UP,
 	SHIFT_DOWN
-} from './consts.js'
+} from '../../../shared/src/config/consts.js'
 import { join } from 'path'
 import os from "os";
 import { Action_Tool_Query, Action_Tool_Text_Query } from '../components/ai/response-processor.js';
