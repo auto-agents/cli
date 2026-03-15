@@ -4,7 +4,7 @@ import {
 	HideInitBoxOutputEvent,
 	LayoutResizedEvent,
 	ListSelectorOpenCommandEvent
-} from '../data/events.js';
+} from '../../../shared/src/data/events.js';
 import SelectInput from 'ink-select-input';
 import ListItem from './list-item.js';
 import ListItemIndicator from './list-item-indicator.js';

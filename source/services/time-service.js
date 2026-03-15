@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { GaugeSourceUpdatedEvent } from '../data/events'
+import { GaugeSourceUpdatedEvent } from '../../../shared/src/data/events'
 
 export default class TimeService {
 

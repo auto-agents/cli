@@ -10,7 +10,7 @@ import {
 	ToolRunErrorDialogEvent,
 	ToolUnknownDialogEvent,
 	errorEvent
-} from "../data/events.js"
+} from "../../../shared/src/data/events.js"
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/ai/response-speech-formater.js"
 import { Role_Assistant } from "../components/ai/roles.js"

@@ -1,4 +1,4 @@
-import { ConsoleClearedEvent, HideInitBoxOutputEvent, UIFreezeStatedChangedEvent } from "../data/events.js";
+import { ConsoleClearedEvent, HideInitBoxOutputEvent, UIFreezeStatedChangedEvent } from "../../../shared/src/data/events.js";
 import Command from "./command.js";
 
 export default class ClearConsoleCommand extends Command {

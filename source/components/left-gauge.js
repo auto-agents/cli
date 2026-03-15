@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Text, Box } from 'ink';
-import { GaugeSourceUpdatedEvent } from '../data/events';
+import { GaugeSourceUpdatedEvent } from '../../../shared/src/data/events';
 
 export default function LeftGauge({ ctx, prop }) {
 

@@ -4,7 +4,7 @@ import {
     ToolRunCompletedDialogEvent,
     ToolRunErrorDialogEvent,
     ToolUnknownDialogEvent
-} from "../../../data/events";
+} from "../../../../../shared/src/data/events";
 
 import ResponseProcessor, { Action_Tool_Query } from "../response-processor";
 

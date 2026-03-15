@@ -27,7 +27,7 @@ import {
 	ModuleLoadedEvent,
 	ModuleUnloadedEvent,
 	LayoutResizedEvent
-} from '../data/events.js'
+} from '../../../shared/src/data/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
 import InitService from '../services/init-service.js';

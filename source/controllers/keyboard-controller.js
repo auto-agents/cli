@@ -4,7 +4,7 @@ import {
     InputToStartEvent,
     RunCommandEvent,
     UIFreezeStatedChangedEvent
-} from "../data/events"
+} from "../../../shared/src/data/events"
 import {
     ESC
 } from '../config/consts'

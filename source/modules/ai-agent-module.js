@@ -7,7 +7,7 @@ import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
 import { Role_Assistant, Role_Tool } from "../components/ai/roles.js";
-import { CommandRunErrorEvent, errorEvent } from "../data/events.js";
+import { CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
 import path from "path";
 import DialogContext from "../data/dialog-context.js";
 

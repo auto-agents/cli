@@ -1,6 +1,6 @@
 import {
     TaskAddAssistantMessageCommandEvent
-} from "../../data/events"
+} from "../../../../shared/src/data/events"
 import DialogContext from "../../data/dialog-context"
 import { FifoStack, task } from "../../utils/fifo-stack"
 import { isAIAgentAvailable, isSpeechAvailable, isUserSpeakEchoAvailable } from "../../utils/utils"
