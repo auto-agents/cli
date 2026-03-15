@@ -3,7 +3,7 @@ import {
 } from "../../../../shared/src/data/events"
 import DialogContext from "../../../../shared/src/data/dialog-context"
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
-import { isAIAgentAvailable, isSpeechAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
+import { isSpeechAvailable, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
 
 /*
  the dialoger handle dialog behaviors
@@ -111,7 +111,7 @@ export default class Dialoger {
         // 3. eventually think (includes ai output response)
 
         // AWAIT ...
-        if (isAIAgentAvailable(this.ctx)) {
+        if (isTUIAIAgentAvailable(this.ctx)) {
             aiResult = await this.fifoStack.addTask(
                 dialogContext.setCurrentTask(
                     task(

@@ -16,7 +16,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../../../shared/src/data/output-context.js"
-import { getAgent, isAIAgentAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../../../shared/src/utils/utils.js"
+import { getAgent, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError, isTUIAIAgentAvailable } from "../../../shared/src/utils/utils.js"
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
@@ -210,6 +210,7 @@ export default class DialogController {
 
 	async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }
 
+	/*
 	async setDuoModeEnabled(
 		on,
 		{ agents }
@@ -243,12 +244,6 @@ export default class DialogController {
 			role: Role_Assistant,
 			content: this.ctx.agents.sentences.dualModeInitialSystemSentence
 		}
-		/*} else {
-			lastAssistMessage = {
-				role: Role_Assistant,
-				content: lastAssistMessage
-			}
-		}*/
 
 		secondaryAgent.history.instructions = agent2.instructions
 		secondaryAgent.history.reset()
@@ -322,7 +317,7 @@ export default class DialogController {
 			message = primaryAgent.history.getLastAssistantMessage()
 		}
 	}
-
+*/
 	// ----- speak ---------------------------------------------------
 
 	#getSystemVoice() {
@@ -333,11 +328,6 @@ export default class DialogController {
 	#getUserVoice() {
 		return getAgent(this.ctx, TUIAgentId)
 			.repeatUserQuery.preferredVoices[this.ctx.modules.speech.config.browser][0];
-	}
-
-	#isAIAgentAvailable() {
-		return this.ctx.components.module.AIAgent != null
-			&& this.ctx.components.module.AIAgent !== undefined;
 	}
 
 	async #speakEventHandler(data) {
@@ -415,7 +405,7 @@ export default class DialogController {
 		query,
 		tool_calls,
 		options) {
-		if (!this.#isAIAgentAvailable())
+		if (isTUIAIAgentAvailable(this.ctx))
 			return
 		const e = this.ctx.components.event
 

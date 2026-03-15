@@ -1,10 +1,9 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, toJson } from '../../../shared/src/utils/utils.js'
+import { dumpAgent, getAgent, getAgentDump, toJson } from '../../../shared/src/utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
-import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import { openSelectorProps } from '../components/ink-react/list-selector.js'
 import SyntaxHighlight from 'ink-syntax-highlight'
 import highlight from 'cli-highlight'
@@ -149,6 +148,7 @@ export default class AgentCommand extends Command {
 					columns: [
 						{ name: 'id', alignment: 'left' },
 						{ name: 'module', alignment: 'left' },
+						{ name: 'api', alignment: 'left' },
 						{ name: 'provider', alignment: 'left' },
 						{ name: 'server', alignment: 'left' },
 						{ name: 'model', alignment: 'left' }
@@ -159,10 +159,11 @@ export default class AgentCommand extends Command {
 					at.addRow({
 						id: id,
 						module: a.moduleName,
+						api: a.module?.moduleSpec.apiName,
 						provider: agent?.module?.config?.provider,
 						server: agent?.module?.config?.baseURL
 							.replace('{port}', agent?.module?.config?.port),
-						model: agent?.module?.config?.model
+						model: agent?.module?.api?.config?.model
 					})
 				}
 				o.appendLine(at.render())
@@ -189,11 +190,15 @@ export default class AgentCommand extends Command {
 				break
 
 			case 'model':
-				if (!isAIAgentAvailable(this.ctx))
+				const agmod = agent.module
+				if (!agmod.list) {
+					this.emitCommandError(`list not available in module '${agent.moduleName}'`)
+				}
+				const mlist = await agmod.list()
+				if (!mlist) {
+					this.emitCommandError(`list returns null in module '${agent.moduleName}'`)
 					return
-				const aichat = this.ctx.components.module.AIAgent
-				const mlist = await aichat.list()
-				if (!mlist) return
+				}
 
 				const list = this.getValue(com, args, 'list')
 				const select = this.getValue(com, args, 'select')
@@ -214,7 +219,7 @@ export default class AgentCommand extends Command {
 						var str = mod.id
 						//console.log(mod)
 						var col = txt => txt
-						if (aichat.api.config.model == mod.id)
+						if (agmod.api.config.model == mod.id)
 							col = x => chalk.hex(this.ctx.theme.table.highlightRow)(x)
 						//c = this.ctx.theme.table.highlightRow
 						//o.appendLine(str)
@@ -240,7 +245,7 @@ export default class AgentCommand extends Command {
 					const props = openSelectorProps(
 						'select a model:',
 						modelsItems,
-						aichat.api.config.model,
+						agmod.api.config.model,
 						100,
 						null,
 						true,
