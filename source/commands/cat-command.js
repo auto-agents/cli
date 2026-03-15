@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, readFileSync } from 'fs'
+import { existsSync, readFileSync } from 'fs'
 import SyntaxHighlight from 'ink-syntax-highlight';
 import Status from '../../../shared/src/utils/status.js';
 import * as highlight from "cli-highlight"
