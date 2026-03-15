@@ -8,7 +8,7 @@ import {
 	InputExecutingEvent,
 	CommandClearInputEvent,
 	CommandSetInputEvent
-} from '../../../shared/src/data/events';
+} from '../../../../shared/src/data/events';
 
 const Prompter = ({ ctx }) => {
 

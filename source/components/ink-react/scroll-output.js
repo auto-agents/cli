@@ -4,7 +4,7 @@ import {
 	ConsoleClearedEvent,
 	HelpOutputUpdatedEvent,
 	LayoutResizedEvent
-} from '../../../shared/src/data/events';
+} from '../../../../shared/src/data/events';
 
 const reducer = (state, action) => {
 	var r = null

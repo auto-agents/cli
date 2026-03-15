@@ -5,7 +5,7 @@ import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, toJson } from '.
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import { openSelectorProps } from '../components/list-selector.js'
+import { openSelectorProps } from '../components/ink-react/list-selector.js'
 import SyntaxHighlight from 'ink-syntax-highlight'
 import highlight from 'cli-highlight'
 import { box } from '../../../shared/src/utils/decorators.js'

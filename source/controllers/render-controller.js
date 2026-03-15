@@ -1,6 +1,6 @@
-import App from '../components/app.js';
+import App from '../components/ink-react/app.js';
 import { withFullScreen } from "fullscreen-ink";
-import ErrorBoundary from '../components/error-boundary.js';
+import ErrorBoundary from '../components/ink-react/error-boundary.js';
 import { TerminalInfoProvider } from "ink-picture";
 
 var i = require('ink')

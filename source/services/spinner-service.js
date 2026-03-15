@@ -1,4 +1,4 @@
-import SpinnerWait from '../components/spinner-wait.js'
+import SpinnerWait from '../components/ink-react/spinner-wait.js'
 
 export default class SpinnerService {
 

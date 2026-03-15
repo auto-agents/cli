@@ -2,7 +2,7 @@ import React from 'react';
 import { render, Text } from 'ink';
 import fs from 'fs';
 import path from 'path';
-import { ERROR_LOG_FILE } from '../config/config';
+import { ERROR_LOG_FILE } from '../../config/config';
 
 class ErrorBoundary extends React.Component {
 

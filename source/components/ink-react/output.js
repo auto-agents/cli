@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Box, Text, measureElement } from 'ink';
-import { LayoutResizedEvent } from '../../../shared/src/data/events';
+import { LayoutResizedEvent } from '../../../../shared/src/data/events';
 
 const Output = ({
 	children,

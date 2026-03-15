@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, useInput } from 'ink';
 import chalk from 'chalk';
-import { InputToEndEvent, InputToStartEvent } from '../../../shared/src/data/events';
+import { InputToEndEvent, InputToStartEvent } from '../../../../shared/src/data/events';
 
 // collaborates with prompt.js (ctx.cli.currentInput) for Home/End keys handling
 function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = true, mask, highlightPastedText = false, showCursor = true, onChange, onSubmit, }) {

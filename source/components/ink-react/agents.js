@@ -6,10 +6,10 @@ import {
 	AppStartedEvent,
 	AgentAddedEvent,
 	ModuleUnloadedEvent
-} from '../../../shared/src/data/events.js';
+} from '../../../../shared/src/data/events.js';
 import Image from "ink-picture";
 import path from 'path'
-import { TUIAgentId } from '../../../shared/src/config/consts.js'
+import { TUIAgentId } from '../../../../shared/src/config/consts.js'
 
 const Agents = ({ ctx }) => {
 

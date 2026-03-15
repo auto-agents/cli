@@ -18,12 +18,12 @@ import {
 	OutputResizedEvent,
 	AgentAddedEvent,
 	ModuleUnloadedEvent
-} from '../../../shared/src/data/events.js';
-import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
+} from '../../../../shared/src/data/events.js';
+import { StatusEnum, StatusMessage } from '../../../../shared/src/data/status-message.js';
 import chalk from 'chalk'
 import Image from "ink-picture";
 import path from 'path'
-import { TUIAgentId } from '../../../shared/src/config/consts.js'
+import { TUIAgentId } from '../../../../shared/src/config/consts.js'
 import ListSelector from './list-selector.js';
 
 export default function App({ ctx }) {
