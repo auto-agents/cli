@@ -117,7 +117,6 @@ export default class Dialoger {
                     task(
                         'user dialog: request ai completion',
                         async task => {
-
                             // must not break await here (task await via addTask)
                             return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
                                 // THE FIFO,
@@ -131,7 +130,6 @@ export default class Dialoger {
                     )).task
             )
             results.push(aiResult)
-
         }
 
         // THEN

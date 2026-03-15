@@ -9,7 +9,7 @@ import utils from '../../../shared/src/utils/utils.js'
 export default class SpeechModule {
 
     constructor(ctx, config, outputContext, moduleSpec) {
-        this.moduleSpec = moduleSpec
+        this.specification = moduleSpec
         this.ctx = ctx
         this.status = new Status(ctx)
         this.config = config

@@ -38,7 +38,7 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../../../shared/src/utils/status.js'
 import KeyboardController from './keyboard-controller.js';
-import { getAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../../../shared/src/utils/utils.js';
+import { getTUIAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../../../shared/src/utils/utils.js';
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
@@ -136,7 +136,7 @@ export default class AppController {
 		this.ctx.components.event.emit(SpeakCommandEvent, speakEvent(
 			this.From,
 			text,
-			getAgent(this.ctx, TUIAgentId).speakErrors.preferredVoices
+			getTUIAgent(this.ctx).speakErrors.preferredVoices
 			[this.ctx.modules.speech.config.browser][0],
 			true));
 	}
@@ -277,7 +277,7 @@ export default class AppController {
 		const initModuleGauge = (moduleName, gaugeName) => {
 			gaugeName ||= moduleName
 			const moduleInstance = this.ctx.components.module[moduleName]
-			const moduleSpec = moduleInstance?.moduleSpec
+			const moduleSpec = moduleInstance?.specification
 			const gauge = this.ctx.data.app.modules[gaugeName]
 			gauge.value =
 				!moduleSpec ? this.status.statusUnavailable() : (

@@ -1,7 +1,7 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { dumpAgent, getAgent, getAgentDump, toJson } from '../../../shared/src/utils/utils.js'
+import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, toJson } from '../../../shared/src/utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { openSelectorProps } from '../components/ink-react/list-selector.js'
@@ -31,9 +31,10 @@ export default class AgentCommand extends Command {
 		if (!this.checkParameter(com, argAction, action))
 			return
 
+		const requireAgentSpec = action != 'list'
 		const agentId = this.getValue(com, args, 'id')
-		const agent = getAgent(this.ctx, agentId)
-		if (!agent) {
+		const agent = getLoadedAgent(this.ctx, agentId)
+		if (requireAgentSpec && !agent) {
 			this.emitCommandError('agent not found: ' + agentId)
 			return
 		}
@@ -47,7 +48,7 @@ export default class AgentCommand extends Command {
 			case 'su':
 			case 'shet-up':
 				await dialogController.shetUp()
-				dumpAgent(this.ctx, agentId, o, 'shet up')
+				dumpLoadedAgent(this.ctx, agentId, o, 'shet up')
 				break
 
 			/*case 'duo-on':
@@ -97,12 +98,12 @@ export default class AgentCommand extends Command {
 			case 'clear':
 			case 'c':
 				agent.module.AIAgent.clearHistory()
-				dumpAgent(this.ctx, agentId, o, 'history cleared')
+				dumpLoadedAgent(this.ctx, agentId, o, 'history cleared')
 				break
 
 			case 'h':
 			case 'history':
-				dumpAgent(this.ctx, agentId, o, 'history')
+				dumpLoadedAgent(this.ctx, agentId, o, 'history')
 				e.emit(RunCommandEvent, "app get components.module.AIAgent.api.history.messages")
 				break
 
@@ -118,7 +119,7 @@ export default class AgentCommand extends Command {
 					,
 					o,
 					(lines) => {
-						box(this.ctx, getAgentDump(this.ctx, agentId, 'config'), lines, o)
+						box(this.ctx, getLoadedAgentDump(this.ctx, agentId, 'config'), lines, o)
 					}
 				)
 				break
@@ -136,7 +137,7 @@ export default class AgentCommand extends Command {
 					,
 					o,
 					(lines) => {
-						box(this.ctx, getAgentDump(this.ctx, agentId, 'spec'), lines, o)
+						box(this.ctx, getLoadedAgentDump(this.ctx, agentId, 'spec'), lines, o)
 					}
 				)
 				break
@@ -159,7 +160,7 @@ export default class AgentCommand extends Command {
 					at.addRow({
 						id: id,
 						module: a.moduleName,
-						api: a.module?.moduleSpec.apiName,
+						api: a.module?.specification.apiName,
 						provider: agent?.module?.config?.provider,
 						server: agent?.module?.config?.baseURL
 							.replace('{port}', agent?.module?.config?.port),
@@ -203,7 +204,7 @@ export default class AgentCommand extends Command {
 				const list = this.getValue(com, args, 'list')
 				const select = this.getValue(com, args, 'select')
 
-				dumpAgent(this.ctx, agentId, o)
+				dumpLoadedAgent(this.ctx, agentId, o)
 
 				if (list === true) {
 
@@ -250,7 +251,7 @@ export default class AgentCommand extends Command {
 						null,
 						true,
 						(item) => {
-							this.ctx.components.module.AIAgent.api.config.model = item.label
+							agent.module.api.config.model = item.label
 							o.newLine()
 							o.appendLine('agent model set to: ' + item.label)
 						}

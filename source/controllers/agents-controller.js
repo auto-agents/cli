@@ -1,6 +1,6 @@
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import { AgentAddedEvent, ModuleLoadedEvent } from "../../../shared/src/data/events"
-import { getAgent } from "../../../shared/src/utils/utils"
+import { getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
 
 export default class AgentsController {
@@ -35,7 +35,9 @@ export default class AgentsController {
 
     getAgentInView() {
         if (this.viewAgentId == null) return null
-        return getAgent(this.ctx, this.viewAgentId)
+        var o = getLoadedAgent(this.ctx, this.viewAgentId)
+            || getAgentSpecification(this.ctx, this.viewAgentId)
+        return o
     }
 
     getModuleStoreName(agent) {

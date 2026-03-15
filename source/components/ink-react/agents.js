@@ -220,7 +220,7 @@ const Agents = ({ ctx }) => {
 						width={agentViewState.width}
 						height={agentViewState.height}
 						src={agentProps.img}
-						alt="agent photo"
+						alt="agent avatar"
 						protocol="halfBlock"
 					/>
 				</Box>

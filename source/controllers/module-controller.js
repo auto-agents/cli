@@ -20,7 +20,7 @@ export default class ModuleController {
         this.ctx.components.moduleController = this
     }
 
-    async load(moduleName, moduleStoreName = null, outputContext) {
+    async load(moduleName, moduleStoreName = null, outputContext, userAction = false) {
         moduleStoreName ||= moduleName
         const oc = outputContext || this.outputContext
         const o = oc.output
@@ -41,6 +41,12 @@ export default class ModuleController {
                 return this.modules[moduleName] || null
             }
 
+            if (userAction && module.internal) {
+                o.newLine()
+                o.appendLine(this.status.error(margin + "an internal module can't be loaded by user: " + moduleName))
+                return this.modules[moduleName] || null
+            }
+
             const path = join(this.modulesPath, module.file)
             if (!existsSync(path)) {
                 o.newLine()
@@ -58,7 +64,9 @@ export default class ModuleController {
             this.ctx.components.module[moduleStoreName] = m
             module.isLoaded = true
             module.enabled = true
+            // clone the spec
             m.specification = { ...module }
+            // make module not internal
             m.specification.internal = false
 
             this.ctx.components.event.emit(ModuleLoadedEvent, moduleName)
@@ -72,7 +80,7 @@ export default class ModuleController {
         }
     }
 
-    async unload(moduleName, outputContext) {
+    async unload(moduleName, outputContext, userAction = false) {
         const oc = outputContext || this.outputContext
         const o = oc.output
         const str = " "
@@ -90,6 +98,12 @@ export default class ModuleController {
                 o.newLine()
                 o.appendLine(this.status.error(margin + 'module ' + moduleName + ' is not loaded'))
                 return false
+            }
+
+            if (userAction && module.internal) {
+                o.newLine()
+                o.appendLine(this.status.error(margin + "an internal module can't be unloaded by user: " + moduleName))
+                return this.modules[moduleName] || null
             }
 
             const instance = this.modules[moduleName]

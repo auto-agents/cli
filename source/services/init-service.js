@@ -8,7 +8,7 @@ import { AppInitializedEvent, SetStatusMessageEvent } from '../../../shared/src/
 import SysInfoService from './sys-info-service.js';
 import ModuleController from '../controllers/module-controller.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
-import utils, { getAgent } from '../../../shared/src/utils/utils.js';
+import utils, { getAgentSpecification } from '../../../shared/src/utils/utils.js';
 import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 
@@ -133,7 +133,7 @@ export default class InitService {
 	async #initAgents(outputContext) {
 		if (!this.ctx.cli.TUIAgentEnabled) return
 		await this.ctx.components.agents.loadAgent(
-			getAgent(this.ctx, TUIAgentId),
+			getAgentSpecification(this.ctx, TUIAgentId),
 			outputContext
 		)
 	}

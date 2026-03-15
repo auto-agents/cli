@@ -87,7 +87,7 @@ export default class ModuleCommand extends Command {
 					return
 
 				const mc = await this.#getModuleController()
-				await mc.load(name, this.#getOutputContext(4))
+				await mc.load(name, null, this.#getOutputContext(4), true)
 				this.#listModules()
 				break
 			}
@@ -99,7 +99,7 @@ export default class ModuleCommand extends Command {
 					return
 
 				const mc = await this.#getModuleController()
-				await mc.unload(name, this.#getOutputContext(4))
+				await mc.unload(name, this.#getOutputContext(4), true)
 				this.#listModules()
 				break
 			}

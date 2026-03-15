@@ -16,7 +16,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../../../shared/src/data/output-context.js"
-import { getAgent, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError, isTUIAIAgentAvailable } from "../../../shared/src/utils/utils.js"
+import { isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent } from "../../../shared/src/utils/utils.js"
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
@@ -191,7 +191,7 @@ export default class DialogController {
 
 		if (t.length > 0) {
 			// add role symbol
-			if (!name) name = getAgent(this.ctx, TUIAgentId).chatName
+			if (!name) name = getTUIAgent(this.ctx).chatName
 			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
 			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
 		}
@@ -321,13 +321,15 @@ export default class DialogController {
 	// ----- speak ---------------------------------------------------
 
 	#getSystemVoice() {
-		return getAgent(this.ctx, TUIAgentId)
-			.speak.preferredVoices[this.ctx.modules.speech.config.browser][0];
+		const a = getTUIAgent(this.ctx)
+		if (!a) return null
+		return a.speak.preferredVoices[this.ctx.modules.speech.config.browser][0]
 	}
 
 	#getUserVoice() {
-		return getAgent(this.ctx, TUIAgentId)
-			.repeatUserQuery.preferredVoices[this.ctx.modules.speech.config.browser][0];
+		const a = getTUIAgent(this.ctx)
+		if (!a) return null
+		return a.repeatUserQuery.preferredVoices[this.ctx.modules.speech.config.browser][0]
 	}
 
 	async #speakEventHandler(data) {
@@ -405,7 +407,7 @@ export default class DialogController {
 		query,
 		tool_calls,
 		options) {
-		if (isTUIAIAgentAvailable(this.ctx))
+		if (!isTUIAIAgentAvailable(this.ctx))
 			return
 		const e = this.ctx.components.event
 

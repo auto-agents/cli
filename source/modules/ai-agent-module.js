@@ -28,7 +28,7 @@ export default class AIAgentModule {
 
     constructor(ctx, config, outputContext, moduleSpec
     ) {
-        this.moduleSpec = moduleSpec
+        this.specification = moduleSpec
         this.apiName = moduleSpec.apiName
         this.apiClientFilepath = moduleSpec.apiClientFilepath
         this.apiClientConfig = eval(moduleSpec.apiClientConfig)
@@ -136,7 +136,7 @@ export default class AIAgentModule {
             o,
             stopSrv,
             new SpinnerService(this.ctx, o)
-                .newSpinner(margin + '- stopping module ai agent: ' + this.moduleSpec.apiName, cliSpinners.sand)
+                .newSpinner(margin + '- stopping module ai agent: ' + this.specification.apiName, cliSpinners.sand)
         )
         await stopSrvAction.run()
     }
