@@ -937,20 +937,33 @@ export default function config(cli) {
 			}
 		},
 		components: {
+			// init service
 			init: null,
+			// app controller
 			app: null,
+			// default ouput controller
 			output: null,
+			// input controller
 			input: null,
+			// help output controller
 			helpOutput: null,
+			// box output controller
 			boxOutput: null,
+			// event controller
 			event: null,
+			// dialog controller
 			dialog: null,
+			// sysinfo service
 			sysInfo: null,
-			module: null,
+			// render controller
 			render: null,
+			// agents controller
 			agents: null,
+			// module controller
 			moduleController: null,
+			// loaded modules
 			module: {
+				// modules owned by agents
 				agents: {}
 			}
 		},
