@@ -2,7 +2,7 @@ import { existsSync } from "fs";
 import { join } from 'path';
 import chalk from "chalk"
 import Status from '../utils/status.js'
-import OutputContext from "../data/output-context.js";
+import OutputContext from "../../../shared/src/data/output-context.js";
 import { isAppInitialized } from "../utils/utils.js";
 import { ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events.js";
 

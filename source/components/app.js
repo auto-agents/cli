@@ -19,7 +19,7 @@ import {
 	AgentAddedEvent,
 	ModuleUnloadedEvent
 } from '../../../shared/src/data/events.js';
-import { StatusEnum, StatusMessage } from '../data/status-message.js';
+import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
 import chalk from 'chalk'
 import Image from "ink-picture";
 import path from 'path'

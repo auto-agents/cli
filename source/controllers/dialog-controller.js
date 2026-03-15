@@ -1,6 +1,6 @@
 import chalk from "chalk"
 import Status from '../utils/status.js'
-import { StatusMessage, StatusEnum } from "../data/status-message.js"
+import { StatusMessage, StatusEnum } from "../../../shared/src/data/status-message.js"
 import {
 	LogErrorEvent,
 	SetStatusMessageEvent,
@@ -15,7 +15,7 @@ import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/ai/response-speech-formater.js"
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
-import OutputContext from "../data/output-context.js"
+import OutputContext from "../../../shared/src/data/output-context.js"
 import { getAgent, isAIAgentAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
 import { TUIAgentId } from "../config/config.js"
 import DialogContext from "../data/dialog-context.js"

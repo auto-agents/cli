@@ -1,6 +1,6 @@
 import Command from '../../../shared/src/commands/command.js'
 import chalk from 'chalk'
-import OutputContext from '../data/output-context.js'
+import OutputContext from '../../../shared/src/data/output-context.js'
 
 export default class ModuleCommand extends Command {
 

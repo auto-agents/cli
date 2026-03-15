@@ -7,9 +7,9 @@ import ActionSequenceController from '../controllers/action-sequence-controller.
 import { AppInitializedEvent, SetStatusMessageEvent } from '../../../shared/src/data/events.js';
 import SysInfoService from './sys-info-service.js';
 import ModuleController from '../controllers/module-controller.js';
-import OutputContext from '../data/output-context.js';
+import OutputContext from '../../../shared/src/data/output-context.js';
 import utils, { getAgent } from '../utils/utils.js';
-import { StatusEnum, StatusMessage } from '../data/status-message.js';
+import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
 import { TUIAgentId } from '../config/config.js';
 
 export default class InitService {

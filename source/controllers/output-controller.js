@@ -1,6 +1,6 @@
 import { ESC } from "../../../shared/src/config/consts.js"
 import { BoxOutputUpdatedEvent } from "../../../shared/src/data/events"
-import OutputContext from "../data/output-context"
+import OutputContext from "../../../shared/src/data/output-context"
 
 export default class OutputController {
 
