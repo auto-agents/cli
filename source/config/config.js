@@ -12,7 +12,8 @@ import {
 	CTRL_F10,
 	CTRL_F9,
 	SHIFT_UP,
-	SHIFT_DOWN
+	SHIFT_DOWN,
+	TUIAgentId
 } from '../../../shared/src/config/consts.js'
 import { join } from 'path'
 import os from "os";
@@ -41,7 +42,6 @@ const platform = getPlatform()
 
 const longInterval = 4000
 const saved = 'saved'
-export const TUIAgentId = 'TUI'
 
 // app OutputContext
 

@@ -4,7 +4,7 @@ import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpe
 import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, renderComponent, toJson } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
-import { TUIAgentId } from '../config/config.js'
+import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import { openSelectorProps } from '../components/list-selector.js'
 import SyntaxHighlight from 'ink-syntax-highlight'
 import highlight from 'cli-highlight'

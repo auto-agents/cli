@@ -10,7 +10,7 @@ import ModuleController from '../controllers/module-controller.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
 import utils, { getAgent } from '../utils/utils.js';
 import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
-import { TUIAgentId } from '../config/config.js';
+import { TUIAgentId } from '../../../shared/src/config/consts.js'
 
 export default class InitService {
 

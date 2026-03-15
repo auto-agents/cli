@@ -39,7 +39,7 @@ import OutputController from './output-controller.js';
 import Status from '../utils/status.js'
 import KeyboardController from './keyboard-controller.js';
 import { getAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../utils/utils.js';
-import { TUIAgentId } from '../config/config.js';
+import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
 

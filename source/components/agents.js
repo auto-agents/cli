@@ -9,7 +9,7 @@ import {
 } from '../../../shared/src/data/events.js';
 import Image from "ink-picture";
 import path from 'path'
-import { TUIAgentId } from '../config/config.js';
+import { TUIAgentId } from '../../../shared/src/config/consts.js'
 
 const Agents = ({ ctx }) => {
 

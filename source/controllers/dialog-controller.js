@@ -17,7 +17,7 @@ import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../../../shared/src/data/output-context.js"
 import { getAgent, isAIAgentAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
-import { TUIAgentId } from "../config/config.js"
+import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import DialogContext from "../data/dialog-context.js"
 import { replaceUnicodes } from "../utils/decorators.js"
 

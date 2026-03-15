@@ -23,7 +23,7 @@ import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-messa
 import chalk from 'chalk'
 import Image from "ink-picture";
 import path from 'path'
-import { TUIAgentId } from '../config/config.js';
+import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import ListSelector from './list-selector.js';
 
 export default function App({ ctx }) {

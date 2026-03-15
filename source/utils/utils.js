@@ -3,7 +3,7 @@ import path from 'path'
 import { render } from 'ink';
 import ansiEscapes from 'ansi-escapes';
 import chalk from 'chalk';
-import { TUIAgentId } from '../config/config';
+import { TUIAgentId } from '../../../shared/src/config/consts.js'
 
 export const callAsync = (func) => {
     (async () => {
