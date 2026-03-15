@@ -1,4 +1,4 @@
-import { ResponseProcessorLoadedEvent } from "../../config/events"
+import { ResponseProcessorLoadedEvent } from "../../data/events"
 import Status from "../../utils/status"
 import { isAppInitialized } from "../../utils/utils"
 import { existsSync } from "fs";

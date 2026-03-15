@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import { errorEvent, LogErrorEvent } from '../config/events';
+import { errorEvent, LogErrorEvent } from '../data/events';
 import Command from './command';
 
 export default class HelpCommand extends Command {

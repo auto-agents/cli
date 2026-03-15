@@ -4,7 +4,7 @@ import ActionController from '../controllers/action-controller.js'
 import cliSpinners from 'cli-spinners';
 import SpinnerService from './spinner-service.js';
 import ActionSequenceController from '../controllers/action-sequence-controller.js';
-import { AppInitializedEvent, SetStatusMessageEvent } from '../config/events.js';
+import { AppInitializedEvent, SetStatusMessageEvent } from '../data/events.js';
 import SysInfoService from './sys-info-service.js';
 import ModuleController from '../controllers/module-controller.js';
 import OutputContext from '../data/output-context.js';

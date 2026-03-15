@@ -6,7 +6,7 @@ import {
 	AppStartedEvent,
 	AgentAddedEvent,
 	ModuleUnloadedEvent
-} from '../config/events.js';
+} from '../data/events.js';
 import Image from "ink-picture";
 import path from 'path'
 import { TUIAgentId } from '../config/config.js';

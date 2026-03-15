@@ -10,7 +10,7 @@ import {
 	LogErrorEvent,
 	errorEvent,
 	CommandRunErrorEvent
-} from "../config/events"
+} from "../data/events"
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
 

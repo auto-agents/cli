@@ -1,5 +1,5 @@
 import { ESC } from "../config/consts"
-import { BoxOutputUpdatedEvent } from "../config/events"
+import { BoxOutputUpdatedEvent } from "../data/events"
 import OutputContext from "../data/output-context"
 
 export default class OutputController {

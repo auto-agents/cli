@@ -4,7 +4,7 @@ import chalk from 'chalk'
 import Status from '../utils/status.js'
 import { resolvePath } from '../utils/utils.js'
 import wildcard from 'wildcard'
-import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
+import { CommandRunErrorEvent, errorEvent } from '../data/events.js'
 import Command from './command.js'
 
 export default class LsCommand extends Command {

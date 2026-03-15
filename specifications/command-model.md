@@ -126,7 +126,7 @@ for example, the command `cd` that is implemented in the file `cd-command.js` ha
 }
 ```
 ```js
-import { CommandArgsCountErrorEvent } from "../config/events"
+import { CommandArgsCountErrorEvent } from "../data/events"
 
 export default class CdCommand {
 

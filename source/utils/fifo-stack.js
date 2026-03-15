@@ -1,5 +1,5 @@
 import { Mutex } from 'async-mutex';
-import { errorEvent, TaskRunErrorEvent } from '../config/events';
+import { errorEvent, TaskRunErrorEvent } from '../data/events';
 
 /**
  * build a task

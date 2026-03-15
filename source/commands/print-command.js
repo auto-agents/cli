@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'fs'
 import path from 'path'
 import Status from '../utils/status.js'
-import { CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../config/events.js'
+import { CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../data/events.js'
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
 import Command from './command.js';

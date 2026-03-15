@@ -18,7 +18,7 @@ import {
 	OutputResizedEvent,
 	AgentAddedEvent,
 	ModuleUnloadedEvent
-} from '../config/events.js';
+} from '../data/events.js';
 import { StatusEnum, StatusMessage } from '../data/status-message.js';
 import chalk from 'chalk'
 import Image from "ink-picture";

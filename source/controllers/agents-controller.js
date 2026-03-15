@@ -1,5 +1,5 @@
 import { TUIAgentId } from "../config/config"
-import { AgentAddedEvent, ModuleLoadedEvent } from "../config/events"
+import { AgentAddedEvent, ModuleLoadedEvent } from "../data/events"
 import { getAgent } from "../utils/utils"
 import Status from '../utils/status.js'
 

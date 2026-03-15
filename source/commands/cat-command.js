@@ -5,7 +5,7 @@ import * as highlight from "cli-highlight"
 import { renderComponent } from '../utils/utils.js';
 import { box } from '../utils/decorators.js';
 import { resolvePath } from '../utils/utils.js';
-import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
+import { CommandRunErrorEvent, errorEvent } from '../data/events.js';
 import Command from './command.js';
 
 export default class CatCommand extends Command {

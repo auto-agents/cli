@@ -1,4 +1,4 @@
-import { CommandRunErrorEvent, errorEvent } from '../config/events.js'
+import { CommandRunErrorEvent, errorEvent } from '../data/events.js'
 
 // command base class
 export default class Command {

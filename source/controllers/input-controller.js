@@ -6,7 +6,7 @@ import {
 	CommandSetInputEvent,
 	CommandInputStartedEvent,
 	HelpOutputUpdatedEvent
-} from "../config/events"
+} from "../data/events"
 import { ESC } from '../config/consts.js'
 import Status from '../utils/status.js'
 

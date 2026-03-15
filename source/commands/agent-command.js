@@ -1,6 +1,6 @@
 import Command from './command.js'
 import Status from '../utils/status.js'
-import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../config/events.js'
+import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../data/events.js'
 import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, renderComponent, toJson } from '../utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';

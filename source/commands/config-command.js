@@ -2,7 +2,7 @@ import { existsSync } from 'fs'
 import path from 'path'
 import { spawn } from 'child_process'
 import Status from '../utils/status.js';
-import { CommandRunErrorEvent, errorEvent } from '../config/events.js';
+import { CommandRunErrorEvent, errorEvent } from '../data/events.js';
 import Command from './command.js';
 
 export default class ConfigCommand extends Command {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Box, Text } from 'ink';
-import { LayoutResizedEvent, BoxOutputUpdatedEvent } from '../config/events';
+import { LayoutResizedEvent, BoxOutputUpdatedEvent } from '../data/events';
 
 const BoxOutput = ({ ctx, source, height, noScroll = false }) => {
 
