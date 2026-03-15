@@ -119,4 +119,7 @@ export default class OutputController {
 		return this.appendLine(' ', 0, skipViewUpdate)
 	}
 
+	getText() {
+		return this.getSource().rows.join('\n')
+	}
 }

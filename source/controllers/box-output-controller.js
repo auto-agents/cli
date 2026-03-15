@@ -104,4 +104,8 @@ export default class BoxOutputController {
 		const c = chalk.hex(this.ctx.theme.comment.color)
 		return this.appendLine(c.italic(str), this.ctx.theme.comment.margin)
 	}
+
+	getText() {
+		return this.getSource().rows.join('\n')
+	}
 }

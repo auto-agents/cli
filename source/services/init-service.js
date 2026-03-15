@@ -96,9 +96,11 @@ export default class InitService {
 			actionSeq,
 			() => this.#initEnded()
 		).run()
+
 	}
 
 	async #initEnded() {
+		this.ctx.cli.initLog = this.output.getText()
 		this.redirectConsole()
 		this.hatActionController.uiFunc.stop()
 		this.output.newLine()
@@ -136,7 +138,7 @@ export default class InitService {
 		)
 	}
 
-	#getOutputContext(margin) {
+	#getOutputContext(margin = 0) {
 		return new OutputContext(this.ctx, this.output, margin)
 	}
 }

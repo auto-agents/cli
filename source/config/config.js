@@ -493,7 +493,8 @@ export default function config(cli) {
 			dumpStackTraces: true,
 			enableDebugLoopTools: false,
 			TUIAgentEnabled: true,
-			toolRunTimeout: 10000
+			toolRunTimeout: 10000,
+			initLog: null
 		},
 		agents: {
 
