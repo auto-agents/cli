@@ -1,5 +1,5 @@
 import chalk from "chalk"
-import Status from '../utils/status.js'
+import Status from '../../../shared/src/utils/status.js'
 import { StatusMessage, StatusEnum } from "../../../shared/src/data/status-message.js"
 import {
 	LogErrorEvent,
@@ -16,10 +16,10 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../../../shared/src/data/output-context.js"
-import { getAgent, isAIAgentAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../utils/utils.js"
+import { getAgent, isAIAgentAvailable, isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError } from "../../../shared/src/utils/utils.js"
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import DialogContext from "../data/dialog-context.js"
-import { replaceUnicodes } from "../utils/decorators.js"
+import DialogContext from "../../../shared/src/data/dialog-context.js"
+import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 
 /**
  * controls a dialog with or without ai and speech

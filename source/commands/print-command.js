@@ -1,9 +1,9 @@
 import { existsSync, readFileSync } from 'fs'
 import path from 'path'
-import Status from '../utils/status.js'
+import Status from '../../../shared/src/utils/status.js'
 import { CommandRunErrorEvent, errorEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { box } from '../utils/decorators.js';
-import { resolvePath } from '../utils/utils.js';
+import { box } from '../../../shared/src/utils/decorators.js';
+import { resolvePath } from '../../../shared/src/utils/utils.js';
 import Command from '../../../shared/src/commands/command.js';
 
 export default class PrintCommand extends Command {

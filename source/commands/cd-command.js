@@ -1,7 +1,7 @@
 import { existsSync } from 'fs'
 import { dirname } from 'path'
 import path from 'path'
-import Status from '../utils/status.js'
+import Status from '../../../shared/src/utils/status.js'
 import { CommandRunErrorEvent, errorEvent } from '../../../shared/src/data/events.js'
 import Command from '../../../shared/src/commands/command.js'
 

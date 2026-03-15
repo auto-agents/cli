@@ -1,7 +1,7 @@
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import { AgentAddedEvent, ModuleLoadedEvent } from "../../../shared/src/data/events"
-import { getAgent } from "../utils/utils"
-import Status from '../utils/status.js'
+import { getAgent } from "../../../shared/src/utils/utils"
+import Status from '../../../shared/src/utils/status.js'
 
 export default class AgentsController {
 

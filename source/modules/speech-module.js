@@ -3,8 +3,8 @@ import { existsSync } from "fs";
 import { join } from 'path';
 import ActionController from "../controllers/action-controller";
 import SpinnerService from "../services/spinner-service";
-import Status from '../utils/status.js'
-import utils from '../utils/utils.js'
+import Status from '../../../shared/src/utils/status.js'
+import utils from '../../../shared/src/utils/utils.js'
 
 export default class SpeechModule {
 

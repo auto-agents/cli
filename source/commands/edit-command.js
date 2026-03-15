@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
-import Status from '../utils/status.js';
-import { resolvePath } from '../utils/utils.js';
+import Status from '../../../shared/src/utils/status.js';
+import { resolvePath } from '../../../shared/src/utils/utils.js';
 import { CommandRunErrorEvent, errorEvent } from '../../../shared/src/data/events.js';
 import Command from '../../../shared/src/commands/command.js';
 

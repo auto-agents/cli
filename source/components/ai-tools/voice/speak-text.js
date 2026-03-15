@@ -1,4 +1,4 @@
-import { isSpeechAvailable } from '../../../utils/utils';
+import { isSpeechAvailable } from '../../../../../shared/src/utils/utils';
 import AITool from '../../ai/ai-tool';
 
 export default class SpeakText extends AITool {

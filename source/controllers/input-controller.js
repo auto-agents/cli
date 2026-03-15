@@ -8,7 +8,7 @@ import {
 	HelpOutputUpdatedEvent
 } from "../../../shared/src/data/events"
 import { ESC } from '../../../shared/src/config/consts.js'
-import Status from '../utils/status.js'
+import Status from '../../../shared/src/utils/status.js'
 
 export default class InputController {
 

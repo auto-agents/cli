@@ -1,16 +1,17 @@
 import Command from '../../../shared/src/commands/command.js'
-import Status from '../utils/status.js'
+import Status from '../../../shared/src/utils/status.js'
 import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, renderComponent, toJson } from '../utils/utils.js'
+import { dumpAgent, getAgent, getAgentDump, isAIAgentAvailable, toJson } from '../../../shared/src/utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import { openSelectorProps } from '../components/list-selector.js'
 import SyntaxHighlight from 'ink-syntax-highlight'
 import highlight from 'cli-highlight'
-import { box } from '../utils/decorators.js'
+import { box } from '../../../shared/src/utils/decorators.js'
 import path from 'path'
 import fs from 'fs'
+import { renderComponent } from '../utils/ink-react-utils.js'
 
 export default class AgentCommand extends Command {
 

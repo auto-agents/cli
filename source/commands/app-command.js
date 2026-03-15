@@ -1,8 +1,9 @@
 import Command from '../../../shared/src/commands/command.js'
 import SyntaxHighlight from 'ink-syntax-highlight';
-import { renderComponent, toJson } from '../utils/utils.js';
+import { toJson } from '../../../shared/src/utils/utils.js';
 import * as highlight from "cli-highlight"
-import { box } from '../utils/decorators.js';
+import { box } from '../../../shared/src/utils/decorators.js';
+import { renderComponent } from '../utils/ink-react-utils.js';
 
 export default class AppCommand extends Command {
 

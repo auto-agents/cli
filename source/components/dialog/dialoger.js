@@ -1,9 +1,9 @@
 import {
     TaskAddAssistantMessageCommandEvent
 } from "../../../../shared/src/data/events"
-import DialogContext from "../../data/dialog-context"
-import { FifoStack, task } from "../../utils/fifo-stack"
-import { isAIAgentAvailable, isSpeechAvailable, isUserSpeakEchoAvailable } from "../../utils/utils"
+import DialogContext from "../../../../shared/src/data/dialog-context"
+import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
+import { isAIAgentAvailable, isSpeechAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
 
 /*
  the dialoger handle dialog behaviors

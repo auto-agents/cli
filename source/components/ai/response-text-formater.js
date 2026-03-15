@@ -1,8 +1,8 @@
 import { join } from 'path';
-import Status from '../../utils/status.js'
-import utils from '../../utils/utils.js'
+import Status from '../../../../shared/src/utils/status.js'
+import utils from '../../../../shared/src/utils/utils.js'
 import { renderHTML, renderMarkdown } from 'cli-html';
-import { replaceUnicodes } from '../../utils/decorators.js';
+import { replaceUnicodes } from '../../../../shared/src/utils/decorators.js';
 
 export default class ResponseTextFormater {
 

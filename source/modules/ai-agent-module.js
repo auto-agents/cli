@@ -1,15 +1,15 @@
 import ActionController from "../controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
-import Status from '../utils/status.js'
-import utils, { trace } from '../utils/utils.js'
+import Status from '../../../shared/src/utils/status.js'
+import utils, { trace } from '../../../shared/src/utils/utils.js'
 import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
 import { Role_Assistant, Role_Tool } from "../components/ai/roles.js";
 import { CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
 import path from "path";
-import DialogContext from "../data/dialog-context.js";
+import DialogContext from "../../../shared/src/data/dialog-context.js";
 
 export default class AIAgentModule {
 

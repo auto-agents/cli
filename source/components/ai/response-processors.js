@@ -1,6 +1,6 @@
 import { ResponseProcessorLoadedEvent } from "../../../../shared/src/data/events"
-import Status from "../../utils/status"
-import { isAppInitialized } from "../../utils/utils"
+import Status from "../../../../shared/src/utils/status"
+import { isAppInitialized } from "../../../../shared/src/utils/utils"
 import { existsSync } from "fs";
 import { join } from 'path';
 

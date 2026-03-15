@@ -1,4 +1,4 @@
-import { mdBlockJson, mdTextBlock, toJson } from "../../utils/utils"
+import { mdBlockJson, mdTextBlock, toJson } from "../../../../shared/src/utils/utils"
 import {
     Tool_Output_Format_JsonMD,
     Tool_Output_Format_Json
