@@ -173,7 +173,7 @@ export default class AgentCommand extends Command {
 					texts.push(fs.readFileSync(fp))
 				})
 				const text = texts.join('\n')
-				//console.log(text)
+
 				await this.ctx.components.dialog.addUserDialog(text)
 				break
 
