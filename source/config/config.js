@@ -379,6 +379,26 @@ export default function config(cli) {
 								type: 'string',
 								required: false,
 								description: 'the value as a javasccript expression for the set action'
+							},
+							format: {
+								type: 'string',
+								allowedValues: [
+									{
+										value: 'json',
+										description: 'json format'
+									},
+									{
+										value: 'md',
+										description: 'markdown format'
+									},
+									{
+										value: 'text',
+										decription: 'raw text format'
+									}
+								],
+								required: false,
+								default: 'json',
+								short: 'f'
 							}
 						},
 						allowPositionals: true

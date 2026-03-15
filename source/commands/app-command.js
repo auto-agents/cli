@@ -1,9 +1,10 @@
 import Command from '../../../shared/src/commands/command.js'
 import SyntaxHighlight from 'ink-syntax-highlight';
-import { toJson } from '../../../shared/src/utils/utils.js';
+import { mdTextBlock, toJson } from '../../../shared/src/utils/utils.js';
 import * as highlight from "cli-highlight"
 import { box } from '../../../shared/src/utils/decorators.js';
 import { renderComponent } from '../utils/ink-react-utils.js';
+import chalk from 'chalk'
 
 export default class AppCommand extends Command {
 
@@ -59,21 +60,47 @@ export default class AppCommand extends Command {
 				try {
 					const content = this.#getByPath(this.ctx, path)
 						|| 'undefined'
-					const v = toJson(content)
-					//output.appendLine(v)
-					const theme = highlight.DEFAULT_THEME
-					renderComponent(
 
-						< SyntaxHighlight
-							code={v}
-							theme={theme}
-						/>
-						,
-						output,
-						(lines) => {
-							box(this.ctx, path, lines, output)
-						}
-					)
+					const argFormat = 'format'
+					const format = this.getValue(com, args, argFormat)
+					if (!this.checkParameter(com, argFormat, format))
+						return
+
+					let v = content
+					switch (format) {
+						case 'json':
+							v = toJson(content)
+							break
+						case 'md':
+							v = mdTextBlock(content)
+							break
+						default:
+						case 'text':
+							v = content
+					}
+
+					if (format != 'text') {
+						const theme = highlight.DEFAULT_THEME
+						renderComponent(
+
+							< SyntaxHighlight
+								code={v}
+								theme={theme}
+							/>
+							,
+							output,
+							(lines) => {
+								box(this.ctx, path, lines, output)
+							}
+						)
+					}
+					else {
+						output.newLine()
+						output.appendLine(chalk.underline(path + ':'))
+						output.newLine()
+						output.appendLine(content)
+					}
+
 				} catch (err) {
 					this.emitCommandError(`app get error: ${err?.message || err}`)
 				}
