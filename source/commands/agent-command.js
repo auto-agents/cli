@@ -95,7 +95,7 @@ export default class AgentCommand extends Command {
 				if (!this.checkModuleAvailable('OpenAIAgent'))
 					return
 				if (isAIAgentAvailable(this.ctx))
-					this.ctx.components.module.AIAgent.saveHistory(file, format)
+					agent.module.saveHistory(file, format)
 				break
 
 			case 'clear':
@@ -117,12 +117,11 @@ export default class AgentCommand extends Command {
 			case 'config':
 				const conf = agent.module.config
 				const v = toJson(conf)
-				const theme = highlight.DEFAULT_THEME
 				renderComponent(
 
 					< SyntaxHighlight
 						code={v}
-						theme={theme}
+						theme={highlight.DEFAULT_THEME}
 					/>
 					,
 					o,
@@ -130,6 +129,33 @@ export default class AgentCommand extends Command {
 						box(this.ctx, getAgentDump(this.ctx, agentId, 'config'), lines, o)
 					}
 				)
+				break
+
+			case 'spec':
+				const spec = { ...agent }
+				spec.module = null
+				const sp = toJson(spec)
+				renderComponent(
+
+					< SyntaxHighlight
+						code={sp}
+						theme={highlight.DEFAULT_THEME}
+					/>
+					,
+					o,
+					(lines) => {
+						box(this.ctx, getAgentDump(this.ctx, agentId, 'spec'), lines, o)
+					}
+				)
+				break
+
+			case 'list':
+				o.newLine()
+				const lst = this.ctx.components.agents.getAgents()
+				for (var id in lst) {
+					const a = lst[id]
+					o.appendLine(getAgentDump(this.ctx, a.id))
+				}
 				break
 
 			case 'instruct':

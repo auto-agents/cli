@@ -256,6 +256,14 @@ export default function config(cli) {
 										description: 'output the configuration of the agent'
 									},
 									{
+										value: 'spec',
+										description: 'output the specification of the agent'
+									},
+									{
+										value: 'list',
+										description: 'output the list of loaded agents'
+									},
+									{
 										value: 'instruct',
 										description: 'add one or several instructions files content to the thread from a list using comma separator. require --list'
 									}
@@ -861,14 +869,11 @@ export default function config(cli) {
 						key: 'TUI STT',
 						value: ''
 					},
+					// TUI AI Agent
 					AIAgent: {
-						key: 'TUI AI Api agent',
+						key: 'TUI AI Agent',
 						value: ''
-					},
-					/*AIAgents: {
-						key: 'AI Api agents',
-						value: ''
-					}*/
+					}
 				}
 			},
 			layout: {
@@ -984,7 +989,9 @@ export default function config(cli) {
 			moduleController: null,
 			// loaded modules
 			module: {
-				// modules owned by agents
+				// TUI Agent module if any
+				AIAgent: null,
+				// llm modules owned by agents
 				agents: {}
 			}
 		},

@@ -8,6 +8,8 @@ export default class AgentsController {
     From = 'agents'
 
     viewAgentId = null
+    // specifivcation of loaded agents by agent id
+    agents = {}
 
     constructor(ctx, output) {
         this.ctx = ctx
@@ -45,6 +47,8 @@ export default class AgentsController {
             const initSrv = this.ctx.components.init
             const moduleCtrl = initSrv.moduleController
             const moduleStoreName = this.getModuleStoreName(agent)
+            if (this.agents[agent.id])
+                throw new Error(`an agent with the same id: '${agent.id}' is already loaded`)
             if (this.ctx.components.module.agents[moduleStoreName])
                 throw new Error(`a module with the same id: '${moduleStoreName}' is already loaded`)
             agent.module = await moduleCtrl.load(
@@ -52,6 +56,7 @@ export default class AgentsController {
                 moduleStoreName,
                 outputContext
             )
+            this.agents[agent.id] = agent
             this.ctx.components.module.agents[moduleStoreName] = agent.module
         }
         catch (err) {
@@ -60,5 +65,9 @@ export default class AgentsController {
             o.appendLine(this.status.error(outputContext.getMargin() + 'load agent error: ' + err))
             return false
         }
+    }
+
+    getAgents() {
+        return { ...this.agents }
     }
 }
