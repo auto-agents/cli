@@ -66,10 +66,13 @@ export default class AppCommand extends Command {
 					if (!this.checkParameter(com, argFormat, format))
 						return
 
+					const keys = this.getValue(com, args, 'keys')
+
 					let v = content
 					switch (format) {
 						case 'json':
-							v = toJson(content)
+							v = toJson(!keys ? content
+								: Object.getOwnPropertyNames(content))
 							break
 						case 'md':
 							v = mdTextBlock(content)

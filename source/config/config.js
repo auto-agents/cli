@@ -388,6 +388,13 @@ export default function config(cli) {
 								required: false,
 								description: 'the value as a javasccript expression for the set action'
 							},
+							keys: {
+								type: 'boolean',
+								required: false,
+								default: false,
+								short: 'k',
+								description: 'if set, only dump keys when format is json of the object at path'
+							},
 							format: {
 								type: 'string',
 								allowedValues: [

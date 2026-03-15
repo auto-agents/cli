@@ -92,26 +92,19 @@ export default class AgentCommand extends Command {
 				const format = this.getValue(com, args, argFormat)
 				if (!this.checkParameter(com, argFormat, format))
 					return
-				if (!this.checkModuleAvailable('OpenAIAgent'))
-					return
-				if (isAIAgentAvailable(this.ctx))
-					agent.module.saveHistory(file, format)
+				agent.module.saveHistory(file, format)
 				break
 
 			case 'clear':
 			case 'c':
-				if (isAIAgentAvailable(this.ctx)) {
-					this.ctx.components.module.AIAgent.clearHistory()
-					dumpAgent(this.ctx, agentId, o, 'history cleared')
-				}
+				agent.module.AIAgent.clearHistory()
+				dumpAgent(this.ctx, agentId, o, 'history cleared')
 				break
 
 			case 'h':
 			case 'history':
-				if (isAIAgentAvailable(this.ctx)) {
-					dumpAgent(this.ctx, agentId, o, 'history')
-					e.emit(RunCommandEvent, "app get components.module.AIAgent.api.history.messages")
-				}
+				dumpAgent(this.ctx, agentId, o, 'history')
+				e.emit(RunCommandEvent, "app get components.module.AIAgent.api.history.messages")
 				break
 
 			case 'config':
@@ -152,10 +145,28 @@ export default class AgentCommand extends Command {
 			case 'list':
 				o.newLine()
 				const lst = this.ctx.components.agents.getAgents()
+				const at = new Table({
+					columns: [
+						{ name: 'id', alignment: 'left' },
+						{ name: 'module', alignment: 'left' },
+						{ name: 'provider', alignment: 'left' },
+						{ name: 'server', alignment: 'left' },
+						{ name: 'model', alignment: 'left' }
+					]
+				});
 				for (var id in lst) {
 					const a = lst[id]
-					o.appendLine(getAgentDump(this.ctx, a.id))
+					at.addRow({
+						id: id,
+						module: a.moduleName,
+						provider: agent?.module?.config?.provider,
+						server: agent?.module?.config?.baseURL
+							.replace('{port}', agent?.module?.config?.port),
+						model: agent?.module?.config?.model
+					})
 				}
+				o.appendLine(at.render())
+
 				break
 
 			case 'instruct':
