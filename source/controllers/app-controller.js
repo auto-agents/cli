@@ -274,9 +274,9 @@ export default class AppController {
 		if (!isAppInitialized(this.ctx))
 			return
 		const e = this.event
-		const initModuleGauge = (moduleName, gaugeName) => {
+		const initModuleGauge = (moduleName, gaugeName, moduleInstance) => {
 			gaugeName ||= moduleName
-			const moduleInstance = this.ctx.components.module[moduleName]
+			moduleInstance ||= this.ctx.components.module[moduleName]
 			const moduleSpec = moduleInstance?.specification
 			const gauge = this.ctx.data.app.modules[gaugeName]
 			gauge.value =
@@ -290,7 +290,7 @@ export default class AppController {
 		}
 		initModuleGauge('speech')
 		initModuleGauge('recognition')
-		initModuleGauge('AIAgent')
+		initModuleGauge('AIAgent', null, getTUIAgent(this.ctx).module)
 	}
 
 	async runInput(inp) {
