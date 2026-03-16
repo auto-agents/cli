@@ -187,16 +187,60 @@ export default class ModuleController {
 
         const config = require(configFile).default(null);
 
+        // import modules
         await this.importModuleImpl(config, modulePath)
-        await this.importModuleCommands(config, modulePath)
+        // import commands
+        const { added, rejected, errors } = await this.importModuleCommands(config, modulePath)
+        const m = '    '
+        o.appendLine(margin + m + `- commands added: ${added.length} commands rejected: ${rejected.length}`)
+        if (errors.length > 0)
+            o.appendLine(this.status.error(margin + m + m + errors.join(',')))
+        added.forEach(com => {
+            this.ctx.cli.commands.push(com)
+        })
 
         this.ctx.cli.moduleImports.push(modulePath)
-
         o.newLine()
     }
 
     async importModuleCommands(config, moduleFolder) {
-        const comPath = join(moduleFolder, 'commands')
+        if (!config.cli?.commands) return { added: [], rejected: [], errors: [] }
+        const comsPath = join(moduleFolder, 'commands')
+        const added = []
+        const rejected = []
+        const errors = []
+        const reject = (com, reason) => {
+            rejected.push(com)
+            const cn = com.names?.length ? (com.names.join(',') + ': ') : ''
+            errors.push(cn + reason)
+        }
+
+        config.cli.commands.forEach(com => {
+            const valids = []
+            if (com.names && com.description && com.config && com.file) {
+                com.names.forEach(name => {
+                    if (!this.checkCommandExist(name))
+                        valids.push(name)
+                })
+                if (valids.length > 0) {
+                    com.names = valids
+                    const comPath = join(comsPath, com.file)
+                    if (existsSync(comPath)) {
+                        added.push(com)
+                    }
+                    else reject(com, 'command file not found')
+                } else reject(com, 'command names already exists')
+            } else reject(com, 'uncomplete or missing specification')
+        });
+        return { added: added, rejected: rejected, errors: errors }
+    }
+
+    checkCommandExist(name) {
+        var exists = false
+        this.ctx.cli.commands.forEach(com => {
+            exists |= com.names.includes(name)
+        })
+        return exists
     }
 
     async importModuleImpl(config, moduleFolder) {
