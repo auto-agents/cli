@@ -67,10 +67,12 @@ export default class Dialoger {
         options ||= {}
         var results = []
 
-        dialogContext ||= new DialogContext(
+        if (!dialogContext) throw new Error("dialog context is required")
+
+        /*dialogContext ||= new DialogContext(
             outputContext,
             this
-        )
+        )*/
 
         // ----- USER -----------------------------------------------------------------------
 

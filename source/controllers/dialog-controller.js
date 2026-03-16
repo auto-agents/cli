@@ -114,6 +114,19 @@ export default class DialogController {
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
 
+		outputContext ||= this.output.getOutputContext()
+		if (!dialogContext) {
+			// build a user to TUI dialog context
+			dialogContext = new DialogContext(
+				outputContext,
+				this.dialoger,
+				getTUIAgent(this.ctx),
+				null,	// from user
+				null,	// no task yet
+				1		// round
+			)
+		}
+
 		options ||= {
 			skipPrependNewLine: true,
 			userVoice: this.#getUserVoice(),
@@ -126,7 +139,7 @@ export default class DialogController {
 			text,
 			tools,
 			options,
-			outputContext || this.output.getOutputContext())
+			outputContext)
 
 		var end = false
 		while (!end) {
@@ -139,10 +152,11 @@ export default class DialogController {
 					console.log('-- DialgController: Loop Tools --')
 
 				const props = r[r.length - 1]
+				const dc = props.dialogContext.clone().nextRound()
 
 				r = await this.addUserDialog(
 					null,
-					props.dialogContext,
+					dc,
 					props.tool_calls,
 					props.options,
 					props.outputContext

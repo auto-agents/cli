@@ -78,6 +78,10 @@ export default class AgentsController {
     }
 
     getAgents() {
-        return { ...this.agents }
+        return this.agents
+    }
+
+    getAgent(agentId) {
+        return this.agents[agentId] || null
     }
 }
