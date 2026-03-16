@@ -103,7 +103,7 @@ export default class AgentCommand extends Command {
 			case 'h':
 			case 'history':
 				dumpLoadedAgent(this.ctx, agentId, o, 'history')
-				e.emit(RunCommandEvent, "app get components.module.AIAgent.api.history.messages")
+				e.emit(RunCommandEvent, `app get components.module.${agent.module.moduleName}.api.history.messages`)
 				break
 
 			case 'config':
