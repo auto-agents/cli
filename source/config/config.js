@@ -551,6 +551,7 @@ export default function config(cli) {
 					avatar: 'seraphina',
 					profile: 'codingAssistant',
 					TTS: {
+						// turn on/off any agent speak
 						enabled: true,
 						moduleName: 'speech',
 						voiceProfile: 'TUI'
@@ -584,19 +585,22 @@ export default function config(cli) {
 						enabled: true,
 						preferredVoices: {
 							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
-						}
+						},
+						module: null
 					},
 					repeatUserQuery: {
 						enabled: true,
 						preferredVoices: {
 							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
-						}
+						},
+						module: null
 					},
 					speakErrors: {
 						enabled: true,
 						preferredVoices: {
 							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
-						}
+						},
+						module: null
 					}
 				}
 			},

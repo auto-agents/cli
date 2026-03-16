@@ -23,7 +23,6 @@ export default class AIAgent {
 
     constructor(ctx, props) {
         this.ctx = ctx
-
         this.mergeVoiceProfile(props)
         this.mergeAvatar(props)
         this.mergeProfile(props)
@@ -54,5 +53,4 @@ export default class AIAgent {
             into[name] = value
         }
     }
-
 }
