@@ -1,7 +1,9 @@
 import { Text, Box, useStdout, useStdin } from 'ink';
 import { useState, useEffect, useRef } from 'react';
 import {
+	CommandKeyboardCaptureReleaseEvent,
 	HideInitBoxOutputEvent,
+	KeyboardCaptureRequestEvent,
 	LayoutResizedEvent,
 	ListSelectorOpenCommandEvent
 } from '../../../../shared/src/data/events.js';
@@ -47,6 +49,7 @@ const ListSelector = ({
 						visible: false
 					}
 				})
+				e.emit(CommandKeyboardCaptureReleaseEvent)
 				e.emit(LayoutResizedEvent)
 				if (selectCb)
 					selectCb(item)
@@ -89,8 +92,9 @@ const ListSelector = ({
 				...props,
 				...getConf(width + 2, props.selection, props.selectCb)
 			})
+			e.emit(KeyboardCaptureRequestEvent, new Object())
 		}
-		e.on(ListSelectorOpenCommandEvent, handleOpenCommandEvent);
+		e.on(ListSelectorOpenCommandEvent, handleOpenCommandEvent)
 		return () => {
 			e.off(ListSelectorOpenCommandEvent, handleOpenCommandEvent);
 		};

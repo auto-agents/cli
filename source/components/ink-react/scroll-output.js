@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect, useReducer } from 'react';
 import { Box, Text, measureElement, useInput } from 'ink';
 import {
+	CommandKeyboardCaptureReleaseEvent,
 	ConsoleClearedEvent,
 	HelpOutputUpdatedEvent,
+	KeyboardCaptureRequestEvent,
 	LayoutResizedEvent
 } from '../../../../shared/src/data/events';
 
@@ -113,6 +115,7 @@ const ScrollOutput = ({
 	const [scrollbar, setScrollbar] = useState("")
 	const viewportRef = useRef();
 	const textboxRef = useRef();
+	const [keyboardCapturer, setKeyboardCapturer] = useState(null)
 
 	const textboxMeasurementUpdated = () => {
 		if (!textboxRef?.current) return
@@ -210,6 +213,17 @@ const ScrollOutput = ({
 
 	useEffect(() => {
 
+		const keyboardCaptureRequestEventHandler = args => {
+			if (keyboardCapturer != null) {
+				if (keyboardCapturer.releaseKeyboard)
+					keyboardCapturer.releaseKeyboard()
+			}
+			setKeyboardCapturer(args[0])
+		}
+		const commandKeyboardCaptureReleaseEventHandler = () => {
+			setKeyboardCapturer(null)
+		}
+
 		const scrollToTop = () => {
 			dispatch({
 				type: 'SCROLL_TOP',
@@ -237,6 +251,16 @@ const ScrollOutput = ({
 			ConsoleClearedEvent,
 			scrollToTop
 		)
+
+		ctx.components.event.on(
+			KeyboardCaptureRequestEvent,
+			keyboardCaptureRequestEventHandler
+		)
+		ctx.components.event.on(
+			CommandKeyboardCaptureReleaseEvent,
+			commandKeyboardCaptureReleaseEventHandler
+		)
+
 		return () => {
 			ctx.components.event.off(
 				updateEventName,
@@ -254,12 +278,22 @@ const ScrollOutput = ({
 				ConsoleClearedEvent,
 				scrollToTop
 			)
+
+			ctx.components.event.off(KeyboardCaptureRequestEvent, keyboardCaptureRequestEventHandler)
+			ctx.components.event.off(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseEventHandler)
 		}
 	}, [])
 
 	useInput((_input, key) => {
 
 		const keys = ctx.cli.keys
+
+		if (keyboardCapturer) {
+			if (keyboardCapturer.onKeyboardEvent) {
+				keyboardCapturer.onKeyboardEvent(key)
+			}
+			return
+		}
 
 		//console.log(key)
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, useInput } from 'ink';
 import chalk from 'chalk';
-import { InputToEndEvent, InputToStartEvent } from '../../../../shared/src/data/events';
+import { CommandKeyboardCaptureReleaseEvent, InputToEndEvent, InputToStartEvent, KeyboardCaptureRequestEvent } from '../../../../shared/src/data/events';
 
 // collaborates with prompt.js (ctx.cli.currentInput) for Home/End keys handling
 function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = true, mask, highlightPastedText = false, showCursor = true, onChange, onSubmit, }) {
@@ -11,7 +11,7 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
         cursorWidth: 0,
     });
     const { cursorOffset, cursorWidth } = state;
-
+    const [keyboardCapturer, setKeyboardCapturer] = useState(null)
 
     useEffect(() => {
         setState(previousState => {
@@ -68,6 +68,13 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
     }
 
     const inputImpl = (input, key, code) => {
+
+        if (keyboardCapturer) {
+            if (keyboardCapturer.onKeyboardEvent) {
+                keyboardCapturer.onKeyboardEvent(ck)
+            }
+            return
+        }
 
         var forceUpd = false
 
@@ -156,7 +163,6 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
 
     useInput(inputImpl, { isActive: focus });
 
-
     useEffect(() => {
         const inputToStartHandler = () => {
             const q = ctx.cli.currentInput
@@ -165,6 +171,16 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
         const inputToEndHandler = () => {
             const q = ctx.cli.currentInput
             inputImpl(q, {}, ctx.cli.keys.inputToEnd.code)
+        }
+        const keyboardCaptureRequestEventHandler = args => {
+            if (keyboardCapturer != null) {
+                if (keyboardCapturer.releaseKeyboard)
+                    keyboardCapturer.releaseKeyboard()
+            }
+            setKeyboardCapturer(args[0])
+        }
+        const commandKeyboardCaptureReleaseEventHandler = () => {
+            setKeyboardCapturer(null)
         }
 
         ctx.components.event.on(
@@ -175,9 +191,19 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
             InputToEndEvent,
             inputToEndHandler
         )
+        ctx.components.event.on(
+            KeyboardCaptureRequestEvent,
+            keyboardCaptureRequestEventHandler
+        )
+        ctx.components.event.on(
+            CommandKeyboardCaptureReleaseEvent,
+            commandKeyboardCaptureReleaseEventHandler
+        )
         return () => {
             ctx.components.event.off(InputToStartEvent, inputToStartHandler)
             ctx.components.event.off(InputToEndEvent, inputToEndHandler)
+            ctx.components.event.off(KeyboardCaptureRequestEvent, keyboardCaptureRequestEventHandler)
+            ctx.components.event.off(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseEventHandler)
         }
     }, [])
 

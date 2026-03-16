@@ -1,7 +1,9 @@
 import {
     CommandClearInputEvent,
+    CommandKeyboardCaptureReleaseEvent,
     InputToEndEvent,
     InputToStartEvent,
+    KeyboardCaptureRequestEvent,
     RunCommandEvent,
     UIFreezeStatedChangedEvent
 } from "../../../shared/src/data/events"
@@ -11,6 +13,8 @@ import {
 
 export default class KeyboardController {
 
+    keyboardCapturer = null
+
     constructor(ctx) {
         this.ctx = ctx
     }
@@ -18,6 +22,19 @@ export default class KeyboardController {
     init() {
         const e = this.ctx.components.event
         const keys = this.ctx.cli.keys
+
+        e.on(KeyboardCaptureRequestEvent, args => {
+            if (this.keyboardCapturer != null) {
+                if (this.keyboardCapturer.releaseKeyboard)
+                    this.keyboardCapturer.releaseKeyboard()
+            }
+            this.keyboardCapturer = args[0]
+        })
+
+        e.on(CommandKeyboardCaptureReleaseEvent, () => {
+            this.keyboardCapturer = null
+        })
+
         process.stdin.on('data', (data) => {
 
             //console.log(data)
@@ -25,7 +42,12 @@ export default class KeyboardController {
             if (data.includes(ESC)) {
                 const ck = data.replaceAll(ESC, "")
 
-                //console.log(ck)
+                if (this.keyboardCapturer) {
+                    if (this.keyboardCapturer.onKeyboardEvent) {
+                        this.keyboardCapturer.onKeyboardEvent(ck)
+                    }
+                    return
+                }
 
                 if (ck == keys.toggleFreeze.code) {	// page up/page down
                     this.ctx.ui.freeze = !this.ctx.ui.freeze

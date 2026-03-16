@@ -5,7 +5,9 @@ import {
 	HideInitBoxOutputEvent,
 	CommandSetInputEvent,
 	CommandInputStartedEvent,
-	HelpOutputUpdatedEvent
+	HelpOutputUpdatedEvent,
+	KeyboardCaptureRequestEvent,
+	CommandKeyboardCaptureReleaseEvent
 } from "../../../shared/src/data/events"
 import { ESC } from '../../../shared/src/config/consts.js'
 import Status from '../../../shared/src/utils/status.js'
@@ -19,6 +21,7 @@ export default class InputController {
 	cmdHistory = []
 	cmdHistoryIndex = 0
 	status = null
+	keyboardCapturer = null
 
 	constructor(ctx, helpOutput, output) {
 		this.ctx = ctx
@@ -31,6 +34,18 @@ export default class InputController {
 			.on(InputSubmitedEvent, args => this.#InputSubmitedEvent(...args))
 			.on(InputAddedEvent, args => this.#InputAddedEvent(...args))
 
+		e.on(KeyboardCaptureRequestEvent, args => {
+			if (this.keyboardCapturer != null) {
+				if (this.keyboardCapturer.releaseKeyboard)
+					this.keyboardCapturer.releaseKeyboard()
+			}
+			this.keyboardCapturer = args[0]
+		})
+
+		e.on(CommandKeyboardCaptureReleaseEvent, () => {
+			this.keyboardCapturer = null
+		})
+
 		this.#initKeyboardListener()
 	}
 
@@ -41,6 +56,12 @@ export default class InputController {
 				const ck = data.replaceAll(ESC, "")
 				const e = this.ctx.components.event
 
+				if (this.keyboardCapturer) {
+					if (this.keyboardCapturer.onKeyboardEvent) {
+						this.keyboardCapturer.onKeyboardEvent(ck)
+					}
+					return
+				}
 				//console.log(ck)
 
 				if (ck == this.ctx.cli.keys.cmdUp.code) {	// shift + up : previous command
