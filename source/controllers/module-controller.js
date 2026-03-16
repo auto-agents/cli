@@ -1,4 +1,4 @@
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { readdir } from 'fs/promises'
 import path, { join } from 'path';
 import chalk from "chalk"
@@ -171,8 +171,28 @@ export default class ModuleController {
 
         o.newLine()
         o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ importing module: ' + moduleFolder))
-        o.newLine()
+
+        const configFile = join(modulePath, 'config', 'config.js')
+        if (!existsSync(configFile)) {
+            o.appendLine(this.status.error(margin + "module configuration file not found: " + configFile))
+            return
+        }
+
+        const config = require(configFile).default(null);
+
+        await this.importModuleImpl(config, modulePath)
+        await this.importModuleCommands(config, modulePath)
 
         this.ctx.cli.moduleImports.push(modulePath)
+
+        o.newLine()
+    }
+
+    async importModuleCommands(config, moduleFolder) {
+        const comPath = join(moduleFolder, 'commands')
+    }
+
+    async importModuleImpl(config, moduleFolder) {
+        const modPath = join(moduleFolder, 'module')
     }
 }
