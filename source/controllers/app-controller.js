@@ -240,9 +240,10 @@ export default class AppController {
 		o.newLine()
 		o.appendLine(this.status.error('💥 ' + message))
 		if (stack && this.ctx.cli.dumpStackTraces) {
-			var t = stack.split('\n')
-			t = t.slice(1, t.length)
-			stack = t.join('\n')
+			var i = stack.indexOf('    ')
+			if (i > -1) {
+				stack = stack.substring(i)
+			}
 			o.appendLine(this.status.warning('\n' + stack))
 		}
 	}
