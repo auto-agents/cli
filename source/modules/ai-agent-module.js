@@ -2,11 +2,11 @@ import ActionController from "../controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../../../shared/src/utils/status.js'
-import utils, { getLoadedAgentDump, trace } from '../../../shared/src/utils/utils.js'
+import utils, { getLoadedAgentDump } from '../../../shared/src/utils/utils.js'
 import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
-import { Role_Assistant, Role_Tool } from "../components/ai/roles.js";
+import { Role_Assistant } from "../components/ai/roles.js";
 import { CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
 import path from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
