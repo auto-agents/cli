@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
-import { join } from 'path';
+import { readdir } from 'fs/promises'
+import path, { join } from 'path';
 import chalk from "chalk"
 import Status from '../../../shared/src/utils/status.js'
 import OutputContext from "../../../shared/src/data/output-context.js";
@@ -147,5 +148,31 @@ export default class ModuleController {
             const oc2 = new OutputContext(this.ctx, o, oc.margin)
             await this.load(moduleName, null, oc2)
         }
+    }
+
+    async runImports() {
+
+        const dir = join(process.cwd(), this.ctx.paths.importModules)
+        const entries = await readdir(dir, { withFileTypes: true })
+        for (const entry of entries) {
+            if (entry.name.startsWith('.')) continue
+            if (entry.isFile()) continue
+            const full = join(dir, entry.name)
+            const moduleImportsPath = join(full, 'module')
+            if (existsSync(moduleImportsPath))
+                this.importModule(entry.name, moduleImportsPath)
+        }
+    }
+
+    async importModule(moduleFolder, modulePath) {
+        const oc = this.outputContext.clone().addMargin(4)
+        const o = oc.output
+        const margin = ' '.repeat(oc.margin)
+
+        o.newLine()
+        o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ importing module: ' + moduleFolder))
+        o.newLine()
+
+        this.ctx.cli.moduleImports.push(modulePath)
     }
 }

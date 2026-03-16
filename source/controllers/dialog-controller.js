@@ -191,7 +191,7 @@ export default class DialogController {
 
 		if (t.length > 0) {
 			// add role symbol
-			if (!name) name = getTUIAgent(this.ctx).chatName
+			if (!name) name = getTUIAgent(this.ctx)?.chatName
 			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
 			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
 		}

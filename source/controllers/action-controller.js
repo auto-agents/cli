@@ -20,5 +20,6 @@ export default class ActionController {
 		await this.actionFunc(this.output)
 		if (this.autoStopUI) this.uiFunc.stop()
 		if (this.onEnded) this.onEnded(this.output)
+		if (this.next) await this.next.run(this.output)
 	}
 }

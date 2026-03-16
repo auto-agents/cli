@@ -56,6 +56,7 @@ export default function config(cli) {
 		paths: {
 			agents: '../agents',
 			modules: '../modules',
+			importModules: '../modules',
 			instructions: 'instructions',
 			saved: saved,
 			tmp: 'tmp'
@@ -529,7 +530,8 @@ export default function config(cli) {
 			enableDebugLoopTools: false,
 			TUIAgentEnabled: true,
 			toolRunTimeout: 10000,
-			initLog: null
+			initLog: null,
+			moduleImports: []
 		},
 		agents: {
 

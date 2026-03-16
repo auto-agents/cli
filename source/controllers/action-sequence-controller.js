@@ -10,12 +10,9 @@ export default class ActionSequenceController {
 		const as = this.actionSequence
 		if (as.length == 0) return
 		for (var i = 1; i < as.length; i++) {
-			var prevAction = as[i - 1]
-			var curAction = as[i]
-			prevAction.onEnded = () =>
-				curAction.run()
+			as[i - 1].next = as[i]
 		}
-		as[as.length - 1].onEnded = this.onEndedCallback
+		as[as.length - 1].onEnded = async () => await this.onEndedCallback()
 		await as[0].run()
 	}
 }

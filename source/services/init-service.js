@@ -70,15 +70,19 @@ export default class InitService {
 
 		const actions = [
 			{
-				func: async () => this.#gatherComputerInfos(),
+				func: async () => await this.#gatherComputerInfos(),
 				uiFunc: this.spinner.newSpinner(margin + '- gathering system informations', cliSpinners.sand)
 			},
 			{
-				func: async () => this.#initModules(),
+				func: async () => await this.#importModules(),
+				uiFunc: this.spinner.newSpinner(margin + '- importing modules', cliSpinners.sand)
+			},
+			{
+				func: async () => await this.#initModules(),
 				uiFunc: this.spinner.newSpinner(margin + '- initializing modules', cliSpinners.sand)
 			},
 			{
-				func: async () => this.#initAgents(this.#getOutputContext(mg)),
+				func: async () => await this.#initAgents(this.#getOutputContext(mg)),
 				uiFunc: this.spinner.newSpinner(margin + '- initializing ai agents', cliSpinners.sand)
 			}
 		]
@@ -94,9 +98,8 @@ export default class InitService {
 		await new ActionSequenceController(
 			this.ctx,
 			actionSeq,
-			() => this.#initEnded()
+			async () => await this.#initEnded()
 		).run()
-
 	}
 
 	async #initEnded() {
@@ -124,6 +127,10 @@ export default class InitService {
 		this.ctx.components.sysInfo = sys
 		sys.dump(this.output)
 		await utils.wait(this.ctx.ui.initWait)
+	}
+
+	async #importModules() {
+		await this.moduleController.runImports()
 	}
 
 	async #initModules() {
