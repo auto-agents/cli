@@ -35,7 +35,7 @@ export default class ModuleController {
                 return null
             }
 
-            if (module.isLoaded) {
+            if (this.modules[moduleStoreName]?.specification?.isLoaded) {
                 o.newLine()
                 o.appendLine(this.status.warning(margin + 'module ' + moduleName + ' is already loaded'))
                 return this.modules[moduleName] || null
@@ -54,22 +54,23 @@ export default class ModuleController {
                 return null
             }
 
-            module.moduleName = moduleName
             const mod = await import(path)
-            const m = new mod.default(this.ctx, module.config, oc, module)
+            const m = new mod.default(this.ctx, module.config, oc, { ...module })
             m.moduleName = moduleStoreName
 
             await m.init()
             this.modules[moduleStoreName] = m
             this.ctx.components.module[moduleStoreName] = m
-            module.isLoaded = true
-            module.enabled = true
-            // clone the spec
-            m.specification = { ...module }
+
+            m.specification.isLoaded = true
+            m.specification.enabled = true
             // make module not internal
             m.specification.internal = false
 
-            this.ctx.components.event.emit(ModuleLoadedEvent, moduleName)
+            this.ctx.components.event.emit(ModuleLoadedEvent, {
+                moduleName: moduleName,
+                module: m
+            })
             return m
         }
         catch (err) {
@@ -87,20 +88,20 @@ export default class ModuleController {
         const margin = str.repeat(oc.margin)
 
         try {
-            const module = this.ctx.modules[moduleName]
+            const module = this.ctx.components.module[moduleName]
             if (!module) {
                 o.newLine()
                 o.appendLine(this.status.error(margin + `module not found: ${moduleName}`))
                 return false
             }
 
-            if (!module.isLoaded) {
+            if (!module.specification.isLoaded) {
                 o.newLine()
                 o.appendLine(this.status.error(margin + 'module ' + moduleName + ' is not loaded'))
                 return false
             }
 
-            if (userAction && module.internal) {
+            if (userAction && module.specification.internal) {
                 o.newLine()
                 o.appendLine(this.status.error(margin + "an internal module can't be unloaded by user: " + moduleName))
                 return this.modules[moduleName] || null
@@ -113,10 +114,15 @@ export default class ModuleController {
             }
             delete this.modules[moduleName]
             delete this.ctx.components.module[moduleName]
+            delete this.ctx.components.module.agents[moduleName]
 
-            module.isLoaded = false
+            module.specification.isLoaded = false
             if (isAppInitialized(this.ctx))
-                this.ctx.components.event.emit(ModuleUnloadedEvent, moduleName)
+                this.ctx.components.event.emit(
+                    ModuleUnloadedEvent, {
+                    moduleName: moduleName,
+                    module: module
+                })
 
             return true
         }

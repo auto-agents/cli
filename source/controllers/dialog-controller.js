@@ -420,7 +420,6 @@ export default class DialogController {
 			this.ctx.components.module.AIAgent.api.config.model
 		))
 
-
 		options ||= {
 			skipPrependNewLine: false,
 			secondary: false,

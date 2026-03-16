@@ -1,6 +1,6 @@
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import { AgentAddedEvent, ModuleLoadedEvent } from "../../../shared/src/data/events"
-import { getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
+import { AgentAddedEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events"
+import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
 
 export default class AgentsController {
@@ -18,7 +18,7 @@ export default class AgentsController {
         this.status = new Status(ctx)
 
         e.on(ModuleLoadedEvent, args => {
-            const mn = args[0]
+
             if (ctx.components.module.AIAgent != null
                 && ctx.components.module.AIAgent !== undefined
             ) {
@@ -31,6 +31,15 @@ export default class AgentsController {
                 })
             }
         })
+
+        e.on(ModuleUnloadedEvent, args => {
+            const agentId = args[0].module?.agentId
+            if (this.agents[agentId]) {
+                // agent unloaded
+                dumpLoadedAgent(this.ctx, agentId, this.output, 'unloaded')
+                delete this.agents[agentId]
+            }
+        })
     }
 
     getAgentInView() {
@@ -41,7 +50,7 @@ export default class AgentsController {
     }
 
     getModuleStoreName(agent) {
-        return agent.moduleName + '-' + agent.id
+        return agent.moduleName + '_' + agent.id
     }
 
     async loadAgent(agent, outputContext) {
@@ -58,6 +67,7 @@ export default class AgentsController {
                 moduleStoreName,
                 outputContext
             )
+            agent.module.agentId = agent.id
             this.agents[agent.id] = agent
             this.ctx.components.module.agents[moduleStoreName] = agent.module
         }

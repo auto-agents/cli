@@ -40,23 +40,31 @@ export default class ModuleCommand extends Command {
 		}
 
 		var w = 0
+		// available
 		for (const [name, module] of Object.entries(this.ctx.modules)) {
+			if (this.ctx.components.module[name]) continue
 			w = Math.max(name.length, w)
 		}
-		for (const [name, module] of Object.entries(this.ctx.components.module.agents)) {
+		//console.log(this.ctx.components.module)
+		// loaded
+		for (const [name, module] of Object.entries(this.ctx.components.module)) {
+			if (!module?.specification) continue
 			const specification = module.specification
-			if (specification.isBase || specification.autoLoad || specification.internal) continue
+			//if (specification.isBase || specification.autoLoad || specification.internal) continue
 			w = Math.max(name.length, w)
 		}
 
 		w += 4
-
+		// available
 		for (const [name, module] of Object.entries(this.ctx.modules)) {
+			if (this.ctx.components.module[name]) continue
 			dump(name, module, w)
 		}
-		for (const [name, module] of Object.entries(this.ctx.components.module.agents)) {
+		// loaded
+		for (const [name, module] of Object.entries(this.ctx.components.module)) {
+			if (!module?.specification) continue
 			const specification = module.specification
-			if (specification.isBase || specification.autoLoad || specification.internal) continue
+			//if (specification.isBase || specification.autoLoad || specification.internal) continue
 			dump(name, specification, w)
 		}
 	}

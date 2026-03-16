@@ -38,7 +38,6 @@ export default class AgentCommand extends Command {
 			this.emitCommandError('agent not found: ' + agentId)
 			return
 		}
-		const mod = agent.module
 		const o = this.ctx.components.output
 
 		// Execute the dialog action based on the action value
