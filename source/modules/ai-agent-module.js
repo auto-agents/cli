@@ -65,14 +65,6 @@ export default class AIAgentModule {
         const margin = ' '.repeat(oc.margin + oc.marginBase)
         const margin2 = ' '.repeat(margin.length + oc.marginBase)
 
-        /*if (this.ctx.components.module.AIAgent) {
-            // first stop another AIAgent module
-            await this.ctx.components.moduleController.unload(
-                this.ctx.components.module.AIAgent.moduleName,
-                this.outputContext
-            )
-        }*/
-
         o.newLine()
         o.appendLine(margin + `~ loading ai agent module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
 
@@ -112,9 +104,6 @@ export default class AIAgentModule {
             }
         )
         await initApiAction.run()
-
-        // this will enable module for the cli
-        this.ctx.components.module.AIAgent = this
     }
 
     /**
@@ -131,7 +120,6 @@ export default class AIAgentModule {
         const margin = ' '.repeat(oc.margin + oc.marginBase)
 
         const stopSrv = async () => {
-            this.ctx.components.module.AIAgent = null
         }
 
         o.newLine()

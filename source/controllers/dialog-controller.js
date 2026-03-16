@@ -247,7 +247,7 @@ export default class DialogController {
 		o.newLine()
 		o.appendLine(cmtCol(`agent 2 is '${chalk.bold(agent1.name)}' with instructions: ${agent2.instructions}`))
 
-		const chat = this.ctx.components.module.AIAgent
+		const chat = this.ctx.components.module.AI_Agent // to be updated
 		const primaryAgent = chat.api
 		const secondaryAgent = chat.apiSecondary
 		const sp = this.ctx.components.module.speech
@@ -431,7 +431,7 @@ export default class DialogController {
 			this.From,
 			this.ctx.cli.statusMessages[StatusEnum.waiting],
 			this.ctx.cli.statusMessages.completing,
-			this.ctx.components.module.AIAgent.api.config.model
+			dialogContext.agent.module.api.config.model
 		))
 
 		options ||= {
@@ -444,12 +444,12 @@ export default class DialogController {
 			secondary: false
 		}
 
-		const r = await this.ctx.components.module.AIAgent
+		const r = await dialogContext.agent.module
 
 			.chat(dialogContext, query, tool_calls, options)
 
 			.then(async resp => {
-				this.ctx.components.module.AIAgent.lastResponse = resp
+				dialogContext.agent.module.lastResponse = resp
 				const txt = resp.content
 				e.emit(SetStatusMessageEvent)
 
