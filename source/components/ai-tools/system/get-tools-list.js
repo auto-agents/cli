@@ -1,3 +1,4 @@
+import { getTUIAgent } from "../../../../../shared/src/utils/utils";
 import AITool from "../../ai/ai-tool";
 
 export default class GetToolsList extends AITool {
@@ -14,7 +15,7 @@ export default class GetToolsList extends AITool {
     }
 
     async run() {
-        const tools = this.ctx.components.module.AIAgent?.tools
+        const tools = getTUIAgent(this.ctx).module.tools
         if (!tools) return
         const t = tools.getAllTools()
         const lst = []
