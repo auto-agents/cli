@@ -21,7 +21,13 @@ export default class ModuleController {
         this.ctx.components.moduleController = this
     }
 
-    async load(moduleName, moduleStoreName = null, outputContext, userAction = false) {
+    async load(
+        moduleName,
+        moduleStoreName = null,
+        outputContext,
+        userAction = false,
+        agentId = null) {
+
         moduleStoreName ||= moduleName
         const oc = outputContext || this.outputContext
         const o = oc.output
@@ -63,6 +69,7 @@ export default class ModuleController {
             this.modules[moduleStoreName] = m
             this.ctx.components.module[moduleStoreName] = m
 
+            if (agentId) m.agentId = agentId
             m.specification.isLoaded = true
             m.specification.enabled = true
             // make module not internal

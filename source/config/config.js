@@ -48,6 +48,7 @@ const saved = 'saved'
 export default function config(cli) {
 
 	return {
+		d: [],
 		app: {
 			name: 'Auto Agents',
 			title: null,

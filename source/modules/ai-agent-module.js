@@ -2,7 +2,7 @@ import ActionController from "../controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../../../shared/src/utils/status.js'
-import utils, { trace } from '../../../shared/src/utils/utils.js'
+import utils, { getLoadedAgentDump, trace } from '../../../shared/src/utils/utils.js'
 import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
@@ -65,13 +65,13 @@ export default class AIAgentModule {
         const margin = ' '.repeat(oc.margin + oc.marginBase)
         const margin2 = ' '.repeat(margin.length + oc.marginBase)
 
-        if (this.ctx.components.module.AIAgent) {
+        /*if (this.ctx.components.module.AIAgent) {
             // first stop another AIAgent module
             await this.ctx.components.moduleController.unload(
                 this.ctx.components.module.AIAgent.moduleName,
                 this.outputContext
             )
-        }
+        }*/
 
         o.newLine()
         o.appendLine(margin + `~ loading ai agent module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
@@ -122,6 +122,10 @@ export default class AIAgentModule {
      * @param {Object} outputContext 
      */
     async unload(outputContext) {
+
+        const agent = this.ctx.components.agents[this.agentId]
+        const dmp = getLoadedAgentDump(this.ctx, this.agentId)
+
         const oc = outputContext || this.outputContext
         const o = oc.output
         const margin = ' '.repeat(oc.margin + oc.marginBase)
@@ -136,7 +140,7 @@ export default class AIAgentModule {
             o,
             stopSrv,
             new SpinnerService(this.ctx, o)
-                .newSpinner(margin + '- stopping module ai agent: ' + this.specification.apiName, cliSpinners.sand)
+                .newSpinner(margin + '- stopping module ai agent: ' + dmp, cliSpinners.sand)
         )
         await stopSrvAction.run()
     }

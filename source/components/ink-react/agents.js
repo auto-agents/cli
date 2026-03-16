@@ -175,9 +175,9 @@ const Agents = ({ ctx }) => {
 	useEffect(() => {
 		const listener = args => {
 
-			if (ctx.components.module.AIAgent == null
-				|| ctx.components.module.AIAgent === undefined
-			) {
+			const md = args[0]
+
+			if (md?.module.agentId) {
 				// cleanup agent view
 				setTimeout(() => {
 					updateAgentView(null)

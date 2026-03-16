@@ -19,12 +19,11 @@ export default class AgentsController {
 
         e.on(ModuleLoadedEvent, args => {
 
-            if (ctx.components.module.AIAgent != null
-                && ctx.components.module.AIAgent !== undefined
-            ) {
+            const agentId = args[0].module?.agentId
+            if (agentId) {
                 // ai chat module loaded
                 // add view agent : TUI Agent
-                this.viewAgentId = TUIAgentId
+                this.viewAgentId = agentId
                 e.emit(AgentAddedEvent, {
                     agentId: this.viewAgentId,
                     ...this.getAgentInView()
@@ -63,7 +62,9 @@ export default class AgentsController {
             agent.module = await moduleCtrl.load(
                 agent.moduleName,
                 moduleStoreName,
-                outputContext
+                outputContext,
+                false,
+                agent.id
             )
             agent.module.agentId = agent.id
             this.agents[agent.id] = agent
