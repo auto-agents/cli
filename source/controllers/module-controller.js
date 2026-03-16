@@ -4,7 +4,7 @@ import path, { join } from 'path';
 import chalk from "chalk"
 import Status from '../../../shared/src/utils/status.js'
 import OutputContext from "../../../shared/src/data/output-context.js";
-import { isAppInitialized } from "../../../shared/src/utils/utils.js";
+import { isAppInitialized, resolvePath } from "../../../shared/src/utils/utils.js";
 import { ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events.js";
 
 export default class ModuleController {
@@ -54,7 +54,10 @@ export default class ModuleController {
                 return this.modules[moduleName] || null
             }
 
-            const path = join(this.modulesPath, module.file)
+            const path = resolvePath(
+                this.modulesPath,
+                module.file)
+            //const path = join(this.modulesPath, module.file)
             if (!existsSync(path)) {
                 o.newLine()
                 o.appendLine(this.status.error(margin + 'module file not found: ' + path))
@@ -186,12 +189,21 @@ export default class ModuleController {
         }
 
         const config = require(configFile).default(null);
+        const m = '    '
 
         // import modules
-        await this.importModuleImpl(config, modulePath)
+        var { added, rejected, errors } = await this.importModuleImpl(config, modulePath)
+
+        o.appendLine(margin + m + `- modules added: ${added.length} modules rejected: ${rejected.length}`)
+        if (errors.length > 0)
+            o.appendLine(this.status.error(margin + m + m + errors.join(',')))
+        added.forEach(mod => {
+            this.ctx.modules[mod.moduleId] = mod
+        })
+
         // import commands
-        const { added, rejected, errors } = await this.importModuleCommands(config, modulePath)
-        const m = '    '
+        var { added, rejected, errors } = await this.importModuleCommands(config, modulePath)
+
         o.appendLine(margin + m + `- commands added: ${added.length} commands rejected: ${rejected.length}`)
         if (errors.length > 0)
             o.appendLine(this.status.error(margin + m + m + errors.join(',')))
@@ -201,6 +213,36 @@ export default class ModuleController {
 
         this.ctx.cli.moduleImports.push(modulePath)
         o.newLine()
+    }
+
+    async importModuleImpl(config, moduleFolder) {
+        const modsPath = join(moduleFolder, 'module')
+        if (!config.modules) return { added: [], rejected: [], errors: [] }
+        const added = []
+        const rejected = []
+        const errors = []
+        const reject = (com, reason) => {
+            rejected.push(com)
+            const cn = com.names?.length ? (com.names.join(',') + ': ') : ''
+            errors.push(cn + reason)
+        }
+        for (const [modId, mod] of Object.entries(config.modules)) {
+            if (mod.moduleId && mod.description && mod.file) {
+                if (this.ctx.modules[modId])
+                    reject(mod, 'a module with the same id already exists: ' + modId)
+                else {
+                    const modPath = join(modsPath, mod.file)
+                    if (existsSync(modPath)) {
+                        mod.file = modPath
+                        mod.isImported = true
+                        added.push(mod)
+                    }
+                    else reject(mod, 'module file not found')
+                }
+            } else reject(mod, 'uncomplete or missing specification')
+        }
+
+        return { added: added, rejected: rejected, errors: errors }
     }
 
     async importModuleCommands(config, moduleFolder) {
@@ -242,9 +284,5 @@ export default class ModuleController {
             exists |= com.names.includes(name)
         })
         return exists
-    }
-
-    async importModuleImpl(config, moduleFolder) {
-        const modPath = join(moduleFolder, 'module')
     }
 }

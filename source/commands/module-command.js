@@ -15,7 +15,8 @@ export default class ModuleCommand extends Command {
 			name: chalk.hex(theme.nameColor),
 			description: chalk.hex(theme.descriptionColor),
 			loaded: chalk.hex(theme.loadedColor),
-			unloaded: chalk.hex(theme.unloadedColor)
+			unloaded: chalk.hex(theme.unloadedColor),
+			imported: chalk.hex(theme.loadedColor)
 		}
 	}
 
@@ -31,10 +32,14 @@ export default class ModuleCommand extends Command {
 		const dump = (name, module, w) => {
 			const isLoaded = module.isLoaded
 			const isInternal = module.internal
+			const isImported = module.isImported
 			const st =
-				(isInternal ? '| internal' :
-					(isLoaded ? '● loaded' : '○ not loaded')).padEnd(16)
-			const status = (isLoaded && !isInternal) ? c.loaded(st) : c.unloaded(st)
+				(isImported ? ') imported' :
+					((isInternal ? '| internal' :
+						(isLoaded ? '● loaded' : '○ not loaded')))).padEnd(16)
+			const status =
+				isImported ? c.imported(st) : (
+					(isLoaded && !isInternal) ? c.loaded(st) : c.unloaded(st))
 			const desc = module.description || ''
 			output.appendLine(margin + `  ${c.name(name.padEnd(w))} ${status} ${c.description(desc)}`)
 		}
