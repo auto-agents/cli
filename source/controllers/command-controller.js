@@ -13,6 +13,7 @@ import {
 } from "../../../shared/src/data/events"
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
+import { resolvePath } from "../../../shared/src/utils/utils";
 
 export default class CommandController {
 
@@ -74,42 +75,13 @@ export default class CommandController {
 
 			const optNames = Object.getOwnPropertyNames(comd.config.options)
 			const maxArgsCount = optNames.length
-			/*const positionalsCount = optNames.filter(
-				optName => comd.config.options[optName].type == 'string')
-				.length
-			const flagsCounts = optNames.filter(
-				optName => comd.config.options[optName].type == 'boolean')
-				.length
-			const minArgsCount = optNames.filter(optName => comd.config.options[optName].required)
-				.length
-			const maxArgsFromTypes = positionalsCount * 2 + flagsCounts
-
-			if (args.length > maxArgsFromTypes) {
-				// too much args
-				e.emit(CommandArgsCountErrorEvent, {
-					...errorEvent(this.From, comd),
-					args: arg
-				})
-				return
-			}
-			if (args.length < minArgsCount) {
-				// not enough args
-				e.emit(CommandArgsCountErrorEvent, {
-					...errorEvent(this.From, comd),
-					args: arg
-				})
-				return
-			}*/
 
 			try {
 				const o = {
 					...comd.config,
 					args: args
 				}
-
 				parsedArgs = parseArgs(o)
-
-				//console.log(parsedArgs)
 			}
 			catch (err) {
 				e.emit(CommandParseErrorEvent, {
@@ -121,7 +93,10 @@ export default class CommandController {
 			}
 		}
 
-		const path = join(process.cwd(), 'source', 'commands', comd.file);
+		const path = resolvePath(
+			join(process.cwd(), 'source', 'commands'),
+			comd.file)
+
 		if (!existsSync(path)) {
 			e.emit(CommandFileNotFoundEvent, {
 				...errorEvent(this.From, path),
@@ -144,7 +119,9 @@ export default class CommandController {
 			instance = new module.default(this.ctx, this.output)
 		} catch (err) {
 			e.emit(CommandModuleLoadErrorEvent, {
-				...errorEvent(this.From, err),
+				...errorEvent(
+					this.From,
+					new Error(err.message + ': ' + cn)),
 				cmd: com,
 				cn: cn
 			})

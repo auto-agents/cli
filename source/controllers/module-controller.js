@@ -226,6 +226,7 @@ export default class ModuleController {
                     com.names = valids
                     const comPath = join(comsPath, com.file)
                     if (existsSync(comPath)) {
+                        com.file = comPath
                         added.push(com)
                     }
                     else reject(com, 'command file not found')
