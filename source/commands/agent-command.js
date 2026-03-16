@@ -96,7 +96,7 @@ export default class AgentCommand extends Command {
 
 			case 'clear':
 			case 'c':
-				agent.module.AIAgent.clearHistory()
+				agent.module.clearHistory()
 				dumpLoadedAgent(this.ctx, agentId, o, 'history cleared')
 				break
 
