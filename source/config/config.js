@@ -997,9 +997,7 @@ export default function config(cli) {
 			// loaded modules
 			module: {
 				// TUI Agent module if any
-				AIAgent: null,
-				// llm modules owned by agents
-				agents: {}
+				AIAgent: null
 			}
 		},
 		texts: {
