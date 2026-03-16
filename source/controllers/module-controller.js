@@ -165,7 +165,7 @@ export default class ModuleController {
     }
 
     async importModule(moduleFolder, modulePath) {
-        const oc = this.outputContext.clone().addMargin(4)
+        const oc = this.outputContext.clone()
         const o = oc.output
         const margin = ' '.repeat(oc.margin)
 
