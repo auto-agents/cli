@@ -549,35 +549,13 @@ export default function config(cli) {
 					},
 					// characteristics
 					avatar: 'seraphina',
-					profile: 'Coding assistant',
+					profile: 'codingAssistant',
 					TTS: {
 						enabled: true,
 						moduleName: 'speech',
-						profile: 'TUI'
+						voiceProfile: 'TUI'
 					},
-					chatName: 'seraphina',
-					profileName: 'Coding Assistant',
-					imgPath: 'agent-5-48x48.png',
 					system: true,
-
-					speak: {
-						enabled: true,
-						preferredVoices: {
-							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
-						}
-					},
-					repeatUserQuery: {
-						enabled: true,
-						preferredVoices: {
-							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
-						}
-					},
-					speakErrors: {
-						enabled: true,
-						preferredVoices: {
-							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
-						}
-					},
 				},
 				{
 					id: '...',
@@ -594,13 +572,14 @@ export default function config(cli) {
 			],
 
 			profiles: {
-				['Coding Assistant']: {
+				codingAssistant: {
+					profileName: 'Coding Assistant',
 					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions."
 				}
 			},
 
 			voiceProfiles: {
-				speech: {
+				TUI: {
 					speak: {
 						enabled: true,
 						preferredVoices: {
@@ -618,32 +597,14 @@ export default function config(cli) {
 						preferredVoices: {
 							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
 						}
-					},
+					}
 				}
 			},
 
 			avatars: {
 				seraphina: {
 					chatName: 'seraphina',
-					imgPath: 'agent-5-48x48.png',
-					speak: {
-						enabled: true,
-						preferredVoices: {
-							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
-						}
-					},
-					repeatUserQuery: {
-						enabled: true,
-						preferredVoices: {
-							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
-						}
-					},
-					speakErrors: {
-						enabled: true,
-						preferredVoices: {
-							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
-						}
-					},
+					imgPath: 'agent-5-48x48.png'
 				}
 			},
 
@@ -999,8 +960,6 @@ export default function config(cli) {
 			moduleController: null,
 			// loaded modules
 			module: {
-				// TUI Agent module if any
-				AIAgent: null
 			}
 		},
 		texts: {

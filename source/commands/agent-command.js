@@ -125,7 +125,7 @@ export default class AgentCommand extends Command {
 
 			case 'spec':
 				const spec = { ...agent }
-				spec.module = null
+				spec.module = spec.ctx = null
 				const sp = toJson(spec)
 				renderComponent(
 

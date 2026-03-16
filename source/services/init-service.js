@@ -11,6 +11,7 @@ import OutputContext from '../../../shared/src/data/output-context.js';
 import utils, { getAgentSpecification } from '../../../shared/src/utils/utils.js';
 import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
+import AIAgent from '../components/ai/ai-agent.js';
 
 export default class InitService {
 
@@ -140,7 +141,9 @@ export default class InitService {
 	async #initAgents(outputContext) {
 		if (!this.ctx.cli.TUIAgentEnabled) return
 		await this.ctx.components.agents.loadAgent(
-			getAgentSpecification(this.ctx, TUIAgentId),
+			new AIAgent(
+				this.ctx,
+				getAgentSpecification(this.ctx, TUIAgentId)),
 			outputContext
 		)
 	}
