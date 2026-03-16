@@ -60,8 +60,6 @@ export default class AgentsController {
             const moduleStoreName = this.getModuleStoreName(agent)
             if (this.agents[agent.id])
                 throw new Error(`an agent with the same id: '${agent.id}' is already loaded`)
-            if (this.ctx.components.module.agents[moduleStoreName])
-                throw new Error(`a module with the same id: '${moduleStoreName}' is already loaded`)
             agent.module = await moduleCtrl.load(
                 agent.moduleName,
                 moduleStoreName,
@@ -69,7 +67,6 @@ export default class AgentsController {
             )
             agent.module.agentId = agent.id
             this.agents[agent.id] = agent
-            this.ctx.components.module.agents[moduleStoreName] = agent.module
         }
         catch (err) {
             const o = outputContext.output

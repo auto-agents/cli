@@ -114,7 +114,6 @@ export default class ModuleController {
             }
             delete this.modules[moduleName]
             delete this.ctx.components.module[moduleName]
-            delete this.ctx.components.module.agents[moduleName]
 
             module.specification.isLoaded = false
             if (isAppInitialized(this.ctx))
