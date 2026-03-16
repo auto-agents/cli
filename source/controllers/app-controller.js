@@ -144,7 +144,7 @@ export default class AppController {
 	async handleCommandErrorEvent(reason, errorEvent) {
 		const sep = reason && reason.length > 0 ? ' : ' : ''
 		const stack = errorEvent.error?.stack
-		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.toString()) : ''
+		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
 		const text = reason + sm
 
 		if (isSpeechAvailable(this.ctx)
@@ -159,7 +159,7 @@ export default class AppController {
 		if (isSpeechAvailable(this.ctx)
 			&& isSpeakErrorsEnabled(this.ctx)
 			&& errorEvent?.from != 'speak')
-			this.speakError(errorEvent.error?.toString(),
+			this.speakError(errorEvent.error?.message,
 				errorEvent.error?.stack)
 		const stack = errorEvent.error?.stack
 		this.error(errorEvent.error?.message, stack)
