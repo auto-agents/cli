@@ -71,7 +71,7 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
 
         if (keyboardCapturer) {
             if (keyboardCapturer.onKeyboardEvent) {
-                keyboardCapturer.onKeyboardEvent(ck)
+                keyboardCapturer.onKeyboardEvent(input, key, code)
             }
             return
         }
