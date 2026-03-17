@@ -25,6 +25,7 @@ export default class LsCommand extends Command {
 
 		var resolvedPath = resolvePath(this.ctx.cli.currentPath, dirPath)
 		const pattern = basename(resolvedPath)
+
 		var wc = false
 		var tpath = resolvedPath
 		if (pattern && pattern.includes('*')) {
@@ -33,7 +34,7 @@ export default class LsCommand extends Command {
 		}
 
 		// Check if path exists
-		if (!existsSync(resolvedPath)) {
+		if (!existsSync(tpath)) {
 			e.emit(CommandRunErrorEvent,
 				{
 					...errorEvent(this.From,
