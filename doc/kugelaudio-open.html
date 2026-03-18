@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KugelAudio - Open-Source Text-to-Speech</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 { color: #4a90e2; }
+        .highlight {
+            background-color: #f5f7fa;
+            border-left: 4px solid #4a90e2;
+            padding-left: 10px;
+            margin-bottom: 20px;
+        }
+        code { font-family: monospace; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>🎙️ KugelAudio</h1>
+
+    <p align="center"><strong>Open-source text-to-speech for European languages</strong><br>Powered by an AR + Diffusion architecture.</p>
+
+    <!-- Motivation Section -->
+    <div class="highlight">
+        <h2>Motivation</h2>
+        <p align="center">Open-source text-to-speech models for European languages are significantly lagging behind. KugelAudio aims to change this by providing high-quality TTS specifically focused on 24 major European languages.</p>
+
+        <p><strong>Key Achievements:</strong></p>
+        <ul>
+            <li>Trained using approximately 200,000 hours of speech data from the YODAS2 dataset.</li>
+            <li>Outperforms ElevenLabs in human preference testing with a win rate of 78.0%.</li>
+        </ul>
+
+        <!-- Benchmark Table -->
+        <h3>Benchmark Results: Outperforming ElevenLabs</h3>
+        <table>
+            <tr><th>Rank</th><th>Model</th><th>Score</th><th>Win Rate</th></tr>
+            <tr><td>🥇 1</td><td><strong>KugelAudio</strong></td><td>26</td><td>78.0%</td></tr>
+            <tr><td>🥈 2</td><td>ElevenLabs Multi v2</td><td>25</td><td>62.2%</td></tr>
+        </table>
+
+        <!-- Supported Languages Table -->
+        <h3>Supported Languages</h3>
+        <p>KugelAudio supports 24 major European languages:</p>
+        <table>
+            <thead><tr><th>Language</th><th>Code</th><th>Flag</th></tr></thead>
+            <tbody>
+                <tr><td>English</td><td>en</td><td>🇺🇸</td></tr>
+                <tr><td>German</td><td>de</td><td>🇩🇪</td></tr>
+                <!-- Add more languages as needed -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Quick Start Section -->
+    <h2>Quick Start</h2>
+    <div class="highlight">
+        <h3>Installation</h3>
+        <p><strong>Prerequisites:</strong></p>
+        <ul>
+            <li>Python 3.10 or higher</li>
+            <li>PyTorch 2.0 or higher</li>
+            <li>CUDA (recommended for GPU acceleration)</li>
+        </ul>
+
+        <p><strong>Installation Steps:</strong></p>
+        <pre>git clone https://github.com/Kugelaudio/kugelaudio-open.git
+cd kugelaudio-open
+uv run python start.py</pre>
+    </div>
+
+    <!-- Features Section -->
+    <h2>Features</h2>
+    <div class="highlight">
+        <ul>
+            <li><strong>State-of-the-art performance</strong>: Outperforms ElevenLabs and other leading TTS models.</li>
+            <li><strong>Pre-encoded Voices</strong>: Includes voices like whispering, female narrator, angry voice, etc.</li>
+            <li><strong>Audio Watermarking</strong>: All audio is watermarked using Facebook's AudioSeal technology.</li>
+        </ul>
+    </div>
+
+    <!-- Footer -->
+    <footer style="margin-top: 30px; text-align: center;">
+        <p>© KugelAudio. All rights reserved.</p>
+        <a href="https://kugelaudio.com">Visit KugelAudio Website</a></p>
+        <p><strong>License:</strong> MIT License</p>
+    </footer>
+</body>
+</html>
