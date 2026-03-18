@@ -758,6 +758,10 @@ export default function config(cli) {
 					waiting: '#99AA00',
 					idle: '#00AA00',
 					ready: '#00AA00'
+				},
+				tui: {
+					foreground: '#FFFF00',
+					background: '#BB5500'
 				}
 			},
 			subInitTextTitleColor: '#66AA88',

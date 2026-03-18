@@ -13,6 +13,11 @@ const CSI = '\x1b'
 const RSTXTA = CSI + "4m" + CSI + "0m"
 //console.log(RSTXTA)
 
+// enable raw + mouse support
+process.stdin.setRawMode?.(true)
+process.stdin.resume()
+process.stdout.write("\x1b[?1002h\x1b[?1006h")
+
 const ignoreTkErrors = 'TerminalInfoProvider'
 
 // --- Global process-level error handling ---

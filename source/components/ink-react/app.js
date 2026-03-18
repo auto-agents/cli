@@ -17,7 +17,10 @@ import {
 	SetStatusMessageEvent,
 	OutputResizedEvent,
 	AgentAddedEvent,
-	ModuleUnloadedEvent
+	ModuleUnloadedEvent,
+	SetTUIStatusMessageEvent,
+	KeyboardCaptureRequestEvent,
+	CommandKeyboardCaptureReleaseEvent
 } from '../../../../shared/src/data/events.js';
 import { StatusEnum, StatusMessage } from '../../../../shared/src/data/status-message.js';
 import chalk from 'chalk'
@@ -42,6 +45,7 @@ export default function App({ ctx }) {
 	const [outputVisible, setOutputVisible] = useState(false)
 	const [helpVisible, setHelpVisible] = useState(false)
 	const [statusMessage, setStatusMessage] = useState('')
+	const [tuiStatusMessage, setTuiStatusMessage] = useState('')
 
 	const promptHeight = ctx.layout.promptHeight
 
@@ -198,9 +202,30 @@ export default function App({ ctx }) {
 			setStatusMessage(
 				buildStatusMessageView(statusMessage))
 		}
+		const handleSetTUIStatusMessage = args => {
+			const tuiSM =
+				chalk.bgHex(ctx.theme.statusMessage.tui.background)
+					(chalk.hex(ctx.theme.statusMessage.tui.foreground)(args[0]))
+			setTuiStatusMessage(tuiSM)
+		}
+		const keyboardCaptureRequestHandler = args => {
+			const o = args[0]
+			if (o?.From)
+				e.emit(SetTUIStatusMessageEvent, 'keyboard captured by: ' + o.From)
+		}
+		const commandKeyboardCaptureReleaseHandler = args => {
+			e.emit(SetTUIStatusMessageEvent, '')
+		}
+
 		e.on(SetStatusMessageEvent, handleSetStatusMessage)
+		e.on(SetTUIStatusMessageEvent, handleSetTUIStatusMessage)
+		e.on(KeyboardCaptureRequestEvent, keyboardCaptureRequestHandler)
+		e.on(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseHandler)
 		return () => {
 			e.off(SetStatusMessageEvent, handleSetStatusMessage)
+			e.off(SetTUIStatusMessageEvent, handleSetTUIStatusMessage)
+			e.off(KeyboardCaptureRequestEvent, keyboardCaptureRequestHandler)
+			e.off(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseHandler)
 		}
 	}, [])
 
@@ -337,7 +362,11 @@ export default function App({ ctx }) {
 			{ /* status bar */}
 
 			<Box height={3} minHeight={3} margin={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
-				<Text color={ctx.theme.statusText.color} italic={true}>{statusMessage}</Text>
+				<Box flexGrow={1} flexDirection="row">
+					<Text color={ctx.theme.statusText.color} italic={true}>{statusMessage}</Text>
+					<Text> | </Text>
+					<Text>{tuiStatusMessage}</Text>
+				</Box>
 			</Box>
 		</Box >
 	);
