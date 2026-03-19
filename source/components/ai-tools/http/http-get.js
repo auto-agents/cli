@@ -47,18 +47,20 @@ export default class HttpGet extends AITool {
         var r = null
 
         try {
-            if (!url || url.length == 0) throw new Error('the tool argument "url" is missing')
+            if (!url || url.length == 0)
+                return 'the tool argument "url" is missing'
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.text(); // Parse JSON response
-            if (!path || path.length == 0) throw new Error('the tool argument "filepath" is missing')
+            if (!path || path.length == 0)
+                return 'the tool argument "filepath" is missing'
             writeFileSync(path, data)
             r = "the file has been correctly downloaded and saved to the path: " + path
 
         } catch (error) {
-            r = 'Error fetching data:' + error.message;
+            r = 'Error fetching data: ' + error.message;
         }
 
         return r

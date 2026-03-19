@@ -415,6 +415,7 @@ export default function config(cli) {
 										decription: 'raw text format'
 									}
 								],
+								description: 'indicates the output format',
 								required: false,
 								default: 'json',
 								short: 'f'
