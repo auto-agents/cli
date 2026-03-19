@@ -37,9 +37,8 @@ export default class KeyboardController {
 
         process.stdin.on('data', (data) => {
 
-            //console.log(data)
-
             if (data.includes(ESC)) {
+
                 const ck = data.replaceAll(ESC, "")
 
                 if (this.keyboardCapturer) {

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, useInput } from 'ink';
 import chalk from 'chalk';
-import { CommandKeyboardCaptureReleaseEvent, InputToEndEvent, InputToStartEvent, KeyboardCaptureRequestEvent } from '../../../../shared/src/data/events';
+import { CommandKeyboardCaptureReleaseEvent, InputToEndEvent, InputToStartEvent, KeyboardCaptureRequestEvent } from '../../../../shared/src/data/events'
+import { ESC } from '../../../../shared/src/config/consts';
 
 // collaborates with prompt.js (ctx.cli.currentInput) for Home/End keys handling
 function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = true, mask, highlightPastedText = false, showCursor = true, onChange, onSubmit, }) {
@@ -75,6 +76,10 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
             }
             return
         }
+
+        const md = ctx.components.mouse.getMouseData(ESC + input)
+        if (md != null)
+            return
 
         var forceUpd = false
 

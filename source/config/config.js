@@ -80,7 +80,8 @@ export default function config(cli) {
 					['✅', '✔️'],
 					['❌', '💥']
 				]
-			}
+			},
+			mouseScrollStep: 4
 		},
 		cli: {
 			commandPrefix: '/',
@@ -966,6 +967,10 @@ export default function config(cli) {
 			agents: null,
 			// module controller
 			moduleController: null,
+			// keyboard controller
+			keyboard: null,
+			// mouse controller
+			mouse: null,
 			// loaded modules
 			module: {
 			}

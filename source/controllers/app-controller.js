@@ -42,6 +42,7 @@ import { getTUIAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable 
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
+import MouseController from './mouse-controller.js';
 
 export default class AppController {
 
@@ -87,6 +88,7 @@ export default class AppController {
 		this.commandController = ctx.components.command = new CommandController(ctx, this.output)
 		this.dialog = ctx.components.dialog = new DialogController(ctx, this.output)
 		this.agents = ctx.components.agents = new AgentsController(ctx, this.output)
+		this.mouse = ctx.components.mouse = new MouseController(ctx).init()
 
 		this.ramService = new RamService(ctx)
 		this.timeService = new TimeService(ctx)

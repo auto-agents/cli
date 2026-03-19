@@ -5,11 +5,13 @@ import {
 	ConsoleClearedEvent,
 	HelpOutputUpdatedEvent,
 	KeyboardCaptureRequestEvent,
-	LayoutResizedEvent
+	LayoutResizedEvent,
+	MouseActionEvent
 } from '../../../../shared/src/data/events';
 
 const reducer = (state, action) => {
 	var r = null
+	const step = action.step || 1
 	switch (action.type) {
 		case 'SET_INNER_HEIGHT':
 			r = {
@@ -29,7 +31,7 @@ const reducer = (state, action) => {
 			if (action.source.maxScrollY !== undefined
 				&& action.source.maxScrollY > 0
 			) {
-				r.scrollTop++
+				r.scrollTop += step
 				r.scrollTop = Math.min(action.source.maxScrollY, r.scrollTop)
 			}
 			action.source.scrollY = r.scrollTop
@@ -56,7 +58,7 @@ const reducer = (state, action) => {
 		case 'SCROLL_UP':
 			r = {
 				...state,
-				scrollTop: Math.max(0, state.scrollTop - 1)
+				scrollTop: Math.max(0, state.scrollTop - step)
 			};
 			action.source.scrollY = r.scrollTop
 			return r
@@ -213,6 +215,8 @@ const ScrollOutput = ({
 
 	useEffect(() => {
 
+		const e = ctx.components.event
+
 		const keyboardCaptureRequestEventHandler = args => {
 			if (keyboardCapturer != null) {
 				if (keyboardCapturer.releaseKeyboard)
@@ -228,59 +232,78 @@ const ScrollOutput = ({
 			dispatch({
 				type: 'SCROLL_TOP',
 				source: o
-			});
+			})
 			setScrollbar(buildScrollbar(o.innerHeight))
 			setText(buildText(o.innerHeight, o.innerWidth))
 		}
+
+		const mouseActionHandler = args => {
+			const md = args[0]
+			var upd = false
+
+			if (md.button == "wheelUp") {
+				dispatch({
+					type: 'SCROLL_UP',
+					source: o,
+					step: ctx.ui.mouseScrollStep
+				})
+				upd = true
+			}
+			if (md.button == "wheelDown") {
+				dispatch({
+					type: 'SCROLL_DOWN',
+					source: o,
+					step: ctx.ui.mouseScrollStep
+				})
+				upd = true
+			}
+
+			if (upd) {
+				setScrollbar(buildScrollbar(o.innerHeight))
+				setText(buildText(o.innerHeight, o.innerWidth))
+			}
+		}
+
 		const updateCallback = () => {
 			viewportMeasurementUpdated()
 		}
-		ctx.components.event.on(
+		e.on(
 			updateEventName,
 			updateCallback
 		)
-		ctx.components.event.on(
+		e.on(
 			LayoutResizedEvent,
 			updateCallback
 		)
-		ctx.components.event.on(
+		e.on(
 			HelpOutputUpdatedEvent,
 			updateCallback
 		)
-		ctx.components.event.on(
+		e.on(
 			ConsoleClearedEvent,
 			scrollToTop
 		)
-
-		ctx.components.event.on(
+		e.on(
 			KeyboardCaptureRequestEvent,
 			keyboardCaptureRequestEventHandler
 		)
-		ctx.components.event.on(
+		e.on(
 			CommandKeyboardCaptureReleaseEvent,
 			commandKeyboardCaptureReleaseEventHandler
 		)
+		e.on(
+			MouseActionEvent, mouseActionHandler
+		)
 
 		return () => {
-			ctx.components.event.off(
-				updateEventName,
-				updateCallback
-			)
-			ctx.components.event.off(
-				LayoutResizedEvent,
-				updateCallback
-			)
-			ctx.components.event.off(
-				HelpOutputUpdatedEvent,
-				updateCallback
-			)
-			ctx.components.event.off(
-				ConsoleClearedEvent,
-				scrollToTop
-			)
+			e.off(updateEventName, updateCallback)
+			e.off(LayoutResizedEvent, updateCallback)
+			e.off(HelpOutputUpdatedEvent, updateCallback)
+			e.off(ConsoleClearedEvent, scrollToTop)
+			e.off(MouseActionEvent, mouseActionHandler)
 
-			ctx.components.event.off(KeyboardCaptureRequestEvent, keyboardCaptureRequestEventHandler)
-			ctx.components.event.off(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseEventHandler)
+			e.off(KeyboardCaptureRequestEvent, keyboardCaptureRequestEventHandler)
+			e.off(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseEventHandler)
 		}
 	}, [])
 
@@ -294,8 +317,6 @@ const ScrollOutput = ({
 			}
 			return
 		}
-
-		//console.log(key)
 
 		const checkKeyFromConfig = (key, keyKey) => {
 			return key[keyKey.inkKey.prop]
