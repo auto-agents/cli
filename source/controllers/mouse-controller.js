@@ -1,4 +1,15 @@
-import { ESC } from "../../../shared/src/config/consts"
+import {
+    ESC,
+    Mouse_Action_Drag,
+    Mouse_Action_Press,
+    Mouse_Action_Release,
+    Mouse_Button_Left,
+    Mouse_Button_Middle,
+    Mouse_Button_Right,
+    Mouse_Button_Wheel_Down,
+    Mouse_Button_Wheel_Up
+} from "../../../shared/src/config/consts"
+
 import { MouseActionEvent, mouseEvent } from "../../../shared/src/data/events"
 
 export default class MouseController {
@@ -37,11 +48,11 @@ export default class MouseController {
         const wheel = code & 0b11000001;
         const btnId = code & 0b11;
 
-        const button = wheel === 64 ? "wheelUp" :
-            (wheel === 65 ? "wheelDown" :
-                (btnId === 0 ? "left" :
-                    (btnId === 1 ? "middle" :
-                        "right")))
+        const button = wheel === 64 ? Mouse_Button_Wheel_Up :
+            (wheel === 65 ? Mouse_Button_Wheel_Down :
+                (btnId === 0 ? Mouse_Button_Left :
+                    (btnId === 1 ? Mouse_Button_Middle :
+                        Mouse_Button_Right)))
 
         //console.log(wheel)
 
@@ -49,8 +60,8 @@ export default class MouseController {
             x: +colS - 1,
             y: +rowS - 1,
             button: button,
-            action: suf === "M" && !wheel ? "press" :
-                suf === "m" ? "release" : "drag",
+            action: suf === "M" && !wheel ? Mouse_Action_Press :
+                suf === "m" ? Mouse_Action_Release : Mouse_Action_Drag,
             shift: !!(code & 4),
             alt: !!(code & 8),
             ctrl: !!(code & 16)

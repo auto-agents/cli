@@ -8,6 +8,7 @@ import {
 	LayoutResizedEvent,
 	MouseActionEvent
 } from '../../../../shared/src/data/events';
+import { Mouse_Button_Wheel_Down, Mouse_Button_Wheel_Up } from '../../../../shared/src/config/consts';
 
 const reducer = (state, action) => {
 	var r = null
@@ -241,7 +242,7 @@ const ScrollOutput = ({
 			const md = args[0]
 			var upd = false
 
-			if (md.button == "wheelUp") {
+			if (md.button == Mouse_Button_Wheel_Up) {
 				dispatch({
 					type: 'SCROLL_UP',
 					source: o,
@@ -249,7 +250,7 @@ const ScrollOutput = ({
 				})
 				upd = true
 			}
-			if (md.button == "wheelDown") {
+			if (md.button == Mouse_Button_Wheel_Down) {
 				dispatch({
 					type: 'SCROLL_DOWN',
 					source: o,
@@ -327,7 +328,8 @@ const ScrollOutput = ({
 		if (checkKeyFromConfig(key, keys.scrollDown)) {
 			dispatch({
 				type: 'SCROLL_DOWN',
-				source: o
+				source: o,
+				step: ctx.ui.keyboardScrollStep
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
 			setText(buildText(o.innerHeight, o.innerWidth))
@@ -336,7 +338,8 @@ const ScrollOutput = ({
 		if (checkKeyFromConfig(key, keys.scrollUp)) {
 			dispatch({
 				type: 'SCROLL_UP',
-				source: o
+				source: o,
+				step: ctx.ui.keyboardScrollStep
 			});
 			setScrollbar(buildScrollbar(o.innerHeight))
 			setText(buildText(o.innerHeight, o.innerWidth))

@@ -81,7 +81,8 @@ export default function config(cli) {
 					['❌', '💥']
 				]
 			},
-			mouseScrollStep: 4
+			mouseScrollStep: 4,
+			keyboardScrollStep: 4
 		},
 		cli: {
 			commandPrefix: '/',
