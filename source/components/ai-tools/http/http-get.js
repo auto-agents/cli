@@ -63,6 +63,6 @@ export default class HttpGet extends AITool {
             r = 'Error fetching data: ' + error.message;
         }
 
-        return r
+        return this.textResult(r)
     }
 }

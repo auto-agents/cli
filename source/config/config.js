@@ -61,6 +61,7 @@ export default function config(cli) {
 			modulesExportsFolderName: 'exports',
 			moduleExportCommandsFolderName: 'commands',
 			moduleExportModuleFolderName: 'module',
+			configFileName: 'config.js',
 			instructions: 'instructions',
 			saved: saved,
 			tmp: 'tmp'
@@ -728,7 +729,8 @@ export default function config(cli) {
 				nameColor: '#DDDDDD',
 				descriptionColor: '#999999',
 				loadedColor: '#00AA00',
-				unloadedColor: '#AA5500'
+				unloadedColor: '#AA5500',
+				category: '#00AADD'
 			},
 			dialog: {
 				userDialogColor: '#4499FF',

@@ -29,7 +29,7 @@ export default class ActionTool {
             const toolQueryMessage = {
                 role: Role_Tool,
                 name: action.functionName,
-                content: action.result,
+                content: action.result.content,
                 tool_call_id: action.toolCallId
             }
             history.messages.push(toolQueryMessage)

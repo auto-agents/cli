@@ -30,6 +30,6 @@ export default class WriteFile extends AITool {
         const tpath = args?.file_path
         const text = args?.text
         writeFileSync(tpath, text)
-        return "file has been saved successfully in: " + tpath
+        return this.textResult("file has been saved successfully in: " + tpath)
     }
 }

@@ -55,7 +55,6 @@ export default class RunPing extends AITool {
         const target = args?.target
         const txt = r == -1 ? `ping '${target}' failed` :
             `ping to target '${target}' established in: ${r} ms`
-        //console.log(txt)
-        return txt
+        return this.textResult(txt)
     }
 }

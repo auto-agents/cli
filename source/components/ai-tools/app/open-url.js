@@ -30,6 +30,6 @@ export default class OpenUrl extends AITool {
         const com = this.ctx.shell.browser.com[platform]
             .replace('{url}', url)
         const { stdout, stderr } = await exec(com)
-        return stdout
+        return this.textResult(stdout)
     }
 }

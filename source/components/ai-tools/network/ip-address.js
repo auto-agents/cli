@@ -36,8 +36,6 @@ export default class IpAddress extends AITool {
         }
 
         const r = this.jsonResult(results)
-        //console.log(r)
-
         return r
     }
 }

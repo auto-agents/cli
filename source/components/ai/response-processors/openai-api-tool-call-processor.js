@@ -5,6 +5,7 @@ import {
     ToolRunErrorDialogEvent,
     ToolUnknownDialogEvent
 } from "../../../../../shared/src/data/events";
+import ToolResult from "../../../../../shared/src/data/tool-result";
 
 import ResponseProcessor, { Action_Tool_Query } from "../response-processor";
 
@@ -62,7 +63,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                 }
 
                 if (this.config.enableDebugToolsResults)
-                    console.log('tool --> ' + r)
+                    console.log('tool --> ' + r.content)
 
                 this.addAction(
                     response,
@@ -90,7 +91,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
                     Action_Tool_Query,
                     name,
                     props,
-                    'unknown tool: ' + name,
+                    new ToolResult('unknown tool: ' + name),
                     true,
                     this.constructor.name,
                     1,

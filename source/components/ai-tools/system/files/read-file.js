@@ -26,6 +26,6 @@ export default class ReadFile extends AITool {
     async run(args) {
         const tpath = args?.file_path
         const text = readFileSync(tpath).toString()
-        return text
+        return this.textResult(text)
     }
 }

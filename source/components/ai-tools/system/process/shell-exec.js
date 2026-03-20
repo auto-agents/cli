@@ -35,6 +35,6 @@ export default class ShellExec extends AITool {
         //console.log(stdout)
         if (!stdout || stdout.length == 0)
             stdout = "command has been executed successfully"
-        return stdout
+        return this.textResult(stdout)
     }
 }
