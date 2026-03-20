@@ -1,3 +1,4 @@
+import { getTmpFile } from '../../../../../shared/src/utils/utils';
 import AITool from '../../ai/ai-tool';
 import { writeFileSync } from 'fs'
 
@@ -37,13 +38,13 @@ export default class HttpGet extends AITool {
                     }
                 }
             },
-            required: ['url', "filepath"]
+            required: ['url']
         }
     }
 
     async run(args) {
         const url = args?.url
-        const path = args?.filepath
+        var path = args?.filepath
         var r = null
 
         try {
@@ -53,9 +54,13 @@ export default class HttpGet extends AITool {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            const data = await response.text(); // Parse JSON response
+
+            const data = await response.text();
+
             if (!path || path.length == 0)
-                return 'the tool argument "filepath" is missing'
+                //return 'the tool argument "filepath" is missing'
+                path = getTmpFile(this.ctx).path
+
             writeFileSync(path, data)
             r = "the file has been correctly downloaded and saved to the path: " + path
 

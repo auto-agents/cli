@@ -43,7 +43,6 @@ export default class OpenAIApiClient extends AIApiClient {
     async completionFromMessages(tools, options) {
 
         const props = {
-
             model: this.config.model,
             messages: this.history.messages,
             verbosity: 'high',  // no effect in openai api
@@ -89,5 +88,10 @@ export default class OpenAIApiClient extends AIApiClient {
                 totalTokensCount: u?.total_tokens
             }
         }
+    }
+
+    // not supported by lm studio
+    async sendFile(filePath) {
+
     }
 }

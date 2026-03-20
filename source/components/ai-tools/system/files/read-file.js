@@ -1,3 +1,4 @@
+import ToolResult from "../../../../../../shared/src/data/tool-result";
 import AITool from "../../../ai/ai-tool";
 import { readFileSync } from 'fs'
 
@@ -25,7 +26,18 @@ export default class ReadFile extends AITool {
 
     async run(args) {
         const tpath = args?.file_path
-        const text = readFileSync(tpath).toString()
-        return this.textResult(text)
+        const data = readFileSync(tpath).toString()
+
+        return this.jsonPlainResult({
+            file: tpath,
+            content: data
+        })
+
+        return new ToolResult(null, [
+            {
+                path: tpath,
+                content: data
+            }
+        ])
     }
 }

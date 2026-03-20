@@ -1,5 +1,9 @@
 import ActionTool from "./action-tool"
 
+// ------------------------------------------------
+// ⚠️⚠️ response parser for textual tool call ⚠️⚠️
+// ------------------------------------------------
+
 export default class ActionToolTextQuery extends ActionTool {
 
     constructor(ctx, config, tools, queryPreProcessors) {

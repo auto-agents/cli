@@ -1,6 +1,10 @@
 import { Role_Tool } from "../../roles"
 import ActionTool from "./action-tool"
 
+// -----------------------------------------------------------
+// ⚠️⚠️ tool call processor for standard OpenAI response ⚠️⚠️
+// ------------------------------------------------------------
+
 export default class ActionToolQuery extends ActionTool {
 
     constructor(ctx, config, tools, queryPreProcessors) {

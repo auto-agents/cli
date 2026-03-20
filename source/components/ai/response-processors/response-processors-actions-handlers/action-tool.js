@@ -1,5 +1,9 @@
 import { Role_Assistant, Role_Tool } from "../../roles"
 
+// ----------------------------------------------------
+// ⚠️⚠️ should be a per model tool call processor ⚠️⚠️
+// ----------------------------------------------------
+
 export default class ActionTool {
 
     dbg = false
@@ -26,12 +30,49 @@ export default class ActionTool {
 
         for (var i = 0; i < actions.length; i++) {
             const action = actions[i]
-            const toolQueryMessage = {
-                role: Role_Tool,
-                name: action.functionName,
-                content: action.result.content,
-                tool_call_id: action.toolCallId
+
+            var toolQueryMessage = null
+
+            // send files response
+            if (action.result.files != null) {
+
+                // send file
+                // way 1 : /v1/file
+                // way 2 : base64 content
+                action.result.files.forEach(file => {
+
+                    console.log('send file: ' + file.path)
+
+                    toolQueryMessage = {
+                        role: Role_Tool,
+                        name: action.functionName,
+                        // lm studio: content' objects must have a 'type' field that is either 'text' or 'image_url'
+                        /*content: [
+                            {
+                                type: "input_file",
+                                filename: file.path,
+                                file_data:
+                                    Buffer.from(file.content)
+                                        .toString('base64')
+                            }
+                        ],*/
+                        content: file.content,
+                        tool_call_id: action.toolCallId
+                    }
+
+                })
+
+                // response with file reference
+                // ...
             }
+            else
+                // send a tool response (content)
+                toolQueryMessage = {
+                    role: Role_Tool,
+                    name: action.functionName,
+                    content: action.result.content,
+                    tool_call_id: action.toolCallId
+                }
             history.messages.push(toolQueryMessage)
         }
 
