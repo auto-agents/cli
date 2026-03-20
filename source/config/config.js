@@ -623,6 +623,7 @@ export default function config(cli) {
 				}
 			},
 
+			// to be removed/changed
 			speakDuo: {
 				name: 'guy',
 				preferredVoices: {

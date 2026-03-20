@@ -2,6 +2,9 @@ import { Role_Assistant, Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
 
+/**
+ * OPEN AI standard api client
+ */
 export default class OpenAIApiClient extends AIApiClient {
 
     constructor(ctx, config, outputContext) {

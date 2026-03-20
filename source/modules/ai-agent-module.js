@@ -11,13 +11,18 @@ import { CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/event
 import path from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
 
+/**
+ * AI AGENT Module
+ * common llm interface for any api / provider
+ */
 export default class AIAgentModule {
 
     dbg = false
     From = 'AIAgentModule'
 
     responseProcessorsActionsHandlers = {}
-    // TODO: put in config
+
+    // ❌❌ TODO: put in config ❌❌
     queryPreProcessors = [
         txt => {
             if (this.config.appendTextAtEndOfQuery != null)
@@ -191,6 +196,9 @@ export default class AIAgentModule {
         }
         else {
             // tool_calls mandatory
+            // ❌❌ should not be specific to OpenAI here !!! ❌❌
+            // ❌❌ must delegate to the api client ❌❌
+
             r = {
                 response: null,
                 message: {
@@ -216,6 +224,10 @@ export default class AIAgentModule {
             // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER : done via Dialoger
             // CASE : after tool result provided call:
             // - assistant responds no content + require tool calls
+
+            // ❌ action handler == MODEL TOOL CALL PROCESSOR ❌
+            // ❌ should be associated to model, not to action ❌
+
             const actionHandler = this.#getResponseProcessorActionHandler(action)
 
             const r2 = await actionHandler.run(r.actions, r, capi, capi.history, options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER 
