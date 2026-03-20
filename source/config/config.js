@@ -1252,7 +1252,7 @@ export default function config(cli) {
 					provider: 'ollamaMCPBridgeOpenAIEndPoints',
 				},
 				anythingLLMDesktop: {
-					provider: 'anythingLLMDesktop',
+					provider: 'anythingLLMDesktopApiEndPoints',
 					//model: 'qwen3-vl:4b-instruct'
 					model: 'mon-espace-de-travail'
 				},
@@ -1300,7 +1300,7 @@ export default function config(cli) {
 							completion: '/chat/completions'
 						}
 					},
-					anythingLLMDesktop: {
+					anythingLLMDesktopApiEndPoints: {
 						apiKey: 'ZF7K5TV-Z7Y42ZW-KFEPZDZ-NQ6KYR9',
 						port: 3001,
 						baseURL: 'http://localhost:{port}/api/v1/',
