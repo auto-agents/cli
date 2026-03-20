@@ -33,10 +33,10 @@ export default class ModuleCommand extends Command {
 			const isLoaded = module.isLoaded
 			const isInternal = module.internal
 			const isImported = module.isImported
+			const imported = isImported ? ' (import)' : ''
 			const st =
-				(isImported ? ') imported' :
-					((isInternal ? '| internal' :
-						(isLoaded ? '● loaded' : '○ not loaded')))).padEnd(16)
+				(isInternal ? '| internal' :
+					(isLoaded ? `● loaded${imported}` : `○ not loaded${imported}`)).padEnd(22)
 			const status =
 				isImported ? c.imported(st) : (
 					(isLoaded && !isInternal) ? c.loaded(st) : c.unloaded(st))

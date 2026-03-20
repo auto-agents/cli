@@ -57,7 +57,10 @@ export default function config(cli) {
 		paths: {
 			agents: '../agents',
 			modules: '../modules',
-			importModules: '../modules',
+			importModules: '../modules/src',
+			modulesExportsFolderName: 'exports',
+			moduleExportCommandsFolderName: 'commands',
+			moduleExportModuleFolderName: 'module',
 			instructions: 'instructions',
 			saved: saved,
 			tmp: 'tmp'
@@ -535,7 +538,11 @@ export default function config(cli) {
 			TUIAgentEnabled: true,
 			toolRunTimeout: 10000,
 			initLog: null,
-			moduleImports: []
+			moduleImports: [
+				// modules to be imported are listed here
+				// add a ref when new modules are added
+				'API/hugging-face'
+			]
 		},
 		agents: {
 

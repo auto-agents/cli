@@ -123,8 +123,34 @@ export default class ModuleController {
             if (instance?.unload) {
                 await instance.unload(outputContext)
             }
+
+            o.newLine()
+
+            // cleanup module imports
+            if (module.specification.isImported && !module.specification.internal) {
+                const coms = module.specification.configExport?.cli?.commands
+                const cliComs = this.ctx.cli.commands
+                if (coms) {
+                    const cindexs = []
+                    coms.forEach(com => {
+                        for (var i = 0; i < cliComs.length; i++) {
+                            const loadedCom = cliComs[i]
+                            if (loadedCom.file == com.file) {
+                                cindexs.push(i)
+                                o.appendLine(margin + 'unloaded command: ' + com.names.join(','))
+                            }
+                        }
+                    })
+                    cindexs.forEach(i => {
+                        cliComs.splice(i, 1)
+                    })
+                }
+            }
+
+            // cleanup refs
             delete this.modules[moduleName]
             delete this.ctx.components.module[moduleName]
+            delete this.ctx.modules[moduleName]
 
             module.specification.isLoaded = false
             if (isAppInitialized(this.ctx))
@@ -133,6 +159,8 @@ export default class ModuleController {
                     moduleName: moduleName,
                     module: module
                 })
+
+            o.appendLine(margin + '- module unloaded: ' + moduleName)
 
             return true
         }
@@ -160,7 +188,8 @@ export default class ModuleController {
         }
     }
 
-    async runImports() {
+    // auto run all modules imports auto discovered. do not support package classification
+    async runImports0() {
 
         const dir = join(process.cwd(), this.ctx.paths.importModules)
         const entries = await readdir(dir, { withFileTypes: true })
@@ -168,10 +197,34 @@ export default class ModuleController {
             if (entry.name.startsWith('.')) continue
             if (entry.isFile()) continue
             const full = join(dir, entry.name)
-            const moduleImportsPath = join(full, 'module')
+            const moduleImportsPath = join(full,
+                this.ctx.paths.modulesExportsFolderName
+            )
             if (existsSync(moduleImportsPath))
                 this.importModule(entry.name, moduleImportsPath)
         }
+    }
+
+    async runImports() {
+        const oc = this.outputContext.clone()
+        const o = oc.output
+        const margin = ' '.repeat(oc.margin)
+
+        // base import path (auto-agents/modules)
+        const baseDir = join(process.cwd(), this.ctx.paths.importModules)
+        this.ctx.cli.moduleImports.forEach(modulePath => {
+            // handle a ref path
+            const moduleImportsPath = join(baseDir,
+                modulePath,
+                this.ctx.paths.modulesExportsFolderName
+            )
+            if (existsSync(moduleImportsPath)) {
+                const moduleFolder = path.basename(moduleImportsPath)
+                this.importModule(moduleFolder, moduleImportsPath)
+            }
+            else
+                o.appendLine(this.status.error(margin + "module '" + modulePath + "' specificied in 'moduleImports' not found at path: " + moduleImportsPath))
+        })
     }
 
     async importModule(moduleFolder, modulePath) {
@@ -198,6 +251,7 @@ export default class ModuleController {
         if (errors.length > 0)
             o.appendLine(this.status.error(margin + m + m + errors.join(',')))
         added.forEach(mod => {
+            mod.configExport = config
             this.ctx.modules[mod.moduleId] = mod
         })
 
@@ -216,7 +270,8 @@ export default class ModuleController {
     }
 
     async importModuleImpl(config, moduleFolder) {
-        const modsPath = join(moduleFolder, 'module')
+        const modsPath = join(moduleFolder,
+            this.ctx.paths.moduleExportModuleFolderName)
         if (!config.modules) return { added: [], rejected: [], errors: [] }
         const added = []
         const rejected = []
@@ -237,7 +292,7 @@ export default class ModuleController {
                         mod.isImported = true
                         added.push(mod)
                     }
-                    else reject(mod, 'module file not found')
+                    else reject(mod, 'module file not found: ' + modPath)
                 }
             } else reject(mod, 'uncomplete or missing specification')
         }
@@ -247,7 +302,9 @@ export default class ModuleController {
 
     async importModuleCommands(config, moduleFolder) {
         if (!config.cli?.commands) return { added: [], rejected: [], errors: [] }
-        const comsPath = join(moduleFolder, 'commands')
+        const comsPath = join(moduleFolder,
+            this.ctx.paths.moduleExportCommandsFolderName
+        )
         const added = []
         const rejected = []
         const errors = []
@@ -271,7 +328,7 @@ export default class ModuleController {
                         com.file = comPath
                         added.push(com)
                     }
-                    else reject(com, 'command file not found')
+                    else reject(com, 'command file not found: ' + comPath)
                 } else reject(com, 'command names already exists')
             } else reject(com, 'uncomplete or missing specification')
         });
