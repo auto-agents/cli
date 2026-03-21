@@ -41,6 +41,7 @@ export default class MouseController {
         return r
     }
 
+    // from https://shuntksh.com/blog/202506/modern-terminal-app-with-mouse-support/
     buildMouseEvent(parsedData) {
         const [, codeS, colS, rowS, suf] = parsedData;
         const code = +codeS;
