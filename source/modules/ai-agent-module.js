@@ -7,7 +7,7 @@ import fs from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
 import { Role_Assistant } from "../components/ai/roles.js";
-import { CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
+import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
 import path from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
 
@@ -184,6 +184,7 @@ export default class AIAgentModule {
      */
     async chat(dialogContext, query, tool_calls, options) {
         const capi = !options.secondary ? this.api : this.apiSecondary
+        const e = this.ctx.components.event
         var r = null
 
         if (query != null) {
@@ -235,10 +236,13 @@ export default class AIAgentModule {
             // agent text result: content
             if (this.config.enableDebugResponseToolsUsage) console.log(content)
 
+            e.emit(AgentResponseEvent, agentResponseEvent(dialogContext, r2))
+
             return r2
         }
 
         // return the original with the processed result
+        e.emit(AgentResponseEvent, agentResponseEvent(dialogContext, r))
 
         return r
     }

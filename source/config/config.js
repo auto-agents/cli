@@ -822,6 +822,14 @@ export default function config(cli) {
 				indicator: {
 					color: '#FFFFFF'
 				}
+			},
+			agents: {
+				infoBox: {
+					backgroundColor: 'blue'
+				},
+				dialStats: {
+					backgroundColor: '#000099'
+				}
 			}
 		},
 		layout: {

@@ -5,7 +5,8 @@ import {
 	HelpOutputUpdatedEvent,
 	AppStartedEvent,
 	AgentAddedEvent,
-	ModuleUnloadedEvent
+	ModuleUnloadedEvent,
+	AgentResponseEvent
 } from '../../../../shared/src/data/events.js';
 import Image from "ink-picture";
 import path from 'path'
@@ -33,12 +34,23 @@ const Agents = ({ ctx }) => {
 
 	const getAgentViewProps = agent => {
 		return {
+			agent: agent,
+			id: agent?.id,
 			name: agent?.chatName || '',
 			profile: agent?.profileName || '',
 			log: 'agent log...',
 			img: agent != null ? getAgentImgPath(agent.imgPath) : null
 		}
 	}
+
+	const getDialStats = {
+		promptTokens: 0,
+		predictedTokens: 0,
+		totalPromptTokens: 0,
+		totalPredictedTokens: 0
+	}
+
+	const [dialStats, setDialStats] = useState(getDialStats)
 
 	const [agentProps, setAgentProps] = useState(getAgentViewProps)
 
@@ -54,8 +66,8 @@ const Agents = ({ ctx }) => {
 		var w = ctx.layout.rightPanel.agentImage.cliAgentHeight
 		h = h / 2	// /2 is pixel ratio (half box)
 		h = Math.min(h, ctx.data.layout.output.rows.value
-			+ ctx.layout.promptHeight)
-		h = Math.max(h, 3)	// img min height
+			+ ctx.layout.promptHeight - 2)
+		h = Math.max(h, 3)	// img min height - lines below  3
 		const dh = h * 2
 		const bs = Math.min(dh, w)
 		w = bs
@@ -170,6 +182,52 @@ const Agents = ({ ctx }) => {
 		}
 	}, [])
 
+	/* ----- AgentResponseEvent ----- */
+
+	useEffect(() => {
+		const listener = args => {
+			const dco = args[0].dialogContext
+			const r = args[0].response
+			const agentId = dco.agentId
+			if (agentId == agentProps.id) {
+				console.log(agentProps?.agent)
+				if (agentProps && !agentProps.stats) {
+					agentProps.stats = {
+						totalPromptTokens: 0,
+						totalPredictedTokens: 0
+					}
+				}
+				const ds = agentProps?.stats
+				const promptTokens = r?.stats?.promptTokensCount || 0
+				const predictedTokens = r?.stats?.predictedTokensCount || 0
+				if (ds) {
+					ds.totalPromptTokens += promptTokens
+					ds.totalPredictedTokens += predictedTokens
+				}
+				const totalPromptTokens = ds?.totalPromptTokens
+				const totalPredictedTokens = ds?.totalPredictedTokens
+				setDialStats(
+					{
+						promptTokens: promptTokens,
+						predictedTokens: predictedTokens,
+						totalPromptTokens: totalPromptTokens,
+						totalPredictedTokens: totalPredictedTokens
+					}
+				)
+			}
+		}
+		e.on(
+			AgentResponseEvent,
+			args => listener(args)
+		)
+		return () => {
+			e.off(
+				AgentResponseEvent,
+				listener
+			)
+		}
+	}, [])
+
 	/* ----- module AIAgent unloaded ----- */
 
 	useEffect(() => {
@@ -198,7 +256,7 @@ const Agents = ({ ctx }) => {
 	}, [])
 
 	return (
-		<>
+		<Box flexDirection="column">
 			<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false} borderRight={false}>
 
 				{/* tui agent tab */}
@@ -231,8 +289,17 @@ const Agents = ({ ctx }) => {
 
 					{ /* agent title */}
 
-					<Box minHeight={1} height={1} backgroundColor="blue" >
+					<Box minHeight={1} height={1} backgroundColor={ctx.theme.agents.infoBox.backgroundColor} >
 						<Text color="white">{agentProps.name} | {agentProps.profile}</Text>
+					</Box>
+
+					{ /* dialog stats */}
+
+					<Box minHeight={1} height={1} backgroundColor={ctx.theme.agents.dialStats.backgroundColor} >
+						<Text color="white">prompt tokens: {dialStats.promptTokens} | total: {dialStats.totalPromptTokens}</Text>
+					</Box>
+					<Box minHeight={1} height={1} backgroundColor={ctx.theme.agents.dialStats.backgroundColor} >
+						<Text color="white">predicted tokens: {dialStats.predictedTokens} | total: {dialStats.totalPredictedTokens}</Text>
 					</Box>
 
 					{ /* agent log */}
@@ -242,7 +309,7 @@ const Agents = ({ ctx }) => {
 					</Box>
 				</Box>
 			}
-		</>
+		</Box>
 	);
 };
 
