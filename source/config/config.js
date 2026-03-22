@@ -591,7 +591,7 @@ export default function config(cli) {
 
 			voiceProfiles: {
 				TUI: {
-					TTSModuleName: 'speech',
+					TTSModuleName: 'browserTTS',
 					speak: {
 						enabled: true,
 						preferredVoices: {
@@ -1001,13 +1001,13 @@ export default function config(cli) {
 			}
 		},
 		modules: {
-			speech: {
-				description: 'speech agent using the plateform configured speech module',
+			browserTTS: {
+				description: 'TTS browser based module',
 				category: '',
-				file: 'speech-module.js',
+				file: 'browser-tts-module.js',
 				category: 'TTS',
 
-				autoLoad: true,
+				internal: true,
 				enabled: false,
 				isLoaded: false,
 
@@ -1039,7 +1039,7 @@ export default function config(cli) {
 				}
 			},
 			recognition: {
-				description: 'voice recognition agent using the plateform configured peech recognition module',
+				description: 'STT browser based module',
 				category: 'STT',
 
 				autoLoad: true,

@@ -6,7 +6,7 @@ import SpinnerService from "../services/spinner-service";
 import Status from '../../../shared/src/utils/status.js'
 import utils from '../../../shared/src/utils/utils.js'
 
-export default class SpeechModule {
+export default class BrowserTTSModule {
 
     constructor(ctx, config, outputContext, moduleSpec) {
         this.specification = moduleSpec
@@ -24,7 +24,7 @@ export default class SpeechModule {
         const margin2 = ' '.repeat(margin.length + this.outputContext.marginBase)
 
         o.newLine()
-        o.appendLine(margin + '~ loading speech module server')
+        o.appendLine(margin + '~ loading browser TTS module server')
         if (!existsSync(this.modulePath))
             throw new Error('module file not found: ' + this.modulePath)
         const mod = require(this.modulePath)
@@ -35,7 +35,7 @@ export default class SpeechModule {
                 await this.speech.launchServer()
                 await utils.wait(this.ctx.ui.initFastWait)
             } catch (err) {
-                o.appendLine(this.status.error(margin + 'speech module server launch error: ' + err))
+                o.appendLine(this.status.error(margin + 'browser TTS module server launch error: ' + err))
             }
         }
 
@@ -43,14 +43,14 @@ export default class SpeechModule {
             this.ctx,
             this.outputContext.output,
             runSrv,
-            this.spinner.newSpinner(margin2 + '- running speech module server', cliSpinners.sand),
+            this.spinner.newSpinner(margin2 + '- running browser TTS module server', cliSpinners.sand),
             async () => {
 
                 const runOpenBrowser = new ActionController(
                     this.ctx,
                     this.outputContext.output,
                     async () => this.openBrowser(),
-                    this.spinner.newSpinner(margin2 + '- opening browser speech SPA', cliSpinners.sand)
+                    this.spinner.newSpinner(margin2 + '- opening browser TTS Web SPA', cliSpinners.sand)
                 )
                 await runOpenBrowser.run()
 
@@ -59,7 +59,7 @@ export default class SpeechModule {
         await runSrvAction.run()
 
         // this will enable module for the cli
-        this.ctx.components.module.speech = this
+        //this.ctx.components.module.speech = this
     }
 
     async unload(outputContext) {
@@ -78,7 +78,7 @@ export default class SpeechModule {
             o,
             stopSrv,
             new SpinnerService(this.ctx, o)
-                .newSpinner(margin + '- stopping speech module server', cliSpinners.sand)
+                .newSpinner(margin + '- stopping browser TTS module server', cliSpinners.sand)
         )
         await stopSrvAction.run()
     }
@@ -113,5 +113,10 @@ export default class SpeechModule {
             const o = this.outputContext.output
             o.appendLine(this.status.error(err))
         }
+    }
+
+    getPreferredVoices(preferredVoices) {
+        if (!preferredVoices) return null
+        return preferredVoices[this.config.browser[0]]
     }
 }

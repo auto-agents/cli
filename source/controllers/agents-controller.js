@@ -52,13 +52,20 @@ export default class AgentsController {
         return agent.moduleName + '_' + agent.id
     }
 
+    getTTSModuleStoreName(agent) {
+        return agent.TTSModuleName + '_' + agent.id
+    }
+
     async loadAgent(agent, outputContext) {
         try {
+            if (this.agents[agent.id])
+                throw new Error(`an agent with the same id: '${agent.id}' is already loaded`)
+
             const initSrv = this.ctx.components.init
             const moduleCtrl = initSrv.moduleController
             const moduleStoreName = this.getModuleStoreName(agent)
-            if (this.agents[agent.id])
-                throw new Error(`an agent with the same id: '${agent.id}' is already loaded`)
+
+            // load agent module
             agent.module = await moduleCtrl.load(
                 agent.moduleName,
                 moduleStoreName,
@@ -68,6 +75,18 @@ export default class AgentsController {
             )
             agent.module.agentId = agent.id
             this.agents[agent.id] = agent
+
+            // load agent TTS module if any
+            if (agent.TTSModuleName) {
+                const TTSModuleStoreName = this.getTTSModuleStoreName(agent)
+                agent.TTSModule = await moduleCtrl.load(
+                    agent.TTSModuleName,
+                    TTSModuleStoreName,
+                    outputContext,
+                    false,
+                    agent.id
+                )
+            }
         }
         catch (err) {
             const o = outputContext.output

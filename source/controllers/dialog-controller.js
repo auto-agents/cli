@@ -336,14 +336,14 @@ export default class DialogController {
 
 	#getSystemVoice() {
 		const a = getTUIAgent(this.ctx)
-		if (!a) return null
-		return a.speak.preferredVoices[this.ctx.modules.speech.config.browser][0]
+		if (!a?.TTSModule) return null
+		return a.TTSModule.getPreferredVoices(a.speak?.preferredVoices)
 	}
 
 	#getUserVoice() {
 		const a = getTUIAgent(this.ctx)
-		if (!a) return null
-		return a.repeatUserQuery.preferredVoices[this.ctx.modules.speech.config.browser][0]
+		if (!a?.TTSModule) return null
+		return a.TTSModule.getPreferredVoices(a.repeatUserQuery?.preferredVoices)
 	}
 
 	async #speakEventHandler(data) {
