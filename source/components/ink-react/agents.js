@@ -6,7 +6,8 @@ import {
 	AppStartedEvent,
 	AgentAddedEvent,
 	ModuleUnloadedEvent,
-	AgentResponseEvent
+	AgentResponseEvent,
+	AgentRemovedEvent
 } from '../../../../shared/src/data/events.js';
 import Image from "ink-picture";
 import path from 'path'
@@ -161,12 +162,15 @@ const Agents = ({ ctx }) => {
 
 	useEffect(() => {
 		const listener = args => {
-			if (args[0].agentId == TUIAgentId) {
-				// setup first agent in view: TUI Agent
+			const agentArg = args[0]
+			if (agentArg != null
+				&& agentArg.agentId != null
+				&& agentArg.agentId == TUIAgentId) {
+				// add agent in view, make it visible
 				setTimeout(() => {
 					setupImgCliAgent(true)
 					//console.log(args[0])
-					updateAgentView(args[0])
+					updateAgentView(agentArg.agentInView)
 				}, setupImgCliAgentDelay)
 			}
 		}
@@ -177,6 +181,33 @@ const Agents = ({ ctx }) => {
 		return () => {
 			e.off(
 				AgentAddedEvent,
+				listener
+			)
+		}
+	}, [])
+
+	/* ----- AgentRemovedEvent ----- */
+
+	useEffect(() => {
+		const listener = args => {
+			const agentArg = args[0]
+			if (agentArg != null
+				&& agentArg.agentId != null) {
+				// setup first agent in view
+				setTimeout(() => {
+					setupImgCliAgent(true)
+					//console.log(args[0])
+					updateAgentView(agentArg.agentInView)
+				}, setupImgCliAgentDelay)
+			}
+		}
+		e.on(
+			AgentRemovedEvent,
+			args => listener(args)
+		)
+		return () => {
+			e.off(
+				AgentRemovedEvent,
 				listener
 			)
 		}
@@ -267,7 +298,6 @@ const Agents = ({ ctx }) => {
 					agentViewState.visible &&
 					<Box minHeight={2} borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
 						<Text>TUI Agent</Text>
-
 					</Box>
 				}
 

@@ -88,7 +88,7 @@ export default class AppController {
 		this.inputController = ctx.components.input = new InputController(ctx, this.helpOutput, this.output)
 		this.commandController = ctx.components.command = new CommandController(ctx, this.output)
 		this.dialog = ctx.components.dialog = new DialogController(ctx, this.output)
-		this.agents = ctx.components.agents = new AgentsController(ctx, this.output)
+		this.agents = ctx.components.agents = new AgentsController(ctx, this.output).init()
 		this.mouse = ctx.components.mouse = new MouseController(ctx).init()
 
 		this.ramService = new RamService(ctx)
@@ -145,11 +145,11 @@ export default class AppController {
 				new DialogContext(
 					this.output,
 					this.ctx.components.dialog.dialoger,
-					getErrorVoice(this.ctx),
-					true,
+					agent
 				),
 				this.From,
-				text
+				text,
+				getErrorVoice(this.ctx)
 			/*getTUIAgent(this.ctx).speakErrors.preferredVoices
 			[this.ctx.modules.speech.config.browser][0],
 			true)
@@ -162,7 +162,7 @@ export default class AppController {
 		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
 		const text = reason + sm
 
-		if (isSpeechAvailable(this.ctx)
+		if (isSpeechAvailable(getTUIAgent(this.ctx))
 			&& isSpeakErrorsEnabled(this.ctx)
 			&& errorEvent?.from != 'speak')
 			this.speakError(text)
@@ -171,7 +171,7 @@ export default class AppController {
 	}
 
 	async handleLogErrorEvent(errorEvent) {
-		if (isSpeechAvailable(this.ctx)
+		if (isSpeechAvailable(getTUIAgent(this.ctx))
 			&& isSpeakErrorsEnabled(this.ctx)
 			&& errorEvent?.from != 'speak')
 			this.speakError(errorEvent.error?.message,
@@ -184,7 +184,7 @@ export default class AppController {
 		const stack = taskErrorEvent.error?.stack
 		this.error(`task '${taskErrorEvent.task.name}' error: ${taskErrorEvent.error?.toString()}`, stack)
 
-		if (isSpeechAvailable(this.ctx)
+		if (isSpeechAvailable(getTUIAgent(this.ctx))
 			&& isSpeakErrorsEnabled(this.ctx))
 			this.speakError(taskErrorEvent.error?.message)
 	}

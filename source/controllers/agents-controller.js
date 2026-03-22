@@ -1,5 +1,5 @@
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import { AgentAddedEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events"
+import { AgentAddedEvent, AgentRemovedEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events"
 import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
 
@@ -14,8 +14,11 @@ export default class AgentsController {
     constructor(ctx, output) {
         this.ctx = ctx
         this.output = output
-        const e = ctx.components.event
         this.status = new Status(ctx)
+    }
+
+    init() {
+        const e = this.ctx.components.event
 
         e.on(ModuleLoadedEvent, args => {
 
@@ -26,7 +29,10 @@ export default class AgentsController {
                 this.viewAgentId = agentId
                 e.emit(AgentAddedEvent, {
                     agentId: this.viewAgentId,
-                    ...this.getAgentInView()
+                    agentInView: {
+                        agentId: this.viewAgentId,
+                        ...this.getAgentInView()
+                    }
                 })
             }
         })
@@ -36,9 +42,22 @@ export default class AgentsController {
             if (this.agents[agentId]) {
                 // agent unloaded
                 dumpLoadedAgent(this.ctx, agentId, this.output, 'unloaded')
+
                 delete this.agents[agentId]
+                this.viewAgentId = this.agents.length > 0
+                    ? this.agents[0] : null
+
+                e.emit(AgentRemovedEvent, {
+                    agentId: agentId,
+                    agentInView: {
+                        agentId: this.viewAgentId,
+                        ...this.getAgentInView()
+                    }
+                })
             }
         })
+
+        return this
     }
 
     getAgentInView() {
