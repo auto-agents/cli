@@ -145,12 +145,12 @@ export default class ModuleController {
                         cliComs.splice(i, 1)
                     })
                 }
+                delete this.ctx.modules[moduleName]
             }
 
             // cleanup refs
-            delete this.modules[moduleName]
             delete this.ctx.components.module[moduleName]
-            delete this.ctx.modules[moduleName]
+            delete this.modules[moduleName]
 
             module.specification.isLoaded = false
             if (isAppInitialized(this.ctx))

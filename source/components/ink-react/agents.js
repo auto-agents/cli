@@ -93,9 +93,8 @@ const Agents = ({ ctx }) => {
 	}
 
 	const updateAgentView = agent => {
-		setAgentProps(
-			getAgentViewProps(agent)
-		)
+		const props = getAgentViewProps(agent)
+		setAgentProps(props)
 	}
 
 	/* ----- HideInitBoxOutputEvent ----- */
@@ -166,6 +165,7 @@ const Agents = ({ ctx }) => {
 				// setup first agent in view: TUI Agent
 				setTimeout(() => {
 					setupImgCliAgent(true)
+					//console.log(args[0])
 					updateAgentView(args[0])
 				}, setupImgCliAgentDelay)
 			}
@@ -185,19 +185,22 @@ const Agents = ({ ctx }) => {
 	/* ----- AgentResponseEvent ----- */
 
 	useEffect(() => {
+
 		const listener = args => {
 			const dco = args[0].dialogContext
 			const r = args[0].response
-			const agentId = dco.agentId
+			const agentId = dco.agent.id
+
 			if (agentId == agentProps.id) {
-				console.log(agentProps?.agent)
-				if (agentProps && !agentProps.stats) {
-					agentProps.stats = {
+
+				const agent = dco.agent
+				if (!agent.stats) {
+					agent.stats = {
 						totalPromptTokens: 0,
 						totalPredictedTokens: 0
 					}
 				}
-				const ds = agentProps?.stats
+				const ds = agent.stats
 				const promptTokens = r?.stats?.promptTokensCount || 0
 				const predictedTokens = r?.stats?.predictedTokensCount || 0
 				if (ds) {
@@ -226,7 +229,7 @@ const Agents = ({ ctx }) => {
 				listener
 			)
 		}
-	}, [])
+	}, [agentProps])
 
 	/* ----- module AIAgent unloaded ----- */
 
