@@ -12,6 +12,7 @@ import {
 import Image from "ink-picture";
 import path from 'path'
 import { TUIAgentId } from '../../../../shared/src/config/consts.js'
+import AgentsTabs from './agents-tabs.js';
 
 const Agents = ({ ctx }) => {
 
@@ -165,8 +166,7 @@ const Agents = ({ ctx }) => {
 		const listener = args => {
 			const agentArg = args[0]
 			if (agentArg != null
-				&& agentArg.agentId != null
-				&& agentArg.agentId == TUIAgentId) {
+				&& agentArg.agentId != null) {
 				// add agent in view, make it visible
 				setTimeout(() => {
 					setupImgCliAgent(true)
@@ -296,16 +296,7 @@ const Agents = ({ ctx }) => {
 		<Box flexDirection="column">
 
 			{agentViewState.visible &&
-				<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false} borderRight={false}>
-
-					{/* tui agent tab */}
-					{
-						<Box minHeight={2} borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
-							<Text>TUI Agent</Text>
-						</Box>
-					}
-
-				</Box>
+				<AgentsTabs ctx={ctx} />
 			}
 
 			{/* agent image */}
