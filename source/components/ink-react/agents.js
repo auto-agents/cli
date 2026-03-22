@@ -95,6 +95,7 @@ const Agents = ({ ctx }) => {
 
 	const updateAgentView = agent => {
 		const props = getAgentViewProps(agent)
+		//console.log(props)
 		setAgentProps(props)
 	}
 
@@ -187,6 +188,7 @@ const Agents = ({ ctx }) => {
 	}, [])
 
 	/* ----- AgentRemovedEvent ----- */
+	// /mod unload openAIAgent_TUI
 
 	useEffect(() => {
 		const listener = args => {
@@ -195,7 +197,8 @@ const Agents = ({ ctx }) => {
 				&& agentArg.agentId != null) {
 				// setup first agent in view
 				setTimeout(() => {
-					setupImgCliAgent(true)
+					//console.log(agentArg)
+					//setupImgCliAgent(true)
 					//console.log(args[0])
 					updateAgentView(agentArg.agentInView)
 				}, setupImgCliAgentDelay)
@@ -305,7 +308,7 @@ const Agents = ({ ctx }) => {
 
 			{/* agent image */}
 
-			{agentViewState.visible &&
+			{agentProps.agent != null && agentViewState.visible &&
 				<Box height={agentViewState.height}>
 					<Image
 						width={agentViewState.width}
@@ -317,7 +320,7 @@ const Agents = ({ ctx }) => {
 				</Box>
 			}
 
-			{agentViewState.visible &&
+			{agentProps.agent != null && agentViewState.visible &&
 				<Box flexDirection="column" flexGrow={1}>
 
 					{ /* agent title */}

@@ -47,12 +47,13 @@ export default class AgentsController {
                 this.viewAgentId = this.agents.length > 0
                     ? this.agents[0] : null
 
+                var agentInView = this.getAgentInView()
+                if (agentInView)
+                    agentInView.agentId = agentInView.id
+
                 e.emit(AgentRemovedEvent, {
                     agentId: agentId,
-                    agentInView: {
-                        agentId: this.viewAgentId,
-                        ...this.getAgentInView()
-                    }
+                    agentInView: agentInView
                 })
             }
         })
