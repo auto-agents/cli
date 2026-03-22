@@ -122,7 +122,7 @@ export default class DialogController {
 			)
 
 		if (!dialogContext) {
-			console.log('default to TUI Agent')
+			//console.log('default to TUI Agent')
 			// build a user to TUI dialog context
 			dialogContext = new DialogContext(
 				outputContext,

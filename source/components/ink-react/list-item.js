@@ -1,6 +1,4 @@
-import * as React from 'react';
 import { Box, Text } from 'ink';
-import chalk from 'chalk';
 
 const ListItem = ({ ctx, width, isSelected = false, selectedLabel = null, label }) => {
 

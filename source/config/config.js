@@ -851,6 +851,9 @@ export default function config(cli) {
 				},
 				dialStats: {
 					backgroundColor: '#000099'
+				},
+				focusedTab: {
+					backgroundColor: '#0077FF'
 				}
 			}
 		},

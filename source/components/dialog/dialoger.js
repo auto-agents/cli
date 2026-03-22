@@ -162,13 +162,16 @@ export default class Dialoger {
                                     )
 
                                     // eventually speak
-                                    if (isSpeechAvailable(this.ctx))
+                                    if (isSpeechAvailable(this.ctx)) {
+
+                                        this.agentSpeakFocus(dialogContext, text)
                                         await this.speakFun(
                                             dialogContext,
                                             aiText, {
                                             ...options,
                                             voice: options.assistantVoice
                                         })
+                                    }
                                 }
                             )).task
                     ))
@@ -232,16 +235,7 @@ export default class Dialoger {
                         'system dialog: speak',
                         async () => {
 
-                            const e = this.ctx.components.event
-                            e.emit(AgentGetFocusSpeakEvent,
-                                dialogEvent(
-                                    {
-                                        dialogContext,
-                                        text
-                                    }
-                                )
-                            )
-
+                            this.agentSpeakFocus(dialogContext, text)
                             await this.speakFun(
                                 dialogContext, text, options)
                         }
@@ -250,6 +244,18 @@ export default class Dialoger {
         }
 
         return results
+    }
+
+    agentSpeakFocus(dialogContext, text) {
+        const e = this.ctx.components.event
+        e.emit(AgentGetFocusSpeakEvent,
+            dialogEvent(
+                {
+                    dialogContext,
+                    text
+                }
+            )
+        )
     }
 
     async speak(dialogContext, text, options) {
