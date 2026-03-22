@@ -137,9 +137,6 @@ export default class DialogController {
 		if (!options.assistantVoice)
 			options.assistantVoice = getSystemVoice(this.ctx)
 
-		console.log('----- OPTIONS --------')
-		console.log(options)
-
 		//options.skipPrependNewLine ||= true
 
 		var r = await this.dialoger.addUserDialog(
