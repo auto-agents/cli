@@ -564,7 +564,6 @@ export default function config(cli) {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						moduleName: 'speech',
 						voiceProfile: 'TUI'
 					},
 					system: true,
@@ -592,6 +591,7 @@ export default function config(cli) {
 
 			voiceProfiles: {
 				TUI: {
+					TTSModuleName: 'speech',
 					speak: {
 						enabled: true,
 						preferredVoices: {
@@ -1003,8 +1003,9 @@ export default function config(cli) {
 		modules: {
 			speech: {
 				description: 'speech agent using the plateform configured speech module',
-				id: 'browser-speaker',
+				category: '',
 				file: 'speech-module.js',
+				category: 'TTS',
 
 				autoLoad: true,
 				enabled: false,
@@ -1039,6 +1040,7 @@ export default function config(cli) {
 			},
 			recognition: {
 				description: 'voice recognition agent using the plateform configured peech recognition module',
+				category: 'STT',
 
 				autoLoad: true,
 				enabled: false,
@@ -1050,6 +1052,7 @@ export default function config(cli) {
 				*/
 				description: 'OpenAI chat using OpenAI API interface (HTTP transport)',
 				file: 'ai-agent-module.js',
+				category: 'AIAgent',
 
 				apiName: 'OpenAI',
 				apiClientFilepath: "../components/ai/open-ai-api-client.js",
@@ -1089,6 +1092,7 @@ export default function config(cli) {
 				*/
 				description: 'Ollama chat module using OpenAI API interface (HTTP transport) over Ollama-MCP-Bridge',
 				file: 'ai-agent-module.js',
+				category: 'AIAgent',
 
 				apiName: 'Ollama',
 				apiClientFilepath: "../components/ai/ollama-api-client.js",
@@ -1111,6 +1115,7 @@ export default function config(cli) {
 				*/
 				description: 'LM Studio chat module using OpenAI API interface (HTTP transport)',
 				file: 'ai-agent-module.js',
+				category: 'AIAgent',
 
 				apiName: 'LMStudio',
 				apiClientFilepath: "../components/ai/lm-studio-api-client.js",
@@ -1135,6 +1140,7 @@ export default function config(cli) {
 				*/
 				description: 'LM Studio chat module using JS LM Studio SDK (WebSocket transport)',
 				file: 'ai-agent-module.js',
+				category: 'AIAgent',
 
 				apiName: 'LMStudioJS',
 				apiClientFilepath: "../components/ai/lm-studio-js-api-client.js",
@@ -1158,6 +1164,7 @@ export default function config(cli) {
 				*/
 				description: 'Anything LLM chat module using OpenAI API interface (HTTP transport)',
 				file: 'ai-agent-module.js',
+				category: 'AIAgent',
 
 				apiName: 'AnythingLLM',
 				apiClientFilepath: "../components/ai/open-ai-api-client.js",
@@ -1225,8 +1232,8 @@ export default function config(cli) {
 					think: true,
 					historyPath: join(process.cwd(), saved, 'chat-history.json'),
 				},
-				// SETTING TO RUN MCP WITH LM STUDIO. NO TOOLS. NO MESSAGES
 				lmStudioApi: {
+					// SETTING TO RUN MCP WITH LM STUDIO. NO TOOLS. NO MESSAGES
 					/*
 					* LM Studio API configuration
 					*/
@@ -1265,7 +1272,7 @@ export default function config(cli) {
 					model: 'mon-espace-de-travail'
 				},
 
-				// models providers
+				// models providers (servers end points)
 
 				providers: {
 					lmStudioApiEndPoints: {

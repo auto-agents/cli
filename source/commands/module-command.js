@@ -80,61 +80,68 @@ export default class ModuleCommand extends Command {
 				//isImported ? c.imported(st) : (
 				(isLoaded && !isInternal) ? c.loaded(st) : c.unloaded(st)
 			const desc = module.description || ''
-			output.appendLine(margin + `  ${c.name(name.padEnd(w))} ${status} ${c.category(category)}${c.description(desc)}`)
+			output.appendLine(margin + `  ${c.name(name.padEnd(w))} ${status} ${c.description(desc)}`)
 		}
 
+		// -- build spec list
 		const exports = await this.#getModulesExports()
 		const exportsModNames = exports.map(m => m.moduleId)
-
-		// -- calc sizes
-
+		const loadedNames = []
+		const mods = {}
 		var w = 0
 
 		// available exports
-		exportsModNames.forEach(mn => {
-			w = Math.max(mn.length, w)
+		exports.forEach(mod => {
+			mods[mod.moduleId] = mod
+			w = Math.max(mod.moduleId.length, w)
 		})
-
-		// available integrated
+		// loaded modules
 		for (const [name, module] of Object.entries(this.ctx.modules)) {
-			if (this.ctx.components.module[name]) continue
+			if (this.ctx.components.module[name] || !module.specification) continue
+			mods[name] = module.specification
+			module.specification.key = name
 			w = Math.max(name.length, w)
 		}
-
-		// loaded
-		for (const [name, module] of Object.entries(this.ctx.components.module)) {
-			if (!module?.specification) continue
-			const specification = module.specification
-			w = Math.max(name.length, w)
-		}
-
-		// -- dumps
-
-		w += 4
 		// available integrated
 		for (const [name, module] of Object.entries(this.ctx.modules)) {
 			if (this.ctx.components.module[name]
 				|| exportsModNames.includes(name)
 			) continue
-			dump(name, module, w)
+			w = Math.max(name.length, w)
+			mods[name] = module
+			module.key = name
 		}
-
 		// loaded
-		const loadedNames = []
 		for (const [name, module] of Object.entries(this.ctx.components.module)) {
 			if (!module?.specification) continue
 			loadedNames.push(name)
-			const specification = module.specification
-			dump(name, specification, w)
+			w = Math.max(w, name.length)
+			mods[name] = module.specification
+			module.specification.key = name
 		}
-
 		// extern
-		exports.forEach(mod => {
-			if (!loadedNames.includes(mod.moduleId)) {
-				mod.isImported = true
-				dump(mod.moduleId, mod, w)
+		exports.forEach(module => {
+			if (!loadedNames.includes(module.moduleId)) {
+				module.isImported = true
+				w = Math.max(x, module.moduleId)
+				mods[module.moduleId] = module
+				module.key = module.moduleId
 			}
 		})
+		w += 4
+
+		// -- dumps
+
+		const tmods = Object.entries(mods).map(x => x[1])
+		const lists = Object.groupBy(tmods, mod => mod.category)
+
+		for (const [group, modules] of Object.entries(lists)) {
+			output.appendLine(c.category(group))
+			modules.forEach(module => {
+				const name = module.moduleId || module.key
+				dump(name, module, w)
+			})
+		}
 	}
 
 	#getOutputContext(margin) {
