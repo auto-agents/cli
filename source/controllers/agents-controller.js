@@ -96,8 +96,8 @@ export default class AgentsController {
             agent.module.agentId = agent.id
             this.agents[agent.id] = agent
 
-            // load agent TTS module if any
-            if (agent.TTSModuleName) {
+            // load agent TTS module if any enabled
+            if (agent.TTS.enabled && agent.TTSModuleName) {
                 const TTSModuleStoreName = this.getTTSModuleStoreName(agent)
                 agent.TTSModule = await moduleCtrl.load(
                     agent.TTSModuleName,

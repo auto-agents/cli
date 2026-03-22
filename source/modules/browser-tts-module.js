@@ -4,7 +4,8 @@ import { join } from 'path';
 import ActionController from "../controllers/action-controller";
 import SpinnerService from "../services/spinner-service";
 import Status from '../../../shared/src/utils/status.js'
-import utils from '../../../shared/src/utils/utils.js'
+import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.js'
+import Server from '../../../shared/src/data/server.js';
 
 export default class BrowserTTSModule {
 
@@ -32,12 +33,21 @@ export default class BrowserTTSModule {
 
         const runSrv = async () => {
             try {
-                await this.speech.launchServer()
+                this.server = new Server(
+                    'BrowserTTSModule',
+                    this.speech.baseUrl(),
+                    this.speech.config.port
+                )
+                if (addServer(this.ctx, this.server) == 1)
+                    await this.speech.launchServer()
                 await utils.wait(this.ctx.ui.initFastWait)
             } catch (err) {
                 o.appendLine(this.status.error(margin + 'browser TTS module server launch error: ' + err))
+                throw err
             }
         }
+
+        var ok = true
 
         const runSrvAction = new ActionController(
             this.ctx,
@@ -53,13 +63,13 @@ export default class BrowserTTSModule {
                     this.spinner.newSpinner(margin2 + '- opening browser TTS Web SPA', cliSpinners.sand)
                 )
                 await runOpenBrowser.run()
-
+            },
+            async () => {
+                ok = false
             }
         )
         await runSrvAction.run()
-
-        // this will enable module for the cli
-        //this.ctx.components.module.speech = this
+        return ok
     }
 
     async unload(outputContext) {
@@ -68,7 +78,8 @@ export default class BrowserTTSModule {
         const margin = ' '.repeat(oc.margin + oc.marginBase)
 
         const stopSrv = async () => {
-            await this.speech.stopServer()
+            if (removeServer(this.ctx, this.server) == 0)
+                await this.speech.stopServer()
             this.ctx.components.module.speech = null
         }
 

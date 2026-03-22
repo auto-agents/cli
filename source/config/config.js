@@ -536,7 +536,7 @@ export default function config(cli) {
 			},
 			dumpStackTraces: true,
 			enableDebugLoopTools: false,
-			TUIAgentEnabled: true,
+			currentDialogTargetAgent: TUIAgentId,
 			toolRunTimeout: 10000,
 			initLog: null,
 			moduleImports: [
@@ -569,16 +569,23 @@ export default function config(cli) {
 					system: true,
 				},
 				{
-					id: '...',
-					name: '...',
-					enabled: false,
-					instructions: '',
-					/* profile refers to a set of properties (overloaded by local definitions)
-						- chatName
-						- speak,preferredVoices
-						- instructions
-					*/
-					profile: ''
+					id: 'kokoro',
+					name: 'Amaniya Kokoro',
+					moduleName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					module: null,
+					// model config
+					config: {
+					},
+					// characteristics
+					avatar: 'kokoro',
+					profile: 'codingAssistant',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: false,
+						voiceProfile: 'kokoro'
+					},
+					enabled: true
 				}
 			],
 
@@ -613,13 +620,27 @@ export default function config(cli) {
 						},
 						module: null
 					}
+				},
+				kokoro: {
+					TTSModuleName: 'browserTTS',
+					speak: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft AvaMultilingual Online (Natural) - English (United States)']
+						},
+						module: null
+					}
 				}
 			},
 
 			avatars: {
 				seraphina: {
-					chatName: 'seraphina',
+					chatName: 'Seraphina',
 					imgPath: 'agent-5-48x48.png'
+				},
+				kokoro: {
+					chatName: 'Amamiya Kokoro',
+					imgPath: 'kokoro-48x48.png'
 				}
 			},
 
@@ -1342,7 +1363,10 @@ export default function config(cli) {
 						api_key: process.env.SERP_API_KEY
 					}
 				}
-			}
+			},
+			running: [
+
+			]
 		},
 		shell: {
 			platform: platform,

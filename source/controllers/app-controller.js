@@ -306,7 +306,9 @@ export default class AppController {
 		}
 		initModuleGauge('speech')
 		initModuleGauge('recognition')
-		initModuleGauge('AIAgent', null, getTUIAgent(this.ctx).module)
+		const tuiAg = getTUIAgent(this.ctx)
+		if (tuiAg?.module)
+			initModuleGauge('AIAgent', null, tuiAg.module)
 	}
 
 	async runInput(inp) {

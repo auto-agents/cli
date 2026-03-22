@@ -139,13 +139,29 @@ export default class InitService {
 	}
 
 	async #initAgents(outputContext) {
-		if (!this.ctx.cli.TUIAgentEnabled) return
-		await this.ctx.components.agents.loadAgent(
+		//if (!this.ctx.cli.TUIAgentEnabled) return
+		// auto load the TUI agent
+		/*await this.ctx.components.agents.loadAgent(
 			new AIAgent(
 				this.ctx,
 				getAgentSpecification(this.ctx, TUIAgentId)),
 			outputContext
-		)
+		)*/
+		const lst = this.ctx.agents.list
+
+		for (var i = 0; i < lst.length; i++) {
+			const agent = lst[i]
+			agent.index = i
+			if (agent.system || agent.enabled) {
+				//console.log('load agent: ', agent.name)				
+				await this.ctx.components.agents.loadAgent(
+					new AIAgent(
+						this.ctx,
+						agent),
+					outputContext
+				)
+			}
+		}
 	}
 
 	#getOutputContext(margin = 0) {
