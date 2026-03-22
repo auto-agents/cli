@@ -294,17 +294,19 @@ const Agents = ({ ctx }) => {
 
 	return (
 		<Box flexDirection="column">
-			<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false} borderRight={false}>
 
-				{/* tui agent tab */}
-				{
-					agentViewState.visible &&
-					<Box minHeight={2} borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
-						<Text>TUI Agent</Text>
-					</Box>
-				}
+			{agentViewState.visible &&
+				<Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false} borderRight={false}>
 
-			</Box>
+					{/* tui agent tab */}
+					{
+						<Box minHeight={2} borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
+							<Text>TUI Agent</Text>
+						</Box>
+					}
+
+				</Box>
+			}
 
 			{/* agent image */}
 
