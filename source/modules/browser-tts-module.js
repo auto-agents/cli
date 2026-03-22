@@ -92,12 +92,12 @@ export default class BrowserTTSModule {
     }
 
     async waitIdle(timeout) {
-        timeout ||= this.ctx.modules.speech.config.waitTimeoutMs
+        timeout ||= this./*ctx.modules.speech.*/config.waitTimeoutMs
         await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
     }
 
     async waitSpeak(timeout) {
-        timeout ||= this.ctx.modules.speech.config.waitTimeoutMs
+        timeout ||= this./*ctx.modules.speech.*/config.waitTimeoutMs
         await this.speech.waitForRunningStatus({ expected: 'speaking', timeoutMs: timeout })
     }
 
@@ -117,6 +117,6 @@ export default class BrowserTTSModule {
 
     getPreferredVoices(preferredVoices) {
         if (!preferredVoices) return null
-        return preferredVoices[this.config.browser[0]]
+        return preferredVoices[this.config.browser][0]
     }
 }

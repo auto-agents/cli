@@ -3,7 +3,7 @@ import {
 } from "../../../../shared/src/data/events"
 import DialogContext from "../../../../shared/src/data/dialog-context"
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
-import { isSpeechAvailable, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
+import { isSpeechAvailable, isTUIAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
 
 /*
  the dialoger handle dialog behaviors
@@ -97,7 +97,9 @@ export default class Dialoger {
                             task(
                                 'user dialog: speak',
                                 async () => {
-                                    await this.speakFun(text, {
+                                    await this.speakFun(
+                                        dialogContext,
+                                        text, {
                                         ...options,
                                         voice: options.userVoice
                                     })
@@ -157,7 +159,9 @@ export default class Dialoger {
 
                                     // eventually speak
                                     if (isSpeechAvailable(this.ctx))
-                                        await this.speakFun(aiText, {
+                                        await this.speakFun(
+                                            dialogContext,
+                                            aiText, {
                                             ...options,
                                             voice: options.assistantVoice
                                         })
@@ -216,13 +220,13 @@ export default class Dialoger {
             ))
 
         // 2. eventually speak
-        if (isSpeechAvailable(this.ctx)) {
+        if (isTUIAgentSpeakEnabled(this.ctx)) {
             results.push(
                 await this.fifoStack.addTask(
                     task(
                         'system dialog: speak',
                         async () => {
-                            await this.speakFun(text, options)
+                            await this.speakFun(dialogContext, text, options)
                         }
                     )
                 ))
@@ -231,20 +235,16 @@ export default class Dialoger {
         return results
     }
 
-    async speak(text, options) {
+    async speak(dialogContext, text, options) {
         return await this.fifoStack.addTask(
             task(
                 'system dialog: speak',
                 async () => {
-                    await this.speakFun(text, options)
+                    await this.speakFun(dialogContext, text, options)
                 }
             )
         )
     }
-
-    /*async handleSpeakCommandEvent(text) {   // not used
-        await this.fifoStack.addTask(task)
-    }*/
 
     async run() {
         this.fifoStack.processTaskes()  // non blocking ?

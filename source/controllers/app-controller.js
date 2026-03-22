@@ -38,11 +38,12 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../../../shared/src/utils/status.js'
 import KeyboardController from './keyboard-controller.js';
-import { getTUIAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../../../shared/src/utils/utils.js';
+import { getErrorVoice, getTUIAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../../../shared/src/utils/utils.js';
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
 import MouseController from './mouse-controller.js';
+import DialogContext from '../../../shared/src/data/dialog-context.js';
 
 export default class AppController {
 
@@ -134,13 +135,25 @@ export default class AppController {
 			.init()
 	}
 
+	// assume speak error is enabled on tui agent
 	async speakError(text) {
-		this.ctx.components.event.emit(SpeakCommandEvent, speakEvent(
-			this.From,
-			text,
-			getTUIAgent(this.ctx).speakErrors.preferredVoices
+		const agent = getTUIAgent(this.ctx)
+
+		this.ctx.components.event.emit(
+			SpeakCommandEvent,
+			speakEvent(
+				new DialogContext(
+					this.output,
+					this.ctx.components.dialog.dialoger,
+					getErrorVoice(this.ctx),
+					true,
+				),
+				this.From,
+				text
+			/*getTUIAgent(this.ctx).speakErrors.preferredVoices
 			[this.ctx.modules.speech.config.browser][0],
-			true));
+			true)
+			*/));
 	}
 
 	async handleCommandErrorEvent(reason, errorEvent) {

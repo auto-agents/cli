@@ -16,7 +16,7 @@ import ResponseSpeechFormater from "../components/ai/response-speech-formater.js
 import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import OutputContext from "../../../shared/src/data/output-context.js"
-import { isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent } from "../../../shared/src/utils/utils.js"
+import { isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice } from "../../../shared/src/utils/utils.js"
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
@@ -46,7 +46,7 @@ export default class DialogController {
 			(text, options) => this.echoSystem(text, options),
 
 			// speackFun
-			async (text, options) => await this.speak(text, options),
+			async (dialogContext, text, options) => await this.speak(dialogContext, text, options),
 
 			// thinkFun
 			async (dialogContext, text, tool_calls, options) =>
@@ -96,13 +96,14 @@ export default class DialogController {
 
 		await this.dialoger.addSystemMessage(
 			new DialogContext(
+				this.output.getOutputContext(),
 				this.dialoger,
-				null, /*agent*/
+				getTUIAgent(this.ctx), /*agent*/
 			),
 			text,
 			{
 				skipPrependNewLine: true,
-				voice: this.#getSystemVoice()
+				voice: getSystemVoice(this.ctx)
 			},
 			this.output.getOutputContext()
 		)
@@ -127,12 +128,19 @@ export default class DialogController {
 			)
 		}
 
-		options ||= {
-			skipPrependNewLine: true,
-			userVoice: this.#getUserVoice(),
-			assistantVoice: this.#getSystemVoice()
-		}
-		options.skipPrependNewLine ||= true
+		if (options == null) options = {}
+
+		if (options.skipPrependNewLine === undefined)
+			options.skipPrependNewLine = true
+		if (!options.userVoice)
+			options.userVoice = getUserVoice(this.ctx)
+		if (!options.assistantVoice)
+			options.assistantVoice = getSystemVoice(this.ctx)
+
+		console.log('----- OPTIONS --------')
+		console.log(options)
+
+		//options.skipPrependNewLine ||= true
 
 		var r = await this.dialoger.addUserDialog(
 			dialogContext,
@@ -180,7 +188,7 @@ export default class DialogController {
 	async shetUp() {
 		if (!isSpeechAvailable(this.ctx))
 			return
-		await this.ctx.components.module.speech.shetUp()
+		await getTUIAgent(this.ctx).TTSModule?.shetUp()
 	}
 
 	async echoSystem(
@@ -334,7 +342,7 @@ export default class DialogController {
 */
 	// ----- speak ---------------------------------------------------
 
-	#getSystemVoice() {
+	/*#getSystemVoice() {
 		const a = getTUIAgent(this.ctx)
 		if (!a?.TTSModule) return null
 		return a.TTSModule.getPreferredVoices(a.speak?.preferredVoices)
@@ -344,16 +352,19 @@ export default class DialogController {
 		const a = getTUIAgent(this.ctx)
 		if (!a?.TTSModule) return null
 		return a.TTSModule.getPreferredVoices(a.repeatUserQuery?.preferredVoices)
-	}
+	}*/
 
 	async #speakEventHandler(data) {
-		this.dialoger.speak(data.text,
+		this.dialoger.speak(
+			data.dialogContext,
+			data.text,
 			{
 				voice: data.voice
 			}
 		)
 	}
 
+	/*
 	async waitSpeechIdle() {
 		if (!(isTUIAgentSpeakEnabled(this.ctx)
 			&& isSpeechAvailable(this.ctx))) return
@@ -365,10 +376,12 @@ export default class DialogController {
 			&& isSpeechAvailable(this.ctx))) return
 		await this.ctx.components.module.speech.waitSpeak()
 	}
+	*/
 
 	// ------------------------------------------------------
 
 	async speak(
+		dialogContext,
 		text,
 		{
 			voice = null,
@@ -381,7 +394,8 @@ export default class DialogController {
 		text = this.responseSpeechFormater.getSpeech(text)
 
 		const e = this.ctx.components.event
-		const sp = this.ctx.components.module.speech
+		const sp = //this.ctx.components.module.speech
+			dialogContext.agent.TTSModule
 		try {
 
 			e.emit(
