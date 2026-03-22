@@ -1,17 +1,9 @@
-import { Text, Box, useStdout, useStdin } from 'ink';
-import React, { useState, useEffect, useRef } from 'react';
+import { Box } from 'ink';
+import React, { useState, useEffect } from 'react';
 import {
-    HideInitBoxOutputEvent,
-    HelpOutputUpdatedEvent,
-    AppStartedEvent,
     AgentAddedEvent,
-    ModuleUnloadedEvent,
-    AgentResponseEvent,
     AgentRemovedEvent
 } from '../../../../shared/src/data/events.js';
-import Image from "ink-picture";
-import path from 'path'
-import { TUIAgentId } from '../../../../shared/src/config/consts.js'
 import AgentsTab from './agents-tab.js';
 
 const AgentsTabs = ({ ctx }) => {
