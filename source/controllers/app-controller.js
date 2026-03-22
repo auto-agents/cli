@@ -38,12 +38,12 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../../../shared/src/utils/status.js'
 import KeyboardController from './keyboard-controller.js';
-import { getErrorVoice, getTUIAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../../../shared/src/utils/utils.js';
-import { TUIAgentId } from '../../../shared/src/config/consts.js'
+import { getErrorVoice, getLoadedAgent, getTUIAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../../../shared/src/utils/utils.js';
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
 import MouseController from './mouse-controller.js';
 import DialogContext from '../../../shared/src/data/dialog-context.js';
+import OutputContext from '../../../shared/src/data/output-context.js';
 
 export default class AppController {
 
@@ -150,10 +150,7 @@ export default class AppController {
 				this.From,
 				text,
 				getErrorVoice(this.ctx)
-			/*getTUIAgent(this.ctx).speakErrors.preferredVoices
-			[this.ctx.modules.speech.config.browser][0],
-			true)
-			*/));
+			));
 	}
 
 	async handleCommandErrorEvent(reason, errorEvent) {
@@ -279,7 +276,19 @@ export default class AppController {
 		// begin dialog
 		this.event.emit(AppStartedEvent)
 		const username = this.ctx.components.sysInfo.username
+		const agent = getLoadedAgent(
+			this.ctx,
+			this.ctx.cli.dialogCurrentTargetAgent)
+
 		await this.dialog.addAssistantMessage(
+			new DialogContext(
+				new OutputContext(this.ctx, this.output),
+				this.dialog.dialoger,
+				agent,
+				agent,
+				null,	// no task yet
+				1		// round
+			),
 			this.ctx.texts.dialog.hello
 				.replace('%username%', chalk.bold(username))
 		)

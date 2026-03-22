@@ -13,11 +13,8 @@ import {
 } from "../../../shared/src/data/events.js"
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/ai/response-speech-formater.js"
-import { Role_Assistant } from "../components/ai/roles.js"
 import Dialoger from "../components/dialog/dialoger.js"
-import OutputContext from "../../../shared/src/data/output-context.js"
-import { isSpeechAvailable, isTUIAgentSpeakEnabled, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice } from "../../../shared/src/utils/utils.js"
-import { TUIAgentId } from '../../../shared/src/config/consts.js'
+import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 
@@ -40,10 +37,10 @@ export default class DialogController {
 		this.dialoger = new Dialoger(ctx,
 
 			// userEchoFun
-			(text) => this.echoUser(text),
+			(dialogContext, text) => this.echoUser(dialogContext, text),
 
 			// assistantEchoFun
-			(text, options) => this.echoSystem(text, options),
+			(dialogContext, text, options) => this.echoSystem(dialogContext, text, options),
 
 			// speackFun
 			async (dialogContext, text, options) => await this.speak(dialogContext, text, options),
@@ -92,18 +89,21 @@ export default class DialogController {
 	/**
 	 * engage dialog
 	 */
-	async addAssistantMessage(text) {
+	async addAssistantMessage(dialogContext, text) {
+		const agent = getLoadedAgent(
+			this.ctx,
+			dialogContext.agent.id)
 
 		await this.dialoger.addSystemMessage(
 			new DialogContext(
 				this.output.getOutputContext(),
 				this.dialoger,
-				getTUIAgent(this.ctx), /*agent*/
+				agent
 			),
 			text,
 			{
 				skipPrependNewLine: true,
-				voice: getSystemVoice(this.ctx)
+				voice: getAgentVoice(this.ctx, agent.id)
 			},
 			this.output.getOutputContext()
 		)
@@ -116,13 +116,18 @@ export default class DialogController {
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
 
 		outputContext ||= this.output.getOutputContext()
+		const agent = dialogContext?.agent ||
+			getLoadedAgent(this.ctx,
+				this.ctx.cli.dialogCurrentTargetAgent
+			)
+
 		if (!dialogContext) {
 			console.log('default to TUI Agent')
 			// build a user to TUI dialog context
 			dialogContext = new DialogContext(
 				outputContext,
 				this.dialoger,
-				getTUIAgent(this.ctx),
+				agent,
 				null,	// from user
 				null,	// no task yet
 				1		// round
@@ -136,7 +141,7 @@ export default class DialogController {
 		if (!options.userVoice)
 			options.userVoice = getUserVoice(this.ctx)
 		if (!options.assistantVoice)
-			options.assistantVoice = getSystemVoice(this.ctx)
+			options.assistantVoice = getAgentVoice(this.ctx, agent.id)
 
 		//options.skipPrependNewLine ||= true
 
@@ -173,13 +178,17 @@ export default class DialogController {
 
 	// ------------------------------------------------------
 
-	async echoUser(text) {
+	async echoUser(dialogContext, text) {
 		if (!this.output.isEmpty())
 			this.output.newLine(false)
+
 		text = replaceUnicodes(this.ctx, text)
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
+		const userDialPrfx = this.ctx.cli.dialog.userDialogPrefix
+			.replace('{toAgent}', dialogContext.agent.id)
 		this.output.appendLine(
-			chalk.hex(this.ctx.theme.promptColor)(this.ctx.cli.dialog.userDialogPrefix)
+			chalk.hex(this.ctx.theme.promptColor)(
+				chalk.hex(this.ctx.theme.promptToColor)(userDialPrfx))
 			+ ' ' + ucol(text))
 	}
 
@@ -190,6 +199,7 @@ export default class DialogController {
 	}
 
 	async echoSystem(
+		dialogContext,
 		text,
 		{
 			skipPrependNewLine = false,
@@ -211,7 +221,8 @@ export default class DialogController {
 
 		if (t.length > 0) {
 			// add role symbol
-			if (!name) name = getTUIAgent(this.ctx)?.chatName
+			if (!name) name = dialogContext.agent?.chatName
+
 			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
 			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
 		}

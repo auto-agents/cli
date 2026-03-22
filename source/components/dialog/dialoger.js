@@ -84,7 +84,8 @@ export default class Dialoger {
                         task(
                             'user dialog : echo',
                             async () => {
-                                await this.userEchoFun(text, options)
+                                await this.userEchoFun(
+                                    dialogContext, text, options)
                             }
                         )).task
                 ))
@@ -153,6 +154,7 @@ export default class Dialoger {
 
                                     options.skipPrependNewLine = false
                                     await this.assistantEchoFun(
+                                        dialogContext,
                                         aiResult.result?.content,
                                         options
                                     )
@@ -214,7 +216,8 @@ export default class Dialoger {
                 task(
                     'system dialog: echo',
                     async () => {
-                        await this.assistantEchoFun(text, options)
+                        await this.assistantEchoFun(
+                            dialogContext, text, options)
                     }
                 )
             ))
@@ -226,7 +229,8 @@ export default class Dialoger {
                     task(
                         'system dialog: speak',
                         async () => {
-                            await this.speakFun(dialogContext, text, options)
+                            await this.speakFun(
+                                dialogContext, text, options)
                         }
                     )
                 ))
@@ -240,7 +244,8 @@ export default class Dialoger {
             task(
                 'system dialog: speak',
                 async () => {
-                    await this.speakFun(dialogContext, text, options)
+                    await this.speakFun(
+                        dialogContext, text, options)
                 }
             )
         )

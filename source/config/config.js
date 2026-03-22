@@ -92,7 +92,7 @@ export default function config(cli) {
 			commandPrefix: '/',
 			commandPrompt: '>',
 			dialog: {
-				userDialogPrefix: 'you >',
+				userDialogPrefix: 'you (to {toAgent}) >',
 				systemDialogPrefix: '🤖'
 			},
 			boxOutput: {
@@ -536,7 +536,7 @@ export default function config(cli) {
 			},
 			dumpStackTraces: true,
 			enableDebugLoopTools: false,
-			currentDialogTargetAgent: TUIAgentId,
+			dialogCurrentTargetAgent: TUIAgentId,
 			toolRunTimeout: 10000,
 			initLog: null,
 			moduleImports: [
@@ -722,7 +722,8 @@ export default function config(cli) {
 			gaugeBorderColor: '#AAAAAA',
 			unitColor: '#00FF00',
 			valueColor: '#00FFFF',
-			promptColor: '#00FF00',
+			promptColor: '#0ea76c',
+			promptToColor: '#00FF00',
 			promptInputColor: '#FFFFFF',
 			promptInviteColor: '#a2ffa2',
 			outputBorderColor: '#555555',
