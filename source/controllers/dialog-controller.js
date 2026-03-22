@@ -398,13 +398,15 @@ export default class DialogController {
 			interrupt = false
 		}) {
 
+		const agent = dialogContext.agent
+		if (voice == null) voice = getAgentVoice(this.ctx, agent.id)
+
 		if (!text || text.length == 0) return
 
 		text = this.responseSpeechFormater.getSpeech(text)
 
 		const e = this.ctx.components.event
-		const sp = //this.ctx.components.module.speech
-			dialogContext.agent.TTSModule
+		const sp = agent.TTSModule
 		try {
 
 			e.emit(

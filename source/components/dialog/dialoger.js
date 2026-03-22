@@ -5,7 +5,7 @@ import {
 } from "../../../../shared/src/data/events"
 import DialogContext from "../../../../shared/src/data/dialog-context"
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
-import { isSpeechAvailable, isTUIAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
+import { isAgentSpeakEnabled, isSpeechAvailable, isTUIAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
 
 /*
  the dialoger handle dialog behaviors
@@ -162,7 +162,9 @@ export default class Dialoger {
                                     )
 
                                     // eventually speak
-                                    if (isSpeechAvailable(this.ctx)) {
+                                    if (isAgentSpeakEnabled(this.ctx,
+                                        dialogContext.agent.id
+                                    )) {
 
                                         this.agentSpeakFocus(dialogContext, text)
                                         await this.speakFun(
@@ -228,7 +230,7 @@ export default class Dialoger {
             ))
 
         // 2. eventually speak
-        if (isTUIAgentSpeakEnabled(this.ctx)) {
+        if (isAgentSpeakEnabled(this.ctx, dialogContext.agent.id)) {
             results.push(
                 await this.fifoStack.addTask(
                     task(
