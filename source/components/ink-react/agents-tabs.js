@@ -53,7 +53,6 @@ const AgentsTabs = ({ ctx }) => {
     }, [])
 
     /* ----- AgentRemovedEvent ----- */
-    // /mod unload openAIAgent_TUI
 
     useEffect(() => {
         const listener = args => {
