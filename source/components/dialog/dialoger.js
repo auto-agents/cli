@@ -1,4 +1,6 @@
 import {
+    AgentGetFocusSpeakEvent,
+    dialogEvent,
     TaskAddAssistantMessageCommandEvent
 } from "../../../../shared/src/data/events"
 import DialogContext from "../../../../shared/src/data/dialog-context"
@@ -229,6 +231,17 @@ export default class Dialoger {
                     task(
                         'system dialog: speak',
                         async () => {
+
+                            const e = this.ctx.components.event
+                            e.emit(AgentGetFocusSpeakEvent,
+                                dialogEvent(
+                                    {
+                                        dialogContext,
+                                        text
+                                    }
+                                )
+                            )
+
                             await this.speakFun(
                                 dialogContext, text, options)
                         }

@@ -185,10 +185,10 @@ export default class DialogController {
 		text = replaceUnicodes(this.ctx, text)
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
 		const userDialPrfx = this.ctx.cli.dialog.userDialogPrefix
-			.replace('{toAgent}', dialogContext.agent.id)
+			.replace('{toAgent}',
+				chalk.hex(this.ctx.theme.promptToColor)(dialogContext.agent.id))
 		this.output.appendLine(
-			chalk.hex(this.ctx.theme.promptColor)(
-				chalk.hex(this.ctx.theme.promptToColor)(userDialPrfx))
+			chalk.hex(this.ctx.theme.promptColor)(userDialPrfx)
 			+ ' ' + ucol(text))
 	}
 
