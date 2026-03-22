@@ -1,5 +1,5 @@
 import { Text, Box, useStdout, useStdin } from 'ink';
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     HideInitBoxOutputEvent,
     HelpOutputUpdatedEvent,
@@ -12,6 +12,7 @@ import {
 import Image from "ink-picture";
 import path from 'path'
 import { TUIAgentId } from '../../../../shared/src/config/consts.js'
+import AgentsTab from './agents-tab.js';
 
 const AgentsTabs = ({ ctx }) => {
 
@@ -30,7 +31,10 @@ const AgentsTabs = ({ ctx }) => {
                 // add agent in view, make it visible
                 setTimeout(() => {
                     const t = agentsTabs
-                    t.push(agentArg.agentId)
+                    t.push({
+                        key: t.length,
+                        value: agentArg.agentId
+                    })
                     setAgentsTabs(t)
                     console.log('tabs:', agentsTabs)
                 }, setupImgCliAgentDelay)
@@ -59,7 +63,9 @@ const AgentsTabs = ({ ctx }) => {
                 // setup first agent in view
                 setTimeout(() => {
                     var t = agentsTabs
-                    t = t.filter(x => x != agentArg.agentId)
+                    t = t.filter(x => x.value != agentArg.agentId)
+                    for (var i = 0; i < t.length; i++)
+                        t[i].key = i
                     setAgentsTabs(t)
                     console.log('tabs:', t)
                 }, setupImgCliAgentDelay)
@@ -77,14 +83,15 @@ const AgentsTabs = ({ ctx }) => {
         }
     }, [])
 
-
     return (
         <Box flexDirection="row" borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={false} borderTop={false} borderLeft={false} borderRight={false}>
-            {/* tui agent tab */}
+            {/* agents tab */}
             {
-                <Box minHeight={2} borderColor={ctx.theme.borderMainColor} borderStyle={ctx.theme.borderStyle} borderBottom={true} borderTop={false} borderLeft={false}>
-                    <Text>TUI Agent</Text>
-                </Box>
+                React.createElement(Box, {
+                    flexDirection: 'row'
+                }, agentsTabs.map((item, index) => {
+                    return React.createElement(AgentsTab, { ctx: ctx, key: item.key, label: item.value })
+                }))
             }
         </Box>
     )
