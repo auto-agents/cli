@@ -43,7 +43,7 @@ export default class AIAgentModule {
 
         this.ctx = ctx
 
-        this.config = config
+        this.config = { ...config }
         this.config = {
             ...ctx.servers.llm.common,
             ...this.apiClientConfig,

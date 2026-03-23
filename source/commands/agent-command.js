@@ -167,11 +167,11 @@ export default class AgentCommand extends Command {
 						id: id,
 						module: a.moduleName,
 						api: a.module?.specification.apiName,
-						provider: agent?.module?.config?.provider,
-						server: agent?.module?.config?.baseURL
-							.replace('{port}', agent?.module?.config?.port),
-						model: agent?.module?.api?.config?.model,
-						['TTS module']: agent?.TTSModuleName
+						provider: a?.module?.config?.provider,
+						server: a?.module?.config?.baseURL
+							.replace('{port}', a?.module?.config?.port),
+						model: a?.module?.api?.config?.model,
+						['TTS module']: a?.TTSModuleName
 					})
 				}
 				o.appendLine(at.render())
