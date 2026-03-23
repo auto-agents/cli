@@ -583,7 +583,7 @@ export default function config(cli) {
 					module: null,
 					// model config
 					config: {
-						temperature: 0.8
+						temperature: 0.5
 					},
 					// characteristics
 					avatar: 'kokoro',
