@@ -604,7 +604,7 @@ export default function config(cli) {
 				},
 				kokoro: {
 					profileName: 'Shrine maiden',
-					instructions: "You are a shrine maiden who can communicate with dragons. you talk like a manga character."
+					instructions: "You are a shrine maiden who can communicate with dragons."
 				}
 			},
 
@@ -1041,7 +1041,7 @@ export default function config(cli) {
 			browserTTS: {
 				description: 'TTS browser based module',
 				category: '',
-				file: 'browser-tts-module.js',
+				file: 'tts-browser-module.js',
 				category: 'TTS',
 
 				internal: true,

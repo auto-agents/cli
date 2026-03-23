@@ -44,6 +44,7 @@ import chalk from 'chalk';
 import MouseController from './mouse-controller.js';
 import DialogContext from '../../../shared/src/data/dialog-context.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
+import SpeakerError from '../../../shared/src/data/speaker-error.js';
 
 export default class AppController {
 
@@ -153,26 +154,28 @@ export default class AppController {
 			));
 	}
 
+	canSpeakError(errorEvent) {
+		return !(errorEvent.error instanceof SpeakerError)
+			&& isSpeechAvailable(getTUIAgent(this.ctx))
+			&& isSpeakErrorsEnabled(this.ctx)
+			&& errorEvent?.from != 'speak'
+	}
+
 	async handleCommandErrorEvent(reason, errorEvent) {
 		const sep = reason && reason.length > 0 ? ' : ' : ''
 		const stack = errorEvent.error?.stack
 		const sm = errorEvent.error?.message ? (sep + errorEvent.error?.message) : ''
 		const text = reason + sm
 
-		if (isSpeechAvailable(getTUIAgent(this.ctx))
-			&& isSpeakErrorsEnabled(this.ctx)
-			&& errorEvent?.from != 'speak')
+		if (this.canSpeakError(errorEvent))
 			this.speakError(text)
 
 		this.error(text, stack)
 	}
 
 	async handleLogErrorEvent(errorEvent) {
-		if (isSpeechAvailable(getTUIAgent(this.ctx))
-			&& isSpeakErrorsEnabled(this.ctx)
-			&& errorEvent?.from != 'speak')
-			this.speakError(errorEvent.error?.message,
-				errorEvent.error?.stack)
+		if (this.canSpeakError(errorEvent))
+			this.speakError(errorEvent.error?.message)
 		const stack = errorEvent.error?.stack
 		this.error(errorEvent.error?.message, stack)
 	}
@@ -181,8 +184,7 @@ export default class AppController {
 		const stack = taskErrorEvent.error?.stack
 		this.error(`task '${taskErrorEvent.task.name}' error: ${taskErrorEvent.error?.toString()}`, stack)
 
-		if (isSpeechAvailable(getTUIAgent(this.ctx))
-			&& isSpeakErrorsEnabled(this.ctx))
+		if (this.canSpeakError(taskErrorEvent))
 			this.speakError(taskErrorEvent.error?.message)
 	}
 
