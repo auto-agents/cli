@@ -7,7 +7,8 @@ import {
 	AgentAddedEvent,
 	ModuleUnloadedEvent,
 	AgentResponseEvent,
-	AgentRemovedEvent
+	AgentRemovedEvent,
+	AgentGetFocusSpeakEvent
 } from '../../../../shared/src/data/events.js';
 import Image from "ink-picture";
 import path from 'path'
@@ -182,6 +183,29 @@ const Agents = ({ ctx }) => {
 		return () => {
 			e.off(
 				AgentAddedEvent,
+				listener
+			)
+		}
+	}, [])
+
+	useEffect(() => {
+		const listener = args => {
+			const agent = args[0]?.dialogContext?.agent
+			if (agent) {
+				// add agent in view, make it visible
+				setTimeout(() => {
+					setupImgCliAgent(true)
+					updateAgentView(agent)
+				}, setupImgCliAgentDelay)
+			}
+		}
+		e.on(
+			AgentGetFocusSpeakEvent,
+			args => listener(args)
+		)
+		return () => {
+			e.off(
+				AgentGetFocusSpeakEvent,
 				listener
 			)
 		}

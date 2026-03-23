@@ -82,7 +82,9 @@ export default function config(cli) {
 			decorators: {
 				replaceUnicodes: [
 					['✅', '✔️'],
-					['❌', '💥']
+					['❌', '💥'],
+					['❌', '💥'],
+					['✨', ' ']
 				]
 			},
 			mouseScrollStep: 4,
@@ -634,7 +636,7 @@ export default function config(cli) {
 					speak: {
 						enabled: true,
 						preferredVoices: {
-							edge: ['Microsoft Emma Online (Natural) - English (United States)']
+							edge: ['Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
 						module: null
 					}

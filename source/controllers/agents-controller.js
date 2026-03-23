@@ -1,5 +1,5 @@
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import { AgentAddedEvent, AgentRemovedEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events"
+import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentRemovedEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events"
 import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
 import AIAgent from '../components/ai/ai-agent.js'
