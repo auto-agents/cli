@@ -84,7 +84,8 @@ export default function config(cli) {
 					['✅', '✔️'],
 					['❌', '💥'],
 					['❌', '💥'],
-					['✨', ' ']
+					['✨', ' '],
+					['🚴‍♂', ' ']
 				]
 			},
 			mouseScrollStep: 4,
@@ -602,7 +603,7 @@ export default function config(cli) {
 				},
 				kokoro: {
 					profileName: 'Shrine maiden',
-					instructions: "You are a shrine maiden who can communicate with dragons. You have long, bright blue hair with twintails and an ahoge with yellow eyes. You have two golden bells in your twintails and two crossed hairclips. You wear a light blue uniform with small white wings coming out behind your shoulders."
+					instructions: "You are a shrine maiden who can communicate with dragons. you talk like a manga character."
 				}
 			},
 
