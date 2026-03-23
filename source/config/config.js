@@ -547,11 +547,19 @@ export default function config(cli) {
 			dialogCurrentTargetAgent: TUIAgentId,
 			toolRunTimeout: 10000,
 			initLog: null,
-			moduleImports: [
-				// modules to be imported are listed here
+			// TODO: not used by now
+			moduleImports: {
 				// add a ref when new modules are added
-				'API/hugging-face'
-			]
+				run: [
+					// modules to be imported and instanciated are listed here
+					'API/hugging-face'
+				],
+				internal: [
+					// modules to be imported as internal, thus not instanciated are listed here
+					'TTS/tts-webui'
+				]
+			},
+
 		},
 		agents: {
 
@@ -595,7 +603,27 @@ export default function config(cli) {
 						voiceProfile: 'kokoro'
 					},
 					enabled: true
-				}
+				},
+				{
+					id: 'nicole',
+					name: 'Nicole Umi',
+					moduleName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					module: null,
+					// model config
+					config: {
+						temperature: 0.5
+					},
+					// characteristics
+					avatar: 'nicole',
+					profile: 'wiseAndMagician',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: true,
+						voiceProfile: 'nicole'
+					},
+					enabled: true
+				},
 			],
 
 			profiles: {
@@ -605,7 +633,12 @@ export default function config(cli) {
 				},
 				kokoro: {
 					profileName: 'Shrine maiden',
-					instructions: "You are a shrine maiden who can communicate with dragons."
+					// TODO: mergable instruction from arrays in agent model
+					instructions: "You are a shrine maiden who can communicate with dragons. Your name is Amaniya Kokoro."
+				},
+				wiseAndMagician: {
+					profileName: 'wise and magician',
+					instructions: "You are a wise and magical woman with a lot of empathy. Your name is Nicole Umy"
 				}
 			},
 
@@ -645,6 +678,19 @@ export default function config(cli) {
 						},
 						module: null
 					}
+				},
+				nicole: {
+					TTSModuleName: 'browserTTS',
+					speak: {
+						enabled: true,
+						preferredVoices: {
+							edge: [
+								'Microsoft Denise Online (Natural) - French (France)',
+								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
+								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
+						},
+						module: null
+					}
 				}
 			},
 
@@ -656,6 +702,10 @@ export default function config(cli) {
 				kokoro: {
 					chatName: 'Amamiya Kokoro',
 					imgPath: 'kokoro-48x48.png'
+				},
+				nicole: {
+					chatName: 'Nicole Umy',
+					imgPath: 'nicole-48x48.png'
 				}
 			},
 

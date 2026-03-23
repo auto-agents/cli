@@ -8,7 +8,8 @@ import {
 	ModuleUnloadedEvent,
 	AgentResponseEvent,
 	AgentRemovedEvent,
-	AgentGetFocusSpeakEvent
+	AgentGetFocusSpeakEvent,
+	AgentGetFocusViewEvent
 } from '../../../../shared/src/data/events.js';
 import Image from "ink-picture";
 import path from 'path'
@@ -188,15 +189,21 @@ const Agents = ({ ctx }) => {
 		}
 	}, [])
 
+	/* ----- AgentGetFocusSpeakEvent ----- */
+
+	const setView = agent => {
+		// add agent in view, make it visible
+		setTimeout(() => {
+			setupImgCliAgent(true)
+			updateAgentView(agent)
+		}, setupImgCliAgentDelay)
+	}
+
 	useEffect(() => {
 		const listener = args => {
 			const agent = args[0]?.dialogContext?.agent
 			if (agent) {
-				// add agent in view, make it visible
-				setTimeout(() => {
-					setupImgCliAgent(true)
-					updateAgentView(agent)
-				}, setupImgCliAgentDelay)
+				setView(agent)
 			}
 		}
 		e.on(
@@ -206,6 +213,27 @@ const Agents = ({ ctx }) => {
 		return () => {
 			e.off(
 				AgentGetFocusSpeakEvent,
+				listener
+			)
+		}
+	}, [])
+
+	/* ----- AgentGetFocusViewEvent ----- */
+
+	useEffect(() => {
+		const listener = args => {
+			const agent = args[0]?.dialogContext?.agent
+			if (agent) {
+				setView(agent)
+			}
+		}
+		e.on(
+			AgentGetFocusViewEvent,
+			args => listener(args)
+		)
+		return () => {
+			e.off(
+				AgentGetFocusViewEvent,
 				listener
 			)
 		}

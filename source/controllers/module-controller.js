@@ -238,7 +238,7 @@ export default class ModuleController {
 
         // base import path (auto-agents/modules)
         const baseDir = join(process.cwd(), this.ctx.paths.importModules)
-        this.ctx.cli.moduleImports.forEach(modulePath => {
+        this.ctx.cli.moduleImports.run.forEach(modulePath => {
             // handle a ref path
             const moduleImportsPath = join(baseDir,
                 modulePath,
@@ -291,7 +291,6 @@ export default class ModuleController {
             this.ctx.cli.commands.push(com)
         })
 
-        this.ctx.cli.moduleImports.push(modulePath)
         o.newLine()
     }
 

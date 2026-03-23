@@ -1,7 +1,8 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
-import { CommandNotFoundEvent, CommandRunErrorEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
+import { AgentGetFocusViewEvent, CommandNotFoundEvent, dialogEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
 import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, toJson } from '../../../shared/src/utils/utils.js'
+import DialogContext from '../../../shared/src/data/dialog-context.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { openSelectorProps } from '../components/ink-react/list-selector.js'
@@ -11,6 +12,7 @@ import { box } from '../../../shared/src/utils/decorators.js'
 import path from 'path'
 import fs from 'fs'
 import { renderComponent } from '../utils/ink-react-utils.js'
+import OutputContext from '../../../shared/src/data/output-context.js'
 
 export default class AgentCommand extends Command {
 
@@ -103,6 +105,16 @@ export default class AgentCommand extends Command {
 
 			case 'switch':
 				this.ctx.cli.dialogCurrentTargetAgent = agentId
+				e.emit(AgentGetFocusViewEvent,
+					dialogEvent(
+						{
+							dialogContext: new DialogContext(
+								new OutputContext(this.ctx, o),
+								this.ctx.components.dialog.dialoger,
+								agent
+							),
+							text: ''
+						}))
 				dumpLoadedAgent(this.ctx, agentId, o, 'set as user dialog target')
 				break
 

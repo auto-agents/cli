@@ -123,7 +123,7 @@ export default class ModuleCommand extends Command {
 		exports.forEach(module => {
 			if (!loadedNames.includes(module.moduleId)) {
 				module.isImported = true
-				w = Math.max(x, module.moduleId)
+				w = Math.max(w, module.moduleId.length)
 				mods[module.moduleId] = module
 				module.key = module.moduleId
 			}
