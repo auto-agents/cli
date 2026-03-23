@@ -579,7 +579,7 @@ export default function config(cli) {
 					},
 					// characteristics
 					avatar: 'kokoro',
-					profile: 'codingAssistant',
+					profile: 'kokoro',
 					TTS: {
 						// turn on/off any agent speak
 						enabled: false,
@@ -593,6 +593,10 @@ export default function config(cli) {
 				codingAssistant: {
 					profileName: 'Coding Assistant',
 					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions."
+				},
+				kokoro: {
+					profileName: 'Shrine maiden',
+					instruction: "You are a shrine maiden who can communicate with dragons. You has long, bright blue hair with twintails and an ahoge with yellow eyes. You have two golden bells in your twintails and two crossed hairclips. You wear a light blue uniform with small white wings coming out behind your shoulders."
 				}
 			},
 
