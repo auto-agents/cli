@@ -638,7 +638,9 @@ export default function config(cli) {
 					speak: {
 						enabled: true,
 						preferredVoices: {
-							edge: ['Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
+							edge: [
+								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
+								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
 						module: null
 					}
