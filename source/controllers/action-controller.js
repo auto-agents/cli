@@ -16,9 +16,13 @@ export default class ActionController {
 	}
 
 	async run() {
-		this.uiFunc.run()
-		await this.actionFunc(this.output)
-		if (this.autoStopUI) this.uiFunc.stop()
+		try {
+			this.uiFunc.run()
+			await this.actionFunc(this.output)
+			if (this.autoStopUI) this.uiFunc.stop()
+		} catch (err) {
+			console.error(err)
+		}
 		if (this.onEnded) this.onEnded(this.output)
 		if (this.next) await this.next.run(this.output)
 	}

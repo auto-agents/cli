@@ -14,7 +14,7 @@ import {
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import ResponseSpeechFormater from "../components/ai/response-speech-formater.js"
 import Dialoger from "../components/dialog/dialoger.js"
-import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent } from "../../../shared/src/utils/utils.js"
+import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 
@@ -192,10 +192,10 @@ export default class DialogController {
 			+ ' ' + ucol(text))
 	}
 
-	async shetUp() {
-		if (!isSpeechAvailable(this.ctx))
+	async shetUp(agentId) {
+		if (!isAgentSpeakEnabled(this.ctx, agentId))
 			return
-		await getTUIAgent(this.ctx).TTSModule?.shetUp()
+		await getLoadedAgent(this.ctx, agentId).TTSModule.shetUp()
 	}
 
 	async echoSystem(
@@ -407,6 +407,9 @@ export default class DialogController {
 
 		const e = this.ctx.components.event
 		const sp = agent.TTSModule
+
+		if (!sp) return	// should not be here if sp is not defined
+
 		try {
 
 			e.emit(

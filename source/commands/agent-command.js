@@ -33,6 +33,7 @@ export default class AgentCommand extends Command {
 
 		const requireAgentSpec = action != 'list'
 		const agentId = this.getValue(com, args, 'id')
+			|| this.ctx.cli.dialogCurrentTargetAgent
 		const agent = getLoadedAgent(this.ctx, agentId)
 		if (requireAgentSpec && !agent) {
 			this.emitCommandError('agent not found: ' + agentId)
@@ -46,7 +47,7 @@ export default class AgentCommand extends Command {
 
 			case 'su':
 			case 'shet-up':
-				await dialogController.shetUp()
+				await dialogController.shetUp(agentId)
 				dumpLoadedAgent(this.ctx, agentId, o, 'shet up')
 				break
 
@@ -100,6 +101,11 @@ export default class AgentCommand extends Command {
 				dumpLoadedAgent(this.ctx, agentId, o, 'history cleared')
 				break
 
+			case 'switch':
+				this.ctx.cli.dialogCurrentTargetAgent = agentId
+				dumpLoadedAgent(this.ctx, agentId, o, 'set as user dialog target')
+				break
+
 			case 'h':
 			case 'history':
 				dumpLoadedAgent(this.ctx, agentId, o, 'history')
@@ -125,7 +131,7 @@ export default class AgentCommand extends Command {
 
 			case 'spec':
 				const spec = { ...agent }
-				spec.module = spec.ctx = null
+				spec.module = spec.TTSModule = spec.ctx = null
 				const sp = toJson(spec)
 				renderComponent(
 

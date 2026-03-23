@@ -21,16 +21,17 @@ const AgentsTabs = ({ ctx }) => {
             if (agentArg != null
                 && agentArg.agentId != null
             ) {
+                const agentId = agentArg.agentId
                 // add agent in view, make it visible
                 setTimeout(() => {
                     const t = agentsTabs
+                    if (t.filter(x => x.value == agentId).length > 0) return
                     t.push({
                         key: t.length,
                         value: agentArg.agentId,
                         focused: false
                     })
                     setAgentsTabs(t)
-                    //console.log('tabs:', agentsTabs)
                 }, setupImgCliAgentDelay)
             }
         }

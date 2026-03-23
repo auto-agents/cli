@@ -6,6 +6,7 @@ import Status from '../../../shared/src/utils/status.js'
 import OutputContext from "../../../shared/src/data/output-context.js";
 import { isAppInitialized, resolvePath } from "../../../shared/src/utils/utils.js";
 import { ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events.js";
+import AIAgent from "../components/ai/ai-agent.js";
 
 export default class ModuleController {
 
@@ -21,12 +22,21 @@ export default class ModuleController {
         this.ctx.components.moduleController = this
     }
 
+    /**
+     * 
+     * @param {String} moduleName 
+     * @param {String} moduleStoreName 
+     * @param {OutputContext} outputContext 
+     * @param {boolean} userAction true if action initiated by user (command), false otherwise (init-service)
+     * @param {AIAgent} agent ai agent if module related to an ai agent
+     * @returns 
+     */
     async load(
         moduleName,
         moduleStoreName = null,
         outputContext,
         userAction = false,
-        agentId = null) {
+        agent) {
 
         moduleStoreName ||= moduleName
         const oc = outputContext || this.outputContext
@@ -65,14 +75,30 @@ export default class ModuleController {
             }
 
             const mod = await import(path)
-            const m = new mod.default(this.ctx, module.config, oc, { ...module })
+            var moduleConfig = module.config
+            var overloadConfig = null
+
+            if (agent) {
+                // merge some agent config to the module config
+                // agent model config if any
+                overloadConfig = {
+                    ...agent.config
+                }
+                // agent profile instructions
+                if (agent.instructions)
+                    overloadConfig.instructions = agent.instructions
+            }
+
+            const m = new mod.default(this.ctx, moduleConfig, oc, { ...module }, overloadConfig)
             m.moduleName = moduleStoreName
 
             await m.init()
             this.modules[moduleStoreName] = m
             this.ctx.components.module[moduleStoreName] = m
 
-            if (agentId) m.agentId = agentId
+            // keep a relation ref. between the module and the agent
+            if (agent) m.agentId = agent.id
+
             m.specification.isLoaded = true
             m.specification.enabled = true
             // make module not internal

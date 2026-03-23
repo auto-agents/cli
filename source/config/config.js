@@ -274,14 +274,17 @@ export default function config(cli) {
 									{
 										value: 'instruct',
 										description: 'add one or several instructions files content to the thread from a list using comma separator. require --list'
+									},
+									{
+										value: 'switch',
+										description: 'switch the user dialog target to an agent'
 									}
 								],
-								description: 'an action order for the dialog controller'
+								description: 'an action order for the dialog controller specified by --id'
 							},
 							id: {
 								type: "string",
 								required: false,
-								default: TUIAgentId,
 								description: `the agent id, default is '${TUIAgentId}'`
 							},
 							list: {
@@ -557,6 +560,7 @@ export default function config(cli) {
 					module: null,
 					// model config
 					config: {
+						temperature: 0.8
 					},
 					// characteristics
 					avatar: 'seraphina',
@@ -582,7 +586,7 @@ export default function config(cli) {
 					profile: 'kokoro',
 					TTS: {
 						// turn on/off any agent speak
-						enabled: false,
+						enabled: true,
 						voiceProfile: 'kokoro'
 					},
 					enabled: true
@@ -596,7 +600,7 @@ export default function config(cli) {
 				},
 				kokoro: {
 					profileName: 'Shrine maiden',
-					instruction: "You are a shrine maiden who can communicate with dragons. You has long, bright blue hair with twintails and an ahoge with yellow eyes. You have two golden bells in your twintails and two crossed hairclips. You wear a light blue uniform with small white wings coming out behind your shoulders."
+					instructions: "You are a shrine maiden who can communicate with dragons. You have long, bright blue hair with twintails and an ahoge with yellow eyes. You have two golden bells in your twintails and two crossed hairclips. You wear a light blue uniform with small white wings coming out behind your shoulders."
 				}
 			},
 
@@ -630,7 +634,7 @@ export default function config(cli) {
 					speak: {
 						enabled: true,
 						preferredVoices: {
-							edge: ['Microsoft AvaMultilingual Online (Natural) - English (United States)']
+							edge: ['Microsoft Emma Online (Natural) - English (United States)']
 						},
 						module: null
 					}

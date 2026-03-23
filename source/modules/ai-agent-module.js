@@ -31,12 +31,16 @@ export default class AIAgentModule {
         }
     ]
 
-    constructor(ctx, config, outputContext, moduleSpec
+    constructor(ctx, config, outputContext, moduleSpec, overloadConfig = null
     ) {
         this.specification = moduleSpec
         this.apiName = moduleSpec.apiName
         this.apiClientFilepath = moduleSpec.apiClientFilepath
-        this.apiClientConfig = eval(moduleSpec.apiClientConfig)
+        this.apiClientConfig =
+        {
+            ...eval(moduleSpec.apiClientConfig),
+        }
+
         this.ctx = ctx
 
         this.config = config
@@ -49,6 +53,14 @@ export default class AIAgentModule {
             ... this.config,
             ...ctx.servers.llm.providers[this.config.provider]
         }
+
+        if (overloadConfig)
+            // final config overload (optional)
+            this.config = {
+                ...this.config,
+                ...overloadConfig
+            }
+        ctx.config = this.config
 
         this.outputContext = outputContext
         this.spinner = new SpinnerService(ctx, outputContext.output)
@@ -82,8 +94,7 @@ export default class AIAgentModule {
             this.ctx,
             {
                 ...this.config,
-                id: 1,
-                instructions: this.ctx.agents.roles.agent1.instructions
+                id: 1
             },
             this.outputContext
         )

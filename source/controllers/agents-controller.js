@@ -2,6 +2,8 @@ import { TUIAgentId } from '../../../shared/src/config/consts.js'
 import { AgentAddedEvent, AgentRemovedEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events"
 import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
+import AIAgent from '../components/ai/ai-agent.js'
+import OutputContext from '../../../shared/src/data/output-context.js'
 
 export default class AgentsController {
 
@@ -76,6 +78,12 @@ export default class AgentsController {
         return agent.TTSModuleName + '_' + agent.id
     }
 
+    /**
+     * load an ai agent moule and it's modules dependencies
+     * @param {AIAgent} agent 
+     * @param {OutputContext} outputContext 
+     * @returns true if success, false otherwise
+     */
     async loadAgent(agent, outputContext) {
         try {
             if (this.agents[agent.id])
@@ -91,7 +99,7 @@ export default class AgentsController {
                 moduleStoreName,
                 outputContext,
                 false,
-                agent.id
+                agent
             )
             agent.module.agentId = agent.id
             this.agents[agent.id] = agent
@@ -99,14 +107,16 @@ export default class AgentsController {
             // load agent TTS module if any enabled
             if (agent.TTS.enabled && agent.TTSModuleName) {
                 const TTSModuleStoreName = this.getTTSModuleStoreName(agent)
+
                 agent.TTSModule = await moduleCtrl.load(
                     agent.TTSModuleName,
                     TTSModuleStoreName,
                     outputContext,
                     false,
-                    agent.id
+                    agent
                 )
             }
+            return true
         }
         catch (err) {
             const o = outputContext.output

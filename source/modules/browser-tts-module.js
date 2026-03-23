@@ -4,7 +4,7 @@ import { join } from 'path';
 import ActionController from "../controllers/action-controller";
 import SpinnerService from "../services/spinner-service";
 import Status from '../../../shared/src/utils/status.js'
-import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.js'
+import utils, { addServer, removeServer, toJson } from '../../../shared/src/utils/utils.js'
 import Server from '../../../shared/src/data/server.js';
 
 export default class BrowserTTSModule {
@@ -29,46 +29,60 @@ export default class BrowserTTSModule {
         if (!existsSync(this.modulePath))
             throw new Error('module file not found: ' + this.modulePath)
         const mod = require(this.modulePath)
-        this.speech = new mod.default({ config: this.config })
 
-        const runSrv = async () => {
-            try {
-                this.server = new Server(
-                    'BrowserTTSModule',
-                    this.speech.baseUrl(),
-                    this.speech.config.port
-                )
-                if (addServer(this.ctx, this.server) == 1)
-                    await this.speech.launchServer()
-                await utils.wait(this.ctx.ui.initFastWait)
-            } catch (err) {
-                o.appendLine(this.status.error(margin + 'browser TTS module server launch error: ' + err))
-                throw err
-            }
+        try {
+            this.speech = new mod.default({ config: this.config })
+        }
+        catch (err) {
+            o.appendLine(err)
+            process.exit(1)
         }
 
-        var ok = true
-
-        const runSrvAction = new ActionController(
-            this.ctx,
-            this.outputContext.output,
-            runSrv,
-            this.spinner.newSpinner(margin2 + '- running browser TTS module server', cliSpinners.sand),
-            async () => {
-
-                const runOpenBrowser = new ActionController(
-                    this.ctx,
-                    this.outputContext.output,
-                    async () => this.openBrowser(),
-                    this.spinner.newSpinner(margin2 + '- opening browser TTS Web SPA', cliSpinners.sand)
-                )
-                await runOpenBrowser.run()
-            },
-            async () => {
-                ok = false
-            }
+        this.server = new Server(
+            'BrowserTTSModule',
+            this.speech.baseUrl(),
+            this.speech.config.port
         )
-        await runSrvAction.run()
+        var ok = true
+        const k = addServer(this.ctx, this.server)
+
+        if (k == 1) {
+
+            const runSrv = async () => {
+                try {
+
+                    await this.speech.launchServer()
+                    await utils.wait(this.ctx.ui.initFastWait)
+
+                } catch (err) {
+                    o.appendLine(this.status.error(margin + 'browser TTS module server launch error: ' + err))
+                    throw err
+                }
+            }
+
+            const runSrvAction = new ActionController(
+                this.ctx,
+                this.outputContext.output,
+                runSrv,
+                this.spinner.newSpinner(margin2 + '- running browser TTS module server', cliSpinners.sand),
+                async () => {
+
+                    const runOpenBrowser = new ActionController(
+                        this.ctx,
+                        this.outputContext.output,
+                        async () => {
+                            await this.openBrowser()
+                        },
+                        this.spinner.newSpinner(margin2 + '- opening browser TTS Web SPA', cliSpinners.sand)
+                    )
+                    await runOpenBrowser.run()
+                },
+                async () => {
+                    ok = false
+                }
+            )
+            await runSrvAction.run()
+        }
         return ok
     }
 
@@ -95,28 +109,50 @@ export default class BrowserTTSModule {
     }
 
     async speak(text, voice = null) {
-        return await this.speech.speak({
-            sentence: text,
-            voice: voice,
-            apiKey: this.config.apiKey
-        })
+        if (!this.speech) return
+        try {
+            return await this.speech.speak({
+                sentence: text,
+                voice: voice,
+                apiKey: this.config.apiKey
+            })
+        } catch (err) {
+            console.error(err)
+            return null
+        }
     }
 
     async waitIdle(timeout) {
+        if (!this.speech) return
         timeout ||= this./*ctx.modules.speech.*/config.waitTimeoutMs
-        await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
+        try {
+            await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     async waitSpeak(timeout) {
+        if (!this.speech) return
         timeout ||= this./*ctx.modules.speech.*/config.waitTimeoutMs
-        await this.speech.waitForRunningStatus({ expected: 'speaking', timeoutMs: timeout })
+        try {
+            await this.speech.waitForRunningStatus({ expected: 'speaking', timeoutMs: timeout })
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     async shetUp() {
-        await this.speech.shetUp(this.config.apiKey)
+        if (!this.speech) return
+        try {
+            await this.speech.shetUp(this.config.apiKey)
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     async openBrowser() {
+        if (!this.speech) return
         try {
             await this.speech.openBrowser()
             await utils.wait(this.ctx.ui.initFastWait)
