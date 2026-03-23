@@ -86,7 +86,8 @@ export default function config(cli) {
 					['✨', ' '],
 					['🚴‍♂', ' '],
 					['🌫', ' '],
-					['⚡', ' ']
+					['⚡', ' '],
+					['🏴‍☠️', ' ']
 				]
 			},
 			mouseScrollStep: 4,
