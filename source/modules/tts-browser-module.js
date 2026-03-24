@@ -4,7 +4,7 @@ import { join } from 'path';
 import ActionController from "../controllers/action-controller.js";
 import SpinnerService from "../services/spinner-service.js";
 import Status from '../../../shared/src/utils/status.js'
-import utils, { addServer, removeServer, toJson } from '../../../shared/src/utils/utils.js'
+import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.js'
 import Server from '../../../shared/src/data/server.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
 
@@ -119,6 +119,8 @@ export default class TTSBrowserModule {
         }
     }
 
+    /* ---- TTS module interface impl ---- */
+
     async speak(text, voice = null) {
         this.assertSpeakModuleImplAvailable()
         try {
@@ -134,7 +136,7 @@ export default class TTSBrowserModule {
 
     async waitIdle(timeout) {
         this.assertSpeakModuleImplAvailable()
-        timeout ||= this./*ctx.modules.speech.*/config.waitTimeoutMs
+        timeout ||= this.config.waitTimeoutMs
         try {
             await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
         } catch (err) {
@@ -144,7 +146,7 @@ export default class TTSBrowserModule {
 
     async waitSpeak(timeout) {
         this.assertSpeakModuleImplAvailable()
-        timeout ||= this./*ctx.modules.speech.*/config.waitTimeoutMs
+        timeout ||= this.config.waitTimeoutMs
         try {
             await this.speech.waitForRunningStatus({ expected: 'speaking', timeoutMs: timeout })
         } catch (err) {
@@ -161,14 +163,14 @@ export default class TTSBrowserModule {
         }
     }
 
+    /* <---- ---- */
+
     async openBrowser() {
         this.assertSpeakModuleImplAvailable()
         try {
             await this.speech.openBrowser()
             await utils.wait(this.ctx.ui.initFastWait)
         } catch (err) {
-            /*const o = this.outputContext.output
-            o.appendLine(this.status.error(err))*/
             throw SpeakerError.fromErr('openBrowser fail', err)
         }
     }

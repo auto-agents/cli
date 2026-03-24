@@ -681,6 +681,7 @@ export default function config(cli) {
 				},
 				nicole: {
 					TTSModuleName: 'browserTTS',
+					//TTSModuleName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: {
@@ -689,7 +690,11 @@ export default function config(cli) {
 								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
-						module: null
+						module: null,
+						// tts module config
+						config: {
+							api: 'kokoroTTS'
+						}
 					}
 				}
 			},
