@@ -38,8 +38,7 @@ export default class TTSBrowserModule {
                 this.speech = new mod.default({ config: this.config })
             }
             catch (err) {
-                o.appendLine(err)
-                process.exit(1)
+                throw err
             }
 
             this.server = new Server(
@@ -122,7 +121,7 @@ export default class TTSBrowserModule {
     /* ---- TTS module interface impl ---- */
 
     async speak(text, voice = null) {
-        this.assertSpeakModuleImplAvailable()
+        this.#assertSpeakModuleImplAvailable()
         try {
             return await this.speech.speak({
                 sentence: text,
@@ -135,7 +134,7 @@ export default class TTSBrowserModule {
     }
 
     async waitIdle(timeout) {
-        this.assertSpeakModuleImplAvailable()
+        this.#assertSpeakModuleImplAvailable()
         timeout ||= this.config.waitTimeoutMs
         try {
             await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
@@ -145,7 +144,7 @@ export default class TTSBrowserModule {
     }
 
     async waitSpeak(timeout) {
-        this.assertSpeakModuleImplAvailable()
+        this.#assertSpeakModuleImplAvailable()
         timeout ||= this.config.waitTimeoutMs
         try {
             await this.speech.waitForRunningStatus({ expected: 'speaking', timeoutMs: timeout })
@@ -155,7 +154,7 @@ export default class TTSBrowserModule {
     }
 
     async shetUp() {
-        this.assertSpeakModuleImplAvailable()
+        this.#assertSpeakModuleImplAvailable()
         try {
             await this.speech.shetUp(this.config.apiKey)
         } catch (err) {
@@ -163,10 +162,15 @@ export default class TTSBrowserModule {
         }
     }
 
+    getPreferredVoices(preferredVoices) {
+        if (!preferredVoices) return null
+        return preferredVoices[this.config.browser][0]
+    }
+
     /* <---- ---- */
 
     async openBrowser() {
-        this.assertSpeakModuleImplAvailable()
+        this.#assertSpeakModuleImplAvailable()
         try {
             await this.speech.openBrowser()
             await utils.wait(this.ctx.ui.initFastWait)
@@ -175,12 +179,7 @@ export default class TTSBrowserModule {
         }
     }
 
-    assertSpeakModuleImplAvailable() {
+    #assertSpeakModuleImplAvailable() {
         if (!this.speech) throw new SpeakerError('TTS module implementation not available (null)')
-    }
-
-    getPreferredVoices(preferredVoices) {
-        if (!preferredVoices) return null
-        return preferredVoices[this.config.browser][0]
     }
 }

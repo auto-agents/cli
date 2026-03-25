@@ -82,7 +82,8 @@ export default class ModuleController {
                 // merge some agent config to the module config
                 // agent model config if any
                 overloadConfig = {
-                    agent: { ...agent }
+                    // shared: editable by the module
+                    agent: agent
                 }
                 // agent profile instructions : TODO: done by module AIAgent
                 if (agent.instructions)
