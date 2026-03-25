@@ -31,7 +31,9 @@ class ErrorBoundary extends React.Component {
 
     componentDidCatch(error, errorInfo) {
         // Errored while rendering components
-        fs.appendFileSync(path.join(process.cwd(), ERROR_LOG_FILE), error.toString())
+        fs.appendFileSync(
+            path.join(process.cwd(), ERROR_LOG_FILE),
+            error.toString())
     }
 }
 

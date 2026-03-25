@@ -22,7 +22,7 @@ export default class AgentsController {
     init() {
         const e = this.ctx.components.event
 
-        e.on(ModuleLoadedEvent, args => {
+        /*e.on(ModuleLoadedEvent, args => {
 
             const agentId = args[0].module?.agentId
             if (agentId) {
@@ -37,7 +37,7 @@ export default class AgentsController {
                     }
                 })
             }
-        })
+        })*/
 
         e.on(ModuleUnloadedEvent, args => {
             const agentId = args[0].module?.agentId
@@ -85,6 +85,7 @@ export default class AgentsController {
      * @returns true if success, false otherwise
      */
     async loadAgent(agent, outputContext) {
+        const e = this.ctx.components.event
         try {
             if (this.agents[agent.id])
                 throw new Error(`an agent with the same id: '${agent.id}' is already loaded`)
@@ -103,6 +104,15 @@ export default class AgentsController {
             )
             agent.module.agentId = agent.id
             this.agents[agent.id] = agent
+
+            this.viewAgentId = agent.id
+            e.emit(AgentAddedEvent, {
+                agentId: this.viewAgentId,
+                agentInView: {
+                    agentId: this.viewAgentId,
+                    ...this.getAgentInView()
+                }
+            })
 
             // load agent TTS module if any enabled
             if (agent.TTS.enabled && agent.TTSModuleName) {

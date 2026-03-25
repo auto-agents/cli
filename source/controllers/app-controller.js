@@ -288,6 +288,7 @@ export default class AppController {
 			this.ctx,
 			this.ctx.cli.dialogCurrentTargetAgent)
 
+		this.output.newLine()
 		await this.dialog.addAssistantMessage(
 			new DialogContext(
 				new OutputContext(this.ctx, this.output),

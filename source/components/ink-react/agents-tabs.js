@@ -16,6 +16,19 @@ const AgentsTabs = ({ ctx }) => {
 
     /* ----- AgentAddedEvent ----- */
 
+    const getAgentsTabs = () => {
+        const tn = Object.getOwnPropertyNames(ctx.components.agents.agents)
+        const t = []
+        for (var i = 0; i < tn.length; i++) {
+            t.push({
+                key: i,
+                value: tn[i],
+                focused: false
+            })
+        }
+        return t
+    }
+
     useEffect(() => {
         const listener = args => {
             const agentArg = args[0]
@@ -25,13 +38,7 @@ const AgentsTabs = ({ ctx }) => {
                 const agentId = agentArg.agentId
                 // add agent in view, make it visible
                 setTimeout(() => {
-                    const t = agentsTabs
-                    if (t.filter(x => x.value == agentId).length > 0) return
-                    t.push({
-                        key: t.length,
-                        value: agentArg.agentId,
-                        focused: false
-                    })
+                    const t = getAgentsTabs()
                     setAgentsTabs(t)
                 }, setupImgCliAgentDelay)
             }
@@ -57,12 +64,8 @@ const AgentsTabs = ({ ctx }) => {
                 && agentArg.agentId != null) {
                 // setup first agent in view
                 setTimeout(() => {
-                    var t = agentsTabs
-                    t = t.filter(x => x.value != agentArg.agentId)
-                    for (var i = 0; i < t.length; i++)
-                        t[i].key = i
+                    const t = getAgentsTabs()
                     setAgentsTabs(t)
-                    //console.log('tabs:', t)
                 }, setupImgCliAgentDelay)
             }
         }
@@ -83,7 +86,7 @@ const AgentsTabs = ({ ctx }) => {
     const setTab = agentId => {
         // setup agent tab focus 
         setTimeout(() => {
-            var t = agentsTabs
+            const t = getAgentsTabs()
             for (var i = 0; i < t.length; i++)
                 t[i].focused = t[i].value == agentId
             setAgentsTabs(t)
