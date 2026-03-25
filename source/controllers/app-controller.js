@@ -85,7 +85,13 @@ export default class AppController {
 		this.boxOutput = ctx.components.boxOutput = new BoxOutputController(ctx,
 			'this.ctx.cli.boxOutput')
 
-		this.init = ctx.components.init = new InitService(ctx, this, this.boxOutput, this.output)
+		this.init = ctx.components.init = new InitService(
+			ctx,
+			this,
+			//this.boxOutput,
+			this.output,
+			this.output)
+
 		this.inputController = ctx.components.input = new InputController(ctx, this.helpOutput, this.output)
 		this.commandController = ctx.components.command = new CommandController(ctx, this.output)
 		this.dialog = ctx.components.dialog = new DialogController(ctx, this.output)

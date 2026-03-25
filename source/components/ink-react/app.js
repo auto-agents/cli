@@ -40,9 +40,10 @@ export default function App({ ctx }) {
 	const layoutHeight = () => stdout.rows - ctx.layout.pageBottomMargin
 	const [rows, setRows] = useState(layoutHeight)
 
-	const [initBoxVisible, setInitBoxVisible] = useState(true)
+	const [rightPanelVisible, setRightPanelVisible] = useState(false)
+	const [initBoxVisible, setInitBoxVisible] = useState(false)
 	const [promptVisible, setPromptVisible] = useState(false)
-	const [outputVisible, setOutputVisible] = useState(false)
+	const [outputVisible, setOutputVisible] = useState(true)
 	const [helpVisible, setHelpVisible] = useState(false)
 	const [statusMessage, setStatusMessage] = useState('')
 	const [tuiStatusMessage, setTuiStatusMessage] = useState('')
@@ -173,6 +174,18 @@ export default function App({ ctx }) {
 		}
 	}, [])
 
+	/* ----- AgentAddedEvent ----- */
+
+	useEffect(() => {
+		const showRightPanel = () => {
+			setRightPanelVisible(true)
+		}
+		e.on(AgentAddedEvent, showRightPanel)
+		return () => {
+			e.off(AgentAddedEvent, showRightPanel)
+		}
+	}, [])
+
 	/* ----- SetStatusMessageEvent ----- */
 
 	const buildStatusMessageView = (statusMessage) => {
@@ -291,7 +304,7 @@ export default function App({ ctx }) {
 
 			{ /* outputs */}
 
-			{ /* live output */}
+			{ /* 'live' output */}
 
 			{
 				initBoxVisible &&
@@ -338,9 +351,11 @@ export default function App({ ctx }) {
 
 				{ /* right panel */}
 
-				<Box minHeight={3} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
-					<Agents ctx={ctx} />
-				</Box>
+				{rightPanelVisible &&
+					<Box minHeight={3} width={rpWidth} minWidth={rpWidth} flexDirection="column" flexGrow={0} borderStyle={ctx.theme.borderStyle} borderColor={ctx.theme.borderMainColor}>
+						<Agents ctx={ctx} />
+					</Box>
+				}
 
 			</Box>
 

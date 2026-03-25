@@ -124,12 +124,12 @@ export default class InputController {
 			const cs = ', '
 			const col = chalk.hex(this.ctx.theme.help.commandsListColor)
 			this.commandHelperStartPosition =
-				o.appendLine(chalk.underline(chalk.italic(col('commands:'))), true)
+				o.appendLine(chalk.underline(chalk.italic(col('commands:'))), 0, true)
 			this.commandHelperEndPosition = o.newLine(false)
 
 			const n = 16
 			const addLine = s => {
-				this.commandHelperEndPosition = o.appendLine(s, true)
+				this.commandHelperEndPosition = o.appendLine(s, 0, true)
 			}
 
 			var pat = (inp || '').trim()

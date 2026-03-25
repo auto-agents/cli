@@ -56,12 +56,13 @@ export default class OutputController {
 		if (y > o.rows.length - 1)
 			y = o.rows.length - 1
 		o.rows[y] = ' '.repeat(leftMargin) + str
-		if (!skipViewUpdate)
-			this.ctx.components.event.emit(BoxOutputUpdatedEvent)
+		//if (!skipViewUpdate)
+		//	this.ctx.components.event.emit(BoxOutputUpdatedEvent)
+		this.updateView(skipViewUpdate)
 		return this
 	}
 
-	appendLine(str, skipViewUpdate = false, leftMargin = 0) {
+	appendLine(str, leftMargin = 0, skipViewUpdate = false) {
 		if (!str) return
 
 		const y0 = 0
