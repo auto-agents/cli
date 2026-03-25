@@ -604,7 +604,7 @@ export default function config(cli) {
 				},
 				{
 					id: 'nicole',
-					name: 'Nicole Umi',
+					name: 'Nicole Umy',	// not used? used: avatar.chatName
 					moduleName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
 					module: null,
