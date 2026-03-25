@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "fs";
 import { readdir } from 'fs/promises'
-import path, { join } from 'path';
+import path, { join, dirname, basename } from 'path';
 import chalk from "chalk"
 import Status from '../../../shared/src/utils/status.js'
 import OutputContext from "../../../shared/src/data/output-context.js";
@@ -82,9 +82,9 @@ export default class ModuleController {
                 // merge some agent config to the module config
                 // agent model config if any
                 overloadConfig = {
-                    ...agent.config
+                    agent: { ...agent }
                 }
-                // agent profile instructions
+                // agent profile instructions : TODO: done by module AIAgent
                 if (agent.instructions)
                     overloadConfig.instructions = agent.instructions
             }
@@ -212,6 +212,7 @@ export default class ModuleController {
             const oc2 = new OutputContext(this.ctx, o, oc.margin)
             await this.load(moduleName, null, oc2)
         }
+        o.newLine()
     }
 
     // auto run all modules imports auto discovered. do not support package classification
@@ -238,7 +239,9 @@ export default class ModuleController {
 
         // base import path (auto-agents/modules)
         const baseDir = join(process.cwd(), this.ctx.paths.importModules)
-        this.ctx.cli.moduleImports.run.forEach(modulePath => {
+        const imps = this.ctx.cli.moduleImports
+        for (var i = 0; i < imps.length; i++) {
+            const modulePath = imps[i]
             // handle a ref path
             const moduleImportsPath = join(baseDir,
                 modulePath,
@@ -246,20 +249,23 @@ export default class ModuleController {
             )
             if (existsSync(moduleImportsPath)) {
                 const moduleFolder = path.basename(moduleImportsPath)
-                this.importModule(moduleFolder, moduleImportsPath)
+                await this.importModule(moduleFolder, moduleImportsPath)
             }
             else
                 o.appendLine(this.status.error(margin + "module '" + modulePath + "' specificied in 'moduleImports' not found at path: " + moduleImportsPath))
-        })
+        }
+        o.newLine()
     }
 
     async importModule(moduleFolder, modulePath) {
         const oc = this.outputContext.clone()
         const o = oc.output
         const margin = ' '.repeat(oc.margin)
+        const modBasePath = join(modulePath, '..')
 
         o.newLine()
-        o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ importing module: ' + moduleFolder))
+        o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ importing module: '
+            + basename(modBasePath)))
 
         const configFile = join(modulePath, 'config', 'config.js')
         if (!existsSync(configFile)) {
@@ -290,8 +296,6 @@ export default class ModuleController {
         added.forEach(com => {
             this.ctx.cli.commands.push(com)
         })
-
-        o.newLine()
     }
 
     async importModuleImpl(config, moduleFolder) {

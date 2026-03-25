@@ -115,6 +115,7 @@ export default class ModuleCommand extends Command {
 		for (const [name, module] of Object.entries(this.ctx.components.module)) {
 			if (!module?.specification) continue
 			loadedNames.push(name)
+			//console.log(name)
 			w = Math.max(w, name.length)
 			mods[name] = module.specification
 			module.specification.key = name
@@ -122,6 +123,7 @@ export default class ModuleCommand extends Command {
 		// extern
 		exports.forEach(module => {
 			if (!loadedNames.includes(module.moduleId)) {
+				//console.log(module?.moduleId,module?.isImported)
 				module.isImported = true
 				w = Math.max(w, module.moduleId.length)
 				mods[module.moduleId] = module
@@ -138,7 +140,7 @@ export default class ModuleCommand extends Command {
 		for (const [group, modules] of Object.entries(lists)) {
 			output.appendLine(c.category(group))
 			modules.forEach(module => {
-				const name = module.moduleId || module.key
+				const name = /*module.moduleId ||*/ module.key
 				dump(name, module, w)
 			})
 		}

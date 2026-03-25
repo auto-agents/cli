@@ -548,17 +548,15 @@ export default function config(cli) {
 			toolRunTimeout: 10000,
 			initLog: null,
 			// TODO: not used by now
-			moduleImports: {
+			moduleImports: [
 				// add a ref when new modules are added
-				run: [
-					// modules to be imported and instanciated are listed here
-					'API/hugging-face'
-				],
-				internal: [
-					// modules to be imported as internal, thus not instanciated are listed here
-					'TTS/tts-webui'
-				]
-			},
+
+				// modules to be imported and instanciated are listed here
+				'API/hugging-face',
+
+				// modules to be imported as internal, thus not instanciated are listed here
+				'TTS/tts-webui'
+			]
 
 		},
 		agents: {
@@ -650,7 +648,10 @@ export default function config(cli) {
 						preferredVoices: {
 							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
 						},
-						module: null
+						module: null,
+						config: {
+							api: 'kokoroTTS'
+						}
 					},
 					repeatUserQuery: {
 						enabled: true,
@@ -668,7 +669,8 @@ export default function config(cli) {
 					}
 				},
 				kokoro: {
-					TTSModuleName: 'browserTTS',
+					TTSModuleName: 'TTSWebUI',
+					//TTSModuleName: 'browserTTS',
 					speak: {
 						enabled: true,
 						preferredVoices: {
@@ -676,12 +678,15 @@ export default function config(cli) {
 								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
-						module: null
+						module: null,
+						// tts module config
+						config: {
+							api: 'kokoroTTS'
+						}
 					}
 				},
 				nicole: {
 					TTSModuleName: 'browserTTS',
-					//TTSModuleName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: {
