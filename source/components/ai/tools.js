@@ -39,6 +39,8 @@ export default class Tools {
                 return null
             }
 
+            if (file.startsWith('-')) return
+
             const mod = await import(pathToFileURL(filepath).href)
             m = new mod.default(this.ctx, this.config, this.outputContext)
             if (m.init) await m.init()

@@ -556,8 +556,10 @@ export default function config(cli) {
 
 				// modules to be imported as internal, thus not instanciated are listed here
 				'TTS/tts-webui'
-			]
-
+			],
+			network: {
+				userAgent: 'auto-agents-cli-1.0'
+			}
 		},
 		agents: {
 
@@ -1462,6 +1464,9 @@ export default function config(cli) {
 					[Platforms.mac]: "open -a \"Google Chrome\" \"{url}\""
 				},
 				defaultUrl: "www.google.com"
+			},
+			playSound: {
+				[Platforms.windows]: "cmd /c start \"\" \"C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe\" -I dummy --dummy-quiet \"{filePath}\" vlc://quit"
 			}
 		}
 	};

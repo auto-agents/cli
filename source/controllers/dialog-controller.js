@@ -395,10 +395,12 @@ export default class DialogController {
 		{
 			voice = null,
 			waitForEnd = false,
-			interrupt = false
+			interrupt = false,
+			speakerAgent = null
 		}) {
 
-		const agent = dialogContext.agent
+		const agent = speakerAgent != null ? speakerAgent : dialogContext.agent
+
 		if (voice == null) voice = getAgentVoice(this.ctx, agent.id)
 
 		if (!text || text.length == 0) return

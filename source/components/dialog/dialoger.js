@@ -5,7 +5,8 @@ import {
 } from "../../../../shared/src/data/events"
 import DialogContext from "../../../../shared/src/data/dialog-context"
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
-import { isAgentSpeakEnabled, isSpeechAvailable, isTUIAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
+import { getLoadedAgent, isAgentSpeakEnabled, isSpeechAvailable, isTUIAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
+import { TUIAgentId } from "../../../../shared/src/config/consts"
 
 /*
  the dialoger handle dialog behaviors
@@ -104,7 +105,8 @@ export default class Dialoger {
                                         dialogContext,
                                         text, {
                                         ...options,
-                                        voice: options.userVoice
+                                        voice: options.userVoice,
+                                        speakerAgent: getLoadedAgent(this.ctx, TUIAgentId)
                                     })
                                 }
                             )).task
