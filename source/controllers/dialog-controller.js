@@ -17,6 +17,7 @@ import Dialoger from "../components/dialog/dialoger.js"
 import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
+import { splitSentence } from "../../../shared/src/utils/text.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -427,7 +428,13 @@ export default class DialogController {
 					e.emit(LogErrorEvent, errorEvent(this.From, err))
 				})
 
+			// split sentence
+			//const t = splitSentence(this.ctx, text)
+			//console.log(t)
+			//for (var i = 0; i < t.length; i++) {
 			await sp.speak(text, voice)
+			//}
+
 			/*.then(
 			console.log('CLI: START SPEAK')
 		)*/

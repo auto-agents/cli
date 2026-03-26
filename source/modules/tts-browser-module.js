@@ -7,6 +7,7 @@ import Status from '../../../shared/src/utils/status.js'
 import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.js'
 import Server from '../../../shared/src/data/server.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
+import { splitSentence } from '../../../shared/src/utils/text.js';
 
 export default class TTSBrowserModule {
 
@@ -122,12 +123,22 @@ export default class TTSBrowserModule {
 
     async speak(text, voice = null) {
         this.#assertSpeakModuleImplAvailable()
+
         try {
-            return await this.speech.speak({
-                sentence: text,
-                voice: voice,
-                apiKey: this.config.apiKey
-            })
+            const t = splitSentence(this.ctx, text)
+
+            for (var i = 0; i < t.length; i++) {
+
+                const tx = t[i]
+                if (this.ctx.dialoger.sentenceSpliter.dumpSplits)
+                    console.log(tx)
+
+                await this.speech.speak({
+                    sentence: tx,
+                    voice: voice,
+                    apiKey: this.config.apiKey
+                })
+            }
         } catch (err) {
             throw SpeakerError.fromErr('speak fail', err)
         }

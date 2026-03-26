@@ -143,7 +143,10 @@ export default class AgentCommand extends Command {
 
 			case 'spec':
 				const spec = { ...agent }
-				spec.module = spec.TTSModule = spec.ctx = null
+				spec.module = spec.TTSModule
+					= spec.ctx
+					= spec.apiBridge
+					= "[redacted]"
 				const sp = toJson(spec)
 				renderComponent(
 

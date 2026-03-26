@@ -788,7 +788,14 @@ export default function config(cli) {
 			}
 		},
 		dialoger: {
-			sliceTime: 100
+			sliceTime: 100,
+			sentenceSpliter: {
+				splitChars: ['?', '!', /*',',*/ /*';',*/ '.', '\n'],
+				includeAfterSplit: [')'],
+				replacePatterns: [['\n\n', '\n']],
+				removeChars: ['*'],
+				dumpSplits: true
+			}
 		},
 		theme: {
 			borderMainColor: '#777777',
