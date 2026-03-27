@@ -671,32 +671,36 @@ export default function config(cli) {
 					}
 				},
 				kokoro: {
-					TTSModuleName: 'TTSWebUI',
-					//TTSModuleName: 'browserTTS',
-					speak: {
-						enabled: true,
-						preferredVoices: {
-							edge: [
-								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
-								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
-						},
-						module: null,
-						// tts module config
-						config: {
-							api: 'kokoroTTS'
-						}
-					}
-				},
-				nicole: {
+					//TTSModuleName: 'TTSWebUI',
 					TTSModuleName: 'browserTTS',
 					speak: {
 						enabled: true,
+						//preferredVoices: ['af_nicole'],
 						preferredVoices: {
 							edge: [
 								'Microsoft Denise Online (Natural) - French (France)',
 								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
+						module: null,
+						// tts module config
+						/*config: {
+							api: 'kokoroTTS'
+						}*/
+					}
+				},
+				nicole: {
+					TTSModuleName: 'TTSWebUI',
+					//TTSModuleName: 'browserTTS',
+					speak: {
+						enabled: true,
+						preferredVoices: ['af_nicole'],
+						/*preferredVoices: {
+							edge: [
+								'Microsoft Denise Online (Natural) - French (France)',
+								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
+								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
+						},*/
 						module: null,
 						// tts module config
 						config: {
@@ -791,10 +795,13 @@ export default function config(cli) {
 			sliceTime: 100,
 			sentenceSpliter: {
 				splitChars: ['?', '!', /*',',*/ /*';',*/ '.', '\n'],
-				includeAfterSplit: [')'],
-				replacePatterns: [['\n\n', '\n']],
+				includeAfterSplit: [')', '"'],
+				replacePatterns: [
+					['\n\n', '\n'],
+					['\\\\', '']
+				],
 				removeChars: ['*'],
-				dumpSplits: true
+				dumpSplits: false
 			}
 		},
 		theme: {
