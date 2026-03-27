@@ -798,7 +798,8 @@ export default function config(cli) {
 				includeAfterSplit: [')', '"'],
 				replacePatterns: [
 					['\n\n', '\n'],
-					['\\\\', '']
+					['\\\\', ''],
+					['\\', '']
 				],
 				removeChars: ['*'],
 				dumpSplits: false
