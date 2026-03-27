@@ -715,6 +715,18 @@ export default function config(cli) {
 							style: 'cheerful',
 						}
 					}
+				},
+				cronmaClone: {
+					TTSModuleName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['cronma.wav'],
+						// tts module config
+						config: {
+							api: 'OpenVoiceV1',
+							//style: 'sad',
+						}
+					}
 				}
 			},
 

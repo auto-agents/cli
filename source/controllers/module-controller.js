@@ -268,13 +268,13 @@ export default class ModuleController {
         o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)('≡ importing module: '
             + basename(modBasePath)))
 
-        const configFile = join(modulePath, 'config', 'config.js')
+        const configFile = join(modulePath, 'config', this.ctx.paths.configFileName)
         if (!existsSync(configFile)) {
             o.appendLine(this.status.error(margin + "module configuration file not found: " + configFile))
             return
         }
 
-        const config = require(configFile).default(null);
+        const config = require(configFile).default(this.ctx);
         const m = '    '
 
         // import modules
