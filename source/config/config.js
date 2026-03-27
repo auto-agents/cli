@@ -799,7 +799,8 @@ export default function config(cli) {
 				replacePatterns: [
 					['\n\n', '\n'],
 					['\\\\', ''],
-					['\\', '']
+					['\\', ''],
+					['|', '']
 				],
 				removeChars: ['*'],
 				dumpSplits: false,
