@@ -330,6 +330,7 @@ export default class AppController {
 	}
 
 	async runInput(inp) {
+		inp = inp.trim()
 		if (!inp || inp.length == 0) return
 
 		const o = this.output
