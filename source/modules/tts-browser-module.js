@@ -128,6 +128,7 @@ export default class TTSBrowserModule {
             const t = splitSentence(this.ctx, text)
             if (this.ctx.dialoger.sentenceSpliter.dumpSplitsArray)
                 console.log(t)
+            this.ctx.dialoger.sentenceSpliter.lastSplit = t
 
             for (var i = 0; i < t.length; i++) {
 
