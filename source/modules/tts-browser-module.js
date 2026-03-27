@@ -126,6 +126,8 @@ export default class TTSBrowserModule {
 
         try {
             const t = splitSentence(this.ctx, text)
+            if (this.ctx.dialoger.sentenceSpliter.dumpSplitsArray)
+                console.log(t)
 
             for (var i = 0; i < t.length; i++) {
 

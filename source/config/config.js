@@ -802,7 +802,8 @@ export default function config(cli) {
 					['\\', '']
 				],
 				removeChars: ['*'],
-				dumpSplits: false
+				dumpSplits: false,
+				dumpSplitsArray: false
 			}
 		},
 		theme: {
