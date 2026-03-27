@@ -795,7 +795,7 @@ export default function config(cli) {
 			sliceTime: 100,
 			sentenceSpliter: {
 				splitChars: ['?', '!', /*',',*/ /*';',*/ '.', '\n'],
-				includeAfterSplit: [')', '"'],
+				includeAfterSplit: [')'],
 				replacePatterns: [
 					['\n\n', '\n'],
 					['\\\\', ''],
@@ -804,7 +804,7 @@ export default function config(cli) {
 				],
 				removeChars: ['*'],
 				dumpSplits: false,
-				dumpSplitsArray: false
+				dumpSplitsArray: true
 			}
 		},
 		theme: {
