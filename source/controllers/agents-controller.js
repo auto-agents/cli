@@ -94,7 +94,7 @@ export default class AgentsController {
             const moduleCtrl = initSrv.moduleController
             const moduleStoreName = this.getModuleStoreName(agent)
 
-            // load agent module
+            // load agent AI module
             agent.module = await moduleCtrl.load(
                 agent.moduleName,
                 moduleStoreName,

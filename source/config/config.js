@@ -620,7 +620,7 @@ export default function config(cli) {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						voiceProfile: 'nicole'
+						voiceProfile: 'kitty'
 					},
 					enabled: true
 				},
@@ -671,40 +671,36 @@ export default function config(cli) {
 					}
 				},
 				kokoro: {
-					//TTSModuleName: 'TTSWebUI',
 					TTSModuleName: 'browserTTS',
 					speak: {
 						enabled: true,
-						//preferredVoices: ['af_nicole'],
 						preferredVoices: {
 							edge: [
 								'Microsoft Denise Online (Natural) - French (France)',
 								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
-						},
-						module: null,
-						// tts module config
-						/*config: {
-							api: 'kokoroTTS'
-						}*/
+						}
 					}
 				},
 				nicole: {
 					TTSModuleName: 'TTSWebUI',
-					//TTSModuleName: 'browserTTS',
 					speak: {
 						enabled: true,
 						preferredVoices: ['af_nicole'],
-						/*preferredVoices: {
-							edge: [
-								'Microsoft Denise Online (Natural) - French (France)',
-								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
-								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
-						},*/
-						module: null,
 						// tts module config
 						config: {
 							api: 'kokoroTTS'
+						}
+					}
+				},
+				kitty: {
+					TTSModuleName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['expr-voice-2-f'],
+						// tts module config
+						config: {
+							api: 'kittenTTS'
 						}
 					}
 				}
