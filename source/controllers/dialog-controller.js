@@ -116,6 +116,24 @@ export default class DialogController {
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
 
+		// auto target from input
+		var switchTarget = null
+		for (const aId in this.ctx.components.agents.getAgents()) {
+			const tgtPat = aId + ':'
+			const lwTgtPat = tgtPat.toLowerCase()
+			if (switchTarget == null && (
+				text.startsWith(tgtPat)
+				|| text.startsWith(lwTgtPat))
+			) {
+				switchTarget = aId
+				text = text.substring(tgtPat.length).trim()
+			}
+		}
+		if (switchTarget != null)
+			this.ctx.cli.dialogCurrentTargetAgent = switchTarget
+
+		// get/build dialog context
+
 		outputContext ||= this.output.getOutputContext()
 		const agent = dialogContext?.agent ||
 			getLoadedAgent(this.ctx,
