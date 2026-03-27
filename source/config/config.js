@@ -724,6 +724,7 @@ export default function config(cli) {
 						// tts module config
 						config: {
 							api: 'OpenVoiceV2',
+							speed: 0.5
 							//style: 'sad',
 						}
 					}
