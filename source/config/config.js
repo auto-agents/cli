@@ -620,7 +620,7 @@ export default function config(cli) {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						voiceProfile: 'kitty'
+						voiceProfile: 'nicole'
 					},
 					enabled: true
 				},
