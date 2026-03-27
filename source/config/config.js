@@ -600,7 +600,7 @@ export default function config(cli) {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						voiceProfile: 'kokoro'
+						voiceProfile: 'aliceClone'
 					},
 					enabled: true
 				},
@@ -701,6 +701,18 @@ export default function config(cli) {
 						// tts module config
 						config: {
 							api: 'kittenTTS'
+						}
+					}
+				},
+				aliceClone: {
+					TTSModuleName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['alice.wav'],
+						// tts module config
+						config: {
+							api: 'OpenVoiceV1',
+							style: 'cheerful',
 						}
 					}
 				}
