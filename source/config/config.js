@@ -600,7 +600,7 @@ export default function config(cli) {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						voiceProfile: 'aliceClone'
+						voiceProfile: 'cronmaClone'
 					},
 					enabled: true
 				},
@@ -723,7 +723,7 @@ export default function config(cli) {
 						preferredVoices: ['cronma.wav'],
 						// tts module config
 						config: {
-							api: 'OpenVoiceV1',
+							api: 'OpenVoiceV2',
 							//style: 'sad',
 						}
 					}
