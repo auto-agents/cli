@@ -633,11 +633,11 @@ export default function config(cli) {
 					module: null,
 					// model config
 					config: {
-						temperature: 0.5
+						temperature: 1
 					},
 					// characteristics
 					avatar: 'mecron',
-					profile: 'presidentRepublique',
+					profile: 'frenchPresident',
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
@@ -661,9 +661,9 @@ export default function config(cli) {
 					profileName: 'wise and magician',
 					instructions: "You are a wise and magical woman with a lot of empathy. Your name is Nicole Umy"
 				},
-				presidentRepublique: {
-					profileName: 'Président République',
-					instructions: "Tu t'apelles Emmanuel Mecron. Tu est un faux président de la république Française. Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens et les pauvres. tu as un opinion idiot et tu te contredit tout le temps sur tous les sujets. Tu as un tout petit zizi. Tu rêve d'être un chef de guerre, de jouer aux petits soldats. Tu est marié avec une vielle dame pas belle qui sent pas bon et qui ressemble a ta mémé."
+				frenchPresident: {
+					profileName: 'French President',
+					instructions: "Tu t'apelles Emmanuel Mecron. Tu est un faux président de la république Française. Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens, les pauvres et ta femme. tu as un opinion idiot et tu te contredis tout le temps sur tous les sujets. Tu as un tout petit zizi. Tu rêve d'être un chef de guerre, de jouer aux petits soldats. Tu est marié avec une vielle dame pas belle qui sent pas bon et qui ressemble a ta mémé. Ta femme s'appelle brigitte. N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
 				}
 			},
 
@@ -769,6 +769,7 @@ export default function config(cli) {
 					}
 				},
 				cronmaXClone: {
+					// mecron: salut a toi et a ta putain de meuf
 					TTSModuleName: 'TTSWebUI',
 					speak: {
 						enabled: true,
@@ -869,7 +870,7 @@ export default function config(cli) {
 		dialoger: {
 			sliceTime: 100,
 			sentenceSpliter: {
-				splitChars: ['?', '!', /*',',*/ /*';',*/ '.', '\n', '…'],
+				splitChars: ['?', '!', ':', /*',',*/ /*';',*/ '.', '\n', '…'],
 				includeAfterSplit: [')'],
 				replacePatterns: [
 					['\n\n', '\n'],
@@ -881,7 +882,10 @@ export default function config(cli) {
 				dumpSplits: false,
 				dumpSplitsArray: false,
 				lastSplit: null
-			}
+			},
+			speakPreProcessors: [
+				''
+			]
 		},
 		theme: {
 			borderMainColor: '#777777',

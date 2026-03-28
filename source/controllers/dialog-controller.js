@@ -17,7 +17,7 @@ import Dialoger from "../components/dialog/dialoger.js"
 import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
-import { splitSentence } from "../../../shared/src/utils/text.js"
+import { splitSentence } from "../../../shared/src/utils/text/text.js"
 
 /**
  * controls a dialog with or without ai and speech

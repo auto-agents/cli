@@ -3,29 +3,16 @@ import { existsSync } from "fs";
 import { join } from 'path';
 import ActionController from "../controllers/action-controller.js";
 import SpinnerService from "../services/spinner-service.js";
-import Status from '../../../shared/src/utils/status.js'
 import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.js'
 import Server from '../../../shared/src/data/server.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
-import { splitSentence } from '../../../shared/src/utils/text.js';
+import TTSModuleBase from '../../../modules/src/TTS/tts-module-base.js';
 
-export default class TTSBrowserModule {
-
-    desc = 'TTS browser module'
+export default class TTSBrowserModule extends TTSModuleBase {
 
     constructor(ctx, config, outputContext, moduleSpec, overloadConfig = null) {
-        this.specification = moduleSpec
-        this.ctx = ctx
-        this.status = new Status(ctx)
-        this.config = config
-        if (overloadConfig != null)
-            this.config = {
-                ...this.config,
-                ...overloadConfig
-            }
-        this.outputContext = outputContext
+        super(ctx, config, outputContext, moduleSpec, overloadConfig, 'TTS browser module')
         this.modulePath = join(process.cwd(), ctx.paths.modules, 'speech', 'src', 'speech-module.js')
-        this.spinner = new SpinnerService(ctx, outputContext.output)
     }
 
     async init() {
@@ -132,10 +119,7 @@ export default class TTSBrowserModule {
         this.#assertSpeakModuleImplAvailable()
 
         try {
-            const t = splitSentence(this.ctx, text)
-            if (this.ctx.dialoger.sentenceSpliter.dumpSplitsArray)
-                console.log(t)
-            this.ctx.dialoger.sentenceSpliter.lastSplit = t
+            const t = this.getSplits(text)
 
             for (var i = 0; i < t.length; i++) {
 
