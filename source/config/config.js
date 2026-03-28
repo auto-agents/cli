@@ -601,7 +601,7 @@ export default function config(cli) {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						voiceProfile: 'cbClone'
+						voiceProfile: 'kokoro'
 					},
 					enabled: true
 				},
@@ -625,6 +625,26 @@ export default function config(cli) {
 					},
 					enabled: true
 				},
+				{
+					id: 'mecron',
+					name: 'Emmanuel Mecron',
+					moduleName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					module: null,
+					// model config
+					config: {
+						temperature: 0.5
+					},
+					// characteristics
+					avatar: 'mecron',
+					profile: 'presidentRepublique',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: true,
+						voiceProfile: 'cronmaXClone'
+					},
+					enabled: true
+				},
 			],
 
 			profiles: {
@@ -640,6 +660,10 @@ export default function config(cli) {
 				wiseAndMagician: {
 					profileName: 'wise and magician',
 					instructions: "You are a wise and magical woman with a lot of empathy. Your name is Nicole Umy"
+				},
+				presidentRepublique: {
+					profileName: 'Président République',
+					instructions: "Tu t'apelles Emmanuel Mecron. Tu est un faux président de la république Française. Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens et les pauvres. tu as un opinion idiot et tu te contredit tout le temps sur tous les sujets. Tu as un tout petit zizi. Tu rêve d'être un chef de guerre, de jouer aux petits soldats. Tu est marié avec une vielle dame pas belle qui sent pas bon et qui ressemble a ta mémé."
 				}
 			},
 
@@ -680,6 +704,9 @@ export default function config(cli) {
 								'Microsoft Denise Online (Natural) - French (France)',
 								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
+						},
+						config: {
+
 						}
 					}
 				},
@@ -730,7 +757,7 @@ export default function config(cli) {
 						}
 					}
 				},
-				cbClone: {
+				cronmaCbClone: {
 					TTSModuleName: 'TTSWebUI',
 					speak: {
 						enabled: true,
@@ -738,6 +765,17 @@ export default function config(cli) {
 						// tts module config
 						config: {
 							api: 'chatterBox'
+						}
+					}
+				},
+				cronmaXClone: {
+					TTSModuleName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['cronma.wav'],
+						// tts module config
+						config: {
+							api: 'xttsSimple'
 						}
 					}
 				}
@@ -755,6 +793,10 @@ export default function config(cli) {
 				nicole: {
 					chatName: 'Nicole Umy',
 					imgPath: 'nicole-48x48.png'
+				},
+				mecron: {
+					chatName: 'Emmanuel Mecron',
+					imgPath: 'mecron-48x48.png'
 				}
 			},
 
@@ -827,7 +869,7 @@ export default function config(cli) {
 		dialoger: {
 			sliceTime: 100,
 			sentenceSpliter: {
-				splitChars: ['?', '!', /*',',*/ /*';',*/ '.', '\n'],
+				splitChars: ['?', '!', /*',',*/ /*';',*/ '.', '\n', '…'],
 				includeAfterSplit: [')'],
 				replacePatterns: [
 					['\n\n', '\n'],
