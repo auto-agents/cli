@@ -173,7 +173,8 @@ export default class AgentCommand extends Command {
 						{ name: 'provider', alignment: 'left' },
 						{ name: 'server', alignment: 'left' },
 						{ name: 'model', alignment: 'left' },
-						{ name: 'TTS module', alignment: 'left' }
+						{ name: 'TTS module', alignment: 'left' },
+						{ name: 'TTS api', alignment: 'left' }
 					]
 				});
 				for (var id in lst) {
@@ -186,7 +187,8 @@ export default class AgentCommand extends Command {
 						server: a?.module?.config?.baseURL
 							.replace('{port}', a?.module?.config?.port),
 						model: a?.module?.api?.config?.model,
-						['TTS module']: a?.TTSModuleName
+						['TTS module']: a?.TTSModuleName,
+						['TTS api']: a?.speak?.config?.api
 					})
 				}
 				o.appendLine(at.render())

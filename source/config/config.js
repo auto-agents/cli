@@ -600,7 +600,7 @@ export default function config(cli) {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						voiceProfile: 'aliceClone'
+						voiceProfile: 'cbClone'
 					},
 					enabled: true
 				},
@@ -652,7 +652,7 @@ export default function config(cli) {
 						},
 						module: null,
 						config: {
-							api: 'kokoroTTS'
+
 						}
 					},
 					repeatUserQuery: {
@@ -711,7 +711,7 @@ export default function config(cli) {
 						preferredVoices: ['alice.wav'],
 						// tts module config
 						config: {
-							api: 'OpenVoiceV1',
+							api: 'openVoiceV1',
 							style: 'cheerful',
 						}
 					}
@@ -723,9 +723,20 @@ export default function config(cli) {
 						preferredVoices: ['cronma.wav'],
 						// tts module config
 						config: {
-							api: 'OpenVoiceV2',
+							api: 'openVoiceV2',
 							speed: 0.5
 							//style: 'sad',
+						}
+					}
+				},
+				cbClone: {
+					TTSModuleName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['cronma.wav'],
+						// tts module config
+						config: {
+							api: 'chatterBox'
 						}
 					}
 				}

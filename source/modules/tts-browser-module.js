@@ -13,11 +13,16 @@ export default class TTSBrowserModule {
 
     desc = 'TTS browser module'
 
-    constructor(ctx, config, outputContext, moduleSpec) {
+    constructor(ctx, config, outputContext, moduleSpec, overloadConfig = null) {
         this.specification = moduleSpec
         this.ctx = ctx
         this.status = new Status(ctx)
         this.config = config
+        if (overloadConfig != null)
+            this.config = {
+                ...this.config,
+                ...overloadConfig
+            }
         this.outputContext = outputContext
         this.modulePath = join(process.cwd(), ctx.paths.modules, 'speech', 'src', 'speech-module.js')
         this.spinner = new SpinnerService(ctx, outputContext.output)
@@ -49,6 +54,8 @@ export default class TTSBrowserModule {
             )
             var ok = true
             const k = addServer(this.ctx, this.server)
+
+            this.config.agent.speak.config.api = this.config.browser
 
             if (k == 1) {
 
