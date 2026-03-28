@@ -42,6 +42,7 @@ export default class SysInfoService {
 
 	userInfo() {
 		this.username = os.userInfo().username
+		this.ctx.shell.username = this.username
 	}
 
 	machineInfo() {

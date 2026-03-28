@@ -106,11 +106,43 @@ bun install
 ./run.sh
 ```
 
+## LLM Providers
+
 ### Anything LLM for auto agents
 
-```shell
+```
+...
+```
 
-# setup for auto-agents
-source/config/config.js
+### vLLM
 
 ```
+...
+```
+
+### LM Studio
+
+```
+...
+```
+
+### Ollama
+
+```
+...
+```
+
+### Ollama MCP bridge
+
+```
+...
+```
+
+## TTS
+
+### TTS WebUI
+
+```
+transfofmers 4.51.3
+```
+

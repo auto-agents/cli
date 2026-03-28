@@ -64,7 +64,8 @@ export default function config(cli) {
 			configFileName: 'config.js',
 			instructions: 'instructions',
 			saved: saved,
-			tmp: 'tmp'
+			tmp: 'tmp',
+			tempsToClean: []
 		},
 		ui: {
 			freeze: false,
@@ -1501,6 +1502,8 @@ export default function config(cli) {
 		},
 		shell: {
 			platform: platform,
+			username: null,
+
 			commandLaunhcer: null,
 			edit: {
 				[Platforms.windows]: 'notepad %1',
