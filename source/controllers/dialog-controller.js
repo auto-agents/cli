@@ -12,7 +12,6 @@ import {
 	errorEvent
 } from "../../../shared/src/data/events.js"
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
-import ResponseSpeechFormater from "../components/ai/response-speech-formater.js"
 import Dialoger from "../components/dialog/dialoger.js"
 import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
@@ -33,7 +32,6 @@ export default class DialogController {
 		this.output = output
 		this.status = new Status(ctx)
 		this.responseTextFormater = new ResponseTextFormater(ctx, {})
-		this.responseSpeechFormater = new ResponseSpeechFormater(ctx, {})
 
 		this.dialoger = new Dialoger(ctx,
 
@@ -112,7 +110,7 @@ export default class DialogController {
 
 	/**
 	 * add a user prompt
-	 * @param {String} text 
+	 * @param {String} text
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
 
@@ -426,7 +424,7 @@ export default class DialogController {
 
 		if (!text || text.length == 0) return
 
-		text = this.responseSpeechFormater.getSpeech(text)
+		//text = this.responseSpeechFormater.getSpeech(text)
 
 		const e = this.ctx.components.event
 		const sp = agent.TTSModule
@@ -448,19 +446,14 @@ export default class DialogController {
 					e.emit(LogErrorEvent, errorEvent(this.From, err))
 				})
 
-			// split sentence
-			//const t = splitSentence(this.ctx, text)
-			//console.log(t)
-			//for (var i = 0; i < t.length; i++) {
 			await sp.speak(text, voice)
-			//}
 
 			/*.then(
 			console.log('CLI: START SPEAK')
 		)*/
 
 			if (waitForEnd) {
-				//await sp.waitSpeak()				
+				//await sp.waitSpeak()
 				//await sp.waitIdle()
 			}
 

@@ -65,7 +65,10 @@ export default function config(cli) {
 			instructions: 'instructions',
 			saved: saved,
 			tmp: 'tmp',
-			tempsToClean: []
+			tempsToClean: [],
+			speakPreProcessors: join(
+				'../modules/src/TTS/speak-pre-processors'
+			)
 		},
 		ui: {
 			freeze: false,
@@ -656,6 +659,7 @@ export default function config(cli) {
 					profileName: 'Shrine maiden',
 					// TODO: mergable instruction from arrays in agent model
 					instructions: "You are a shrine maiden who can communicate with dragons. Your name is Amaniya Kokoro."
+					//+ "don't use a narrative style, don't not add asides, and don't use italicized text or comments. don't describe the scene."
 				},
 				wiseAndMagician: {
 					profileName: 'wise and magician',
@@ -706,7 +710,7 @@ export default function config(cli) {
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
 						config: {
-
+							preProcessors: ['italic-remover.js']
 						}
 					}
 				},
@@ -776,6 +780,7 @@ export default function config(cli) {
 						preferredVoices: ['cronma.wav'],
 						// tts module config
 						config: {
+							preProcessors: ['italic-remover.js'],
 							api: 'xttsSimple'
 						}
 					}
@@ -884,7 +889,7 @@ export default function config(cli) {
 				lastSplit: null
 			},
 			speakPreProcessors: [
-				''
+				'sanatizer.js'
 			]
 		},
 		theme: {
