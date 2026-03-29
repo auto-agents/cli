@@ -42,6 +42,8 @@ export default class TTSBrowserModule extends TTSModuleBase {
 			var ok = true
 			const k = addServer(this.ctx, this.server)
 
+			if (!this.config.agent.speak.config)
+				this.config.agent.speak.config = {}
 			this.config.agent.speak.config.api = this.config.browser
 
 			if (k == 1) {

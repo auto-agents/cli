@@ -424,8 +424,6 @@ export default class DialogController {
 
 		if (!text || text.length == 0) return
 
-		//text = this.responseSpeechFormater.getSpeech(text)
-
 		const e = this.ctx.components.event
 		const sp = agent.TTSModule
 

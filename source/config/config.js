@@ -659,7 +659,8 @@ export default function config(cli) {
 					profileName: 'Shrine maiden',
 					// TODO: mergable instruction from arrays in agent model
 					instructions: "You are a shrine maiden who can communicate with dragons. Your name is Amaniya Kokoro."
-					//+ "don't use a narrative style, don't not add asides, and don't use italicized text or comments. don't describe the scene."
+					// this break the personnality:
+					//+ /*"don't use a narrative style, "don't not add asides, and don't use italicized text or comments.*/" don't describe the scene."
 				},
 				wiseAndMagician: {
 					profileName: 'wise and magician',
@@ -780,7 +781,7 @@ export default function config(cli) {
 						preferredVoices: ['cronma.wav'],
 						// tts module config
 						config: {
-							preProcessors: ['italic-remover.js'],
+							//preProcessors: ['italic-remover.js'],
 							api: 'xttsSimple'
 						}
 					}
