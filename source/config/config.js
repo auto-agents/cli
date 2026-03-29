@@ -658,7 +658,8 @@ export default function config(cli) {
 				kokoro: {
 					profileName: 'Shrine maiden',
 					// TODO: mergable instruction from arrays in agent model
-					instructions: "You are a shrine maiden who can communicate with dragons. Your name is Amaniya Kokoro."
+					instructions: "don't use italicized text decoration."
+						+ " You are a shrine maiden who can communicate with dragons. Your name is Amaniya Kokoro."
 					// this break the personnality:
 					//+ /*"don't use a narrative style, "don't not add asides, and don't use italicized text or comments.*/" don't describe the scene."
 				},
@@ -668,7 +669,8 @@ export default function config(cli) {
 				},
 				frenchPresident: {
 					profileName: 'French President',
-					instructions: "Tu t'apelles Emmanuel Mecron. Tu est un faux président de la république Française. Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens, les pauvres et ta femme. tu as un opinion idiot et tu te contredis tout le temps sur tous les sujets. Tu as un tout petit zizi. Tu rêve d'être un chef de guerre, de jouer aux petits soldats. Tu est marié avec une vielle dame pas belle qui sent pas bon et qui ressemble a ta mémé. Ta femme s'appelle brigitte. N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
+					instructions: "Tu t'apelles Emmanuel Mecron. Tu est un faux président de la république Française. Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens, les pauvres et ta femme. tu as un opinion idiot et tu te contredis tout le temps sur tous les sujets. Tu as un tout petit zizi. Tu rêve d'être un chef de guerre, de jouer aux petits soldats. Tu est marié avec une vielle dame pas belle qui sent pas bon et qui ressemble a ta mémé. Ta femme s'appelle brigitte. "
+						+ "N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
 				}
 			},
 
@@ -711,7 +713,7 @@ export default function config(cli) {
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
 						config: {
-							preProcessors: ['italic-remover.js']
+							preProcessors: ['line-end-italic-remover.js']
 						}
 					}
 				},
@@ -722,7 +724,8 @@ export default function config(cli) {
 						preferredVoices: ['af_nicole'],
 						// tts module config
 						config: {
-							api: 'kokoroTTS'
+							api: 'kokoroTTS',
+							preProcessors: ['line-end-italic-remover.js']
 						}
 					}
 				},
@@ -781,7 +784,7 @@ export default function config(cli) {
 						preferredVoices: ['cronma.wav'],
 						// tts module config
 						config: {
-							//preProcessors: ['italic-remover.js'],
+							preProcessors: ['italic-remover.js'],
 							api: 'xttsSimple'
 						}
 					}
