@@ -45,7 +45,7 @@ export default class ModuleCommand extends Command {
 				if (!entry.isFile()) continue
 				if (entry.name !== this.ctx.paths.configFileName) continue
 
-				const config = require(full).default(null)
+				const config = require(full).default(this.ctx)
 				if (config?.modules) {
 					for (const k in config.modules) {
 						const mod = config.modules[k]
