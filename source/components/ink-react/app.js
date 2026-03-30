@@ -87,6 +87,7 @@ export default function App({ ctx }) {
 		const listener = () => {
 			setInitBoxVisible(false)
 			ctx.initBoxVisible = false
+			ctx.components.output.clear()
 		}
 		ctx.components.event.on(
 			HideInitBoxOutputEvent,
@@ -150,13 +151,13 @@ export default function App({ ctx }) {
 
 	/** ----- OutputResizedEvent ----- */
 
-	/*useEffect(() => {		
+	/*useEffect(() => {
 		const handleOutputResizedEvent = args => {
 			ctx.data.layout.output.rows.value = args.height
 		}
 		// INFINITE LOOP :: max handler added ------------>
 		e.on(OutputResizedEvent, args => handleOutputResizedEvent(args[0]))
-		/<------------------------------------------------ 
+		/<------------------------------------------------
 		return () => {
 			e.off(OutputResizedEvent, handleOutputResizedEvent)
 		}

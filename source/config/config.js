@@ -878,6 +878,7 @@ export default function config(cli) {
 		},
 		dialoger: {
 			sliceTime: 100,
+			enableWelcomeDialog: false,
 			sentenceSpliter: {
 				splitChars: ['?', '!', ':', /*',',*/ /*';',*/ '.', '\n', '…'],
 				includeAfterSplit: [')'],

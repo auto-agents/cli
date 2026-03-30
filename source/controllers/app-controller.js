@@ -283,25 +283,29 @@ export default class AppController {
 
 		// begin dialog
 		this.event.emit(AppStartedEvent)
-		const username = this.ctx.components.sysInfo.username
-		const agent = getLoadedAgent(
-			this.ctx,
-			this.ctx.cli.dialogCurrentTargetAgent)
 
-		this.output.newLine()
-		await this.dialog.addAssistantMessage(
-			new DialogContext(
-				new OutputContext(this.ctx, this.output),
-				this.dialog.dialoger,
-				agent,
-				agent,
-				null,	// no task yet
-				1		// round
-			),
-			this.ctx.texts.dialog.hello
-				.replace('%username%', chalk.bold(username))
-		)
-		this.output.newLine(true)
+		if (this.ctx.dialoger.enableWelcomeDialog) {
+
+			const username = this.ctx.components.sysInfo.username
+			const agent = getLoadedAgent(
+				this.ctx,
+				this.ctx.cli.dialogCurrentTargetAgent)
+
+			this.output.newLine()
+			await this.dialog.addAssistantMessage(
+				new DialogContext(
+					new OutputContext(this.ctx, this.output),
+					this.dialog.dialoger,
+					agent,
+					agent,
+					null,	// no task yet
+					1		// round
+				),
+				this.ctx.texts.dialog.hello
+					.replace('%username%', chalk.bold(username))
+			)
+			this.output.newLine(true)
+		}
 	}
 
 	#setupModulesGauges() {
