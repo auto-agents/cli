@@ -21,10 +21,6 @@ export default class AgentCommand extends Command {
 		this.status = new Status(ctx)
 	}
 
-	// dial duo-on --agent1_instructions "you are an apple" --agent2_instructions "your are a banana"
-	// dial duo-on --agent1_instructions "tu est une souris qui s'appelle dora l'exploratrice, qui fait grik grik en cherchant du fromage et qui se gratte le cul tout le temps" --agent2_instructions "tu est un chat qui s'appelle némo le poisson et qui fait miaou miaou en cherchant une souris et en pissant de partout"
-	// dial duo-on --agent1_instructions "you are a farmer named jo" --agent2_instructions "your are a fisher named lea"
-
 	async run(args, com) {
 
 		const e = this.ctx.components.event
@@ -164,7 +160,10 @@ export default class AgentCommand extends Command {
 
 			case 'list':
 				o.newLine()
-				const lst = this.ctx.components.agents.getAgents()
+				const lst = {
+					...this.ctx.components.agents.getAgents(),
+					...this.ctx.components.agents.getAvailableAgents()
+				}
 				const at = new Table({
 					columns: [
 						{ name: 'id', alignment: 'left' },
@@ -174,7 +173,8 @@ export default class AgentCommand extends Command {
 						{ name: 'server', alignment: 'left' },
 						{ name: 'model', alignment: 'left' },
 						{ name: 'TTS module', alignment: 'left' },
-						{ name: 'TTS api', alignment: 'left' }
+						{ name: 'TTS api', alignment: 'left' },
+						{ name: 'loaded', alignment: 'left' }
 					]
 				});
 				for (var id in lst) {
@@ -188,7 +188,8 @@ export default class AgentCommand extends Command {
 							.replace('{port}', a?.module?.config?.port),
 						model: a?.module?.api?.config?.model,
 						['TTS module']: a?.TTSModuleName,
-						['TTS api']: a?.speak?.config?.api
+						['TTS api']: a?.speak?.config?.api,
+						loaded: a.module ? '✔' : '✖'
 					})
 				}
 				o.appendLine(at.render())

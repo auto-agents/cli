@@ -648,6 +648,26 @@ export default function config(cli) {
 					},
 					enabled: true
 				},
+				{
+					id: 'lapen',
+					name: 'Jean-Marine LaPen',
+					moduleName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					module: null,
+					// model config
+					config: {
+						temperature: 1
+					},
+					// characteristics
+					avatar: 'lapen',
+					profile: 'rnPresident',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: true,
+						voiceProfile: 'lapenXClone'
+					},
+					enabled: true
+				},
 			],
 
 			profiles: {
@@ -670,6 +690,16 @@ export default function config(cli) {
 				frenchPresident: {
 					profileName: 'French President',
 					instructions: "Tu t'apelles Emmanuel Mecron. Tu est un faux président de la république Française. Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens, les pauvres et ta femme. tu as un opinion idiot et tu te contredis tout le temps sur tous les sujets. Tu as un tout petit zizi. Tu rêve d'être un chef de guerre, de jouer aux petits soldats. Tu est marié avec une vielle dame pas belle qui sent pas bon et qui ressemble a ta mémé. Ta femme s'appelle brigitte. "
+						+ "N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
+				},
+				politician: {
+					profileName: 'Politician',
+					instructions: "Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens et les pauvres. tu as une opinion idiote et tu te contredis tout le temps sur tous les sujets."
+						+ "N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
+				},
+				rnPresident: {
+					profileName: 'Politician',
+					instructions: "Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens et les pauvres. tu as une opinion idiote et tu te contredis tout le temps sur tous les sujets. tu t'appelles marine lepen. tu est la président du rassemblement national."
 						+ "N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
 				}
 			},
@@ -784,7 +814,20 @@ export default function config(cli) {
 						preferredVoices: ['cronma.wav'],
 						// tts module config
 						config: {
-							preProcessors: ['italic-remover.js'],
+							preProcessors: ['line-end-italic-remover.js'],
+							api: 'xttsSimple'
+						}
+					}
+				},
+				lapenXClone: {
+					// mecron: salut a toi et a ta putain de meuf
+					TTSModuleName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['lapen.wav'],
+						// tts module config
+						config: {
+							preProcessors: ['line-end-italic-remover.js'],
 							api: 'xttsSimple'
 						}
 					}
@@ -807,6 +850,10 @@ export default function config(cli) {
 				mecron: {
 					chatName: 'Emmanuel Mecron',
 					imgPath: 'mecron-48x48.png'
+				},
+				lapen: {
+					chatName: 'Marine Lapen',
+					imgPath: 'marine-48x48.png'
 				}
 			},
 

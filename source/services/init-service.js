@@ -147,7 +147,7 @@ export default class InitService {
 			const agent = lst[i]
 			agent.index = i
 			if (agent.system || agent.enabled) {
-				//console.log('load agent: ', agent.name)				
+				//console.log('load agent: ', agent.name)
 				await this.ctx.components.agents.loadAgent(
 					new AIAgent(
 						this.ctx,

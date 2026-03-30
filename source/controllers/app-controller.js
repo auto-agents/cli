@@ -26,7 +26,9 @@ import {
 	TaskRunErrorEvent,
 	ModuleLoadedEvent,
 	ModuleUnloadedEvent,
-	LayoutResizedEvent
+	LayoutResizedEvent,
+	AgentGetFocusViewEvent,
+	dialogEvent
 } from '../../../shared/src/data/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
@@ -45,6 +47,7 @@ import MouseController from './mouse-controller.js';
 import DialogContext from '../../../shared/src/data/dialog-context.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
+import { TUIAgentId } from '../../../shared/src/config/consts.js';
 
 export default class AppController {
 
@@ -286,6 +289,8 @@ export default class AppController {
 
 		if (this.ctx.dialoger.enableWelcomeDialog) {
 
+			// welcom prompt
+
 			const username = this.ctx.components.sysInfo.username
 			const agent = getLoadedAgent(
 				this.ctx,
@@ -305,6 +310,25 @@ export default class AppController {
 					.replace('%username%', chalk.bold(username))
 			)
 			this.output.newLine(true)
+		}
+		else {
+			// switch to default agent
+			const e = this.ctx.components.event
+			this.ctx.cli.dialogCurrentTargetAgent = TUIAgentId
+			const agent = this.ctx.components.agents.getAgent(TUIAgentId)
+			e.emit(AgentGetFocusViewEvent,
+				dialogEvent(
+					{
+						dialogContext: new DialogContext(
+							new OutputContext(
+								this.ctx,
+								this.ctx.components.output
+							),
+							this.ctx.components.dialog.dialoger,
+							agent
+						),
+						text: ''
+					}))
 		}
 	}
 
