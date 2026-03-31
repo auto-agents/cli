@@ -183,7 +183,7 @@ export default class AgentCommand extends Command {
 					const a = lst[id]
 					at.addRow({
 						id: id,
-						module: a.moduleName,
+						agent: a.moduleName,
 						api: a.module?.specification.apiName,
 						provider: a?.module?.config?.provider,
 						server: a?.module?.config?.baseURL

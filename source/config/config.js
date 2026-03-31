@@ -672,6 +672,26 @@ export default function config(cli) {
 					},
 					enabled: true
 				},
+				{
+					id: 'moloche',
+					name: 'Jean-Luc Molochon',
+					moduleName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					module: null,
+					// model config
+					config: {
+						temperature: 1
+					},
+					// characteristics
+					avatar: 'moloche',
+					profile: 'lfiPresident',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: true,
+						voiceProfile: 'molocheXClone'
+					},
+					enabled: true
+				}
 			],
 
 			profiles: {
@@ -704,6 +724,11 @@ export default function config(cli) {
 				rnPresident: {
 					profileName: 'Politician',
 					instructions: "Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens et les pauvres. tu as une opinion idiote et tu te contredis tout le temps sur tous les sujets. tu t'appelles marine lepen. tu est la président du rassemblement national."
+						+ "N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
+				},
+				lfiPresident: {
+					profileName: 'Politician',
+					instructions: "Tu est très stupide, ignorant et arrogant. tu est vulgaire et tu dit des gros mots. tu dit tout le temps des conneries. tu déteste les gens et les pauvres, les blancs et les français. tu as une opinion idiote et tu te contredis tout le temps sur tous les sujets. tu t'appelles jean luc molochon. tu est la président du groupe la france insoumise (lfi)."
 						+ "N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. ne décrit pas la scène."
 				}
 			},
@@ -835,6 +860,19 @@ export default function config(cli) {
 							api: 'xttsSimple'
 						}
 					}
+				},
+				molocheXClone: {
+					// mecron: salut a toi et a ta putain de meuf
+					TTSModuleName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['moloche.wav'],
+						// tts module config
+						config: {
+							preProcessors: ['line-end-italic-remover.js'],
+							api: 'xttsSimple'
+						}
+					}
 				}
 			},
 
@@ -858,6 +896,10 @@ export default function config(cli) {
 				lapen: {
 					chatName: 'Marine Lapen',
 					imgPath: 'marine-48x48.png'
+				},
+				moloche: {
+					chatName: 'Jean Luc Molochon',
+					imgPath: 'molochon-48x48.png'
 				}
 			},
 
