@@ -159,6 +159,7 @@ export default class AgentCommand extends Command {
 				break
 
 			case 'list':
+
 				o.newLine()
 				const lst = {
 					...this.ctx.components.agents.getAgents(),
@@ -167,7 +168,7 @@ export default class AgentCommand extends Command {
 				const at = new Table({
 					columns: [
 						{ name: 'id', alignment: 'left' },
-						{ name: 'module', alignment: 'left' },
+						{ name: 'agent', alignment: 'left' },
 						{ name: 'api', alignment: 'left' },
 						{ name: 'provider', alignment: 'left' },
 						{ name: 'server', alignment: 'left' },
@@ -176,7 +177,8 @@ export default class AgentCommand extends Command {
 						{ name: 'TTS api', alignment: 'left' },
 						{ name: 'loaded', alignment: 'left' }
 					]
-				});
+				})
+
 				for (var id in lst) {
 					const a = lst[id]
 					at.addRow({

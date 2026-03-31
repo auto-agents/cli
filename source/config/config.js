@@ -577,6 +577,10 @@ export default function config(cli) {
 					module: null,
 					// model config
 					config: {
+						//model: 'ministral-3-8b-reasoning-2512',
+						props: {
+							reasoning_effort: "high"
+						}
 					},
 					// characteristics
 					avatar: 'seraphina',
@@ -1337,7 +1341,7 @@ export default function config(cli) {
 					responseProcessors: [
 						'openai-api-tool-call-processor.js'
 					],
-					temperature: 0,
+					temperature: 0.7,
 					tool_choice: "auto",	// auto (default) | any | none
 					parallel_tool_calls: true,	// true (default) | false
 				}

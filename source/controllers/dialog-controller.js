@@ -40,7 +40,7 @@ export default class DialogController {
 			// assistantEchoFun
 			(dialogContext, text, options) => this.echoSystem(dialogContext, text, options),
 
-			// speackFun
+			// speakFun
 			async (dialogContext, text, options) => await this.speak(dialogContext, text, options),
 
 			// thinkFun
