@@ -31,18 +31,54 @@ export default class AIAgentModule {
 		}
 	]
 
+	static buildConfig(ctx, config, moduleSpec, overloadConfig) {
+		const apiClientConfig =
+		{
+			...eval(moduleSpec.apiClientConfig),
+		}
+
+		var conf = { ...config }
+		conf = {
+			...ctx.servers.llm.common,
+			...apiClientConfig,
+			...conf
+		}
+		conf = {
+			...conf,
+			...ctx.servers.llm.providers[conf.provider]
+		}
+		if (overloadConfig) {
+			// final config overload (optional)
+			conf = {
+				...conf,
+				// by convention is the agent
+				...overloadConfig
+			}
+			if (overloadConfig?.agent?.config) {
+				conf = {
+					...conf,
+					...overloadConfig.agent.config
+				}
+			}
+		}
+		return {
+			apiClientConfig: apiClientConfig,
+			conf: conf
+		}
+	}
+
 	constructor(ctx, config, outputContext, moduleSpec, overloadConfig = null
 	) {
 		this.specification = moduleSpec
 		this.apiName = moduleSpec.apiName
 		this.apiClientFilepath = moduleSpec.apiClientFilepath
+		this.ctx = ctx
+
+		/*
 		this.apiClientConfig =
 		{
 			...eval(moduleSpec.apiClientConfig),
 		}
-
-		this.ctx = ctx
-
 		this.config = { ...config }
 		this.config = {
 			...ctx.servers.llm.common,
@@ -53,7 +89,6 @@ export default class AIAgentModule {
 			... this.config,
 			...ctx.servers.llm.providers[this.config.provider]
 		}
-
 		if (overloadConfig) {
 			// final config overload (optional)
 			this.config = {
@@ -68,7 +103,12 @@ export default class AIAgentModule {
 				}
 			}
 		}
-		ctx.config = this.config
+		*/
+		const { apiClientConfig, conf } = AIAgentModule.buildConfig(
+			ctx, config, moduleSpec, overloadConfig)
+		ctx.config = conf
+		this.config = conf
+		this.apiClientConfig = apiClientConfig
 
 		this.outputContext = outputContext
 		this.spinner = new SpinnerService(ctx, outputContext.output)
