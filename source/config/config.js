@@ -62,7 +62,7 @@ export default function config(cli) {
 			moduleExportCommandsFolderName: 'commands',
 			moduleExportModuleFolderName: 'module',
 			configFileName: 'config.js',
-			instructions: 'instructions',
+			instructions: 'prompts',
 			saved: saved,
 			tmp: 'tmp',
 			tempsToClean: [],
@@ -281,8 +281,8 @@ export default function config(cli) {
 										description: 'output the list of loaded agents'
 									},
 									{
-										value: 'instruct',
-										description: 'add one or several instructions files content to the thread from a list using comma separator. require --list'
+										value: 'prompt',
+										description: 'add one or several prompt files content to the thread from a list using comma separator. require --files'
 									},
 									{
 										value: 'switch',

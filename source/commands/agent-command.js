@@ -209,7 +209,7 @@ export default class AgentCommand extends Command {
 
 				break
 
-			case 'instruct':
+			case 'prompt':
 				const flist = this.getValue(com, args, 'files')
 				if (!flist) {
 					this.flagsMissing('--files | -f')
