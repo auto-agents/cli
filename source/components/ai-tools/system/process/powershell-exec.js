@@ -28,7 +28,7 @@ export default class PowershellExec extends AITool {
 
 	async run(args) {
 		var com = args?.command
-		const exe = this.ctx.platform == Platforms.windows ? 'powershell.exe' : 'pwsh'
+		const exe = this.ctx.shell.platform == Platforms.windows ? 'powershell.exe' : 'pwsh'
 		var error = null
 		var res = null
 		com = exe + ' -Command & {' + com + '}'

@@ -777,7 +777,7 @@ export default function config(cli) {
 						}
 					},
 					repeatUserQuery: {
-						enabled: true,
+						enabled: false,
 						preferredVoices: {
 							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
 						},
