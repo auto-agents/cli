@@ -25,7 +25,6 @@
 
 **ENV var `OLLAMA_MODELS`: `E:/ollama_models`
 
-
 ## Anything LLM
 
 - models path:

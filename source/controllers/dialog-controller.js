@@ -2,6 +2,7 @@ import chalk from "chalk"
 import Status from '../../../shared/src/utils/status.js'
 import { StatusMessage, StatusEnum } from "../../../shared/src/data/status-message.js"
 import {
+	AgentGetFocusViewEvent,
 	LogErrorEvent,
 	SetStatusMessageEvent,
 	SpeakCommandEvent,
@@ -9,6 +10,7 @@ import {
 	ToolRunCompletedDialogEvent,
 	ToolRunErrorDialogEvent,
 	ToolUnknownDialogEvent,
+	dialogEvent,
 	errorEvent
 } from "../../../shared/src/data/events.js"
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
@@ -109,25 +111,25 @@ export default class DialogController {
 
 	/**
 	 * add a user prompt
+	 * /!\ called with tewt null when TOOL LOOP
 	 * @param {String} text
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
 
-		if (!text) return
-
 		// auto target from input
 		var switchTarget = null
-		for (const aId in this.ctx.components.agents.getAgents()) {
-			const tgtPat = aId + ':'
-			const lwTgtPat = tgtPat.toLowerCase()
-			if (switchTarget == null && (
-				text.startsWith(tgtPat)
-				|| text.startsWith(lwTgtPat))
-			) {
-				switchTarget = aId
-				text = text.substring(tgtPat.length).trim()
+		if (text != null)
+			for (const aId in this.ctx.components.agents.getAgents()) {
+				const tgtPat = aId + ':'
+				const lwTgtPat = tgtPat.toLowerCase()
+				if (switchTarget == null && (
+					text.startsWith(tgtPat)
+					|| text.startsWith(lwTgtPat))
+				) {
+					switchTarget = aId
+					text = text.substring(tgtPat.length).trim()
+				}
 			}
-		}
 		if (switchTarget != null)
 			this.ctx.cli.dialogCurrentTargetAgent = switchTarget
 
@@ -231,6 +233,14 @@ export default class DialogController {
 			o.newLine(false)
 		color ||= this.ctx.theme.dialog.systemDialogColor
 		const scol = chalk.hex(color)
+
+		const e = this.ctx.components.event
+		e.emit(AgentGetFocusViewEvent,
+			dialogEvent(
+				{
+					dialogContext: dialogContext,
+					text: ''
+				}))
 
 		// render response
 

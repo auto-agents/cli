@@ -1,6 +1,7 @@
 import { Role_Assistant, Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
+import chalk from 'chalk'
 
 /**
  * OPEN AI standard api client
@@ -69,13 +70,30 @@ export default class OpenAIApiClient extends AIApiClient {
 
 		const message = r.choices[0].message
 
-		if (this.ctx.servers.llm.openAIApi.enableDebugResponsesMessage)
+		if (this.ctx.servers.llm.common.enableDebugResponsesMessage)
 			console.log(message)
 
-		const rq = {
-			role: Role_Assistant,
-			content: message.content
+		if (this.ctx.servers.llm.common.enableDumpReasoningContent
+			&& message.reasoning_content
+			&& message.reasoning_content.length > 0) {
+			const t = message.reasoning_content.split('.')
+			var fs = true
+			t.forEach(line => {
+				if (line) {
+					line = line.trim()
+					if (line.length > 0) {
+						if (fs) {
+							this.ctx.components.output.newLine()
+							fs = false
+						}
+						this.ctx.components.output.appendLine(
+							chalk.hex(this.ctx.theme.dialog.agentReasoningContentColor)
+								(this.ctx.theme.dialog.agentReasoningContentLinePrefix + line))
+					}
+				}
+			});
 		}
+
 		const u = r.usage
 
 		this.history.messages.push(message)
@@ -83,7 +101,7 @@ export default class OpenAIApiClient extends AIApiClient {
 		return {
 			response: r,
 			message: message,
-			content: message.content,
+			content: message.content?.trim(),
 			tool_calls: message.tool_calls,
 			stats: {
 				tokensPerSecond: null,

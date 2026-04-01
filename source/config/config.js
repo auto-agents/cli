@@ -547,7 +547,7 @@ export default function config(cli) {
 				ready: 'ready'
 			},
 			dumpStackTraces: true,
-			enableDebugLoopTools: false,
+			enableDebugLoopTools: true,
 			dialogCurrentTargetAgent: TUIAgentId,
 			toolRunTimeout: 10000,
 			initLog: null,
@@ -579,15 +579,41 @@ export default function config(cli) {
 					config: {
 						//model: 'ministral-3-8b-reasoning-2512',
 						props: {
-							reasoning_effort: "high"
+							reasoning: "high"
 						}
 					},
 					// characteristics
 					avatar: 'seraphina',
-					profile: 'codingAssistant',
+					profile: 'tuiAssistant',
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
+						voiceProfile: 'TUI'
+					},
+					system: true,
+				},
+				{
+					// specification
+					id: 'coder',
+					name: 'Coder',
+					moduleName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					module: null,
+					// model config
+					config: {
+						//model: 'ministral-3-8b-reasoning-2512',// has no think content
+						model: 'qwen3-1.7b',
+						temperatue: 0.1,
+						props: {
+							reasoning_effort: "high"
+						}
+					},
+					// characteristics
+					avatar: 'coder',
+					profile: 'codingAssistant',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: false,
 						voiceProfile: 'TUI'
 					},
 					system: true,
@@ -695,6 +721,10 @@ export default function config(cli) {
 			],
 
 			profiles: {
+				tuiAssistant: {
+					profileName: 'TUI Assistant',
+					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions."
+				},
 				codingAssistant: {
 					profileName: 'Coding Assistant',
 					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions."
@@ -900,6 +930,10 @@ export default function config(cli) {
 				moloche: {
 					chatName: 'Jean Luc Molochon',
 					imgPath: 'molochon-48x48.png'
+				},
+				coder: {
+					chatName: 'Coder',
+					imgPath: 'coder-48x48.png'
 				}
 			},
 
@@ -1036,7 +1070,9 @@ export default function config(cli) {
 				userDialogColor: '#4499FF',
 				systemDialogColor: '#BBBBBB',
 				assistantNameColor: '#FFFF00',
-				duoAssistantDialogColor: '#7abe8f'
+				duoAssistantDialogColor: '#7abe8f',
+				agentReasoningContentColor: '#dfb361',
+				agentReasoningContentLinePrefix: ' | ',
 			},
 			warningColor: '#FF7700',
 			errorColor: '#FF0000',
@@ -1515,6 +1551,7 @@ export default function config(cli) {
 					enableDebugToolsResults: false,
 					enableDebugResponseToolsUsage: false,
 					enableDebugResponsesMessage: false,
+					enableDumpReasoningContent: true,
 					skipToolResponseFirstLine: false,	// with gamma-1b true
 					// ------- history necessary for (auto) agentic ? --------
 					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history

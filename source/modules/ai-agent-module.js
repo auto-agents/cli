@@ -74,36 +74,6 @@ export default class AIAgentModule {
 		this.apiClientFilepath = moduleSpec.apiClientFilepath
 		this.ctx = ctx
 
-		/*
-		this.apiClientConfig =
-		{
-			...eval(moduleSpec.apiClientConfig),
-		}
-		this.config = { ...config }
-		this.config = {
-			...ctx.servers.llm.common,
-			...this.apiClientConfig,
-			...this.config
-		}
-		this.config = {
-			... this.config,
-			...ctx.servers.llm.providers[this.config.provider]
-		}
-		if (overloadConfig) {
-			// final config overload (optional)
-			this.config = {
-				...this.config,
-				// by convention is the agent
-				...overloadConfig
-			}
-			if (overloadConfig?.agent?.config) {
-				this.config = {
-					...this.config,
-					...overloadConfig.agent.config
-				}
-			}
-		}
-		*/
 		const { apiClientConfig, conf } = AIAgentModule.buildConfig(
 			ctx, config, moduleSpec, overloadConfig)
 		ctx.config = conf
@@ -253,6 +223,7 @@ export default class AIAgentModule {
 
 			// call completion
 			r = await capi.completion(query, this.tools, options)
+			r.content = r.content?.trim()
 		}
 		else {
 			// tool_calls mandatory
