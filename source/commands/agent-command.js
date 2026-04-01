@@ -168,13 +168,14 @@ export default class AgentCommand extends Command {
 				const at = new Table({
 					columns: [
 						{ name: 'id', alignment: 'left' },
-						{ name: 'agent', alignment: 'left' },
-						{ name: 'api', alignment: 'left' },
-						{ name: 'provider', alignment: 'left' },
-						{ name: 'server', alignment: 'left' },
+						{ name: 'profile', alignment: 'left' },
+						{ name: 'agent / api', alignment: 'left' },
+						//{ name: 'api', alignment: 'left' },
+						{ name: 'provider / server', alignment: 'left' },
+						//{ name: 'server', alignment: 'left' },
 						{ name: 'model', alignment: 'left' },
-						{ name: 'TTS module', alignment: 'left' },
-						{ name: 'TTS api', alignment: 'left' },
+						{ name: 'TTS module / api', alignment: 'left' },
+						//{ name: 'TTS api', alignment: 'left' },
 						{ name: 'loaded', alignment: 'left' }
 					]
 				})
@@ -183,15 +184,25 @@ export default class AgentCommand extends Command {
 					const a = lst[id]
 					at.addRow({
 						id: id,
-						agent: a.moduleName,
-						api: a.module?.specification.apiName,
-						provider: a?.module?.config?.provider,
-						server: a?.module?.config?.baseURL
-							.replace('{port}', a?.module?.config?.port),
+						profile: this.ctx.agents.profiles[a?.profile]?.profileName,
+						['agent / api']: a.moduleName,
+						//api: a.module?.specification.apiName,
+						['provider / server']: a?.module?.config?.provider,
+						//server: ,
 						model: a?.module?.api?.config?.model,
-						['TTS module']: a?.TTSModuleName,
-						['TTS api']: a?.speak?.config?.api,
+						['TTS module / api']: a?.TTSModuleName,
+						//['TTS api']: a?.speak?.config?.api,
 						loaded: a.module ? '✔' : '✖'
+					})
+					at.addRow({
+						id: '',
+						['agent / api']: a.module?.specification.apiName,
+						['provider / server']: a?.module?.config?.baseURL
+							.replace('{port}', a?.module?.config?.port),
+						//server: '',
+						model: '',
+						['TTS module / api']: a?.speak?.config?.api,
+						loaded: ''
 					})
 				}
 				o.appendLine(at.render())

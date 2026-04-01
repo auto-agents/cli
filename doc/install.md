@@ -5,9 +5,9 @@
 ### dependencies
 
 ```shell
-sudo apt update && sudo apt upgrade -y 
+sudo apt update && sudo apt upgrade -y
 
-## git 
+## git
 sudo apt install git
 
 ## curl
@@ -20,7 +20,7 @@ nvm install --lts
 
 # node js (includes npm,npx)
 nvm install 24
-node -v 
+node -v
 # v24.14.0
 npm -v
 # 11.9.0
@@ -106,43 +106,6 @@ bun install
 ./run.sh
 ```
 
-## LLM Providers
-
-### Anything LLM for auto agents
-
+```text
+transformers 4.51.3
 ```
-...
-```
-
-### vLLM
-
-```
-...
-```
-
-### LM Studio
-
-```
-...
-```
-
-### Ollama
-
-```
-...
-```
-
-### Ollama MCP bridge
-
-```
-...
-```
-
-## TTS
-
-### TTS WebUI
-
-```
-transfofmers 4.51.3
-```
-
