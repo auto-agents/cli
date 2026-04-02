@@ -1,2 +1,4 @@
-get the rss feed at https://www.lemonde.fr/rss/en_continu.xml, into file "rss.xml", extract all fields "title", output response as a numbered bullet text list. if writing an intermediate files, generates others filenames.
-
+- first download the rss feed at `https://www.lemonde.fr/rss/en_continu.xml`, into file `rss.xml`
+- secondly, write a **python script** to parse the file `rss.xml`, in order to extract elements `title` having the hierarchical **path** `channel/item/title`. the output of the script must be a numbered text list.
+- **write the script before to run it!**
+- finally, run the **python script** and output response as a numbered text list.

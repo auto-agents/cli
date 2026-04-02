@@ -1,0 +1,8 @@
+- my os is **linux**, my shell is **wsl**
+- use the command **sudo apt get install** to install new shell commands
+- use the command **python3** to run python scripts, not **python**
+- **NEVER USE POWERSHELL**, instead use linux commands
+- always prefers to use **wsl_shell_exec**, when it is possible, instead of using a **tool**
+- **ALWAYS USE ABSOLUTE PATHS**, related to the base folder path: `E:\DEV\repos\auto-agents\cli\tmp\``
+- **NEVER USE shell_exec**
+- **NEVER USE powershell_exec**

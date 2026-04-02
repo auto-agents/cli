@@ -39,6 +39,21 @@ export default class AgentCommand extends Command {
 		}
 		const o = this.ctx.components.output
 
+		const opSwitch = () => {
+			this.ctx.cli.dialogCurrentTargetAgent = agentId
+			e.emit(AgentGetFocusViewEvent,
+				dialogEvent(
+					{
+						dialogContext: new DialogContext(
+							new OutputContext(this.ctx, o),
+							this.ctx.components.dialog.dialoger,
+							agent
+						),
+						text: ''
+					}))
+			dumpLoadedAgent(this.ctx, agentId, o, 'set as user dialog target')
+		}
+
 		// Execute the dialog action based on the action value
 		const dialogController = this.ctx.components.dialog
 		switch (action) {
@@ -100,18 +115,7 @@ export default class AgentCommand extends Command {
 				break
 
 			case 'switch':
-				this.ctx.cli.dialogCurrentTargetAgent = agentId
-				e.emit(AgentGetFocusViewEvent,
-					dialogEvent(
-						{
-							dialogContext: new DialogContext(
-								new OutputContext(this.ctx, o),
-								this.ctx.components.dialog.dialoger,
-								agent
-							),
-							text: ''
-						}))
-				dumpLoadedAgent(this.ctx, agentId, o, 'set as user dialog target')
+				opSwitch()
 				break
 
 			case 'h':
@@ -225,6 +229,7 @@ export default class AgentCommand extends Command {
 				})
 				const text = texts.join('\n')
 
+				opSwitch()
 				await this.ctx.components.dialog.addUserDialog(text)
 				break
 

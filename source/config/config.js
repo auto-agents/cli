@@ -603,9 +603,9 @@ export default function config(cli) {
 					config: {
 						//model: 'ministral-3-8b-reasoning-2512',// has no think content
 						model: 'qwen3-1.7b',
-						temperatue: 0.1,
+						temperature: 0.1,
 						props: {
-							reasoning_effort: "high"
+							reasoning: "high"
 						}
 					},
 					// characteristics
@@ -613,7 +613,7 @@ export default function config(cli) {
 					profile: 'codingAssistant',
 					TTS: {
 						// turn on/off any agent speak
-						enabled: false,
+						enabled: true,
 						voiceProfile: 'TUI'
 					},
 					system: true,
@@ -727,7 +727,7 @@ export default function config(cli) {
 				},
 				codingAssistant: {
 					profileName: 'Coding Assistant',
-					instructions: "You are a helpful assistant. You can use the following tools to help answer the user's questions."
+					instructions: "You are a helpful coding assistant. You can use the following tools to help answer the user's questions."
 				},
 				kokoro: {
 					profileName: 'Shrine maiden',

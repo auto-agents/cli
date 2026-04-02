@@ -1,3 +1,9 @@
 - my os is **linux**, my shell is **bash**
 - use the command **sudo apt get install** to install new shell commands
-- use the command **pyhton3** to run python scripts and not **python**
+- to run a shell command, use the tool `shell_exec`
+- if you need to **write** a python script, you can **create** and **write**a file in folder `/mnt/e/DEV/repos/auto-agents/cli/tmp/` using the shell command `echo`, do not use the tool `write_file`.
+- use the command **python3** to run python scripts and not **python**
+- always prefers to use **shell_exec**, when it is possible, instead of using a **tool**
+- always prefers to write a **python script** in the `/mnt/e/DEV/repos/auto-agents/cli/tmp/` folder rather than using shell commands
+- automatically run commands and scripts when needed, do not ask user
+- **ALWAYS USE ABSOLUTE PATHS**, related to the base folder path: `/mnt/e/DEV/repos/auto-agents/cli/tmp/`
