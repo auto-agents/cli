@@ -3,6 +3,9 @@ import meow from 'meow';
 
 import AppController from './controllers/app-controller.js'
 import config, { ERROR_LOG_FILE } from './config/config.js'
+import { readFileSync } from 'node:fs';
+import { unescapeCodeString } from '../../shared/src/utils/text/text.js';
+import { join } from 'node:path/posix';
 
 var term = require('terminal-kit').terminal
 //var realTerm = require('terminal-kit').realTerminal
@@ -50,29 +53,26 @@ const cli = meow(
 	},
 );
 
-const { parseArgs } = require('node:util');
-const args = ['-f', '--bar', 'b'];
-const options = {
-	foo: {
-		type: 'boolean',
-		short: 'f',
-	},
-	bar: {
-		type: 'string',
-	},
-};
-const {
-	values,
-	positionals,
-} = parseArgs({ args, options });
-//console.log(values, positionals);
-
 // ----- setup app -----
 
 const ctx = config(cli)
 term.windowTitle(ctx.app.name)
 
 // ---- launch app ----
+
+/*
+const text = readFileSync(
+	join(
+		process.cwd(),
+		'tmp',
+		'script.py.txt'
+	)
+).toString()
+console.log(text)
+console.log('')
+console.log(unescapeCodeString(text))
+process.exit(0)
+*/
 
 const app = new AppController(ctx, cli)
 

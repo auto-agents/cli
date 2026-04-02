@@ -31,6 +31,7 @@ export default class WriteFile extends AITool {
 		const tpath = args?.file_path
 		var text = args?.text
 		// fix for code gen by qwen
+		//writeFileSync(tpath + '.txt', text)
 		text = unescapeCodeString(text)
 		writeFileSync(tpath, text)
 		return this.textResult("file has been saved successfully in: " + tpath)

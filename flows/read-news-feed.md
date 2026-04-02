@@ -19,3 +19,5 @@ test 2:
 - extract fields title from the file './tmp/feed.xml' using shell_exec
 
 /ag prompt -f linux.md,read-rss.md --id coder
+
+- in your code, eg. python script content, **IN STRING LITERALS ALWAYS DOUBLE ESCAPE** new line character: writes `\\\\n` instead of `\\n`

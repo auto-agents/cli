@@ -2,7 +2,7 @@
 - use the command **sudo apt get install** to install new shell commands
 - to run a shell command, use the tool `shell_exec`
 - if you need to **write** a python script, **ALWAYS USE** the tool `write_file`. write files in folder `/mnt/e/DEV/repos/auto-agents/cli/tmp/`.
-- in your code, eg. python script content, **IN STRING LITERALS ALWAYS DOUBLE ESCAPE** new line character: writes `\\\\n` instead of `\\n`
+
 - use the command **python3** to run python scripts and not **python**
 - always prefers to use **shell_exec**, when it is possible, instead of using a **tool**
 - always prefers to write a **python script** in the `/mnt/e/DEV/repos/auto-agents/cli/tmp/` folder rather than using shell commands

@@ -727,7 +727,7 @@ export default function config(cli) {
 				},
 				codingAssistant: {
 					profileName: 'Coding Assistant',
-					instructions: "You are a helpful coding assistant. You can use the following tools to help answer the user's questions."
+					instructions: "You are a coding assistant. You can use the following tools to help code and use system tools and applications."
 				},
 				kokoro: {
 					profileName: 'Shrine maiden',
@@ -1410,7 +1410,7 @@ export default function config(cli) {
 					//model: 'gpt2-finetuned-recipes-cooking_v2-i1',
 					//model: 'claude-3.7-sonnet-reasoning-gemma3-12b',
 
-					instructions: "You are a coding assistant. You can use the following tools to help code and use system tools and applications",
+					instructions: "You are a coding assistant. You can use the following tools to help code and use system tools and applications.",
 					//instructions1: 'You are a coding assistant.',
 					//instructions0: 'répond en langue française',
 
@@ -1520,18 +1520,7 @@ export default function config(cli) {
 					temperature: 0,
 					instructions: 'You are a coding assistant.',
 				}
-			},
-			/*openAIAgents: {
-				description: 'AI api for agents. not implemented yet',
-				file: 'open-ai-agents.js',
-
-				enabled: true,
-				isLoaded: false,
-
-				config: {
-
-				}
-			}*/
+			}
 		},
 		servers: {
 			llm: {
