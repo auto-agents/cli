@@ -18,3 +18,4 @@ test 2:
 - save RSS at https://www.lemonde.fr/rss/en_continu.xml in file `feed.xml` using shell exec and tools
 - extract fields title from the file './tmp/feed.xml' using shell_exec
 
+/ag prompt -f linux.md,read-rss.md --id coder

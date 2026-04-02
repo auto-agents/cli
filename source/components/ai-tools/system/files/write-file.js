@@ -1,3 +1,4 @@
+import { unescapeCodeString } from "../../../../../../shared/src/utils/text/text";
 import AITool from "../../../ai/ai-tool";
 import { writeFileSync } from 'fs'
 
@@ -28,8 +29,9 @@ export default class WriteFile extends AITool {
 
 	async run(args) {
 		const tpath = args?.file_path
-		const text = args?.text
-			.replaceAll('\\n', '\n')
+		var text = args?.text
+		// fix for code gen by qwen
+		text = unescapeCodeString(text)
 		writeFileSync(tpath, text)
 		return this.textResult("file has been saved successfully in: " + tpath)
 	}
