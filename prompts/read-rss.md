@@ -3,4 +3,5 @@
 - **write the script before to run it!**
 - if the script run with errors: analyze the error, fix the script, and write the corrected script, then run it again
 - **save the corrected script before run it again**
-- finally, run the **python script** and output response as a numbered text list.
+- finally, run the **python script** and response with the complete output of the script, without reformating it
+

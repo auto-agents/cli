@@ -567,6 +567,10 @@ export default function config(cli) {
 		},
 		agents: {
 
+			config: {
+				prependOSDependentSystemInstructions: true
+			},
+
 			list: [
 				{
 					// specification
