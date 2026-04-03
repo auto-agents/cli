@@ -608,9 +608,9 @@ export default function config(cli) {
 					module: null,
 					// model config
 					config: {
-						//model: 'ministral-3-8b-reasoning-2512',// has no think content
+						model: 'ministral-3-8b-reasoning-2512',// has no think content
 						//model: 'qwen3-1.7b',
-						model: 'qwen/qwen3.5-9b',
+						//model: 'qwen/qwen3.5-9b',
 						temperature: 0.1,
 						props: {
 							reasoning: "high"

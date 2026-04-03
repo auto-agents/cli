@@ -178,38 +178,40 @@ export default class DialogController {
 		while (!end) {
 
 			//console.log(r)
+			if (r) {
 
-			// retreive last completion response
-			const completionsTasks = r.filter(x => x.type == DialogerTasksTypes.userCompletionRequest)
-			const lastCompletionTask = completionsTasks.length == 0 ? null
-				: completionsTasks[completionsTasks.length - 1]
-			const lastResponse = lastCompletionTask == null ? null
-				: lastCompletionTask.result?.message
+				// retreive last completion response
+				const completionsTasks = r.filter(x => x.type == DialogerTasksTypes.userCompletionRequest)
+				const lastCompletionTask = completionsTasks.length == 0 ? null
+					: completionsTasks[completionsTasks.length - 1]
+				const lastResponse = lastCompletionTask == null ? null
+					: lastCompletionTask.result?.message
 
-			//console.log(lastResponse)
+				//console.log(lastResponse)
 
-			if (lastResponse != null) {
-				dc ||= dialogContext.clone()
+				if (lastResponse != null) {
+					dc ||= dialogContext.clone()
 
-				if (dialogContext.agent.module.hasToolsCalls(lastResponse)) {
+					if (dialogContext.agent.module.hasToolsCalls(lastResponse)) {
 
-					// a task must be performed at the end
-					// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
+						// a task must be performed at the end
+						// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
 
-					if (this.ctx.cli.enableDebugLoopTools)
-						console.log('-- DialgController: Loop Tools --')
+						if (this.ctx.cli.enableDebugLoopTools)
+							console.log('-- DialgController: Loop Tools --')
 
-					dc = dc.clone().nextRound()
+						dc = dc.clone().nextRound()
 
-					// special user dialog that propagate tools without query
+						// special user dialog that propagate tools without query
 
-					r = await this.addUserDialog(
-						null,
-						dc,
-						dialogContext.agent.module.getToolsCalls(lastResponse),
-						options,
-						outputContext
-					)
+						r = await this.addUserDialog(
+							null,
+							dc,
+							dialogContext.agent.module.getToolsCalls(lastResponse),
+							options,
+							outputContext
+						)
+					} else end = true
 				} else end = true
 			} else end = true
 		}
