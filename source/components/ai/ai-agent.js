@@ -26,15 +26,16 @@ export default class AIAgent {
 
 	constructor(ctx, props) {
 		this.ctx = ctx
+		this.mergeProps(ctx.agents.config, this)
 		this.mergeVoiceProfile(props)
 		this.mergeAvatar(props)
 		this.mergeProfile(props)
 		this.mergeProps(props, this)
-		if (ctx.agents.config.prependOSDependentSystemInstructions)
-			this.prependOSDependentSystemInstructions()
+		if (this.prependOSDependentSystemInstructions)
+			this.addOSDependentSystemInstructions()
 	}
 
-	prependOSDependentSystemInstructions() {
+	addOSDependentSystemInstructions() {
 		const path = join(
 			process.cwd(),
 			this.ctx.paths.instructions,
@@ -70,7 +71,20 @@ export default class AIAgent {
 	mergeProps(props, into) {
 		if (!props) return
 		for (const [name, value] of Object.entries(props)) {
-			into[name] = value
+			if (name.startsWith('_')) {
+				// handle special properties
+				this.#handleMergeDirectives(name, value, into)
+			}
+			else
+				// simply merge replace
+				into[name] = value
+		}
+	}
+
+	#handleMergeDirectives(name, value, into) {
+		switch (name) {
+			default:
+				console.error('unknown merge directive will be ignored: ' + name)
 		}
 	}
 }
