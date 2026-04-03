@@ -569,7 +569,7 @@ export default function config(cli) {
 		},
 		agents: {
 
-			// agents global config
+			// agents global config - TODO: make overlodable
 			config: {
 				prependOSDependentSystemInstructions: true
 			},
