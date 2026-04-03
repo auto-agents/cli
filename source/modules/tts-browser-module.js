@@ -7,12 +7,14 @@ import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.
 import Server from '../../../shared/src/data/server.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
 import TTSModuleBase from '../../../modules/src/TTS/tts-module-base.js';
+import { Mutex } from 'async-mutex';
 
 export default class TTSBrowserModule extends TTSModuleBase {
 
 	constructor(ctx, config, outputContext, moduleSpec, overloadConfig = null) {
 		super(ctx, config, outputContext, moduleSpec, overloadConfig, 'TTS browser module')
 		this.modulePath = join(process.cwd(), ctx.paths.modules, 'speech', 'src', 'speech-module.js')
+		this.mutex = new Mutex()
 	}
 
 	async init() {
@@ -34,18 +36,23 @@ export default class TTSBrowserModule extends TTSModuleBase {
 				throw err
 			}
 
+			if (!this.config.agent.speak.config)
+				this.config.agent.speak.config = {}
+			this.config.agent.speak.config.api = this.config.browser
+
+			// register a new server
 			this.server = new Server(
 				'TTSBrowserModule',
 				this.speech.baseUrl(),
 				this.speech.config.port
 			)
 			var ok = true
-			const k = addServer(this.ctx, this.server)
+			var k = 0
+			await this.mutex.runExclusive(async () => {
+				k = addServer(this.ctx, this.server)
+			})
 
-			if (!this.config.agent.speak.config)
-				this.config.agent.speak.config = {}
-			this.config.agent.speak.config.api = this.config.browser
-
+			// launch the server + browser if needed
 			if (k == 1) {
 
 				const runSrv = async () => {
