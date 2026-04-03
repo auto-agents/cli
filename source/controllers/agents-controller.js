@@ -1,5 +1,5 @@
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentRemovedEvent, ModuleLoadedEvent, ModuleUnloadedEvent } from "../../../shared/src/data/events"
+import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentRemovedEvent, PluginLoadedEvent, PluginUnloadedEvent } from "../../../shared/src/data/events"
 import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
 import AIAgent from '../components/ai/ai-agent.js'
@@ -23,11 +23,11 @@ export default class AgentsController {
 	init() {
 		const e = this.ctx.components.event
 
-		/*e.on(ModuleLoadedEvent, args => {
+		/*e.on(PluginLoadedEvent, args => {
 
-			const agentId = args[0].module?.agentId
+			const agentId = args[0].plugin?.agentId
 			if (agentId) {
-				// ai chat module loaded
+				// ai chat plugin loaded
 				// add view agent : TUI Agent
 				this.viewAgentId = agentId
 				e.emit(AgentAddedEvent, {
@@ -40,8 +40,8 @@ export default class AgentsController {
 			}
 		})*/
 
-		e.on(ModuleUnloadedEvent, args => {
-			const agentId = args[0].module?.agentId
+		e.on(PluginUnloadedEvent, args => {
+			const agentId = args[0].plugin?.agentId
 			if (this.agents[agentId]) {
 				// agent unloaded
 				dumpLoadedAgent(this.ctx, agentId, this.output, 'unloaded')
@@ -71,16 +71,16 @@ export default class AgentsController {
 		return o
 	}
 
-	getModuleStoreName(agent) {
-		return agent.moduleName + '_' + agent.id
+	getPluginStoreName(agent) {
+		return agent.pluginName + '_' + agent.id
 	}
 
-	getTTSModuleStoreName(agent) {
-		return agent.TTSModuleName + '_' + agent.id
+	getTTSPluginStoreName(agent) {
+		return agent.TTSPluginName + '_' + agent.id
 	}
 
 	/**
-	 * load an ai agent moule and it's modules dependencies
+	 * load an ai agent moule and it's plugins dependencies
 	 * @param {AIAgent} agent
 	 * @param {OutputContext} outputContext
 	 * @returns true if success, false otherwise
@@ -92,18 +92,18 @@ export default class AgentsController {
 				throw new Error(`an agent with the same id: '${agent.id}' is already loaded`)
 
 			const initSrv = this.ctx.components.init
-			const moduleCtrl = initSrv.moduleController
-			const moduleStoreName = this.getModuleStoreName(agent)
+			const pluginCtrl = initSrv.pluginController
+			const pluginStoreName = this.getPluginStoreName(agent)
 
-			// load agent AI module
-			agent.module = await moduleCtrl.load(
-				agent.moduleName,
-				moduleStoreName,
+			// load agent AI plugin
+			agent.plugin = await pluginCtrl.load(
+				agent.pluginName,
+				pluginStoreName,
 				outputContext,
 				false,
 				agent
 			)
-			agent.module.agentId = agent.id
+			agent.plugin.agentId = agent.id
 			this.agents[agent.id] = agent
 
 			this.viewAgentId = agent.id
@@ -115,13 +115,13 @@ export default class AgentsController {
 				}
 			})
 
-			// load agent TTS module if any enabled
-			if (agent.TTS.enabled && agent.TTSModuleName) {
-				const TTSModuleStoreName = this.getTTSModuleStoreName(agent)
+			// load agent TTS plugin if any enabled
+			if (agent.TTS.enabled && agent.TTSPluginName) {
+				const TTSPluginStoreName = this.getTTSPluginStoreName(agent)
 
-				agent.TTSModule = await moduleCtrl.load(
-					agent.TTSModuleName,
-					TTSModuleStoreName,
+				agent.TTSPlugin = await pluginCtrl.load(
+					agent.TTSPluginName,
+					TTSPluginStoreName,
 					outputContext,
 					false,
 					agent

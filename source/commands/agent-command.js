@@ -105,12 +105,12 @@ export default class AgentCommand extends Command {
 				const format = this.getValue(com, args, argFormat)
 				if (!this.checkParameter(com, argFormat, format))
 					return
-				agent.module.saveHistory(file, format)
+				agent.plugin.saveHistory(file, format)
 				break
 
 			case 'clear':
 			case 'c':
-				agent.module.clearHistory()
+				agent.plugin.clearHistory()
 				dumpLoadedAgent(this.ctx, agentId, o, 'history cleared')
 				break
 
@@ -121,11 +121,11 @@ export default class AgentCommand extends Command {
 			case 'h':
 			case 'history':
 				dumpLoadedAgent(this.ctx, agentId, o, 'history')
-				e.emit(RunCommandEvent, `app get components.module.${agent.module.moduleName}.api.history.messages`)
+				e.emit(RunCommandEvent, `app get components.plugin.${agent.plugin.pluginName}.api.history.messages`)
 				break
 
 			case 'config':
-				const conf = agent.module.config
+				const conf = agent.plugin.config
 				const v = toJson(conf)
 				renderComponent(
 
@@ -143,7 +143,7 @@ export default class AgentCommand extends Command {
 
 			case 'spec':
 				const spec = { ...agent }
-				spec.module = spec.TTSModule
+				spec.plugin = spec.TTSPlugin
 					= spec.ctx
 					= spec.apiBridge
 					= "[redacted]"
@@ -178,7 +178,7 @@ export default class AgentCommand extends Command {
 						{ name: 'provider / server', alignment: 'left' },
 						//{ name: 'server', alignment: 'left' },
 						{ name: 'model', alignment: 'left' },
-						{ name: 'TTS module / api', alignment: 'left' },
+						{ name: 'TTS plugin / api', alignment: 'left' },
 						//{ name: 'TTS api', alignment: 'left' },
 						{ name: 'loaded', alignment: 'left' }
 					]
@@ -189,23 +189,23 @@ export default class AgentCommand extends Command {
 					at.addRow({
 						id: id,
 						profile: this.ctx.agents.profiles[a?.profile]?.profileName,
-						['agent / api']: a.moduleName,
-						//api: a.module?.specification.apiName,
-						['provider / server']: a?.module?.config?.provider,
+						['agent / api']: a.pluginName,
+						//api: a.plugin?.specification.apiName,
+						['provider / server']: a?.plugin?.config?.provider,
 						//server: ,
-						model: a?.module?.api?.config?.model,
-						['TTS module / api']: a?.TTSModuleName,
+						model: a?.plugin?.api?.config?.model,
+						['TTS plugin / api']: a?.TTSPluginName,
 						//['TTS api']: a?.speak?.config?.api,
-						loaded: a.module ? '✔' : '✖'
+						loaded: a.plugin ? '✔' : '✖'
 					})
 					at.addRow({
 						id: '',
-						['agent / api']: a.module?.specification.apiName,
-						['provider / server']: a?.module?.config?.baseURL
-							.replace('{port}', a?.module?.config?.port),
+						['agent / api']: a.plugin?.specification.apiName,
+						['provider / server']: a?.plugin?.config?.baseURL
+							.replace('{port}', a?.plugin?.config?.port),
 						//server: '',
 						model: '',
-						['TTS module / api']: a?.speak?.config?.api,
+						['TTS plugin / api']: a?.speak?.config?.api,
 						loaded: ''
 					})
 				}
@@ -234,13 +234,13 @@ export default class AgentCommand extends Command {
 				break
 
 			case 'model':
-				const agmod = agent.module
+				const agmod = agent.plugin
 				if (!agmod.list) {
-					this.emitCommandError(`list not available in module '${agent.moduleName}'`)
+					this.emitCommandError(`list not available in plugin '${agent.pluginName}'`)
 				}
 				const mlist = await agmod.list()
 				if (!mlist) {
-					this.emitCommandError(`list returns null in module '${agent.moduleName}'`)
+					this.emitCommandError(`list returns null in plugin '${agent.pluginName}'`)
 					return
 				}
 
@@ -294,7 +294,7 @@ export default class AgentCommand extends Command {
 						null,
 						true,
 						(item) => {
-							agent.module.api.config.model = item.label
+							agent.plugin.api.config.model = item.label
 							o.newLine()
 							o.appendLine('agent model set to: ' + item.label)
 						}

@@ -192,7 +192,7 @@ export default class DialogController {
 				if (lastResponse != null) {
 					dc ||= dialogContext.clone()
 
-					if (dialogContext.agent.module.hasToolsCalls(lastResponse)) {
+					if (dialogContext.agent.plugin.hasToolsCalls(lastResponse)) {
 
 						// a task must be performed at the end
 						// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
@@ -207,7 +207,7 @@ export default class DialogController {
 						r = await this.addUserDialog(
 							null,
 							dc,
-							dialogContext.agent.module.getToolsCalls(lastResponse),
+							dialogContext.agent.plugin.getToolsCalls(lastResponse),
 							options,
 							outputContext
 						)
@@ -248,7 +248,7 @@ export default class DialogController {
 	async shetUp(agentId) {
 		if (!isAgentSpeakEnabled(this.ctx, agentId))
 			return
-		await getLoadedAgent(this.ctx, agentId).TTSModule.shetUp()
+		await getLoadedAgent(this.ctx, agentId).TTSPlugin.shetUp()
 	}
 
 	async echoSystem(
@@ -334,10 +334,10 @@ export default class DialogController {
 		o.newLine()
 		o.appendLine(cmtCol(`agent 2 is '${chalk.bold(agent1.name)}' with instructions: ${agent2.instructions}`))
 
-		const chat = this.ctx.components.module.AI_Agent // to be updated
+		const chat = this.ctx.components.plugin.AI_Agent // to be updated
 		const primaryAgent = chat.api
 		const secondaryAgent = chat.apiSecondary
-		const sp = this.ctx.components.module.speech
+		const sp = this.ctx.components.plugin.speech
 
 		//var lastAssistMessage = primaryAgent.history.getLastAssistantMessage()
 		//if (!lastAssistMessage) {
@@ -450,7 +450,7 @@ export default class DialogController {
 		if (!text || text.length == 0) return
 
 		const e = this.ctx.components.event
-		const sp = agent.TTSModule
+		const sp = agent.TTSPlugin
 
 		if (!sp) return	// should not be here if sp is not defined
 
@@ -504,7 +504,7 @@ export default class DialogController {
 			this.From,
 			this.ctx.cli.statusMessages[StatusEnum.waiting],
 			this.ctx.cli.statusMessages.completing,
-			dialogContext.agent.module.api.config.model
+			dialogContext.agent.plugin.api.config.model
 		))
 
 		options ||= {
@@ -517,12 +517,12 @@ export default class DialogController {
 			secondary: false
 		}
 
-		const r = await dialogContext.agent.module
+		const r = await dialogContext.agent.plugin
 
 			.chat(dialogContext, query, tool_calls, options)
 
 			.then(async resp => {
-				dialogContext.agent.module.lastResponse = resp
+				dialogContext.agent.plugin.lastResponse = resp
 				const txt = resp.content
 				e.emit(SetStatusMessageEvent)
 

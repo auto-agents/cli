@@ -12,13 +12,13 @@ import path from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
 
 /**
- * AI AGENT Module
+ * AI AGENT Plugin
  * common llm interface for any api / provider
  */
-export default class AIAgentModule {
+export default class AIAgentPlugin {
 
 	dbg = false
-	From = 'AIAgentModule'
+	From = 'AIAgentPlugin'
 
 	responseProcessorsActionsHandlers = {}
 
@@ -31,10 +31,10 @@ export default class AIAgentModule {
 		}
 	]
 
-	static buildConfig(ctx, config, moduleSpec, overloadConfig) {
+	static buildConfig(ctx, config, pluginSpec, overloadConfig) {
 		const apiClientConfig =
 		{
-			...eval(moduleSpec.apiClientConfig),
+			...eval(pluginSpec.apiClientConfig),
 		}
 
 		var conf = { ...config }
@@ -67,15 +67,15 @@ export default class AIAgentModule {
 		}
 	}
 
-	constructor(ctx, config, outputContext, moduleSpec, overloadConfig = null
+	constructor(ctx, config, outputContext, pluginSpec, overloadConfig = null
 	) {
-		this.specification = moduleSpec
-		this.apiName = moduleSpec.apiName
-		this.apiClientFilepath = moduleSpec.apiClientFilepath
+		this.specification = pluginSpec
+		this.apiName = pluginSpec.apiName
+		this.apiClientFilepath = pluginSpec.apiClientFilepath
 		this.ctx = ctx
 
-		const { apiClientConfig, conf } = AIAgentModule.buildConfig(
-			ctx, config, moduleSpec, overloadConfig)
+		const { apiClientConfig, conf } = AIAgentPlugin.buildConfig(
+			ctx, config, pluginSpec, overloadConfig)
 		ctx.config = conf
 		this.config = conf
 		this.apiClientConfig = apiClientConfig
@@ -91,7 +91,7 @@ export default class AIAgentModule {
 	}
 
 	/**
-	 * module init
+	 * plugin init
 	 */
 	async init() {
 
@@ -101,7 +101,7 @@ export default class AIAgentModule {
 		const margin2 = ' '.repeat(margin.length + oc.marginBase)
 
 		o.newLine()
-		o.appendLine(margin + `~ loading ai agent module ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
+		o.appendLine(margin + `~ loading ai agent plugin ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
 
 		// dynamically import AI Api Client
 		const apiClient = await import(this.apiClientFilepath)
@@ -125,7 +125,7 @@ export default class AIAgentModule {
 				await utils.wait(this.ctx.ui.initFastWait)
 
 			} catch (err) {
-				o.appendLine(this.status.error(margin + this.apiName + ' ai agent module init error: ' + err))
+				o.appendLine(this.status.error(margin + this.apiName + ' ai agent plugin init error: ' + err))
 			}
 		}
 
@@ -133,7 +133,7 @@ export default class AIAgentModule {
 			this.ctx,
 			this.outputContext.output,
 			initApi,
-			this.spinner.newSpinner(margin2 + '- initializing ' + this.apiName + ' ai agent module', cliSpinners.sand),
+			this.spinner.newSpinner(margin2 + '- initializing ' + this.apiName + ' ai agent plugin', cliSpinners.sand),
 			async () => {
 			}
 		)
@@ -141,7 +141,7 @@ export default class AIAgentModule {
 	}
 
 	/**
-	 * unload module
+	 * unload plugin
 	 * @param {Object} outputContext
 	 */
 	async unload(outputContext) {
@@ -162,7 +162,7 @@ export default class AIAgentModule {
 			o,
 			stopSrv,
 			new SpinnerService(this.ctx, o)
-				.newSpinner(margin + '- stopping module ai agent: ' + dmp, cliSpinners.sand)
+				.newSpinner(margin + '- stopping plugin ai agent: ' + dmp, cliSpinners.sand)
 		)
 		await stopSrvAction.run()
 	}

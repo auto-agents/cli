@@ -56,18 +56,18 @@ export default function config(cli) {
 		},
 		paths: {
 			agents: '../agents',
-			modules: '../modules',
-			importModules: '../modules/src',
-			modulesExportsFolderName: 'exports',
-			moduleExportCommandsFolderName: 'commands',
-			moduleExportModuleFolderName: 'module',
+			plugins: '../plugins',
+			importPlugins: '../plugins/src',
+			pluginsExportsFolderName: 'exports',
+			pluginExportCommandsFolderName: 'commands',
+			pluginExportPluginFolderName: 'plugin',
 			configFileName: 'config.js',
 			instructions: 'prompts',
 			saved: saved,
 			tmp: 'tmp',
 			tempsToClean: [],
 			speakPreProcessors: join(
-				'../modules/src/TTS/speak-pre-processors'
+				'../plugins/src/TTS/speak-pre-processors'
 			)
 		},
 		ui: {
@@ -343,8 +343,8 @@ export default function config(cli) {
 					file: 'agent-command.js'
 				},
 				{
-					names: ['module', 'mod', 'm'],
-					description: 'list the available cli tools modules, allow to unload and load them',
+					names: ['plugin', 'mod', 'm'],
+					description: 'list the available cli tools plugins, allow to unload and load them',
 					config: {
 						options: {
 							action: {
@@ -353,32 +353,32 @@ export default function config(cli) {
 								allowedValues: [
 									{
 										value: 'list',
-										description: 'list available modules and their loading status'
+										description: 'list available plugins and their loading status'
 									},
 									{
 										value: 'load',
-										description: 'load a module by its name, if it is already loaded'
+										description: 'load a plugin by its name, if it is already loaded'
 									},
 									{
 										value: 'unload',
-										description: 'unload a module by its name, if it is not already unloaded'
+										description: 'unload a plugin by its name, if it is not already unloaded'
 									},
 									{
 										value: 'reload',
-										description: 'unload and load a module by its name, if it is already loaded'
+										description: 'unload and load a plugin by its name, if it is already loaded'
 									}
 								],
-								description: 'an action order for the module command'
+								description: 'an action order for the plugin command'
 							},
 							name: {
 								type: 'string',
 								required: false,
-								description: 'the module name to be loaded or unloaded. required for actions load and unload'
+								description: 'the plugin name to be loaded or unloaded. required for actions load and unload'
 							}
 						},
 						allowPositionals: true
 					},
-					file: 'module-command.js'
+					file: 'plugin-command.js'
 				},
 				{
 					names: ['app'],
@@ -554,13 +554,13 @@ export default function config(cli) {
 			toolRunTimeout: 10000,
 			initLog: null,
 			// TODO: not used by now
-			moduleImports: [
-				// add a ref when new modules are added
+			pluginImports: [
+				// add a ref when new plugins are added
 
-				// modules to be imported and instanciated are listed here
+				// plugins to be imported and instanciated are listed here
 				'API/hugging-face',
 
-				// modules to be imported as internal, thus not instanciated are listed here
+				// plugins to be imported as internal, thus not instanciated are listed here
 				'TTS/tts-webui'
 			],
 			network: {
@@ -579,9 +579,9 @@ export default function config(cli) {
 					// specification
 					id: TUIAgentId,
 					name: 'TUI Agent',
-					moduleName: 'openAIAgent',
+					pluginName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					module: null,
+					plugin: null,
 					// model config
 					config: {
 						//model: 'ministral-3-8b-reasoning-2512',
@@ -603,9 +603,9 @@ export default function config(cli) {
 					// specification
 					id: 'coder',
 					name: 'Coder',
-					moduleName: 'openAIAgent',
+					pluginName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					module: null,
+					plugin: null,
 					// model config
 					config: {
 						model: 'ministral-3-8b-reasoning-2512',// has no think content
@@ -629,9 +629,9 @@ export default function config(cli) {
 				{
 					id: 'kokoro',
 					name: 'Amaniya Kokoro',
-					moduleName: 'openAIAgent',
+					pluginName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					module: null,
+					plugin: null,
 					// model config
 					config: {
 						temperature: 0.5
@@ -649,9 +649,9 @@ export default function config(cli) {
 				{
 					id: 'nicole',
 					name: 'Nicole Umy',	// not used? used: avatar.chatName
-					moduleName: 'openAIAgent',
+					pluginName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					module: null,
+					plugin: null,
 					// model config
 					config: {
 						temperature: 0.5
@@ -669,9 +669,9 @@ export default function config(cli) {
 				{
 					id: 'mecron',
 					name: 'Emmanuel Mecron',
-					moduleName: 'openAIAgent',
+					pluginName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					module: null,
+					plugin: null,
 					// model config
 					config: {
 						temperature: 1
@@ -689,9 +689,9 @@ export default function config(cli) {
 				{
 					id: 'lapen',
 					name: 'Jean-Marine LaPen',
-					moduleName: 'openAIAgent',
+					pluginName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					module: null,
+					plugin: null,
 					// model config
 					config: {
 						temperature: 1
@@ -709,9 +709,9 @@ export default function config(cli) {
 				{
 					id: 'moloche',
 					name: 'Jean-Luc Molochon',
-					moduleName: 'openAIAgent',
+					pluginName: 'openAIAgent',
 					provider: 'lmStudioOpenAIEndPoints',
-					module: null,
+					plugin: null,
 					// model config
 					config: {
 						temperature: 1
@@ -773,13 +773,13 @@ export default function config(cli) {
 
 			voiceProfiles: {
 				TUI: {
-					TTSModuleName: 'browserTTS',
+					TTSPluginName: 'browserTTS',
 					speak: {
 						enabled: true,
 						preferredVoices: {
 							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
 						},
-						module: null,
+						plugin: null,
 						config: {
 
 						}
@@ -789,18 +789,18 @@ export default function config(cli) {
 						preferredVoices: {
 							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
 						},
-						module: null
+						plugin: null
 					},
 					speakErrors: {
 						enabled: true,
 						preferredVoices: {
 							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
 						},
-						module: null
+						plugin: null
 					}
 				},
 				kokoro: {
-					TTSModuleName: 'browserTTS',
+					TTSPluginName: 'browserTTS',
 					speak: {
 						enabled: true,
 						preferredVoices: {
@@ -815,11 +815,11 @@ export default function config(cli) {
 					}
 				},
 				nicole: {
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['af_nicole'],
-						// tts module config
+						// tts plugin config
 						config: {
 							api: 'kokoroTTS',
 							preProcessors: ['line-end-italic-remover.js']
@@ -827,22 +827,22 @@ export default function config(cli) {
 					}
 				},
 				kitty: {
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['expr-voice-2-f'],
-						// tts module config
+						// tts plugin config
 						config: {
 							api: 'kittenTTS'
 						}
 					}
 				},
 				aliceClone: {
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['alice.wav'],
-						// tts module config
+						// tts plugin config
 						config: {
 							api: 'openVoiceV1',
 							style: 'cheerful',
@@ -850,11 +850,11 @@ export default function config(cli) {
 					}
 				},
 				cronmaClone: {
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['cronma.wav'],
-						// tts module config
+						// tts plugin config
 						config: {
 							api: 'openVoiceV2',
 							speed: 0.5
@@ -863,11 +863,11 @@ export default function config(cli) {
 					}
 				},
 				cronmaCbClone: {
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['cronma.wav'],
-						// tts module config
+						// tts plugin config
 						config: {
 							api: 'chatterBox'
 						}
@@ -875,11 +875,11 @@ export default function config(cli) {
 				},
 				cronmaXClone: {
 					// mecron: salut a toi et a ta putain de meuf
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['cronma.wav'],
-						// tts module config
+						// tts plugin config
 						config: {
 							preProcessors: ['line-end-italic-remover.js'],
 							api: 'xttsSimple'
@@ -888,11 +888,11 @@ export default function config(cli) {
 				},
 				lapenXClone: {
 					// mecron: salut a toi et a ta putain de meuf
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['lapen.wav'],
-						// tts module config
+						// tts plugin config
 						config: {
 							preProcessors: ['line-end-italic-remover.js'],
 							api: 'xttsSimple'
@@ -901,11 +901,11 @@ export default function config(cli) {
 				},
 				molocheXClone: {
 					// mecron: salut a toi et a ta putain de meuf
-					TTSModuleName: 'TTSWebUI',
+					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
 						preferredVoices: ['moloche.wav'],
-						// tts module config
+						// tts plugin config
 						config: {
 							preProcessors: ['line-end-italic-remover.js'],
 							api: 'xttsSimple'
@@ -1066,7 +1066,7 @@ export default function config(cli) {
 				argumentDescriptionColor: '#58b48e',
 				allowedValueDescriptionColor: '#99FF99'
 			},
-			module: {
+			plugin: {
 				titleColor: '#00FF00',
 				nameColor: '#DDDDDD',
 				descriptionColor: '#999999',
@@ -1206,7 +1206,7 @@ export default function config(cli) {
 					key: 'uptime',
 					value: ''
 				},
-				modules: {
+				plugins: {
 					speech: {
 						key: 'TUI TTS',
 						value: ''
@@ -1331,14 +1331,14 @@ export default function config(cli) {
 			render: null,
 			// agents controller
 			agents: null,
-			// module controller
-			moduleController: null,
+			// plugin controller
+			pluginController: null,
 			// keyboard controller
 			keyboard: null,
 			// mouse controller
 			mouse: null,
-			// loaded modules
-			module: {
+			// loaded plugins
+			plugin: {
 			}
 		},
 		texts: {
@@ -1346,11 +1346,11 @@ export default function config(cli) {
 				hello: 'Hello professor %username%, what can i do for you today?'
 			}
 		},
-		modules: {
+		plugins: {
 			browserTTS: {
-				description: 'TTS browser based module',
+				description: 'TTS browser based plugin',
 				category: '',
-				file: 'tts-browser-module.js',
+				file: 'tts-browser-plugin.js',
 				category: 'TTS',
 
 				internal: true,
@@ -1385,7 +1385,7 @@ export default function config(cli) {
 				}
 			},
 			recognition: {
-				description: 'STT browser based module',
+				description: 'STT browser based plugin',
 				category: 'STT',
 
 				autoLoad: true,
@@ -1394,10 +1394,10 @@ export default function config(cli) {
 			},
 			openAIAgent: {
 				/*
-				* OpenAI chat module configuration
+				* OpenAI chat plugin configuration
 				*/
 				description: 'OpenAI chat using OpenAI API interface (HTTP transport)',
-				file: 'ai-agent-module.js',
+				file: 'ai-agent-plugin.js',
 				category: 'AIAgent',
 
 				apiName: 'OpenAI',
@@ -1435,10 +1435,10 @@ export default function config(cli) {
 			},
 			ollamaAIAgent: {
 				/*
-				* Ollama chat module configuration
+				* Ollama chat plugin configuration
 				*/
-				description: 'Ollama chat module using OpenAI API interface (HTTP transport) over Ollama-MCP-Bridge',
-				file: 'ai-agent-module.js',
+				description: 'Ollama chat plugin using OpenAI API interface (HTTP transport) over Ollama-MCP-Bridge',
+				file: 'ai-agent-plugin.js',
 				category: 'AIAgent',
 
 				apiName: 'Ollama',
@@ -1458,10 +1458,10 @@ export default function config(cli) {
 			},
 			lmStudioAIAgent: {
 				/*
-				* LM Studio chat module configuration
+				* LM Studio chat plugin configuration
 				*/
-				description: 'LM Studio chat module using OpenAI API interface (HTTP transport)',
-				file: 'ai-agent-module.js',
+				description: 'LM Studio chat plugin using OpenAI API interface (HTTP transport)',
+				file: 'ai-agent-plugin.js',
 				category: 'AIAgent',
 
 				apiName: 'LMStudio',
@@ -1483,10 +1483,10 @@ export default function config(cli) {
 			},
 			lmStudioJSAIAgent: {
 				/*
-				* LM Studio chat module configuration
+				* LM Studio chat plugin configuration
 				*/
-				description: 'LM Studio chat module using JS LM Studio SDK (WebSocket transport)',
-				file: 'ai-agent-module.js',
+				description: 'LM Studio chat plugin using JS LM Studio SDK (WebSocket transport)',
+				file: 'ai-agent-plugin.js',
 				category: 'AIAgent',
 
 				apiName: 'LMStudioJS',
@@ -1507,10 +1507,10 @@ export default function config(cli) {
 			},
 			anythingLLMAIAgent: {
 				/*
-				* Anything LLM chat module configuration
+				* Anything LLM chat plugin configuration
 				*/
-				description: 'Anything LLM chat module using OpenAI API interface (HTTP transport)',
-				file: 'ai-agent-module.js',
+				description: 'Anything LLM chat plugin using OpenAI API interface (HTTP transport)',
+				file: 'ai-agent-plugin.js',
 				category: 'AIAgent',
 
 				apiName: 'AnythingLLM',

@@ -5,7 +5,7 @@ import {
 	HelpOutputUpdatedEvent,
 	AppStartedEvent,
 	AgentAddedEvent,
-	ModuleUnloadedEvent,
+	PluginUnloadedEvent,
 	AgentResponseEvent,
 	AgentRemovedEvent,
 	AgentGetFocusSpeakEvent,
@@ -317,14 +317,14 @@ const Agents = ({ ctx }) => {
 		}
 	}, [agentProps])
 
-	/* ----- module AIAgent unloaded ----- */
+	/* ----- plugin AIAgent unloaded ----- */
 
 	useEffect(() => {
 		const listener = args => {
 
 			const md = args[0]
 
-			if (md?.module.agentId) {
+			if (md?.plugin.agentId) {
 				// cleanup agent view
 				setTimeout(() => {
 					updateAgentView(null)
@@ -333,12 +333,12 @@ const Agents = ({ ctx }) => {
 			}
 		}
 		e.on(
-			ModuleUnloadedEvent,
+			PluginUnloadedEvent,
 			args => listener(args)
 		)
 		return () => {
 			e.off(
-				ModuleUnloadedEvent,
+				PluginUnloadedEvent,
 				listener
 			)
 		}

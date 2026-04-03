@@ -6,12 +6,12 @@ export default class AIAgent {
 	// specification
 	id = null
 	name = null
-	moduleName = null
+	pluginName = null
 	provider = null
 	TTS = null
 	system = false
-	// module instance
-	module = null
+	// plugin instance
+	plugin = null
 	// avatar
 	avatar = null
 	chatName = null

@@ -14,7 +14,7 @@ export default class ResponseProcessors {
 		this.tools = tools
 		this.status = new Status(ctx)
 		this.outputContext = outputContext
-		this.modulesPath = join(process.cwd(),
+		this.pluginsPath = join(process.cwd(),
 			'source',
 			'components',
 			'ai',
@@ -27,7 +27,7 @@ export default class ResponseProcessors {
 		const margin = ' '.repeat(oc.margin)
 
 		try {
-			const path = join(this.modulesPath, file)
+			const path = join(this.pluginsPath, file)
 			if (!existsSync(path)) {
 				o.newLine()
 				o.appendLine(this.status.error(margin + 'response processor file not found: ' + path))
@@ -58,9 +58,9 @@ export default class ResponseProcessors {
 		const o = oc.output
 		const margin = ' '.repeat(oc.margin)
 
-		processors.forEach(async moduleFilename => {
+		processors.forEach(async pluginFilename => {
 			const oc2 = oc.clone().addMargin()
-			await this.load(moduleFilename, oc2)
+			await this.load(pluginFilename, oc2)
 		})
 	}
 

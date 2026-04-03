@@ -1,7 +1,7 @@
 import { existsSync } from "fs";
 import { join } from 'path';
 import {
-	CommandModuleLoadErrorEvent,
+	CommandPluginLoadErrorEvent,
 	CommandFileNotFoundEvent,
 	CommandNotFoundEvent,
 	CommandArgsCountErrorEvent,
@@ -112,13 +112,13 @@ export default class CommandController {
 			.map(n => n[0].toUpperCase() + n.substring(1))
 			.join('')
 
-		var module = null
+		var plugin = null
 		var instance = null
 		try {
-			module = await import(path)
-			instance = new module.default(this.ctx, this.output)
+			plugin = await import(path)
+			instance = new plugin.default(this.ctx, this.output)
 		} catch (err) {
-			e.emit(CommandModuleLoadErrorEvent, {
+			e.emit(CommandPluginLoadErrorEvent, {
 				...errorEvent(
 					this.From,
 					new Error(err.message + ': ' + cn)),

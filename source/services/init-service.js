@@ -6,7 +6,7 @@ import SpinnerService from './spinner-service.js';
 import ActionSequenceController from '../controllers/action-sequence-controller.js';
 import { AppInitializedEvent, SetStatusMessageEvent } from '../../../shared/src/data/events.js';
 import SysInfoService from './sys-info-service.js';
-import ModuleController from '../controllers/module-controller.js';
+import PluginController from '../controllers/plugin-controller.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
 import utils, { getAgentSpecification } from '../../../shared/src/utils/utils.js';
 import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
@@ -59,7 +59,7 @@ export default class InitService {
 	async #runInternal() {
 		const mg = 4
 		const margin = ' '.repeat(mg)
-		this.moduleController = new ModuleController(
+		this.pluginController = new PluginController(
 			this.ctx,
 			this.#getOutputContext(mg))
 
@@ -77,12 +77,12 @@ export default class InitService {
 				uiFunc: this.spinner.newSpinner(margin + '- gathering system informations', cliSpinners.sand)
 			},
 			{
-				func: async () => await this.#importModules(),
-				uiFunc: this.spinner.newSpinner(margin + '- importing modules', cliSpinners.sand)
+				func: async () => await this.#importPlugins(),
+				uiFunc: this.spinner.newSpinner(margin + '- importing plugins', cliSpinners.sand)
 			},
 			{
-				func: async () => await this.#initModules(),
-				uiFunc: this.spinner.newSpinner(margin + '- initializing modules', cliSpinners.sand)
+				func: async () => await this.#initPlugins(),
+				uiFunc: this.spinner.newSpinner(margin + '- initializing plugins', cliSpinners.sand)
 			},
 			{
 				func: async () => await this.#initAgents(this.#getOutputContext(mg)),
@@ -132,12 +132,12 @@ export default class InitService {
 		await utils.wait(this.ctx.ui.initWait)
 	}
 
-	async #importModules() {
-		await this.moduleController.runImports()
+	async #importPlugins() {
+		await this.pluginController.runImports()
 	}
 
-	async #initModules() {
-		await this.moduleController.run()
+	async #initPlugins() {
+		await this.pluginController.run()
 	}
 
 	async #initAgents(outputContext) {

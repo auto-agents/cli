@@ -4,14 +4,14 @@ import OutputContext from '../../../shared/src/data/output-context.js'
 import { readdir } from 'fs/promises'
 import { join } from 'path';
 
-export default class ModuleCommand extends Command {
+export default class PluginCommand extends Command {
 
 	constructor(ctx) {
-		super(ctx, 'module com')
+		super(ctx, 'plugin com')
 	}
 
 	#colors() {
-		const theme = this.ctx.theme?.module || {}
+		const theme = this.ctx.theme?.plugin || {}
 		return {
 			title: chalk.hex(theme.titleColor),
 			name: chalk.hex(theme.nameColor),
@@ -23,10 +23,10 @@ export default class ModuleCommand extends Command {
 		}
 	}
 
-	async #getModulesExports() {
-		// search all module "exports/config.js" under ext modules base path
-		// base import path (auto-agents/modules)
-		const baseDir = join(process.cwd(), this.ctx.paths.importModules)
+	async #getPluginsExports() {
+		// search all plugin "exports/config.js" under ext plugins base path
+		// base import path (auto-agents/plugins)
+		const baseDir = join(process.cwd(), this.ctx.paths.importPlugins)
 		const founded = []
 
 		const walk = async (dir, parentDir) => {
@@ -46,9 +46,9 @@ export default class ModuleCommand extends Command {
 				if (entry.name !== this.ctx.paths.configFileName) continue
 
 				const config = require(full).default(this.ctx)
-				if (config?.modules) {
-					for (const k in config.modules) {
-						const mod = config.modules[k]
+				if (config?.plugins) {
+					for (const k in config.plugins) {
+						const mod = config.plugins[k]
 						founded.push(mod)
 					}
 				}
@@ -58,76 +58,76 @@ export default class ModuleCommand extends Command {
 		return founded
 	}
 
-	async #listModules() {
+	async #listPlugins() {
 		const output = this.ctx.components.output
 		const margin = ''
 		const c = this.#colors()
 
 		output.newLine()
-		output.appendLine(margin + c.title('Available modules:'))
+		output.appendLine(margin + c.title('Available plugins:'))
 		output.newLine()
 
-		const dump = (name, module, w) => {
-			const isLoaded = module.isLoaded
-			const isInternal = module.internal
-			const isImported = module.isImported
+		const dump = (name, plugin, w) => {
+			const isLoaded = plugin.isLoaded
+			const isInternal = plugin.internal
+			const isImported = plugin.isImported
 			const imported = isImported ? ' (import)' : ''
-			const category = module.category ? `[${module.category}] ` : ''
+			const category = plugin.category ? `[${plugin.category}] ` : ''
 			const st =
 				(isInternal ? '| internal' :
 					(isLoaded ? `● loaded${imported}` : `○ not loaded${imported}`)).padEnd(22)
 			const status =
 				//isImported ? c.imported(st) : (
 				(isLoaded && !isInternal) ? c.loaded(st) : c.unloaded(st)
-			const desc = module.description || ''
+			const desc = plugin.description || ''
 			output.appendLine(margin + `  ${c.name(name.padEnd(w))} ${status} ${c.description(desc)}`)
 		}
 
 		// -- build spec list
-		const exports = await this.#getModulesExports()
-		const exportsModNames = exports.map(m => m.moduleId)
+		const exports = await this.#getPluginsExports()
+		const exportsModNames = exports.map(m => m.pluginId)
 		const loadedNames = []
 		const mods = {}
 		var w = 0
 
 		// available exports
 		exports.forEach(mod => {
-			mods[mod.moduleId] = mod
-			w = Math.max(mod.moduleId.length, w)
+			mods[mod.pluginId] = mod
+			w = Math.max(mod.pluginId.length, w)
 		})
-		// loaded modules
-		for (const [name, module] of Object.entries(this.ctx.modules)) {
-			if (this.ctx.components.module[name] || !module.specification) continue
-			mods[name] = module.specification
-			module.specification.key = name
+		// loaded plugins
+		for (const [name, plugin] of Object.entries(this.ctx.plugins)) {
+			if (this.ctx.components.plugin[name] || !plugin.specification) continue
+			mods[name] = plugin.specification
+			plugin.specification.key = name
 			w = Math.max(name.length, w)
 		}
 		// available integrated
-		for (const [name, module] of Object.entries(this.ctx.modules)) {
-			if (this.ctx.components.module[name]
+		for (const [name, plugin] of Object.entries(this.ctx.plugins)) {
+			if (this.ctx.components.plugin[name]
 				|| exportsModNames.includes(name)
 			) continue
 			w = Math.max(name.length, w)
-			mods[name] = module
-			module.key = name
+			mods[name] = plugin
+			plugin.key = name
 		}
 		// loaded
-		for (const [name, module] of Object.entries(this.ctx.components.module)) {
-			if (!module?.specification) continue
+		for (const [name, plugin] of Object.entries(this.ctx.components.plugin)) {
+			if (!plugin?.specification) continue
 			loadedNames.push(name)
 			//console.log(name)
 			w = Math.max(w, name.length)
-			mods[name] = module.specification
-			module.specification.key = name
+			mods[name] = plugin.specification
+			plugin.specification.key = name
 		}
 		// extern
-		exports.forEach(module => {
-			if (!loadedNames.includes(module.moduleId)) {
-				//console.log(module?.moduleId,module?.isImported)
-				module.isImported = true
-				w = Math.max(w, module.moduleId.length)
-				mods[module.moduleId] = module
-				module.key = module.moduleId
+		exports.forEach(plugin => {
+			if (!loadedNames.includes(plugin.pluginId)) {
+				//console.log(plugin?.pluginId,plugin?.isImported)
+				plugin.isImported = true
+				w = Math.max(w, plugin.pluginId.length)
+				mods[plugin.pluginId] = plugin
+				plugin.key = plugin.pluginId
 			}
 		})
 		w += 4
@@ -137,11 +137,11 @@ export default class ModuleCommand extends Command {
 		const tmods = Object.entries(mods).map(x => x[1])
 		const lists = Object.groupBy(tmods, mod => mod.category)
 
-		for (const [group, modules] of Object.entries(lists)) {
+		for (const [group, plugins] of Object.entries(lists)) {
 			output.appendLine(c.category(group))
-			modules.forEach(module => {
-				const name = /*module.moduleId ||*/ module.key
-				dump(name, module, w)
+			plugins.forEach(plugin => {
+				const name = /*plugin.pluginId ||*/ plugin.key
+				dump(name, plugin, w)
 			})
 		}
 	}
@@ -150,8 +150,8 @@ export default class ModuleCommand extends Command {
 		return new OutputContext(this.ctx, this.ctx.components.output, margin)
 	}
 
-	async #getModuleController() {
-		return this.ctx.components.moduleController
+	async #getPluginController() {
+		return this.ctx.components.pluginController
 	}
 
 	async run(args, com) {
@@ -162,7 +162,7 @@ export default class ModuleCommand extends Command {
 
 		switch (action) {
 			case 'list':
-				await this.#listModules()
+				await this.#listPlugins()
 				break
 
 			case 'load': {
@@ -171,9 +171,9 @@ export default class ModuleCommand extends Command {
 				if (!this.checkParameter(com, argName, name))
 					return
 
-				const mc = await this.#getModuleController()
+				const mc = await this.#getPluginController()
 				await mc.load(name, null, this.#getOutputContext(4), true)
-				this.#listModules()
+				this.#listPlugins()
 				break
 			}
 
@@ -183,9 +183,9 @@ export default class ModuleCommand extends Command {
 				if (!this.checkParameter(com, argName, name))
 					return
 
-				const mc = await this.#getModuleController()
+				const mc = await this.#getPluginController()
 				await mc.unload(name, this.#getOutputContext(4), true)
-				this.#listModules()
+				this.#listPlugins()
 				break
 			}
 
@@ -195,10 +195,10 @@ export default class ModuleCommand extends Command {
 				if (!this.checkParameter(com, argName, name))
 					return
 
-				const mc = await this.#getModuleController()
+				const mc = await this.#getPluginController()
 				await mc.unload(name, this.#getOutputContext(4))
 				await mc.load(name, this.#getOutputContext(4))
-				this.#listModules()
+				this.#listPlugins()
 				break
 			}
 
