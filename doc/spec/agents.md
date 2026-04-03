@@ -11,18 +11,18 @@ for any llm api client   sdk / protocol                   provider
 / llm provider
 
 -----------------         -------------------             ----------------
-| AIAgentModule | ------> | openAiApiClient | ----------> | llm provider |
+| AIAgentPlugin | ------> | openAiApiClient | ----------> | llm provider |
 -----------------         -------------------             ----------------
                                                                 |
-module/                 components/ai/                          |
-ai-agent-module.js      open-ai-api-client.js                   ↓
+plugin/                 components/ai/                          |
+ai-agent-plugin.js      open-ai-api-client.js                   ↓
                                                           server specific setup
 ❌generical except         - openAIAPiClient              ----------------
 tools LOOP callback        - lmStudioApiClient            | lmStudioApi  |
 is openAI (to be fixed)    - lmStudioJSApiCLient          ----------------
-                           - ollamaApiClient                    
-                           - ...                          - lmStudioJSApi                              
-                                |                         - openAIApi      
+                           - ollamaApiClient
+                           - ...                          - lmStudioJSApi
+                                |                         - openAIApi
                                 |                         - ollamaMCPBridgeAI
                                 ↓                         - anythingLLMDesktop
                         api client config                 - ...
@@ -30,18 +30,18 @@ is openAI (to be fixed)    - lmStudioJSApiCLient          ----------------
                         ----------------------------            |
                         | ctx.servers.llm          |            ↓
                         | .openAIApipenAiApiClient |      server connection
-                        ----------------------------          settings 
+                        ----------------------------          settings
                                                       ------------------------
                           response processors         | lmStudioApiEndPoints |
 -----------------         --------------------        ------------------------
-| AIAgentModule | ❌----> | tool call parser |
+| AIAgentPlugin | ❌----> | tool call parser |
 -----------------         --------------------      - lmStudioJSApiEndPoint
                   |                                 - lmStudioOpenAIEndPoints
                   |                                 - ollamaOpenAIEndPoints
 ❌ dependency must        response processors       - ollamaMCPBridgeOpenAI...
 be holded by      |         actions handlers        - anythingLLMDesktopApiEnd...
 the API CLIENT    |       -----------------------
-(depends on the  ❌----> | tool call processor |               
+(depends on the  ❌----> | tool call processor |
 protocol and on          -----------------------
 the model)
 

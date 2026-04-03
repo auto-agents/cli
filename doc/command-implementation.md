@@ -75,7 +75,7 @@ The `ctx` parameter provides access to:
 - `ctx.data`: Data sources and gauges
 - `ctx.theme`: UI theme configuration
 - `ctx.layout`: Layout settings
-- `ctx.modules`: Module configurations
+- `ctx.plugins`: Plugin configurations
 - `ctx.cli`: CLI-specific settings and output
 
 ## Example Implementations

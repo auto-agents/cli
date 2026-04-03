@@ -15,7 +15,7 @@ export default class GetToolsList extends AITool {
     }
 
     async run() {
-        const tools = getTUIAgent(this.ctx).module.tools
+        const tools = getTUIAgent(this.ctx).plugin.tools
         if (!tools) return
         const t = tools.getAllTools()
         const lst = []

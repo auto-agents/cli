@@ -92,8 +92,8 @@ cd auto-agents
 
 ## cli/tui
 git clone https://github.com/auto-agents/cli.git
-## modules
-git clone https://github.com/auto-agents/modules.git
+## plugins
+git clone https://github.com/auto-agents/plugins.git
 
 # setup
 cd cli

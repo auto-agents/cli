@@ -8,7 +8,7 @@ import {
 	RunCommandEvent,
 	CommandNotFoundEvent,
 	CommandFileNotFoundEvent,
-	CommandModuleLoadErrorEvent,
+	CommandPluginLoadErrorEvent,
 	CommandArgsCountErrorEvent,
 	AppInitializedEvent,
 	OutputUpdatedEvent,
@@ -24,8 +24,8 @@ import {
 	SpeakCommandEvent,
 	speakEvent,
 	TaskRunErrorEvent,
-	ModuleLoadedEvent,
-	ModuleUnloadedEvent,
+	PluginLoadedEvent,
+	PluginUnloadedEvent,
 	LayoutResizedEvent,
 	AgentGetFocusViewEvent,
 	dialogEvent
@@ -110,7 +110,7 @@ export default class AppController {
 			.on(CommandParseErrorEvent, async args => await this.handleCommandErrorEvent('command parse error', args[0]))
 			.on(CommandNotFoundEvent, async args => await this.handleCommandErrorEvent('command not found: ' + args[0].cmd, args[0]))
 			.on(CommandFileNotFoundEvent, async args => await this.handleCommandErrorEvent('command file not found: ' + args[0].path, args[0]))
-			.on(CommandModuleLoadErrorEvent, async args => await this.handleCommandErrorEvent('command load module error', args[0]))
+			.on(CommandPluginLoadErrorEvent, async args => await this.handleCommandErrorEvent('command load plugin error', args[0]))
 			.on(CommandArgsCountErrorEvent, async args => await this.handleCommandErrorEvent(`command args count mismatch: expected ${args[0].args?.length || 0}`, args[0]))
 			.on(AppInitializedEvent, async () => await this.appInitialized())
 			.on(UIFreezeStatedChangedEvent, args => this.uiFreezeStatedChangedEvent(...args))
@@ -120,8 +120,8 @@ export default class AppController {
 			.on(LogErrorEvent, async (args) => await this.handleLogErrorEvent(args[0]))
 			.on(TaskRunErrorEvent, async (args) => await this.handleTaskRunErrorEvent(args[0]))
 			.on(LogWarningEvent, args => this.warning(args[0]))
-			.on(ModuleLoadedEvent, args => this.#setupModulesGauges())
-			.on(ModuleUnloadedEvent, args => this.#setupModulesGauges())
+			.on(PluginLoadedEvent, args => this.#setupPluginsGauges())
+			.on(PluginUnloadedEvent, args => this.#setupPluginsGauges())
 
 		this.heartbeatSecondInterval = setInterval(
 			() => this.heartbeatSecond(),
@@ -281,8 +281,8 @@ export default class AppController {
 
 		this.isInitialized = true
 
-		// init modules gauges
-		this.#setupModulesGauges()
+		// init plugins gauges
+		this.#setupPluginsGauges()
 
 		// begin dialog
 		this.event.emit(AppStartedEvent)
@@ -332,29 +332,29 @@ export default class AppController {
 		}
 	}
 
-	#setupModulesGauges() {
+	#setupPluginsGauges() {
 		if (!isAppInitialized(this.ctx))
 			return
 		const e = this.event
-		const initModuleGauge = (moduleName, gaugeName, moduleInstance) => {
-			gaugeName ||= moduleName
-			moduleInstance ||= this.ctx.components.module[moduleName]
-			const moduleSpec = moduleInstance?.specification
-			const gauge = this.ctx.data.app.modules[gaugeName]
+		const initPluginGauge = (pluginName, gaugeName, pluginInstance) => {
+			gaugeName ||= pluginName
+			pluginInstance ||= this.ctx.components.plugin[pluginName]
+			const pluginSpec = pluginInstance?.specification
+			const gauge = this.ctx.data.app.plugins[gaugeName]
 			gauge.value =
-				!moduleSpec ? this.status.statusUnavailable() : (
-					(moduleInstance && moduleSpec.enabled && moduleSpec.isLoaded) ?
+				!pluginSpec ? this.status.statusUnavailable() : (
+					(pluginInstance && pluginSpec.enabled && pluginSpec.isLoaded) ?
 						this.status.statusOn()
-						: (!moduleInstance && moduleSpec.enabled ?
+						: (!pluginInstance && pluginSpec.enabled ?
 							this.status.statusUnavailable()
 							: this.status.statusOff()))
 			e.emitTarget(GaugeSourceUpdatedEvent, gauge.key)
 		}
-		initModuleGauge('speech')
-		initModuleGauge('recognition')
+		initPluginGauge('speech')
+		initPluginGauge('recognition')
 		const tuiAg = getTUIAgent(this.ctx)
-		if (tuiAg?.module)
-			initModuleGauge('AIAgent', null, tuiAg.module)
+		if (tuiAg?.plugin)
+			initPluginGauge('AIAgent', null, tuiAg.plugin)
 	}
 
 	async runInput(inp) {

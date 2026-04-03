@@ -48,7 +48,7 @@ flowchart LR
     CommandParseErrorEvent["CommandParseErrorEvent"]
     CommandNotFoundEvent["CommandNotFoundEvent"]
     CommandFileNotFoundEvent["CommandFileNotFoundEvent"]
-    CommandModuleLoadErrorEvent["CommandModuleLoadErrorEvent"]
+    CommandPluginLoadErrorEvent["CommandPluginLoadErrorEvent"]
     CommandArgsCountErrorEvent["CommandArgsCountErrorEvent"]
     CommandRunErrorEvent["CommandRunErrorEvent"]
     InputSubmitedEvent["InputSubmitedEvent"]
@@ -87,7 +87,7 @@ flowchart LR
     CommandController -->|"errorEvent, args"| CommandParseErrorEvent
     CommandController -->|"errorEvent, args, cmd"| CommandNotFoundEvent
     CommandController -->|"errorEvent, args, cmd, path"| CommandFileNotFoundEvent
-    CommandController -->|"errorEvent, cmd, cn"| CommandModuleLoadErrorEvent
+    CommandController -->|"errorEvent, cmd, cn"| CommandPluginLoadErrorEvent
     CommandController -->|"commandDef or errorEvent, args"| CommandArgsCountErrorEvent
     CommandController -->|"errorEvent, cmd, cn"| CommandRunErrorEvent
     AppController -->|"speakEvent"| SpeakCommandEvent
@@ -116,7 +116,7 @@ flowchart LR
     CommandParseErrorEvent -->|"errorData"| AppControllerHandler
     CommandNotFoundEvent -->|"errorData"| AppControllerHandler
     CommandFileNotFoundEvent -->|"errorData"| AppControllerHandler
-    CommandModuleLoadErrorEvent -->|"errorData"| AppControllerHandler
+    CommandPluginLoadErrorEvent -->|"errorData"| AppControllerHandler
     CommandArgsCountErrorEvent -->|"errorData"| AppControllerHandler
     CommandRunErrorEvent -->|"errorData"| AppControllerHandler
     InputSubmitedEvent -->|"input: string"| AppControllerHandler
@@ -140,13 +140,13 @@ flowchart LR
 
     class FifoStack,InitService,EventService,OutputController,KeyboardController,InputController,DialogController,CommandController,AppController,BoxOutputController emitter
     class AppControllerHandler,InputControllerHandler,DialogControllerHandler,CommandControllerHandler,TextInput,ScrollOutput,Prompter,Output,OutputView,BoxOutput,App,EditCommand,ConfigCommand handler
-    class TaskRunErrorEvent,AppInitializedEvent,SetStatusMessageEvent,OutputUpdatedEvent,OutputRowsCountUpdatedEvent,UIFreezeStatedChangedEvent,RunCommandEvent,CommandClearInputEvent,InputToStartEvent,InputToEndEvent,CommandSetInputEvent,HideInitBoxOutputEvent,HelpOutputUpdatedEvent,SpeakCommandEvent,LogErrorEvent,CommandParseErrorEvent,CommandNotFoundEvent,CommandFileNotFoundEvent,CommandModuleLoadErrorEvent,CommandArgsCountErrorEvent,CommandRunErrorEvent,InputSubmitedEvent,CommandInputStartedEvent,InputAddedEvent,GaugeSourceUpdatedEvent,InputExecutedEvent,AppStartedEvent,LayoutResizedEvent,ConsoleClearedEvent,BoxOutputUpdatedEvent,PromptVisibilityLostEvent,LogWarningEvent event
+    class TaskRunErrorEvent,AppInitializedEvent,SetStatusMessageEvent,OutputUpdatedEvent,OutputRowsCountUpdatedEvent,UIFreezeStatedChangedEvent,RunCommandEvent,CommandClearInputEvent,InputToStartEvent,InputToEndEvent,CommandSetInputEvent,HideInitBoxOutputEvent,HelpOutputUpdatedEvent,SpeakCommandEvent,LogErrorEvent,CommandParseErrorEvent,CommandNotFoundEvent,CommandFileNotFoundEvent,CommandPluginLoadErrorEvent,CommandArgsCountErrorEvent,CommandRunErrorEvent,InputSubmitedEvent,CommandInputStartedEvent,InputAddedEvent,GaugeSourceUpdatedEvent,InputExecutedEvent,AppStartedEvent,LayoutResizedEvent,ConsoleClearedEvent,BoxOutputUpdatedEvent,PromptVisibilityLostEvent,LogWarningEvent event
 ```
 
 ## Event Summary
 
 ### Major Event Emitters:
-- **CommandController**: Emits command-related error events (parse errors, not found, file not found, module load errors, run errors, args count errors)
+- **CommandController**: Emits command-related error events (parse errors, not found, file not found, plugin load errors, run errors, args count errors)
 - **DialogController**: Emits status message, log error, and speak command events
 - **AppController**: Central emitter for app lifecycle, UI state, and input execution events
 - **InputController**: Emits input-related events (command set input, hide init box, help output)

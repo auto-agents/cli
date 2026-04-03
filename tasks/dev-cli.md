@@ -1,6 +1,6 @@
-# Develop cli module
+# Develop cli plugin
 
-## 1) command implementation: 
+## 1) command implementation:
 
 ### check specification
 
@@ -31,7 +31,7 @@ implement a new command that can be input by user, according to the specificatio
     file: 'ls-command.js'
 }
 ```
-the run() method of this command must output the list of files that are in the folder path indicated by the property `cli.currentPath` in the app context (this.ctx). Each file name must be outputed on a new line in the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Each line contains the filename and all of the file properties (size, last modified date, etc.) properly aligned in columns. Use differents colors for each file property using new colors hex values that must be defined in the json object property `theme.ls`, through a set of keys dedicated for each file property in the file `cli/source/config/config.js`. The file properties are: name, size, last modified date, permissions, owner, group, type, and number of links. The file properties must be aligned in columns with the same width for each property. The file properties must be outputed in the following order: name, size, last modified date, permissions, owner, group, type, and number of links. 
+the run() method of this command must output the list of files that are in the folder path indicated by the property `cli.currentPath` in the app context (this.ctx). Each file name must be outputed on a new line in the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Each line contains the filename and all of the file properties (size, last modified date, etc.) properly aligned in columns. Use differents colors for each file property using new colors hex values that must be defined in the json object property `theme.ls`, through a set of keys dedicated for each file property in the file `cli/source/config/config.js`. The file properties are: name, size, last modified date, permissions, owner, group, type, and number of links. The file properties must be aligned in columns with the same width for each property. The file properties must be outputed in the following order: name, size, last modified date, permissions, owner, group, type, and number of links.
 the colors object in `theme.ls` must have the following keys: name, size, lastModified, permissions, owner, group, type, and links.
 use `chalk.hex()` to build the ainsi colorization orders.
 use `output.error()` to build the error message string.
@@ -56,7 +56,7 @@ colorize folder names with a different color from the property ls.folder
 
 - the command must output the path for which files are listed, separated by a blank line
 
-- add a blank line after the last file entry, and add a summary line that indicates the number of files and folders, and the total amount of file sizes with the right unit. use the color that is defined for the size column for the size value in the summary line 
+- add a blank line after the last file entry, and add a summary line that indicates the number of files and folders, and the total amount of file sizes with the right unit. use the color that is defined for the size column for the size value in the summary line
 
 
 ### command: `pwd`
@@ -208,7 +208,7 @@ implements the command `config` as described below:
 ```js
 {
     names: ['config','conf','cnf'],
-    description: 'edit the cli config file.',    
+    description: 'edit the cli config file.',
     file: 'config-command.js'
 }
 ```
@@ -218,11 +218,11 @@ This command works the same way as the command `edit`. This command has no param
 
 ### command: `dialog`
 
-Implements a new command named `dialog`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+Implements a new command named `dialog`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 this command is specified as below:
 
-The command `dialog` is used to configure and control the dialog with the `cli tool` and with the `speech module`.
+The command `dialog` is used to configure and control the dialog with the `cli tool` and with the `speech plugin`.
 
 ```js
 {
@@ -245,12 +245,12 @@ The command `dialog` is used to configure and control the dialog with the `cli t
 
 ### command: `help`
 
-Implements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+Implements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 this command is specified as below:
 
 The command `help` is used to provide informations about:
-- the `cli tool` 
+- the `cli tool`
 - the `contexts` of the cli tool
 - the `commands`
 - any informational document defined as it in the help configuration or in the `CLI TOOL RAG database content`
@@ -285,7 +285,7 @@ The command `help` is used to provide informations about:
 
 ### command: `app`
 
-Implements a new command named `app`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+Implements a new command named `app`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 Use as a model the command class in `cli/source/commands/dialog-command.js` and its command descriptor in the file `cli/source/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
 
 The command `app` is used to access to settings, configuration, run-time variables of the `cli tool`.
@@ -310,7 +310,7 @@ The command descriptor is given below:
                     { value: 'set',
                         description: 'set a value of the app context having the given path and the given value. the value is given as a javascript expression that will be evaluated'
                     }
-                ],                
+                ],
                 description: 'an action order for the app command'
             },
             path: {
@@ -330,36 +330,36 @@ The command descriptor is given below:
 }
 ```
 
-### command: `module`
+### command: `plugin`
 
-Implements a new command named `module`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. 
+Implements a new command named `plugin`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 Use as a model the command class in `cli/source/commands/dialog-command.js` and its command descriptor in the file `cli/source/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
 
-The command `module` is used to list the available cli tools modules, to unload and load a module by its name. 
+The command `plugin` is used to list the available cli tools plugins, to unload and load a plugin by its name.
 
-- modules are listed in the application context `cli/source/config/config.js`, under the property `module`. Each object in the module object is an object which describe a module. the object key is the module `id` and is the key of the object.
+- plugins are listed in the application context `cli/source/config/config.js`, under the property `plugin`. Each object in the plugin object is an object which describe a plugin. the object key is the plugin `id` and is the key of the object.
 
-- The action `load` implements the call to the instance of `ModuleController` in `cli/source/controllers/module-controller`, using a new instance: 
+- The action `load` implements the call to the instance of `PluginController` in `cli/source/controllers/plugin-controller`, using a new instance:
 ```js
-await new ModuleController(this.ctx, outputContext)
+await new PluginController(this.ctx, outputContext)
 ```
 then calling on it a new method `load` method deduced by factorization of the existing code in this class, see method `run()`
-A module might not be loaded if it is already loaded. a module is `loaded` if the module object descriptor in the application context has the property `isLoaded` setted to `true`. This method must also set the flag `loaded` to true in the module object descriptor.
+A plugin might not be loaded if it is already loaded. a plugin is `loaded` if the plugin object descriptor in the application context has the property `isLoaded` setted to `true`. This method must also set the flag `loaded` to true in the plugin object descriptor.
 
-- the action `unload` implements the call to the instance of `ModuleController` in `cli/source/controllers/module-controller`, using a new instance: 
+- the action `unload` implements the call to the instance of `PluginController` in `cli/source/controllers/plugin-controller`, using a new instance:
 ```js
-await new ModuleController(this.ctx, outputContext)
+await new PluginController(this.ctx, outputContext)
 ```
-then calling on it a new method `unload`, that call the new method `unload` in the module instance object. This methid must also set the flag `loaded` to false in the module object descriptor. A module might not be **unloaded** if it is not already **loaded**
+then calling on it a new method `unload`, that call the new method `unload` in the plugin instance object. This methid must also set the flag `loaded` to false in the plugin object descriptor. A plugin might not be **unloaded** if it is not already **loaded**
 
-- the action `list` must list all modules `names` (module object descriptor **key**) and `descriptions` (module object descriptor property `description`) in a nice and colorized way, also indicating the loading status of the module (using library `chalk`). Any new color definition must be added and used from the application context `cli/source/config/config.js`, under the property `theme.module`.
+- the action `list` must list all plugins `names` (plugin object descriptor **key**) and `descriptions` (plugin object descriptor property `description`) in a nice and colorized way, also indicating the loading status of the plugin (using library `chalk`). Any new color definition must be added and used from the application context `cli/source/config/config.js`, under the property `theme.plugin`.
 
 The command descriptor is given below:
 
 ```js
 {
-    names: ['module','mod','m'],
-    description: 'list the available cli tools modules, allow to unload and load them',
+    names: ['plugin','mod','m'],
+    description: 'list the available cli tools plugins, allow to unload and load them',
     config: {
         options: {
             action: {
@@ -367,25 +367,25 @@ The command descriptor is given below:
                 required: true,
                 allowedValues: [
                     { value: 'list',
-                      description: 'list available modules and their loading status'
+                      description: 'list available plugins and their loading status'
                     },
                     { value: 'load',
-                        description: 'load a module by its name, if it is not already loaded'
+                        description: 'load a plugin by its name, if it is not already loaded'
                     },
                     { value: 'unload',
-                        description: 'unload a module by its name, if it is already loaded'
+                        description: 'unload a plugin by its name, if it is already loaded'
                     },
-                ],                
-                description: 'an action order for the module command'
+                ],
+                description: 'an action order for the plugin command'
             },
             name: {
                 type: 'string',
                 required: false,
-                description: 'the module name to be loaded or unloaded. required for actions load and unload'
+                description: 'the plugin name to be loaded or unloaded. required for actions load and unload'
             }
         },
         allowPositionals: true
     },
-    file: 'module-command.js'
+    file: 'plugin-command.js'
 }
 ```

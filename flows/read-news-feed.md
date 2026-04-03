@@ -2,7 +2,7 @@
 
     read loudly the titles of the news from the presspaper on line feed
 
-`/module load speech`
+`/plugin load speech`
 
 `/agent clear`
 

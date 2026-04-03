@@ -17,7 +17,7 @@ import {
 	SetStatusMessageEvent,
 	OutputResizedEvent,
 	AgentAddedEvent,
-	ModuleUnloadedEvent,
+	PluginUnloadedEvent,
 	SetTUIStatusMessageEvent,
 	KeyboardCaptureRequestEvent,
 	CommandKeyboardCaptureReleaseEvent
@@ -262,9 +262,9 @@ export default function App({ ctx }) {
 						<LeftGauge prop={ctx.data.ram.rss} ctx={ctx} />
 						<LeftGauge prop={ctx.data.ram.heapTotal} ctx={ctx} />
 						<LeftGauge prop={ctx.data.ram.usage} ctx={ctx} />
-						<LeftGauge prop={ctx.data.app.modules.speech} ctx={ctx} />
-						<LeftGauge prop={ctx.data.app.modules.recognition} ctx={ctx} />
-						<LeftGauge prop={ctx.data.app.modules.AIAgent} ctx={ctx} />
+						<LeftGauge prop={ctx.data.app.plugins.speech} ctx={ctx} />
+						<LeftGauge prop={ctx.data.app.plugins.recognition} ctx={ctx} />
+						<LeftGauge prop={ctx.data.app.plugins.AIAgent} ctx={ctx} />
 					</Box>
 
 					{ /* title */}

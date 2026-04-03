@@ -6,14 +6,14 @@ import SpinnerService from "../services/spinner-service.js";
 import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.js'
 import Server from '../../../shared/src/data/server.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
-import TTSModuleBase from '../../../modules/src/TTS/tts-module-base.js';
+import TTSPluginBase from '../../../plugins/src/TTS/tts-plugin-base.js';
 import { Mutex } from 'async-mutex';
 
-export default class TTSBrowserModule extends TTSModuleBase {
+export default class TTSBrowserPlugin extends TTSPluginBase {
 
-	constructor(ctx, config, outputContext, moduleSpec, overloadConfig = null) {
-		super(ctx, config, outputContext, moduleSpec, overloadConfig, 'TTS browser module')
-		this.modulePath = join(process.cwd(), ctx.paths.modules, 'speech', 'src', 'speech-module.js')
+	constructor(ctx, config, outputContext, pluginSpec, overloadConfig = null) {
+		super(ctx, config, outputContext, pluginSpec, overloadConfig, 'TTS browser plugin')
+		this.pluginPath = join(process.cwd(), ctx.paths.plugins, 'speech', 'src', 'speech-plugin.js')
 		this.mutex = new Mutex()
 	}
 
@@ -25,9 +25,9 @@ export default class TTSBrowserModule extends TTSModuleBase {
 
 			o.newLine()
 			o.appendLine(margin + `~ loading ${this.desc} server`)
-			if (!existsSync(this.modulePath))
-				throw new Error('module file not found: ' + this.modulePath)
-			const mod = require(this.modulePath)
+			if (!existsSync(this.pluginPath))
+				throw new Error('plugin file not found: ' + this.pluginPath)
+			const mod = require(this.pluginPath)
 
 			try {
 				this.speech = new mod.default({ config: this.config })
@@ -42,7 +42,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 
 			// register a new server
 			this.server = new Server(
-				'TTSBrowserModule',
+				'TTSBrowserPlugin',
 				this.speech.baseUrl(),
 				this.speech.config.port
 			)
@@ -71,7 +71,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 					this.ctx,
 					this.outputContext.output,
 					runSrv,
-					this.spinner.newSpinner(margin2 + `- running ${this.desc} module server`, cliSpinners.sand),
+					this.spinner.newSpinner(margin2 + `- running ${this.desc} plugin server`, cliSpinners.sand),
 					async () => {
 
 						const runOpenBrowser = new ActionController(
@@ -105,7 +105,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 			const stopSrv = async () => {
 				if (removeServer(this.ctx, this.server) == 0)
 					await this.speech.stopServer()
-				this.ctx.components.module.speech = null
+				this.ctx.components.plugin.speech = null
 			}
 
 			o.newLine()
@@ -122,10 +122,10 @@ export default class TTSBrowserModule extends TTSModuleBase {
 		}
 	}
 
-	/* ---- TTS module interface impl ---- */
+	/* ---- TTS plugin interface impl ---- */
 
 	async speak(text, voice = null) {
-		this.#assertSpeakModuleImplAvailable()
+		this.#assertSpeakPluginImplAvailable()
 
 		try {
 			text = super.runPreProcessors(text)
@@ -149,7 +149,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 	}
 
 	async waitIdle(timeout) {
-		this.#assertSpeakModuleImplAvailable()
+		this.#assertSpeakPluginImplAvailable()
 		timeout ||= this.config.waitTimeoutMs
 		try {
 			await this.speech.waitForRunningStatus({ expected: 'idle', timeoutMs: timeout })
@@ -159,7 +159,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 	}
 
 	async waitSpeak(timeout) {
-		this.#assertSpeakModuleImplAvailable()
+		this.#assertSpeakPluginImplAvailable()
 		timeout ||= this.config.waitTimeoutMs
 		try {
 			await this.speech.waitForRunningStatus({ expected: 'speaking', timeoutMs: timeout })
@@ -169,7 +169,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 	}
 
 	async shetUp() {
-		this.#assertSpeakModuleImplAvailable()
+		this.#assertSpeakPluginImplAvailable()
 		try {
 			await this.speech.shetUp(this.config.apiKey)
 		} catch (err) {
@@ -185,7 +185,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 	/* <---- ---- */
 
 	async openBrowser() {
-		this.#assertSpeakModuleImplAvailable()
+		this.#assertSpeakPluginImplAvailable()
 		try {
 			await this.speech.openBrowser()
 			await utils.wait(this.ctx.ui.initFastWait)
@@ -194,7 +194,7 @@ export default class TTSBrowserModule extends TTSModuleBase {
 		}
 	}
 
-	#assertSpeakModuleImplAvailable() {
-		if (!this.speech) throw new SpeakerError('TTS module implementation not available (null)')
+	#assertSpeakPluginImplAvailable() {
+		if (!this.speech) throw new SpeakerError('TTS plugin implementation not available (null)')
 	}
 }
