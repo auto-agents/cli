@@ -111,7 +111,7 @@ export default class DialogController {
 
 	/**
 	 * add a user prompt
-	 * /!\ called with tewt null when TOOL LOOP
+	 * /!\ called with text null when TOOL LOOP
 	 * @param {String} text
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
