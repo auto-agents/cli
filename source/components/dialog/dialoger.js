@@ -1,12 +1,12 @@
 import {
 	AgentGetFocusSpeakEvent,
-	dialogEvent,
-	TaskAddAssistantMessageCommandEvent
+	dialogEvent
 } from "../../../../shared/src/data/events"
-import DialogContext from "../../../../shared/src/data/dialog-context"
+
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
-import { getLoadedAgent, isAgentSpeakEnabled, isSpeechAvailable, isTUIAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
+import { getLoadedAgent, isAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
 import { TUIAgentId } from "../../../../shared/src/config/consts"
+import { DialogerTasksTypes } from "./dialoger-tasks-types"
 
 /*
  the dialoger handle dialog behaviors
@@ -85,6 +85,7 @@ export default class Dialoger {
 				await this.fifoStack.addTask(
 					dialogContext.setCurrentTask(
 						task(
+							DialogerTasksTypes.userDialogEcho,
 							'user dialog : echo',
 							async () => {
 								await this.userEchoFun(
@@ -99,6 +100,7 @@ export default class Dialoger {
 					await this.fifoStack.addTask(
 						dialogContext.setCurrentTask(
 							task(
+								DialogerTasksTypes.userDialogSpeak,
 								'user dialog: speak',
 								async () => {
 									await this.speakFun(
@@ -125,6 +127,7 @@ export default class Dialoger {
 			aiResult = await this.fifoStack.addTask(
 				dialogContext.setCurrentTask(
 					task(
+						DialogerTasksTypes.userCompletionRequest,
 						'user dialog: request ai completion',
 						async task => {
 							// must not break await here (task await via addTask)
@@ -152,6 +155,7 @@ export default class Dialoger {
 					await this.fifoStack.addTask(
 						dialogContext.setCurrentTask(
 							task(
+								DialogerTasksTypes.assistantDialogEchoSpeak,
 								'assistant dialog: echo + speak',
 								async () => {
 
@@ -181,33 +185,6 @@ export default class Dialoger {
 								}
 							)).task
 					))
-
-		}
-
-		// TOOLS LOOP
-
-		//console.log('aiREsult', aiResult.result)
-
-		if (/*aiResult?.result?.message?.tool_calls
-			&& aiResult?.result?.message?.tool_calls.length > 0*/
-			dialogContext.agent.module.hasToolsCalls(aiResult.result?.message)
-		) {
-			// loop for tools
-
-			if (this.ctx.cli.enableDebugLoopTools)
-				console.log('-- Dialoger: Loop Tools --')
-
-			results.push(
-				// returns props indicating next dialog to perform
-				{
-					loop: true,
-					dialogContext: dialogContext,
-					outputContext: outputContext,
-					options: options,
-					tool_calls: //aiResult?.result?.message?.tool_calls
-						dialogContext.agent.module.getToolsCalls(aiResult.result?.message)
-				}
-			)
 		}
 
 		// release first await lock
@@ -229,6 +206,7 @@ export default class Dialoger {
 		results.push(
 			await this.fifoStack.addTask(
 				task(
+					DialogerTasksTypes.assistantDialogEcho,
 					'system dialog: echo',
 					async () => {
 						await this.assistantEchoFun(
@@ -242,6 +220,7 @@ export default class Dialoger {
 			results.push(
 				await this.fifoStack.addTask(
 					task(
+						DialogerTasksTypes.assistantDialogSpeak,
 						'system dialog: speak',
 						async () => {
 
@@ -271,6 +250,7 @@ export default class Dialoger {
 	async speak(dialogContext, text, options) {
 		return await this.fifoStack.addTask(
 			task(
+				DialogerTasksTypes.assistantSpeak,
 				'system dialog: speak',
 				async () => {
 					await this.speakFun(

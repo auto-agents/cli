@@ -18,6 +18,7 @@ import Dialoger from "../components/dialog/dialoger.js"
 import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
+import { DialogerTasksTypes } from "../components/dialog/dialoger-tasks-types.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -173,27 +174,43 @@ export default class DialogController {
 			outputContext)
 
 		var end = false
+		var dc = null
 		while (!end) {
-			if (r && r.length > 0 && r[r.length - 1].loop) {
 
-				// a task must be performed at the end
-				// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
+			//console.log(r)
 
-				if (this.ctx.cli.enableDebugLoopTools)
-					console.log('-- DialgController: Loop Tools --')
+			// retreive last completion response
+			const completionsTasks = r.filter(x => x.type == DialogerTasksTypes.userCompletionRequest)
+			const lastCompletionTask = completionsTasks.length == 0 ? null
+				: completionsTasks[completionsTasks.length - 1]
+			const lastResponse = lastCompletionTask == null ? null
+				: lastCompletionTask.result?.message
 
-				const props = r[r.length - 1]
-				const dc = props.dialogContext.clone().nextRound()
+			//console.log(lastResponse)
 
-				// special user dialog that propagate tools without query
+			if (lastResponse != null) {
+				dc ||= dialogContext.clone()
 
-				r = await this.addUserDialog(
-					null,
-					dc,
-					props.tool_calls,
-					props.options,
-					props.outputContext
-				)
+				if (dialogContext.agent.module.hasToolsCalls(lastResponse)) {
+
+					// a task must be performed at the end
+					// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
+
+					if (this.ctx.cli.enableDebugLoopTools)
+						console.log('-- DialgController: Loop Tools --')
+
+					dc = dc.clone().nextRound()
+
+					// special user dialog that propagate tools without query
+
+					r = await this.addUserDialog(
+						null,
+						dc,
+						dialogContext.agent.module.getToolsCalls(lastResponse),
+						options,
+						outputContext
+					)
+				} else end = true
 			} else end = true
 		}
 	}
@@ -257,24 +274,6 @@ export default class DialogController {
 				}))
 
 		// render response
-
-		/*const outp = this.responseTextFormater.getRendered(text)
-		const t = outp.trim().replaceAll('\t', '    ').split('\n')
-
-		if (t.length > 0) {
-			// add role symbol
-			if (!name) name = dialogContext.agent?.chatName
-
-			const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-			t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
-		}
-		//console.log('ici', t.length)
-		var r = null
-		t.forEach(l => {
-			const s = l.length == 0 ? ' ' : l
-			//return o.appendLine(scol(s))
-			r = o.appendLine(scol(s))
-		})*/
 
 		const r = this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
 			(name, t) => {
@@ -420,18 +419,6 @@ export default class DialogController {
 */
 	// ----- speak ---------------------------------------------------
 
-	/*#getSystemVoice() {
-		const a = getTUIAgent(this.ctx)
-		if (!a?.TTSModule) return null
-		return a.TTSModule.getPreferredVoices(a.speak?.preferredVoices)
-	}
-
-	#getUserVoice() {
-		const a = getTUIAgent(this.ctx)
-		if (!a?.TTSModule) return null
-		return a.TTSModule.getPreferredVoices(a.repeatUserQuery?.preferredVoices)
-	}*/
-
 	async #speakEventHandler(data) {
 		this.dialoger.speak(
 			data.dialogContext,
@@ -441,20 +428,6 @@ export default class DialogController {
 			}
 		)
 	}
-
-	/*
-	async waitSpeechIdle() {
-		if (!(isTUIAgentSpeakEnabled(this.ctx)
-			&& isSpeechAvailable(this.ctx))) return
-		await this.ctx.components.module.speech.waitIdle()
-	}
-
-	async waitSpeechSpeak() {
-		if (!(isTUIAgentSpeakEnabled(this.ctx)
-			&& isSpeechAvailable(this.ctx))) return
-		await this.ctx.components.module.speech.waitSpeak()
-	}
-	*/
 
 	// ------------------------------------------------------
 
@@ -550,17 +523,6 @@ export default class DialogController {
 				dialogContext.agent.module.lastResponse = resp
 				const txt = resp.content
 				e.emit(SetStatusMessageEvent)
-
-				// echo
-				/*await this.echoSystem(
-					txt,
-					{
-						skipPrependNewLine: skipPrependNewLine,
-						secondary: secondary,
-						name: name,
-						voice: voice,
-						color: color
-					})*/
 
 				// TURN END
 
