@@ -1,4 +1,4 @@
-import { Role_Assistant, Role_User } from './roles.js'
+import { Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
 import chalk from 'chalk'
@@ -21,7 +21,8 @@ export default class OpenAIApiClient extends AIApiClient {
 		this.client = new OpenAiApi({
 			apiKey: c.apiKey,
 			maxRetries: c.maxRetries,
-			baseURL: c.baseURL.replace('{port}', c.port)
+			baseURL: c.baseURL.replace('{port}', c.port),
+			timeout: c.timeout
 		})
 
 		return this
@@ -76,7 +77,7 @@ export default class OpenAIApiClient extends AIApiClient {
 		if (this.ctx.servers.llm.common.enableDumpReasoningContent
 			&& message.reasoning_content
 			&& message.reasoning_content.length > 0) {
-			const t = message.reasoning_content.split('.')
+			const t = message.reasoning_content.split('. ')
 			var fs = true
 			t.forEach(line => {
 				if (line) {

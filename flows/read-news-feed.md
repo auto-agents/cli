@@ -20,4 +20,8 @@ test 2:
 
 /ag prompt -f linux.md,read-rss.md --id coder
 
+/ag switch -i coder
+/ag model -s
+/ag prompt -f read-rss.md -i coder
+
 - in your code, eg. python script content, **IN STRING LITERALS ALWAYS DOUBLE ESCAPE** new line character: writes `\\\\n` instead of `\\n`

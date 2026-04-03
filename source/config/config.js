@@ -102,7 +102,8 @@ export default function config(cli) {
 			commandPrompt: '>',
 			dialog: {
 				userDialogPrefix: 'you (to {toAgent}) >',
-				systemDialogPrefix: '🤖'
+				systemDialogPrefix: '🤖',
+				enableUserPromptMarkdown: true
 			},
 			boxOutput: {
 				rows: [],
@@ -293,6 +294,7 @@ export default function config(cli) {
 							},
 							id: {
 								type: "string",
+								short: 'i',
 								required: false,
 								description: `the agent id, default is '${TUIAgentId}'`
 							},
@@ -567,6 +569,7 @@ export default function config(cli) {
 		},
 		agents: {
 
+			// agents global config
 			config: {
 				prependOSDependentSystemInstructions: true
 			},
@@ -606,7 +609,8 @@ export default function config(cli) {
 					// model config
 					config: {
 						//model: 'ministral-3-8b-reasoning-2512',// has no think content
-						model: 'qwen3-1.7b',
+						//model: 'qwen3-1.7b',
+						model: 'qwen/qwen3.5-9b',
 						temperature: 0.1,
 						props: {
 							reasoning: "high"
@@ -1421,6 +1425,7 @@ export default function config(cli) {
 					// ministralai settings
 					enableGemmaStyleToolCallParsing: false,
 					responseProcessors: [
+						'reasoning-xml-tool-call-parser.js',
 						'openai-api-tool-call-processor.js'
 					],
 					temperature: 0.7,
@@ -1553,12 +1558,14 @@ export default function config(cli) {
 					enableGemmaStyleToolCallParsing: true,
 					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
 					responseProcessors: [
+						'reasoning-xml-tool-call-parser.js',
 						'openai-api-tool-call-processor.js',
 						'gemma-style-tool-call-parser.js'
 					],
 
 					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations:\n{data}",
 
+					timeout: 60 * 60 * 1000,	// 60 min (ms) ?
 					maxRetries: 2,	// default
 					stream: false,
 					think: true,

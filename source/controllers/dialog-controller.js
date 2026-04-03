@@ -185,6 +185,8 @@ export default class DialogController {
 				const props = r[r.length - 1]
 				const dc = props.dialogContext.clone().nextRound()
 
+				// special user dialog that propagate tools without query
+
 				r = await this.addUserDialog(
 					null,
 					dc,
@@ -207,9 +209,21 @@ export default class DialogController {
 		const userDialPrfx = this.ctx.cli.dialog.userDialogPrefix
 			.replace('{toAgent}',
 				chalk.hex(this.ctx.theme.promptToColor)(dialogContext.agent.id))
-		this.output.appendLine(
-			chalk.hex(this.ctx.theme.promptColor)(userDialPrfx)
-			+ ' ' + ucol(text))
+
+		if (!this.ctx.cli.dialog.enableUserPromptMarkdown)
+			// raw text
+			this.output.appendLine(
+				chalk.hex(this.ctx.theme.promptColor)(userDialPrfx)
+				+ ' ' + ucol(text))
+		else {
+			// eventually markdown
+			this.#renderMarkdownDialog(this.output, dialogContext, null, text, ucol,
+				(name, t) => {
+					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+					t[0] = chalk.hex(this.ctx.theme.promptColor)(userDialPrfx) + ucol(t[0])
+				}
+			)
+		}
 	}
 
 	async shetUp(agentId) {
@@ -244,7 +258,7 @@ export default class DialogController {
 
 		// render response
 
-		const outp = this.responseTextFormater.getRendered(text)
+		/*const outp = this.responseTextFormater.getRendered(text)
 		const t = outp.trim().replaceAll('\t', '    ').split('\n')
 
 		if (t.length > 0) {
@@ -260,10 +274,37 @@ export default class DialogController {
 			const s = l.length == 0 ? ' ' : l
 			//return o.appendLine(scol(s))
 			r = o.appendLine(scol(s))
-		})
+		})*/
+
+		const r = this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
+			(name, t) => {
+				const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+				t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
+			}
+		)
 
 		this.ctx.components.event.emit(SetStatusMessageEvent)
 
+		return r
+	}
+
+	#renderMarkdownDialog(o, dialogContext, name, text, scol, setPrompt) {
+		const outp = this.responseTextFormater.getRendered(text)
+		const t = outp.trim().replaceAll('\t', '    ').split('\n')
+
+		if (t.length > 0) {
+			// add role symbol
+			if (!name) name = dialogContext.agent?.chatName
+
+			setPrompt(name, t)
+		}
+
+		var r = null
+		t.forEach(l => {
+			const s = l.length == 0 ? ' ' : l
+			//return o.appendLine(scol(s))
+			r = o.appendLine(scol(s))
+		})
 		return r
 	}
 

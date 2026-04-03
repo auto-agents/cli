@@ -6,6 +6,7 @@ import config, { ERROR_LOG_FILE } from './config/config.js'
 import { readFileSync } from 'node:fs';
 import { unescapeCodeString } from '../../shared/src/utils/text/text.js';
 import { join } from 'node:path/posix';
+import ReasoningXmlToolCallParser from './components/ai/response-processors/reasoning-xml-tool-call-parser.js';
 
 var term = require('terminal-kit').terminal
 //var realTerm = require('terminal-kit').realTerminal
@@ -59,18 +60,19 @@ const ctx = config(cli)
 term.windowTitle(ctx.app.name)
 
 // ---- launch app ----
-
 /*
 const text = readFileSync(
 	join(
 		process.cwd(),
-		'tmp',
-		'script.py.txt'
+		'doc',
+		'xml-tool-call.json'
 	)
 ).toString()
-console.log(text)
-console.log('')
-console.log(unescapeCodeString(text))
+const o = new ReasoningXmlToolCallParser(ctx)
+o.parse(text)
+//console.log(text)
+//console.log('')
+//console.log(unescapeCodeString(text))
 process.exit(0)
 */
 

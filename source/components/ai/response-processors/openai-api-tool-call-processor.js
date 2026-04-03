@@ -18,6 +18,15 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 		super(ctx, config, tools, outputContext)
 	}
 
+	hasToolsCalls(response) {
+		//console.log('OpenAIApiToolCallProcessor hasToolsCalls ?')
+		return response.tool_calls && response.tool_calls.length > 0
+	}
+
+	getToolsCalls(response) {
+		return this.hasToolsCalls(response) ? response.tool_calls : null
+	}
+
 	async init() {
 
 	}

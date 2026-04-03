@@ -204,6 +204,16 @@ export default class AIAgentModule {
 		return o
 	}
 
+	hasToolsCalls(response) {
+		if (!response) return false
+		return this.responseProcessors.hasToolsCalls(response)
+	}
+
+	getToolsCalls(response) {
+		if (!response) return null
+		return this.responseProcessors.getToolsCalls(response)
+	}
+
 	/**
 	 * chat completion
 	 * @param {DialogContext} dialogContext
@@ -218,6 +228,8 @@ export default class AIAgentModule {
 
 		if (query != null) {
 
+			//console.log('chat:QUERY')
+
 			for (var i = 0; i < this.queryPreProcessors; i++)
 				query = this.queryPreProcessors[i](query)
 
@@ -226,6 +238,9 @@ export default class AIAgentModule {
 			r.content = r.content?.trim()
 		}
 		else {
+
+			//console.log('chat:LOOP BACK')
+
 			// tool_calls mandatory
 			// ❌❌ should not be specific to OpenAI here !!! ❌❌
 			// ❌❌ must delegate to the api client ❌❌
@@ -243,12 +258,13 @@ export default class AIAgentModule {
 		}
 
 		const hasContent = r.content != null && r.content.length > 0
-		const hasToolsCalls = r.tool_calls?.length > 0
+		const hasToolsCalls = this.hasToolsCalls(r) //r.tool_calls?.length > 0
 
 		// handle response processors actions : perform actions if no content
+		// TODO: change the loop content convention, enable content anyway
 		if (hasToolsCalls && !hasContent) {
 
-			// process response. get tools results in actions. original response unchanged
+			// process response. get tools calls in actions. original response unchanged
 			await this.responseProcessors.run(dialogContext, r)
 
 			const action = r.actions[0]

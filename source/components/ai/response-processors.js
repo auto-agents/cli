@@ -6,72 +6,91 @@ import { join } from 'path';
 
 export default class ResponseProcessors {
 
-    processors = []
+	processors = []
 
-    constructor(ctx, config, tools, outputContext) {
-        this.ctx = ctx
-        this.config = config
-        this.tools = tools
-        this.status = new Status(ctx)
-        this.outputContext = outputContext
-        this.modulesPath = join(process.cwd(),
-            'source',
-            'components',
-            'ai',
-            'response-processors')
-    }
+	constructor(ctx, config, tools, outputContext) {
+		this.ctx = ctx
+		this.config = config
+		this.tools = tools
+		this.status = new Status(ctx)
+		this.outputContext = outputContext
+		this.modulesPath = join(process.cwd(),
+			'source',
+			'components',
+			'ai',
+			'response-processors')
+	}
 
-    async load(file, outputContext) {
-        const oc = outputContext || this.outputContext
-        const o = oc.output
-        const margin = ' '.repeat(oc.margin)
+	async load(file, outputContext) {
+		const oc = outputContext || this.outputContext
+		const o = oc.output
+		const margin = ' '.repeat(oc.margin)
 
-        try {
-            const path = join(this.modulesPath, file)
-            if (!existsSync(path)) {
-                o.newLine()
-                o.appendLine(this.status.error(margin + 'response processor file not found: ' + path))
-                return null
-            }
+		try {
+			const path = join(this.modulesPath, file)
+			if (!existsSync(path)) {
+				o.newLine()
+				o.appendLine(this.status.error(margin + 'response processor file not found: ' + path))
+				return null
+			}
 
-            const mod = await import(path)
-            const m = new mod.default(this.ctx, this.config, this.tools, this.outputContext)
-            await m.init()
-            this.processors.push(m)
-            o.appendLine(margin + 'response processor loaded: ' + file)
+			const mod = await import(path)
+			const m = new mod.default(this.ctx, this.config, this.tools, this.outputContext)
+			await m.init()
+			this.processors.push(m)
+			o.appendLine(margin + 'response processor loaded: ' + file)
 
-            if (isAppInitialized(this.ctx))
-                this.ctx.components.event.emit(ResponseProcessorLoadedEvent)
-            return m
-        }
-        catch (err) {
-            o.newLine()
-            o.appendLine(this.status.error(margin + 'response processor load error: ' + err))
-            return null
-        }
-    }
+			if (isAppInitialized(this.ctx))
+				this.ctx.components.event.emit(ResponseProcessorLoadedEvent)
+			return m
+		}
+		catch (err) {
+			o.newLine()
+			o.appendLine(this.status.error(margin + 'response processor load error: ' + err))
+			return null
+		}
+	}
 
-    async loadProcessors(processors) {
-        if (!processors) return
+	async loadProcessors(processors) {
+		if (!processors) return
 
-        const oc = this.outputContext
-        const o = oc.output
-        const margin = ' '.repeat(oc.margin)
+		const oc = this.outputContext
+		const o = oc.output
+		const margin = ' '.repeat(oc.margin)
 
-        processors.forEach(async moduleFilename => {
-            const oc2 = oc.clone().addMargin()
-            await this.load(moduleFilename, oc2)
-        })
-    }
+		processors.forEach(async moduleFilename => {
+			const oc2 = oc.clone().addMargin()
+			await this.load(moduleFilename, oc2)
+		})
+	}
 
-    async run(dialogContext, response) {
-        for (var i = 0; i < this.processors.length; i++) {
-            const p = this.processors[i]
-            await p.run(dialogContext, response)
-        }
-    }
+	async run(dialogContext, response) {
+		for (var i = 0; i < this.processors.length; i++) {
+			const p = this.processors[i]
+			await p.run(dialogContext, response)
+		}
+	}
 
-    output({ message }) {
+	hasToolsCalls(response) {
+		var r = false
+		for (var i = 0; i < this.processors.length; i++) {
+			const p = this.processors[i]
+			r |= p.hasToolsCalls(response)
+		}
+		return r
+	}
 
-    }
+	getToolsCalls(response) {
+		var r = []
+		for (var i = 0; i < this.processors.length; i++) {
+			const p = this.processors[i]
+			const tc = p.getToolsCalls(response)
+			if (tc != null) r = [...r, ...tc]
+		}
+		return r
+	}
+
+	output({ message }) {
+
+	}
 }

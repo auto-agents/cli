@@ -120,6 +120,7 @@ export default class Dialoger {
 		// 3. eventually think (includes ai output response)
 
 		// AWAIT ...
+		// TODO: BAD TEST: maybe wrong agent
 		if (isTUIAIAgentAvailable(this.ctx)) {
 			aiResult = await this.fifoStack.addTask(
 				dialogContext.setCurrentTask(
@@ -164,6 +165,7 @@ export default class Dialoger {
 									)
 
 									// eventually speak
+
 									if (isAgentSpeakEnabled(this.ctx,
 										dialogContext.agent.id
 									)) {
@@ -182,10 +184,13 @@ export default class Dialoger {
 
 		}
 
-		// TODO:
+		// TOOLS LOOP
 
-		if (aiResult?.result?.message?.tool_calls
-			&& aiResult?.result?.message?.tool_calls.length > 0
+		//console.log('aiREsult', aiResult.result)
+
+		if (/*aiResult?.result?.message?.tool_calls
+			&& aiResult?.result?.message?.tool_calls.length > 0*/
+			dialogContext.agent.module.hasToolsCalls(aiResult.result?.message)
 		) {
 			// loop for tools
 
@@ -193,13 +198,14 @@ export default class Dialoger {
 				console.log('-- Dialoger: Loop Tools --')
 
 			results.push(
-				// returns props indicatif next dialog to perform
+				// returns props indicating next dialog to perform
 				{
 					loop: true,
 					dialogContext: dialogContext,
 					outputContext: outputContext,
 					options: options,
-					tool_calls: aiResult?.result?.message?.tool_calls
+					tool_calls: //aiResult?.result?.message?.tool_calls
+						dialogContext.agent.module.getToolsCalls(aiResult.result?.message)
 				}
 			)
 		}
