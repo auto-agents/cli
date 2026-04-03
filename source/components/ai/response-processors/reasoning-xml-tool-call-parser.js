@@ -101,10 +101,7 @@ export default class ReasoningXmlToolCallParser {
 						if (pt.length > 1) {
 							//console.log(pt)
 
-							const parsedValue = pvalue
-								//.replaceAll('\\n', '\n')
-								//.replaceAll('\\\n', '\\n')
-								.trim()
+							const parsedValue = pvalue.trim()
 
 							toolCall.function.arguments[pt[1]] = parsedValue
 						}
