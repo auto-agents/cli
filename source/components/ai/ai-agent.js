@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "fs"
 import { join } from "path"
+import { ConfigAppendInstructions, ConfigMergeProps, ConfigMergePropsFromPath } from "../../../../shared/src/config/consts"
 
 export default class AIAgent {
 
@@ -83,8 +84,36 @@ export default class AIAgent {
 
 	#handleMergeDirectives(name, value, into) {
 		switch (name) {
+
+			case ConfigAppendInstructions:
+				value.forEach(v => {
+					const profile = this.ctx.agents.profiles[v]
+					if (profile.instructions)
+						into.instructions += '\n' + profile.instructions
+					for (const [pname, pvalue] of Object.entries(profile)) {
+						if (pname.startsWith('_'))
+							this.#handleMergeDirectives(pname, pvalue, into)
+					}
+				});
+				break
+
+			case ConfigMergePropsFromPath:
+				value.forEach(v => {
+					const src = eval('this.ctx.' + v)
+					this.mergeProps(src, into)
+				});
+				break
+
+			case ConfigMergeProps:
+				this.mergeProps(v, into)
+				break
+
 			default:
-				console.error('unknown merge directive will be ignored: ' + name)
+				this.#error('unknown merge directive will be ignored: ' + name)
 		}
+	}
+
+	#error(reason) {
+		console.error(reason)
 	}
 }
