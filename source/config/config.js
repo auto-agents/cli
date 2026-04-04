@@ -674,6 +674,7 @@ export default function config(cli) {
 					plugin: null,
 					// model config
 					config: {
+						//model: 'google/gemma-3-1b',
 						temperature: 1
 					},
 					// characteristics
