@@ -8,7 +8,7 @@ make a `mermaid` flow diagram that shows:
 - indicates on the links the properties
 - incicates on the links if it is `emit` or `on`
 
-regarding any class defined in the project folder `cli/source`.
+regarding any class defined in the project folder `cli/src`.
 - events are emitted using the syntax `emit(eventName,eventData)`
 - events are handled using the syntax `on(event,eventHandlerFunction)`
 

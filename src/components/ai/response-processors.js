@@ -15,10 +15,10 @@ export default class ResponseProcessors {
 		this.status = new Status(ctx)
 		this.outputContext = outputContext
 		this.pluginsPath = join(process.cwd(),
-			'source',
-			'components',
-			'ai',
-			'response-processors')
+			this.ctx.paths.src,
+			this.ctx.paths.components,
+			this.ctx.paths.aiComponents,
+			this.ctx.paths.responseProcessors)
 	}
 
 	async load(file, outputContext) {

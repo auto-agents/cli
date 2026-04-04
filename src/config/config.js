@@ -13,11 +13,11 @@ import {
 	CTRL_F9,
 	SHIFT_UP,
 	SHIFT_DOWN,
-	TUIAgentId
+	TUIAgentId,
+	DefaultSessionId
 } from '../../../shared/src/config/consts.js'
 import { join } from 'path'
 import os from "os";
-import { Action_Tool_Query, Action_Tool_Text_Query } from '../components/ai/response-processor.js';
 import {
 	Tool_Output_Format_JsonMD,
 	Tool_Output_Format_PlainText,
@@ -41,7 +41,6 @@ const getPlatform = () => {
 const platform = getPlatform()
 
 const longInterval = 4000
-const saved = 'saved'
 
 const setupEnvVars = ctx => {
 	const curPath = process.cwd()
@@ -66,14 +65,28 @@ export default function config(cli) {
 			pluginsExportsFolderName: 'exports',
 			pluginExportCommandsFolderName: 'commands',
 			pluginExportPluginFolderName: 'plugin',
+			cliPlugins: 'plugins',
 			configFileName: 'config.js',
 			prompts: '../instruct/prompts',
-			saved: saved,
+			sessions: 'sessions',
+			components: 'components',
+			commands: 'commands',
+			aiComponents: 'ai',
+			aiTools: 'ai-tools',
+			responseProcessors: 'response-processors',
+			responseProcessorsActionsHandlers: 'response-processors-actions-handlers',
+			src: 'src',
+			config: 'config',
+			configFilename: 'config.js',
+			chatHistoryFilename: 'chat.json',
 			tmp: 'tmp',
 			tempsToClean: [],
 			speakPreProcessors: join(
 				'../plugins/src/TTS/speak-pre-processors'
 			)
+		},
+		session: {
+			id: DefaultSessionId
 		},
 		ui: {
 			freeze: false,
@@ -1584,8 +1597,7 @@ export default function config(cli) {
 					timeout: 60 * 60 * 1000,	// 60 min (ms) ?
 					maxRetries: 2,	// default
 					stream: false,
-					think: true,
-					historyPath: join(process.cwd(), saved, 'chat-history.json'),
+					think: true
 				},
 				lmStudioApi: {
 					// SETTING TO RUN MCP WITH LM STUDIO. NO TOOLS. NO MESSAGES

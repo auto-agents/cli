@@ -94,7 +94,7 @@ export default class CommandController {
 		}
 
 		const path = resolvePath(
-			join(process.cwd(), 'source', 'commands'),
+			join(process.cwd(), this.ctx.paths.src, this.ctx.paths.commands),
 			comd.file)
 
 		if (!existsSync(path)) {

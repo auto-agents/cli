@@ -17,7 +17,10 @@ export default class ConfigCommand extends Command {
 		const e = this.ctx.components.event
 
 		// Always open cli/config/config.json relative to the CLI process path
-		const configFilePath = path.join(process.cwd(), 'source', 'config', 'config.js')
+		const configFilePath = path.join(process.cwd(),
+			this.ctx.paths.src,
+			this.ctx.paths.config,
+			this.ctx.paths.configFilename)
 
 		// Check if file exists
 		if (!existsSync(configFilePath)) {

@@ -16,7 +16,7 @@ A command is defined by three main components:
 
 ### Step 1: Define the Command
 
-Add your command definition to the `cli.commands` array in `cli/source/config/config.js`:
+Add your command definition to the `cli.commands` array in `cli/src/config/config.js`:
 
 ```js
 {
@@ -33,7 +33,7 @@ Add your command definition to the `cli.commands` array in `cli/source/config/co
 
 ### Step 2: Create the Command File
 
-Create a new JavaScript file in `cli/source/commands/` with the filename specified in the definition.
+Create a new JavaScript file in `cli/src/commands/` with the filename specified in the definition.
 
 **File Naming Convention:**
 - Use kebab-case for the filename

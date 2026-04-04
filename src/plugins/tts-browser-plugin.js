@@ -13,7 +13,8 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 
 	constructor(ctx, config, outputContext, pluginSpec, overloadConfig = null) {
 		super(ctx, config, outputContext, pluginSpec, overloadConfig, 'TTS browser plugin')
-		this.pluginPath = join(process.cwd(), ctx.paths.plugins, 'speech', 'src', 'speech-plugin.js')
+		this.pluginPath = join(process.cwd(),
+			ctx.paths.plugins, 'speech', 'src', 'speech-plugin.js')
 		this.mutex = new Mutex()
 	}
 

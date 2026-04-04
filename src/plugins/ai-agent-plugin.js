@@ -192,11 +192,11 @@ export default class AIAgentPlugin {
 		const file = n.replaceAll('_', '-').toLowerCase() + '.js'
 		const fpath = path.join(
 			process.cwd(),
-			'source',
-			'components',
-			'ai',
-			'response-processors',
-			'response-processors-actions-handlers',
+			this.ctx.paths.src,
+			this.ctx.paths.components,
+			this.ctx.paths.aiComponents,
+			this.ctx.paths.responseProcessors,
+			this.ctx.paths.responseProcessorsActionsHandlers,
 			file)
 		const cl = require(fpath)
 		const o = new cl.default(this.ctx, this.config, this.tools, this.queryPreProcessors)

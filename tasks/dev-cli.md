@@ -12,7 +12,7 @@ describe an implementation of a new command that can be input by user, according
 
 #### generical prompt
 
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. The new command specification is described by the javascript object below:
+implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. The new command specification is described by the javascript object below:
 
 ```js
 {
@@ -31,7 +31,7 @@ implement a new command that can be input by user, according to the specificatio
     file: 'ls-command.js'
 }
 ```
-the run() method of this command must output the list of files that are in the folder path indicated by the property `cli.currentPath` in the app context (this.ctx). Each file name must be outputed on a new line in the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Each line contains the filename and all of the file properties (size, last modified date, etc.) properly aligned in columns. Use differents colors for each file property using new colors hex values that must be defined in the json object property `theme.ls`, through a set of keys dedicated for each file property in the file `cli/source/config/config.js`. The file properties are: name, size, last modified date, permissions, owner, group, type, and number of links. The file properties must be aligned in columns with the same width for each property. The file properties must be outputed in the following order: name, size, last modified date, permissions, owner, group, type, and number of links.
+the run() method of this command must output the list of files that are in the folder path indicated by the property `cli.currentPath` in the app context (this.ctx). Each file name must be outputed on a new line in the output component of the app context (this.ctx.components.output) using `ctx.components.output.appendLine()`. Each line contains the filename and all of the file properties (size, last modified date, etc.) properly aligned in columns. Use differents colors for each file property using new colors hex values that must be defined in the json object property `theme.ls`, through a set of keys dedicated for each file property in the file `cli/src/config/config.js`. The file properties are: name, size, last modified date, permissions, owner, group, type, and number of links. The file properties must be aligned in columns with the same width for each property. The file properties must be outputed in the following order: name, size, last modified date, permissions, owner, group, type, and number of links.
 the colors object in `theme.ls` must have the following keys: name, size, lastModified, permissions, owner, group, type, and links.
 use `chalk.hex()` to build the ainsi colorization orders.
 use `output.error()` to build the error message string.
@@ -155,7 +155,7 @@ implements the command `print` as described below:
 }
 ```
 
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 the run() method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
 the command must check if the path exists before to change it and display an explicit error message (with the path value)
@@ -193,7 +193,7 @@ implements the command `edit` as described below:
 }
 ```
 
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 the command must check if the path exists before to change it and display an explicit error message (with the path value)
 the run() method of this command must open an editor to edit the content of the file from:
@@ -212,13 +212,13 @@ implements the command `config` as described below:
     file: 'config-command.js'
 }
 ```
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
-This command works the same way as the command `edit`. This command has no parameters. It always open the file `cli/source/config/config.js`, related to the cli process path.
+This command works the same way as the command `edit`. This command has no parameters. It always open the file `cli/src/config/config.js`, related to the cli process path.
 
 ### command: `dialog`
 
-Implements a new command named `dialog`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Implements a new command named `dialog`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 this command is specified as below:
 
@@ -245,7 +245,7 @@ The command `dialog` is used to configure and control the dialog with the `cli t
 
 ### command: `help`
 
-Implements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Implements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 this command is specified as below:
 
@@ -285,8 +285,8 @@ The command `help` is used to provide informations about:
 
 ### command: `app`
 
-Implements a new command named `app`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
-Use as a model the command class in `cli/source/commands/dialog-command.js` and its command descriptor in the file `cli/source/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
+Implements a new command named `app`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/src/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Use as a model the command class in `cli/src/commands/dialog-command.js` and its command descriptor in the file `cli/src/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
 
 The command `app` is used to access to settings, configuration, run-time variables of the `cli tool`.
 - The action `get` implements the output of the `JSON` text of the value having given property path in the context of the command: `this.ctx`
@@ -332,27 +332,27 @@ The command descriptor is given below:
 
 ### command: `plugin`
 
-Implements a new command named `plugin`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/source/commands/` folder. update the property `cli.commands` in file `cli/source/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
-Use as a model the command class in `cli/source/commands/dialog-command.js` and its command descriptor in the file `cli/source/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
+Implements a new command named `plugin`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/src/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Use as a model the command class in `cli/src/commands/dialog-command.js` and its command descriptor in the file `cli/src/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
 
 The command `plugin` is used to list the available cli tools plugins, to unload and load a plugin by its name.
 
-- plugins are listed in the application context `cli/source/config/config.js`, under the property `plugin`. Each object in the plugin object is an object which describe a plugin. the object key is the plugin `id` and is the key of the object.
+- plugins are listed in the application context `cli/src/config/config.js`, under the property `plugin`. Each object in the plugin object is an object which describe a plugin. the object key is the plugin `id` and is the key of the object.
 
-- The action `load` implements the call to the instance of `PluginController` in `cli/source/controllers/plugin-controller`, using a new instance:
+- The action `load` implements the call to the instance of `PluginController` in `cli/src/controllers/plugin-controller`, using a new instance:
 ```js
 await new PluginController(this.ctx, outputContext)
 ```
 then calling on it a new method `load` method deduced by factorization of the existing code in this class, see method `run()`
 A plugin might not be loaded if it is already loaded. a plugin is `loaded` if the plugin object descriptor in the application context has the property `isLoaded` setted to `true`. This method must also set the flag `loaded` to true in the plugin object descriptor.
 
-- the action `unload` implements the call to the instance of `PluginController` in `cli/source/controllers/plugin-controller`, using a new instance:
+- the action `unload` implements the call to the instance of `PluginController` in `cli/src/controllers/plugin-controller`, using a new instance:
 ```js
 await new PluginController(this.ctx, outputContext)
 ```
 then calling on it a new method `unload`, that call the new method `unload` in the plugin instance object. This methid must also set the flag `loaded` to false in the plugin object descriptor. A plugin might not be **unloaded** if it is not already **loaded**
 
-- the action `list` must list all plugins `names` (plugin object descriptor **key**) and `descriptions` (plugin object descriptor property `description`) in a nice and colorized way, also indicating the loading status of the plugin (using library `chalk`). Any new color definition must be added and used from the application context `cli/source/config/config.js`, under the property `theme.plugin`.
+- the action `list` must list all plugins `names` (plugin object descriptor **key**) and `descriptions` (plugin object descriptor property `description`) in a nice and colorized way, also indicating the loading status of the plugin (using library `chalk`). Any new color definition must be added and used from the application context `cli/src/config/config.js`, under the property `theme.plugin`.
 
 The command descriptor is given below:
 

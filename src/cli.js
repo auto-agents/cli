@@ -47,7 +47,7 @@ process.on('unhandledRejection', (reason) => {
 const cli = meow(
 	`
 		Usage
-		  $ bun run source/cli.js
+		  $ bun run src/cli.js
 	`,
 	{
 		importMeta: import.meta,
