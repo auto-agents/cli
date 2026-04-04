@@ -1,7 +1,7 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { AgentGetFocusViewEvent, CommandNotFoundEvent, dialogEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, toJson } from '../../../shared/src/utils/utils.js'
+import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, setEnvVars, toJson } from '../../../shared/src/utils/utils.js'
 import DialogContext from '../../../shared/src/data/dialog-context.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
@@ -225,7 +225,9 @@ export default class AgentCommand extends Command {
 				))
 				const texts = []
 				paths.forEach(fp => {
-					texts.push(fs.readFileSync(fp))
+					texts.push(
+						setEnvVars(this.ctx,
+							fs.readFileSync(fp).toString()))
 				})
 				const text = texts.join('\n')
 
