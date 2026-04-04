@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "fs"
 import { join } from "path"
 import { ConfigAppendInstructions, ConfigMergeProps, ConfigMergePropsFromPath } from "../../../../shared/src/config/consts"
+import { setEnvVars } from "../../../../shared/src/utils/utils"
 
 export default class AIAgent {
 
@@ -39,11 +40,12 @@ export default class AIAgent {
 	addOSDependentSystemInstructions() {
 		const path = join(
 			process.cwd(),
-			this.ctx.paths.instructions,
+			this.ctx.paths.prompts,
+			'system',
 			this.ctx.shell.platform + '.md'
 		)
 		if (existsSync(path)) {
-			const prompt = readFileSync(path)
+			const prompt = setEnvVars(this.ctx, readFileSync(path).toString())
 			if (this.instructions)
 				this.instructions = prompt + '\n' + this.instructions
 			else

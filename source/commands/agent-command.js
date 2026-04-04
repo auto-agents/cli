@@ -221,7 +221,7 @@ export default class AgentCommand extends Command {
 				}
 				const t = flist.split(',')
 				const paths = t.map(x => path.join(
-					process.cwd(), this.ctx.paths.instructions, x
+					process.cwd(), this.ctx.paths.prompts, x
 				))
 				const texts = []
 				paths.forEach(fp => {

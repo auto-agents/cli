@@ -43,11 +43,16 @@ const platform = getPlatform()
 const longInterval = 4000
 const saved = 'saved'
 
-// app OutputContext
+const setupEnvVars = ctx => {
+	const curPath = process.cwd()
+	ctx.env = {
+		tmp: join(curPath, ctx.paths.tmp)
+	}
+}
 
 export default function config(cli) {
 
-	return {
+	const ctx = {
 		d: [],
 		app: {
 			name: 'Auto Agents',
@@ -62,7 +67,7 @@ export default function config(cli) {
 			pluginExportCommandsFolderName: 'commands',
 			pluginExportPluginFolderName: 'plugin',
 			configFileName: 'config.js',
-			instructions: 'prompts',
+			prompts: '../instruct/prompts',
 			saved: saved,
 			tmp: 'tmp',
 			tempsToClean: [],
@@ -1719,5 +1724,9 @@ export default function config(cli) {
 				[Platforms.windows]: "cmd /c start \"\" \"C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe\" -I dummy --dummy-quiet \"{filePath}\" vlc://quit"
 			}
 		}
-	};
+	}
+
+	setupEnvVars(ctx)
+
+	return ctx
 }
