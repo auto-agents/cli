@@ -79,8 +79,8 @@ export default class AppController {
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
-		this.session = ctx.components.session = new SessionController(ctx).init()
 		this.event = ctx.components.event = new EventService(ctx)
+		this.session = ctx.components.session = new SessionController(ctx).init()
 		this.output = ctx.components.output = new OutputController(ctx,
 			'this.ctx.cli.output',
 			OutputUpdatedEvent,

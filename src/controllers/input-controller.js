@@ -18,7 +18,6 @@ export default class InputController {
 	commandHelperStartPosition = null
 	commandHelperEndPosition = null
 	cmdExecCount = 0
-	cmdHistory = []
 	cmdHistoryIndex = 0
 	status = null
 	keyboardCapturer = null
@@ -46,7 +45,14 @@ export default class InputController {
 			this.keyboardCapturer = null
 		})
 
+		const histo = this.getCmdHistory()
+		this.cmdHistoryIndex = histo.length - 1
+
 		this.#initKeyboardListener()
+	}
+
+	getCmdHistory() {
+		return this.ctx.components.session.getCommandHistory()
 	}
 
 	#initKeyboardListener() {
@@ -63,18 +69,19 @@ export default class InputController {
 					return
 				}
 				//console.log(ck)
+				const histo = this.getCmdHistory()
 
 				if (ck == this.ctx.cli.keys.cmdUp.code) {	// shift + up : previous command
-					if (this.cmdHistory.length == 0) return
-					const cmd = this.cmdHistory[this.cmdHistoryIndex]
+					if (histo.length == 0) return
+					const cmd = histo[this.cmdHistoryIndex]
 					this.cmdHistoryIndex = Math.max(this.cmdHistoryIndex - 1, 0)
 					e.emit(CommandSetInputEvent, cmd)
 				}
 
 				if (ck == this.ctx.cli.keys.cmdDown.code) {       // shift + down : next command
-					if (this.cmdHistory.length == 0) return
-					this.cmdHistoryIndex = Math.min(this.cmdHistoryIndex + 1, this.cmdHistory.length - 1)
-					const cmd = this.cmdHistory[this.cmdHistoryIndex]
+					if (histo.length == 0) return
+					this.cmdHistoryIndex = Math.min(this.cmdHistoryIndex + 1, histo.length - 1)
+					const cmd = histo[this.cmdHistoryIndex]
 					e.emit(CommandSetInputEvent, cmd)
 				}
 			}
@@ -95,8 +102,10 @@ export default class InputController {
 				+ ' ' + cmd
 			)
 		}
-		this.cmdHistory.push(cmd)
-		this.cmdHistoryIndex = this.cmdHistory.length - 1
+
+		const histo = this.getCmdHistory()
+		histo.push(cmd)
+		this.cmdHistoryIndex = histo.length - 1
 		this.cmdExecCount++
 
 		if (this.cmdExecCount == 1)

@@ -79,6 +79,7 @@ export default function config(cli) {
 			config: 'config',
 			configFilename: 'config.js',
 			chatHistoryFilename: 'chat.json',
+			commandHistoryFilename: 'commands-history.txt',
 			tmp: 'tmp',
 			tempsToClean: [],
 			speakPreProcessors: join(
