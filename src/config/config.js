@@ -1589,6 +1589,7 @@ export default function config(cli) {
 					// -------------------------------------------------------
 
 					saveChatHistory: true,
+					restoreSessionAgentHistoryOnStartup: true,
 
 					enableGemmaStyleToolCallParsing: true,
 					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config

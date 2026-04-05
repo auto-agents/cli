@@ -1,15 +1,20 @@
 import { Role_Assistant, Role_System } from "./roles"
-import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs'
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { sessionPath, toJson } from '../../../../shared/src/utils/utils.js'
 
 export default class History {
 
+	messages = null
+
 	constructor(ctx, config, messages = null) {
 		this.ctx = ctx
 		this.config = config
 		this.initSessionPaths()
-		this.reset()
+		if (config.restoreSessionAgentHistoryOnStartup)
+			this.load()
+		if (!this.messages || this.messages.length < 1)
+			this.reset()	// or reload
 		if (messages)
 			this.messages = [
 				...this.messages,
@@ -39,6 +44,14 @@ export default class History {
 			this.historyFile,
 			toJson(this.messages)
 		)
+	}
+
+	load() {
+		this.checkSessionPaths()
+		if (!existsSync(this.historyFile)) return
+		const histo = readFileSync(this.historyFile).toString()
+		const ms = JSON.parse(histo)
+		this.messages = ms
 	}
 
 	deleteSave() {
