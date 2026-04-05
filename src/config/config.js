@@ -96,6 +96,7 @@ export default function config(cli) {
 			delayedLongTime: 800,
 			initWait: 500,
 			initFastWait: 250,
+			initBoxEnabled: false,
 			states: {
 				initBoxVisible: true
 			},
@@ -788,8 +789,9 @@ export default function config(cli) {
 				},
 				// parts
 				conversationalAgent: {
-					instructions: "N'utilise pas un style narratif, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique.ne décrit pas la scène.",
-					_mergePropsFromPath: ['agents.profiles.noSystemInstructions']
+					instructions: "N'utilise pas un style narratif. Dans tes réponses, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. N'ajoute pas de description de scène.",
+					_mergePropsFromPath: ['agents.profiles.noSystemInstructions'],
+					_appendInstructions: ['noItalicizedTextDecoration']
 				},
 				noSystemInstructions: {
 					prependOSDependentSystemInstructions: false

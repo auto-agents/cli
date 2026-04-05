@@ -79,7 +79,8 @@ const ListSelector = ({
 
 	useEffect(() => {
 		const handleOpenCommandEvent = args => {
-			if (ctx.ui.states.initBoxVisible)
+			if (ctx.ui.initBoxEnabled &&
+				ctx.ui.states.initBoxVisible)
 				e.emit(HideInitBoxOutputEvent)
 			const props = args[0]
 			const items = props.items
