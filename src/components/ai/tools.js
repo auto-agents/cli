@@ -5,6 +5,7 @@ import { existsSync } from "fs";
 import { readdir } from 'fs/promises'
 import { join } from 'path';
 import { pathToFileURL } from 'url'
+import OutputContext from "../../../../shared/src/data/output-context";
 
 export const Tool_Output_Format_Json = 'Tool_Output_Format_Json'
 export const Tool_Output_Format_JsonMD = 'Tool_Output_Format_JsonMD'
@@ -15,6 +16,12 @@ export default class Tools {
 	tools = {}
 	ts = []
 
+	/**
+	 *
+	 * @param {Object} ctx app context
+	 * @param {Object} config ai agent plugin config
+	 * @param {OutputContext} outputContext output context
+	 */
 	constructor(ctx, config, outputContext) {
 		this.ctx = ctx
 		this.config = config
@@ -100,6 +107,10 @@ export default class Tools {
 			tspecs.push(this.getToolSpec(tool))
 		}
 		return tspecs
+	}
+
+	getAvailableToolsSpecifications() {
+		// TODO: ...
 	}
 
 	getToolSpec(tool) {

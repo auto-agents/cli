@@ -1579,7 +1579,7 @@ export default function config(cli) {
 
 					temperature: 0.7,
 					tools: [],
-					enabledTools: [],	// all if empty
+					enabledTools: [],	// all enabled if empty, all disabled if null, else explicit enableds
 
 					tool_choice: "auto",	// auto (default) | any (ministral) | none | required (lm studio)
 					parallel_tool_calls: true,	// true (default) | false
