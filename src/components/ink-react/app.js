@@ -305,7 +305,7 @@ export default function App({ ctx }) {
 
 			{ /* outputs */}
 
-			{ /* 'live' output */}
+			{ /* 'live' output : TOOD: to be REMOVED */}
 
 			{
 				initBoxVisible &&
@@ -384,6 +384,7 @@ export default function App({ ctx }) {
 					<Text>{tuiStatusMessage}</Text>
 				</Box>
 			</Box>
-		</Box >
+
+		</Box>
 	);
 }

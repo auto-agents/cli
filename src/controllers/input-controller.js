@@ -7,7 +7,8 @@ import {
 	CommandInputStartedEvent,
 	HelpOutputUpdatedEvent,
 	KeyboardCaptureRequestEvent,
-	CommandKeyboardCaptureReleaseEvent
+	CommandKeyboardCaptureReleaseEvent,
+	KeyboardInputEvent
 } from "../../../shared/src/data/events"
 import { ESC } from '../../../shared/src/config/consts.js'
 import Status from '../../../shared/src/utils/status.js'
@@ -58,17 +59,18 @@ export default class InputController {
 	#initKeyboardListener() {
 		process.stdin.on('data', (data) => {
 
+			const e = this.ctx.components.event
+
+			if (this.keyboardCapturer) {
+				if (this.keyboardCapturer.onKeyboardEvent) {
+					this.keyboardCapturer.onKeyboardEvent(data)
+				}
+				return
+			}
+
 			if (data.includes(ESC)) {
 				const ck = data.replaceAll(ESC, "")
-				const e = this.ctx.components.event
 
-				if (this.keyboardCapturer) {
-					if (this.keyboardCapturer.onKeyboardEvent) {
-						this.keyboardCapturer.onKeyboardEvent(ck)
-					}
-					return
-				}
-				//console.log(ck)
 				const histo = this.getCmdHistory()
 
 				if (ck == this.ctx.cli.keys.cmdUp.code) {	// shift + up : previous command
@@ -85,6 +87,9 @@ export default class InputController {
 					e.emit(CommandSetInputEvent, cmd)
 				}
 			}
+
+			// user input
+			e.emit(KeyboardInputEvent, data)
 		})
 	}
 

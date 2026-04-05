@@ -585,6 +585,10 @@ export default function config(cli) {
 			],
 			network: {
 				userAgent: 'auto-agents-cli-1.0'
+			},
+			input: {
+				value: '',
+				cursor: 0
 			}
 		},
 		agents: {
