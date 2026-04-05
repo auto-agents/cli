@@ -1584,6 +1584,8 @@ export default function config(cli) {
 					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
 					// -------------------------------------------------------
 
+					saveChatHistory: true,
+
 					enableGemmaStyleToolCallParsing: true,
 					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
 					responseProcessors: [

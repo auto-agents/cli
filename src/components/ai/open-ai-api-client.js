@@ -97,7 +97,7 @@ export default class OpenAIApiClient extends AIApiClient {
 
 		const u = r.usage
 
-		this.history.messages.push(message)
+		this.history.add(message)
 
 		return {
 			response: r,

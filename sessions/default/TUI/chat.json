@@ -1,0 +1,16 @@
+[
+  {
+    "role": "system",
+    "content": "- my os is **windows**, my shell is **powershell**\n- if you need to install a shell command, then use the command **Chocolatey** to install new shell commands\n- to run a shell command, use the tool `powershell_exec`\n- if you need to **write** a python script, **ALWAYS USE** the tool `write_file`. write files in folder `E:\\DEV\\repos\\auto-agents\\cli\\tmp`.\n- if you need to run a **pyhton** script, then use the command **pyhton** to run python scripts and not **python3**\n- always prefers to use **shell_exec**, when it is possible, instead of using a **tool**\n- always prefers to write a **python script** in the `E:\\DEV\\repos\\auto-agents\\cli\\tmp` folder rather than using shell commands\n- automatically run commands and scripts when needed, do not ask user\n- **ALWAYS USE ABSOLUTE PATHS**, related to the base folder path: `E:\\DEV\\repos\\auto-agents\\cli\\tmp`\n\nYou are a helpful assistant. You can use the following tools to help answer the user's questions."
+  },
+  {
+    "role": "user",
+    "content": "hello again"
+  },
+  {
+    "role": "assistant",
+    "content": "Hello again! How can I assist you today? Let me know if you need help with any tasks, such as installing software, running scripts, or automating processes. 😊",
+    "reasoning_content": "",
+    "tool_calls": []
+  }
+]

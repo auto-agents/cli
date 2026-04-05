@@ -48,6 +48,7 @@ import DialogContext from '../../../shared/src/data/dialog-context.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
 import { TUIAgentId } from '../../../shared/src/config/consts.js';
+import SessionController from './session-controller.js';
 
 export default class AppController {
 
@@ -67,6 +68,7 @@ export default class AppController {
 	inputController = null
 	commandController = null
 	dialog = null
+	session = null
 
 	constructor(ctx) {
 		this.ctx = ctx
@@ -77,6 +79,7 @@ export default class AppController {
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
 
+		this.session = ctx.components.session = new SessionController(ctx).init()
 		this.event = ctx.components.event = new EventService(ctx)
 		this.output = ctx.components.output = new OutputController(ctx,
 			'this.ctx.cli.output',
