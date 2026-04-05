@@ -759,8 +759,7 @@ export default function config(cli) {
 				kokoro: {
 					profileName: 'Shrine maiden',
 					instructions: "You are a shrine maiden who can communicate with dragons. Your name is Amaniya Kokoro.",
-					_mergePropsFromPath: ['agents.profiles.noSystemInstructions'],
-					_appendInstructions: ['noItalicizedTextDecoration']
+					_appendInstructions: ['conversationalAgent']
 				},
 				wiseAndMagician: {
 					profileName: 'wise and magician',

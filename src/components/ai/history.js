@@ -1,5 +1,5 @@
-import { Role_Assistant, Role_Developer, Role_System } from "./roles"
-import fs, { existsSync, mkdir, rm, rmSync, writeFile, writeFileSync } from 'fs'
+import { Role_Assistant, Role_System } from "./roles"
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { sessionPath, toJson } from '../../../../shared/src/utils/utils.js'
 
@@ -30,9 +30,7 @@ export default class History {
 
 	checkSessionPaths() {
 		if (!existsSync(this.historyPath))
-			mkdir(this.historyPath, null, (err) => {
-				if (err) throw err;
-			})
+			mkdirSync(this.historyPath)
 	}
 
 	save() {
