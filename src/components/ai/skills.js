@@ -37,7 +37,7 @@ export default class Skills {
 		for (const [name, skill] of Object.entries(this.skills)) {
 			rows.push(`- ${name} : ${skill.description} location: \`${skill.location}\``)
 		}
-		return rows.join('\n')
+		return rows.join('\n') + '\n'
 	}
 
 	async buildSkillsCatalog() {

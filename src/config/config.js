@@ -938,7 +938,6 @@ export default function config(cli) {
 					}
 				},
 				cronmaXClone: {
-					// mecron: salut a toi et a ta putain de meuf
 					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
@@ -951,7 +950,6 @@ export default function config(cli) {
 					}
 				},
 				lapenXClone: {
-					// mecron: salut a toi et a ta putain de meuf
 					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
@@ -964,7 +962,6 @@ export default function config(cli) {
 					}
 				},
 				molocheXClone: {
-					// mecron: salut a toi et a ta putain de meuf
 					TTSPluginName: 'TTSWebUI',
 					speak: {
 						enabled: true,
