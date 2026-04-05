@@ -45,7 +45,7 @@ const longInterval = 4000
 const setupEnvVars = ctx => {
 	const curPath = process.cwd()
 	ctx.env = {
-		tmp: join(curPath, ctx.paths.tmp)
+		TMP_DIR: join(curPath, ctx.paths.tmp)
 	}
 }
 
