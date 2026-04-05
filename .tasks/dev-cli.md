@@ -12,7 +12,7 @@ describe an implementation of a new command that can be input by user, according
 
 #### generical prompt
 
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. The new command specification is described by the javascript object below:
+implement a new command that can be input by user, according to the specification in file `cli/.specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class. The new command specification is described by the javascript object below:
 
 ```js
 {
@@ -155,7 +155,7 @@ implements the command `print` as described below:
 }
 ```
 
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+implement a new command that can be input by user, according to the specification in file `cli/.specifications/command-model.md` and your guidelines in file `cli/.specifications/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 the run() method of this command must output the content of the file having path that is provided as the first element of the arguments array that is passed to the run() method.
 the command must check if the path exists before to change it and display an explicit error message (with the path value)
@@ -193,7 +193,7 @@ implements the command `edit` as described below:
 }
 ```
 
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+implement a new command that can be input by user, according to the specification in file `cli/.specifications/command-model.md` and your guidelines in file `cli/.specifications/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 the command must check if the path exists before to change it and display an explicit error message (with the path value)
 the run() method of this command must open an editor to edit the content of the file from:
@@ -212,13 +212,13 @@ implements the command `config` as described below:
     file: 'config-command.js'
 }
 ```
-implement a new command that can be input by user, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+implement a new command that can be input by user, according to the specification in file `cli/.specifications/command-model.md` and your guidelines in file `cli/.specifications/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 This command works the same way as the command `edit`. This command has no parameters. It always open the file `cli/src/config/config.js`, related to the cli process path.
 
 ### command: `dialog`
 
-Implements a new command named `dialog`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Implements a new command named `dialog`, according to the specification in file `cli/.specifications/command-model.md` and your guidelines in file `cli/.specifications/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 this command is specified as below:
 
@@ -245,7 +245,7 @@ The command `dialog` is used to configure and control the dialog with the `cli t
 
 ### command: `help`
 
-Implements a new command named `help`, according to the specification in file `cli/specifications/command-model.md` and your guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Implements a new command named `help`, according to the specification in file `cli/.specifications/command-model.md` and your guidelines in file `cli/.specifications/command-implementation.md`. Write the result in the appropriate file in `cli/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 
 this command is specified as below:
 
@@ -285,7 +285,7 @@ The command `help` is used to provide informations about:
 
 ### command: `app`
 
-Implements a new command named `app`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/src/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Implements a new command named `app`, according to the specification in file `cli/.specifications/command-model.md` and the guidelines in file `cli/.specifications/command-implementation.md`. Write the result in the appropriate file in `cli/src/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 Use as a model the command class in `cli/src/commands/dialog-command.js` and its command descriptor in the file `cli/src/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
 
 The command `app` is used to access to settings, configuration, run-time variables of the `cli tool`.
@@ -332,7 +332,7 @@ The command descriptor is given below:
 
 ### command: `plugin`
 
-Implements a new command named `plugin`, according to the specification in file `cli/specifications/command-model.md` and the guidelines in file `cli/doc/command-implementation.md`. Write the result in the appropriate file in `cli/src/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
+Implements a new command named `plugin`, according to the specification in file `cli/.specifications/command-model.md` and the guidelines in file `cli/.specifications/command-implementation.md`. Write the result in the appropriate file in `cli/src/commands/` folder. update the property `cli.commands` in file `cli/src/config/config.js` to include the new command. Implements a command implementation body in the run method of the command class.
 Use as a model the command class in `cli/src/commands/dialog-command.js` and its command descriptor in the file `cli/src/config/config.js`, the entry with `names: ['dialog', 'dial', 'd']`
 
 The command `plugin` is used to list the available cli tools plugins, to unload and load a plugin by its name.
