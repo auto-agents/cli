@@ -590,8 +590,10 @@ export default function config(cli) {
 		agents: {
 
 			// agents global config - TODO: make overlodable
-			config: {
-				prependOSDependentSystemInstructions: true
+			global: {
+				config: {
+					prependOSDependentSystemInstructions: true
+				}
 			},
 
 			list: [
@@ -795,7 +797,9 @@ export default function config(cli) {
 					_appendInstructions: ['noItalicizedTextDecoration']
 				},
 				noSystemInstructions: {
-					prependOSDependentSystemInstructions: false
+					config: {
+						prependOSDependentSystemInstructions: false
+					}
 				},
 				noItalicizedTextDecoration: {
 					instructions: "don't use italicized text decoration."

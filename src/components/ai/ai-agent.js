@@ -28,12 +28,12 @@ export default class AIAgent {
 
 	constructor(ctx, props) {
 		this.ctx = ctx
-		this.mergeProps(ctx.agents.config, this)
+		this.mergeProps(ctx.agents.global, this)
 		this.mergeVoiceProfile(props)
 		this.mergeAvatar(props)
 		this.mergeProfile(props)
 		this.mergeProps(props, this)
-		if (this.prependOSDependentSystemInstructions)
+		if (this.config.prependOSDependentSystemInstructions)
 			this.addOSDependentSystemInstructions()
 	}
 
@@ -78,9 +78,20 @@ export default class AIAgent {
 				// handle special properties
 				this.#handleMergeDirectives(name, value, into)
 			}
-			else
-				// simply merge replace
-				into[name] = value
+			else {
+				if (typeof value == 'object') {
+					if (!into[name]) into[name] = {}
+					if (into[name] && typeof into == 'object')
+						// merge objects
+						this.mergeProps(value, into[name])
+					else
+						// replace value by object
+						into[name] = value
+				}
+				else
+					// simply merge replace
+					into[name] = value
+			}
 		}
 	}
 
