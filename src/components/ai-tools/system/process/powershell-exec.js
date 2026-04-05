@@ -31,7 +31,8 @@ export default class PowershellExec extends AITool {
 		const exe = this.ctx.shell.platform == Platforms.windows ? 'powershell.exe' : 'pwsh'
 		var error = null
 		var res = null
-		com = exe + ' -Command & {' + com + '}'
+		com = com.replace('"', '\\"')
+		com = exe + ' -Command "' + com + '"'
 
 		await exec(com,
 			{
