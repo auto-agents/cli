@@ -7,221 +7,222 @@ import { ESC } from '../../../../shared/src/config/consts';
 // collaborates with prompt.js (ctx.cli.currentInput) for Home/End keys handling
 function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = true, mask, highlightPastedText = false, showCursor = true, onChange, onSubmit, }) {
 
-    const [state, setState] = useState({
-        cursorOffset: (originalValue || '').length,
-        cursorWidth: 0,
-    });
-    const { cursorOffset, cursorWidth } = state;
-    const [keyboardCapturer, setKeyboardCapturer] = useState(null)
+	const [state, setState] = useState({
+		cursorOffset: (originalValue || '').length,
+		cursorWidth: 0,
+	});
+	const { cursorOffset, cursorWidth } = state;
+	const [keyboardCapturer, setKeyboardCapturer] = useState(null)
 
-    useEffect(() => {
-        setState(previousState => {
+	//const [valueProp, setValueProp] = useState('')
 
-            if (!focus || !showCursor) {
-                return previousState;
-            }
-            const newValue = originalValue || '';
-            if (previousState.cursorOffset > newValue.length - 1) {
-                return {
-                    cursorOffset: newValue.length,
-                    cursorWidth: 0,
-                };
-            }
-            return previousState;
-        });
-    }, [originalValue, focus, showCursor]);
+	useEffect(() => {
+		setState(previousState => {
 
-    const cursorActualWidth = highlightPastedText ? cursorWidth : 0;
-    const value = mask ? mask.repeat(originalValue.length) : originalValue;
-    let renderedValue = value;
-    let renderedPlaceholder = placeholder ? chalk.grey(placeholder) : undefined;
+			if (!focus || !showCursor) {
+				return previousState;
+			}
+			const newValue = originalValue || '';
+			if (previousState.cursorOffset > newValue.length - 1) {
+				return {
+					cursorOffset: newValue.length,
+					cursorWidth: 0,
+				};
+			}
+			return previousState;
+		});
+	}, [originalValue, focus, showCursor]);
 
-    const cursorColor = ctx.theme.cursor.color;
-    const cursor = c => {
-        if (!c)
-            return chalk.hex(cursorColor)(ctx.theme.cursor.character)
-        return chalk.bgHex(cursorColor)(c)
-    }
+	const cursorActualWidth = highlightPastedText ? cursorWidth : 0;
+	const value = mask ? mask.repeat(originalValue.length) : originalValue;
+	let renderedValue = value;
+	let renderedPlaceholder = placeholder ? chalk.grey(placeholder) : undefined;
 
-    // Fake mouse cursor, because it's too inconvenient to deal with actual cursor and ansi escapes
-    if (showCursor && focus) {
+	const cursorColor = ctx.theme.cursor.color;
+	const cursor = c => {
+		if (!c)
+			return chalk.hex(cursorColor)(ctx.theme.cursor.character)
+		return chalk.bgHex(cursorColor)(c)
+	}
 
-        renderedPlaceholder =
-            placeholder.length > 0
-                ? cursor(placeholder[0]) + chalk.grey(placeholder.slice(1))
-                : cursor();
-        renderedValue = value.length > 0 ? '' : cursor();
+	// Fake mouse cursor, because it's too inconvenient to deal with actual cursor and ansi escapes
+	if (showCursor && focus) {
 
-        //console.log('cursor offset = ' + cursorOffset, 'cursorActualWidth=' + cursorActualWidth)
+		renderedPlaceholder =
+			placeholder.length > 0
+				? cursor(placeholder[0]) + chalk.grey(placeholder.slice(1))
+				: cursor();
+		renderedValue = value.length > 0 ? '' : cursor();
 
-        let i = 0;
-        for (const char of value) {
-            renderedValue +=
-                i >= cursorOffset - cursorActualWidth && i <= cursorOffset
-                    ? cursor(char)
-                    : char;
-            i++;
-        }
+		//console.log('cursor offset = ' + cursorOffset, 'cursorActualWidth=' + cursorActualWidth)
 
-        if (value.length > 0 && cursorOffset === value.length) {
-            renderedValue += cursor();
-        }
-    }
+		let i = 0;
+		for (const char of value) {
+			renderedValue +=
+				i >= cursorOffset - cursorActualWidth && i <= cursorOffset
+					? cursor(char)
+					: char;
+			i++;
+		}
 
-    const inputImpl = (input, key, code) => {
+		if (value.length > 0 && cursorOffset === value.length) {
+			renderedValue += cursor();
+		}
+	}
 
-        if (keyboardCapturer) {
-            if (keyboardCapturer.onKeyboardEvent) {
-                keyboardCapturer.onKeyboardEvent(input, key, code)
-            }
-            return
-        }
+	const inputImpl = (input, key, code) => {
 
-        const md = ctx.components.mouse.getMouseData(ESC + input)
-        if (md != null)
-            return
+		if (keyboardCapturer) {
+			if (keyboardCapturer.onKeyboardEvent) {
+				keyboardCapturer.onKeyboardEvent(input, key, code)
+			}
+			return
+		}
 
-        var forceUpd = false
+		const md = ctx.components.mouse.getMouseData(ESC + input)
+		if (md != null)
+			return
 
-        //console.log(key)
+		var forceUpd = false
 
-        if (key.upArrow ||
-            key.downArrow ||
-            (key.ctrl && input === 'c') ||
-            key.tab ||
-            (key.shift && key.tab)) {
-            return;
-        }
+		//console.log(key)
 
-        if (key.return) {
-            if (onSubmit) {
-                onSubmit(originalValue);
-            }
-            return;
-        }
+		if (key.upArrow ||
+			key.downArrow ||
+			(key.ctrl && input === 'c') ||
+			key.tab ||
+			(key.shift && key.tab)) {
+			return;
+		}
 
-        let nextCursorOffset = cursorOffset;
-        let nextValue = originalValue;
-        let nextCursorWidth = 0;
+		if (key.return) {
+			if (onSubmit) {
+				onSubmit(originalValue);
+			}
+			return;
+		}
 
-        if (key.leftArrow) {
-            if (showCursor) {
-                nextCursorOffset--;
-            }
-        }
-        else if (key.rightArrow) {
-            if (showCursor) {
-                nextCursorOffset++;
-            }
-        }
-        else if (code == ctx.cli.keys.inputToStart.code) {
-            if (showCursor) {
-                nextCursorOffset = 0;
-            }
-        } else if (code == ctx.cli.keys.inputToEnd.code) {
-            if (showCursor) {
-                nextCursorOffset = input.length;
-                nextCursorWidth = 0
-            }
-        }
+		let nextCursorOffset = cursorOffset;
+		let nextValue = originalValue;
+		let nextCursorWidth = 0;
 
-        else if (key.backspace || key.delete) {
-            if (cursorOffset > 0) {
-                nextValue =
-                    originalValue.slice(0, cursorOffset - 1) +
-                    originalValue.slice(cursorOffset, originalValue.length);
-                nextCursorOffset--;
-            }
-        }
+		if (key.leftArrow) {
+			if (showCursor) {
+				nextCursorOffset--;
+			}
+		}
+		else if (key.rightArrow) {
+			if (showCursor) {
+				nextCursorOffset++;
+			}
+		}
+		else if (code == ctx.cli.keys.inputToStart.code) {
+			if (showCursor) {
+				nextCursorOffset = 0;
+			}
+		} else if (code == ctx.cli.keys.inputToEnd.code) {
+			if (showCursor) {
+				nextCursorOffset = input.length;
+				nextCursorWidth = 0
+			}
+		}
 
-        else {
-            // no input and no key: does nothing please !!
-            if (input.length > 0) {
-                nextValue =
-                    originalValue.slice(0, cursorOffset) +
-                    input +
-                    originalValue.slice(cursorOffset, originalValue.length);
-                nextCursorOffset += input.length;
-                if (input.length > 1) {
-                    nextCursorWidth = input.length;
-                }
-            }
-            else return
-        }
+		else if (key.backspace || key.delete) {
+			if (cursorOffset > 0) {
+				nextValue =
+					originalValue.slice(0, cursorOffset - 1) +
+					originalValue.slice(cursorOffset, originalValue.length);
+				nextCursorOffset--;
+			}
+		}
 
-        if (cursorOffset < 0) {
-            nextCursorOffset = 0;
-        }
-        if (cursorOffset > originalValue.length) {
-            nextCursorOffset = originalValue.length;
-        }
+		else {
+			// no input and no key: does nothing please !!
+			if (input.length > 0) {
+				nextValue =
+					originalValue.slice(0, cursorOffset) +
+					input +
+					originalValue.slice(cursorOffset, originalValue.length);
+				nextCursorOffset += input.length;
+				if (input.length > 1) {
+					nextCursorWidth = input.length;
+				}
+			}
+			else return
+		}
 
-        setState({
-            cursorOffset: nextCursorOffset,
-            cursorWidth: nextCursorWidth,
-        });
+		if (cursorOffset < 0) {
+			nextCursorOffset = 0;
+		}
+		if (cursorOffset > originalValue.length) {
+			nextCursorOffset = originalValue.length;
+		}
 
-        if (forceUpd || nextValue !== originalValue) {
-            onChange(nextValue);
-        }
-    }
+		setState({
+			cursorOffset: nextCursorOffset,
+			cursorWidth: nextCursorWidth,
+		});
 
-    useInput(inputImpl, { isActive: focus });
+		if (forceUpd || nextValue !== originalValue) {
+			//setValueProp(nextValue)
+			onChange(nextValue);
+		}
+	}
 
-    useEffect(() => {
-        const inputToStartHandler = () => {
-            const q = ctx.cli.currentInput
-            inputImpl(q, {}, ctx.cli.keys.inputToStart.code)
-        }
-        const inputToEndHandler = () => {
-            const q = ctx.cli.currentInput
-            inputImpl(q, {}, ctx.cli.keys.inputToEnd.code)
-        }
-        const keyboardCaptureRequestEventHandler = args => {
-            if (keyboardCapturer != null) {
-                if (keyboardCapturer.releaseKeyboard)
-                    keyboardCapturer.releaseKeyboard()
-            }
-            setKeyboardCapturer(args[0])
-        }
-        const commandKeyboardCaptureReleaseEventHandler = () => {
-            setKeyboardCapturer(null)
-        }
+	useInput(inputImpl, { isActive: focus });
 
-        ctx.components.event.on(
-            InputToStartEvent,
-            inputToStartHandler
-        )
-        ctx.components.event.on(
-            InputToEndEvent,
-            inputToEndHandler
-        )
-        ctx.components.event.on(
-            KeyboardCaptureRequestEvent,
-            keyboardCaptureRequestEventHandler
-        )
-        ctx.components.event.on(
-            CommandKeyboardCaptureReleaseEvent,
-            commandKeyboardCaptureReleaseEventHandler
-        )
-        return () => {
-            ctx.components.event.off(InputToStartEvent, inputToStartHandler)
-            ctx.components.event.off(InputToEndEvent, inputToEndHandler)
-            ctx.components.event.off(KeyboardCaptureRequestEvent, keyboardCaptureRequestEventHandler)
-            ctx.components.event.off(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseEventHandler)
-        }
-    }, [])
+	useEffect(() => {
+		const inputToStartHandler = () => {
+			const q = ctx.cli.currentInput
+			inputImpl(q, {}, ctx.cli.keys.inputToStart.code)
+		}
+		const inputToEndHandler = () => {
+			const q = ctx.cli.currentInput
+			inputImpl(q, {}, ctx.cli.keys.inputToEnd.code)
+		}
+		const keyboardCaptureRequestEventHandler = args => {
+			if (keyboardCapturer != null) {
+				if (keyboardCapturer.releaseKeyboard)
+					keyboardCapturer.releaseKeyboard()
+			}
+			setKeyboardCapturer(args[0])
+		}
+		const commandKeyboardCaptureReleaseEventHandler = () => {
+			setKeyboardCapturer(null)
+		}
 
-    return (React.createElement(Text, null, placeholder
-        ? value.length > 0
-            ? renderedValue
-            : renderedPlaceholder
-        : renderedValue));
+		ctx.components.event.on(
+			InputToStartEvent,
+			inputToStartHandler
+		)
+		ctx.components.event.on(
+			InputToEndEvent,
+			inputToEndHandler
+		)
+		ctx.components.event.on(
+			KeyboardCaptureRequestEvent,
+			keyboardCaptureRequestEventHandler
+		)
+		ctx.components.event.on(
+			CommandKeyboardCaptureReleaseEvent,
+			commandKeyboardCaptureReleaseEventHandler
+		)
+		return () => {
+			ctx.components.event.off(InputToStartEvent, inputToStartHandler)
+			ctx.components.event.off(InputToEndEvent, inputToEndHandler)
+			ctx.components.event.off(KeyboardCaptureRequestEvent, keyboardCaptureRequestEventHandler)
+			ctx.components.event.off(CommandKeyboardCaptureReleaseEvent, commandKeyboardCaptureReleaseEventHandler)
+		}
+	}, [])
+
+	return (React.createElement(Text, null, placeholder
+		? value.length > 0
+			? renderedValue
+			: renderedPlaceholder
+		: renderedValue));
+	/*return (
+		<Text>{value}</Text>
+	)*/
 }
-
 
 export default TextInput;
-export function UncontrolledTextInput({ initialValue = '', ...props }) {
-    const [value, setValue] = useState(initialValue);
-    return React.createElement(TextInput, { ...props, value: value, onChange: setValue });
-}
