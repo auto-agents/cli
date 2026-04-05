@@ -33,6 +33,8 @@ export default class Tools {
 			this.ctx.paths.aiTools)
 	}
 
+	// TODO: filter loaded tools by agent plugin config
+	// TODO: then update usage of tools array (remove)
 	async load(filepath, file, outputContext) {
 		const oc = outputContext || this.outputContext
 		const o = oc.output

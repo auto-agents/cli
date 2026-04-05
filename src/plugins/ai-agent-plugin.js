@@ -2,13 +2,13 @@ import ActionController from "../controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../../../shared/src/utils/status.js'
-import utils, { getLoadedAgentDump } from '../../../shared/src/utils/utils.js'
-import fs from 'fs'
+import utils, { getLoadedAgentDump, setEnvVars } from '../../../shared/src/utils/utils.js'
+import { existsSync, readFileSync, writeFileSync } from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
 import { Role_Assistant } from "../components/ai/roles.js";
 import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
-import path from "path";
+import { join } from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
 import chalk from "chalk"
 import Skills from "../components/ai/skills.js";
@@ -133,6 +133,7 @@ export default class AIAgentPlugin {
 				await this.responseProcessors.loadProcessors(this.config.responseProcessors)
 				await this.tools.loadTools()
 				await this.skills.buildSkillsCatalog()
+				this.#prependSkillsPrompt()
 				await utils.wait(this.ctx.ui.initFastWait)
 
 			} catch (err) {
@@ -149,6 +150,22 @@ export default class AIAgentPlugin {
 			}
 		)
 		await initApiAction.run()
+	}
+
+	#prependSkillsPrompt() {
+		const path = join(
+			process.cwd(),
+			this.ctx.paths.enableSkillsPrompt
+		)
+		const agent = this.config.agent
+		if (existsSync(path)) {
+			var prompt = setEnvVars(this.ctx, readFileSync(path).toString())
+			prompt += '\n' + this.skills.toPromptText()
+			if (agent.instructions)
+				agent.instructions = prompt + '\n' + agent.instructions
+			else
+				agent.instructions = prompt
+		}
 	}
 
 	/**
@@ -201,7 +218,7 @@ export default class AIAgentPlugin {
 			return this.responseProcessorsActionsHandlers[n]
 
 		const file = n.replaceAll('_', '-').toLowerCase() + '.js'
-		const fpath = path.join(
+		const fpath = join(
 			process.cwd(),
 			this.ctx.paths.src,
 			this.ctx.paths.components,
@@ -272,7 +289,7 @@ export default class AIAgentPlugin {
 		const hasToolsCalls = this.hasToolsCalls(r) //r.tool_calls?.length > 0
 
 		// handle response processors actions : perform actions if no content
-		// TODO: change the loop content convention, enable content anyway
+		// TODO: change the loop content convention, enable content anyway ? (check standard)
 		if (hasToolsCalls && !hasContent) {
 
 			// process response. get tools calls in actions. original response unchanged
@@ -309,7 +326,7 @@ export default class AIAgentPlugin {
 			(!format || format == 'json') ?
 				this.api.history.toJson()
 				: this.api.history.toText()
-		fs.writeFileSync(filePath, h)
+		writeFileSync(filePath, h)
 	}
 
 	clearHistory() {

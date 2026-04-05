@@ -3,9 +3,13 @@ import Status from "../../../../shared/src/utils/status"
 import OutputContext from './../../../../shared/src/data/output-context';
 import { readdir, readFile } from 'fs/promises';
 import { existsSync } from "fs";
+import { validate, readProperties, toPrompt } from "skills-ref"
+import { toJson } from '../../../../shared/src/utils/utils';
+import Skill from '../../../../shared/src/data/skill';
 
 export default class Skills {
 
+	skills = {}
 	skillsNames = []
 
 	/**
@@ -25,7 +29,20 @@ export default class Skills {
 		)
 	}
 
+	/**
+	 * gets the catalog prompt text
+	 */
+	toPromptText() {
+		const rows = []
+		for (const [name, skill] of Object.entries(this.skills)) {
+			rows.push(`- ${name} : ${skill.description} location: \`${skill.location}\``)
+		}
+		return rows.join('\n')
+	}
+
 	async buildSkillsCatalog() {
+
+		if (!this.config.enabledSkills) return
 
 		const oc = this.outputContext
 		const o = oc.output
@@ -69,9 +86,27 @@ export default class Skills {
 				return null
 			}
 
-			const skillMd = (await readFile(filepath)).toString()
-			const skillName = basename(dirname(filepath))
-			this.skillsNames.push(skillName)
+			//const skillMd = (await readFile(filepath)).toString()
+			const skillDir = dirname(filepath)
+			const skillName = basename(skillDir)
+
+			const allowAllSkills = this.config.enabledSkills.length === 0
+
+			if (allowAllSkills || this.config.enabledSkills.includes(skillName)) {
+
+				const problems = await validate(skillDir)
+				if (problems.length > 0) {
+					o.appendLine(this.status.error(margin + 'validations errors: ' + problems.join(',')))
+					return
+				}
+
+				const props = await readProperties(skillDir)
+				//o.appendLine(toJson(props))
+				skill = new Skill(props.name, props.description, filepath, props.metadata)
+
+				this.skillsNames.push(skillName)
+				this.skills[skillName] = skill
+			}
 		}
 		catch (err) {
 			o.newLine()
