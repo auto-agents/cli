@@ -14,8 +14,6 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
 	const { cursorOffset, cursorWidth } = state;
 	const [keyboardCapturer, setKeyboardCapturer] = useState(null)
 
-	//const [valueProp, setValueProp] = useState('')
-
 	useEffect(() => {
 		setState(previousState => {
 
@@ -164,7 +162,6 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
 		});
 
 		if (forceUpd || nextValue !== originalValue) {
-			//setValueProp(nextValue)
 			onChange(nextValue);
 		}
 	}
@@ -220,9 +217,6 @@ function TextInput({ ctx: ctx, value: originalValue, placeholder = '', focus = t
 			? renderedValue
 			: renderedPlaceholder
 		: renderedValue));
-	/*return (
-		<Text>{value}</Text>
-	)*/
 }
 
 export default TextInput;
