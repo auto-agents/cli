@@ -110,7 +110,17 @@ export default class Tools {
 	}
 
 	getAvailableToolsSpecifications() {
-		// TODO: ...
+		// no tools enabled
+		if (this.config.enabledTools == null) return []
+		// all tools enabled
+		if (this.config.enabledTools != null &&
+			this.config.enabledTools.length == 0
+		) return this.getSpecifications()
+		// explicit enabling list
+		const t = this.getSpecifications().filter(x => {
+			return this.config.enabledTools.includes(x.function.name)
+		})
+		return t
 	}
 
 	getToolSpec(tool) {

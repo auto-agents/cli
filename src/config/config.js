@@ -797,12 +797,28 @@ export default function config(cli) {
 				// parts
 				conversationalAgent: {
 					instructions: "N'utilise pas un style narratif. Dans tes réponses, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. N'ajoute pas de description de scène.",
-					_mergePropsFromPath: ['agents.profiles.noSystemInstructions'],
+					_mergePropsFromPath: [
+						'agents.profiles.noSystemInstructions',
+						'agents.profiles.conversationalTools'
+					],
 					_appendInstructions: ['noItalicizedTextDecoration']
 				},
 				noSystemInstructions: {
 					config: {
 						prependOSDependentSystemInstructions: false
+					}
+				},
+				noTools: {
+					config: {
+						enabledTools: null
+					}
+				},
+				conversationalTools: {
+					config: {
+						enabledTools: [
+							'get_time',
+							'get_date',
+							'get_tools_list']
 					}
 				},
 				noItalicizedTextDecoration: {
@@ -1592,9 +1608,7 @@ export default function config(cli) {
 					enableDebugResponsesMessage: false,
 					enableDumpReasoningContent: true,
 					skipToolResponseFirstLine: false,	// with gamma-1b true
-					// ------- history necessary for (auto) agentic ? --------
 					doNotStoreToolCallDialogsInHistory: false,	// avoid llm to repeat a response from history
-					// -------------------------------------------------------
 
 					saveChatHistory: true,
 					restoreSessionAgentHistoryOnStartup: true,

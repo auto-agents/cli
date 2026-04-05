@@ -47,7 +47,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 				)
 
 			const name = toolSpe.function?.name
-			const props = JSON.parse(toolSpe.function?.arguments)
+			var props = JSON.parse(toolSpe.function?.arguments)
 
 			const tool = this.tools.getTool(name)
 
@@ -58,6 +58,9 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
 				try {
 					// run the tool
+					if (props == null) props = {}
+					// add the agent as parameter
+					props.agent = this.config.agent
 					r = await tool.run(props)
 					e.emit(ToolRunCompletedDialogEvent, dialogEvent({
 						dialogContext: dialogContext, toolSpec: toolSpe, result: r

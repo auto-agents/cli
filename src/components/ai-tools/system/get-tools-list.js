@@ -1,28 +1,28 @@
-import { getTUIAgent } from "../../../../../shared/src/utils/utils";
 import AITool from "../../ai/ai-tool";
 
 export default class GetToolsList extends AITool {
 
-    constructor(ctx, config) {
-        super(ctx, config)
-    }
+	constructor(ctx, config) {
+		super(ctx, config)
+	}
 
-    specification() {
-        return {
-            name: "get_tools_list",
-            description: "get the list of tools"
-        }
-    }
+	specification() {
+		return {
+			name: "get_tools_list",
+			description: "get the list of tools"
+		}
+	}
 
-    async run() {
-        const tools = getTUIAgent(this.ctx).plugin.tools
-        if (!tools) return
-        const t = tools.getAllTools()
-        const lst = []
-        t.forEach(tool => {
-            const sp = tool.specification()
-            lst.push(sp)
-        });
-        return this.jsonResult(lst)
-    }
+	async run(args) {
+		const tools = args.agent.plugin.tools
+		if (!tools) return
+		const t = tools.getAvailableToolsSpecifications()
+		const lst = []
+		t.forEach(toolFunc => {
+			const tool = tools.getTool(toolFunc.function.name)
+			const sp = tool.specification()
+			lst.push(sp)
+		});
+		return this.jsonResult(lst)
+	}
 }

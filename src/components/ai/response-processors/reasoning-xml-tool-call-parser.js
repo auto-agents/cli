@@ -1,7 +1,10 @@
-
 import { XMLParser } from 'fast-xml-parser';
 import { toJson } from './../../../../../shared/src/utils/utils';
 
+/**
+ * qwen models bug 'append tool call in reasoning content in a xml format' workarround.
+ * helps the models to fix his calls, but leads to doubling tools calls
+ */
 export default class ReasoningXmlToolCallParser {
 
 	patToolCall = '<tool_call>'

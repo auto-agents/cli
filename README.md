@@ -22,7 +22,7 @@
 The **CLI tool** makes it possible to interact with the `Auto Agents` functionnalities
 
 - provides a rich user UX CLI powered by:
-  - **[Node.Js](https://nodejs.org/)** cross-platform JavaScript runtime environment 
+  - **[Node.Js](https://nodejs.org/)** cross-platform JavaScript runtime environment
   - **[React](https://github.com/facebook/react)** React is a JavaScript library for building user interfaces
   - **[Ink](https://github.com/vadimdemedes/ink?tab=readme-ov-file#static)** the **`React for CLI`** framework
   - **[terminal-kit](https://github.com/cronvel/terminal-kit?tab=readme-ov-file)** *A full-blown terminal lib*
@@ -37,6 +37,7 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[strip-markdown](https://github.com/wooorm/strip-markdown)** A remark plugin to strip markdown formatting
   - **[async-mutex](https://github.com/DirtyHairy/async-mutex)** Implements primitives for synchronizing asynchronous operations in Javascript
   - **[console-table-printer](https://console-table.netlify.app/docs)** Print colorful Tables on Console, directly from JSON string
+  - **[fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser#readme)** Validate XML, Parse XML to JS Object, or Build XML from JS Object without C/C++ based libraries and no callback.
 
 *notice: this tool has been initially hand coded, than evolved using AI*5
 

@@ -51,7 +51,7 @@ export default class OpenAIApiClient extends AIApiClient {
 			model: this.config.model,
 			messages: this.history.messages,
 			verbosity: 'high',  // no effect in openai api
-			tools: tools ? tools.getSpecifications() : this.config.tools,
+			tools: tools.getAvailableToolsSpecifications(),
 			temperature: this.config.temperature,
 			stream: this.config.stream,
 			think: this.config.think,

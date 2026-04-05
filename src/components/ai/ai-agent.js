@@ -79,7 +79,8 @@ export default class AIAgent {
 				this.#handleMergeDirectives(name, value, into)
 			}
 			else {
-				if (typeof value == 'object'
+				if (value != null &&
+					typeof value == 'object'
 					&& value?.length === undefined
 				) {
 					if (!into[name]) into[name] = {}
