@@ -11,6 +11,7 @@ import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEven
 import path from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
 import chalk from "chalk"
+import Skills from "../components/ai/skills.js";
 
 /**
  * AI AGENT Plugin
@@ -68,6 +69,11 @@ export default class AIAgentPlugin {
 		}
 	}
 
+	/*
+	* TODO: check this. overloadConfig should not be null
+	* overloadConfig = { agent: agent }
+	*/
+
 	constructor(ctx, config, outputContext, pluginSpec, overloadConfig = null
 	) {
 		this.specification = pluginSpec
@@ -86,7 +92,10 @@ export default class AIAgentPlugin {
 		this.status = new Status(ctx)
 		this.historyDuo = null
 		const ctx2 = outputContext.clone().addMargins(4)
+
 		this.tools = new Tools(ctx, this.config, ctx2)
+		this.skills = new Skills(ctx, this.config, ctx2)
+
 		this.responseProcessors = new ResponseProcessors(
 			ctx, this.config, this.tools, ctx2)
 	}
@@ -123,6 +132,7 @@ export default class AIAgentPlugin {
 			try {
 				await this.responseProcessors.loadProcessors(this.config.responseProcessors)
 				await this.tools.loadTools()
+				await this.skills.buildSkillsCatalog()
 				await utils.wait(this.ctx.ui.initFastWait)
 
 			} catch (err) {

@@ -23,23 +23,7 @@ export default class AgentsController {
 	init() {
 		const e = this.ctx.components.event
 
-		/*e.on(PluginLoadedEvent, args => {
-
-			const agentId = args[0].plugin?.agentId
-			if (agentId) {
-				// ai chat plugin loaded
-				// add view agent : TUI Agent
-				this.viewAgentId = agentId
-				e.emit(AgentAddedEvent, {
-					agentId: this.viewAgentId,
-					agentInView: {
-						agentId: this.viewAgentId,
-						...this.getAgentInView()
-					}
-				})
-			}
-		})*/
-
+		// TODO: check this
 		e.on(PluginUnloadedEvent, args => {
 			const agentId = args[0].plugin?.agentId
 			if (this.agents[agentId]) {
@@ -86,6 +70,7 @@ export default class AgentsController {
 	 * @returns true if success, false otherwise
 	 */
 	async loadAgent(agent, outputContext) {
+
 		const e = this.ctx.components.event
 		try {
 			if (this.agents[agent.id])

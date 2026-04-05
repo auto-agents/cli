@@ -40,8 +40,7 @@ export default class AIAgent {
 	addOSDependentSystemInstructions() {
 		const path = join(
 			process.cwd(),
-			this.ctx.paths.prompts,
-			'system',
+			this.ctx.paths.systemPrompts,
 			this.ctx.shell.platform + '.md'
 		)
 		if (existsSync(path)) {

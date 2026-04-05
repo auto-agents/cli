@@ -17,7 +17,7 @@ export default class Tools {
 	ts = []
 
 	/**
-	 *
+	 * build the tools manager
 	 * @param {Object} ctx app context
 	 * @param {Object} config ai agent plugin config
 	 * @param {OutputContext} outputContext output context
@@ -46,6 +46,7 @@ export default class Tools {
 				return null
 			}
 
+			// tool disable a file level
 			if (file.startsWith('-')) return
 
 			const mod = await import(pathToFileURL(filepath).href)
@@ -55,7 +56,6 @@ export default class Tools {
 			const name = file.toLowerCase().replace('.js', '').replaceAll('-', '_')
 			this.tools[name] = m
 
-			//o.appendLine(margin + 'tool loaded: ' + file)
 			this.ts.push(file)
 
 			if (isAppInitialized(this.ctx))
@@ -97,7 +97,7 @@ export default class Tools {
 		}
 
 		await walk(this.toolsPath)
-		o.appendLine(margin + 'tools loaded: ' + this.ts.join(','))
+		o.appendLine(margin + 'tools loaded: ' + this.ts.length /*this.ts.join(',')*/)
 	}
 
 	getSpecifications() {

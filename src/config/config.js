@@ -68,6 +68,9 @@ export default function config(cli) {
 			cliPlugins: 'plugins',
 			configFileName: 'config.js',
 			prompts: '../instruct/prompts',
+			systemPrompts: '../instruct/prompts/system',
+			skills: '../instruct/skills',
+			enableSkillsPrompt: '../instruct/prompts/enable-skills.md',
 			sessions: 'sessions',
 			components: 'components',
 			commands: 'commands',
@@ -711,7 +714,7 @@ export default function config(cli) {
 						enabled: true,
 						voiceProfile: 'cronmaXClone'
 					},
-					enabled: true
+					enabled: false
 				},
 				{
 					id: 'lapen',
@@ -731,7 +734,7 @@ export default function config(cli) {
 						enabled: true,
 						voiceProfile: 'lapenXClone'
 					},
-					enabled: true
+					enabled: false
 				},
 				{
 					id: 'moloche',
@@ -751,7 +754,7 @@ export default function config(cli) {
 						enabled: true,
 						voiceProfile: 'molocheXClone'
 					},
-					enabled: true
+					enabled: false
 				}
 			],
 
@@ -799,7 +802,8 @@ export default function config(cli) {
 					instructions: "N'utilise pas un style narratif. Dans tes réponses, n'ajoute pas de textes en apparté, et pas de texte ni de commentaires en italique. N'ajoute pas de description de scène.",
 					_mergePropsFromPath: [
 						'agents.profiles.noSystemInstructions',
-						'agents.profiles.conversationalTools'
+						'agents.profiles.conversationalTools',
+						'agents.profiles.conversationalSkills'
 					],
 					_appendInstructions: ['noItalicizedTextDecoration']
 				},
@@ -819,6 +823,11 @@ export default function config(cli) {
 							'get_time',
 							'get_date',
 							'get_tools_list']
+					}
+				},
+				conversationalSkills: {
+					config: {
+						enabledSkills: null
 					}
 				},
 				noItalicizedTextDecoration: {
@@ -1528,6 +1537,8 @@ export default function config(cli) {
 					temperature: 0.7,
 					tools: [],
 					enabledTools: [],	// all enabled if empty, all disabled if null, else explicit enableds
+
+					enabledSkills: [],	// all enabled if empty, all disabled if null, else explicit enableds
 
 					tool_choice: "auto",	// auto (default) | any (ministral) | none | required (lm studio)
 					parallel_tool_calls: true,	// true (default) | false
