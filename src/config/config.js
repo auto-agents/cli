@@ -363,7 +363,7 @@ export default function config(cli) {
 					file: 'agent-command.js'
 				},
 				{
-					names: ['plugin', 'mod', 'm'],
+					names: ['plugin', 'plug', 'p'],
 					description: 'list the available cli tools plugins, allow to unload and load them',
 					config: {
 						options: {
