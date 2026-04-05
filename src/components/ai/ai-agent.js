@@ -79,10 +79,12 @@ export default class AIAgent {
 				this.#handleMergeDirectives(name, value, into)
 			}
 			else {
-				if (typeof value == 'object') {
+				if (typeof value == 'object'
+					&& value?.length === undefined
+				) {
 					if (!into[name]) into[name] = {}
 					if (into[name] && typeof into == 'object')
-						// merge objects
+						// merge objects (except arrays)
 						this.mergeProps(value, into[name])
 					else
 						// replace value by object

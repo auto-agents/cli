@@ -10,6 +10,7 @@ import { Role_Assistant } from "../components/ai/roles.js";
 import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
 import path from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
+import chalk from "chalk"
 
 /**
  * AI AGENT Plugin
@@ -101,7 +102,7 @@ export default class AIAgentPlugin {
 		const margin2 = ' '.repeat(margin.length + oc.marginBase)
 
 		o.newLine()
-		o.appendLine(margin + `~ loading ai agent plugin ${this.apiName}. configuring client: ${this.apiClientFilepath}`)
+		o.appendLine(margin + chalk.hex(this.ctx.theme.subInitTextTitleColor)(`≡ loading ai agent '${this.config.agent?.id}' plugin ${this.apiName}. configuring client: ${this.apiClientFilepath}`))
 
 		// dynamically import AI Api Client
 		const apiClient = await import(this.apiClientFilepath)
