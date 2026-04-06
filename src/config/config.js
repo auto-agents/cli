@@ -1419,7 +1419,7 @@ export default function config(cli) {
 					//instructions0: 'répond en langue française',
 
 					// ministralai settings
-					enableGemmaStyleToolCallParsing: false,
+					enableGemmaStyleToolCallParsing: false,		// TODO: globalize ?
 					responseProcessors: [
 						'reasoning-xml-tool-call-parser.js',
 						'openai-api-tool-call-processor.js'

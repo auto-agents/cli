@@ -19,7 +19,6 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 	}
 
 	hasToolsCalls(response) {
-		//console.log('OpenAIApiToolCallProcessor hasToolsCalls ?')
 		return response.tool_calls && response.tool_calls.length > 0
 	}
 
@@ -47,7 +46,10 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 				)
 
 			const name = toolSpe.function?.name
-			var props = JSON.parse(toolSpe.function?.arguments)
+			var props =
+				(typeof toolSpe.function?.arguments == 'string')
+					? JSON.parse(toolSpe.function?.arguments)
+					: toolSpe.function?.arguments
 
 			const tool = this.tools.getTool(name)
 

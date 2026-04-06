@@ -14,7 +14,6 @@ export default class ReasoningXmlToolCallParser {
 	}
 
 	hasToolsCalls(response) {
-		//console.log('ReasoningXmlToolCallParser hasToolsCalls ?')
 		return response.reasoning_content && response.reasoning_content.length > 0
 			&& response.reasoning_content.includes(this.patToolCall)
 	}
@@ -28,7 +27,6 @@ export default class ReasoningXmlToolCallParser {
 	}
 
 	async run(dialogContext, response) {
-		//console.log('run ReasoningXmlToolCallParser')
 
 		if (!response.reasoning_content || response.reasoning_content.length == 0)
 			return response
@@ -40,7 +38,6 @@ export default class ReasoningXmlToolCallParser {
 	}
 
 	parse(text) {
-		//console.log('text', text)
 		if (!text || text.length == 0) return null
 
 		var end = false
@@ -79,7 +76,6 @@ export default class ReasoningXmlToolCallParser {
 			const parser = new XMLParser()
 			const doc = parser.parse(s)
 			const root = doc.tool_call
-			//console.log(root)
 
 			const toolCall = {
 				type: 'function'

@@ -287,8 +287,8 @@ export default class AIAgentPlugin {
 			}
 		}
 
-		const hasContent = r.content != null && r.content.length > 0
 		const hasToolsCalls = this.hasToolsCalls(r) //r.tool_calls?.length > 0
+		const hasContent = r.content != null && r.content.length > 0
 
 		// handle response processors actions : perform actions if no content
 		// TODO: change the loop content convention, enable content anyway ? (check standard)
