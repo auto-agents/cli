@@ -83,17 +83,41 @@ export default class OpenAIApiClient extends AIApiClient {
 		// -------------- handle stream response --------------------------------------
 		if (this.config.stream) {
 			const stream = r
-			var content = ''
+			message.content = ''
+			const dbg = false
 			for await (const event of stream) {
 				// type event: event.object
+				const type = event.object
+				if (dbg) console.log(event.object)
 				const delta = event.choices[0].delta
-				console.log(delta)
+				if (dbg) console.log(delta)
 				if (delta.role)
 					message.role = delta.role
 				if (delta.content)
-					content += delta.content
+					message.content += delta.content
+				if (delta.tool_calls) {
+					for (var i = 0; i < delta.tool_calls.length; i++) {
+						if (!message.tool_calls) message.tool_calls = []
+						const toolCall = delta.tool_calls[i]
+						const index = toolCall.index
+						if (toolCall.type == 'function') {
+							if (dbg) console.log(delta.tool_calls[i].function)
+							if (!message.tool_calls[index])
+								message.tool_calls[index] = {
+									id: toolCall.id,
+									type: 'function',
+									function: {
+										name: toolCall.function.name,
+										arguments: toolCall.function.arguments
+									}
+								}
+							else
+								message.tool_calls[index].function.arguments +=
+									toolCall.function.arguments
+						}
+					}
+				}
 			}
-			message.content = content
 			console.warn(message)
 		}
 		// ----------------------------------------------------------------------------
