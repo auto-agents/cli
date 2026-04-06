@@ -263,9 +263,10 @@ export default class AIAgentPlugin {
 			for (var i = 0; i < this.queryPreProcessors; i++)
 				query = this.queryPreProcessors[i](query)
 
-			// call completion
+			// ----- call completion -----------------------------
 			r = await capi.completion(query, this.tools, options)
 			r.content = r.content?.trim()
+			// ---------------------------------------------------
 		}
 		else {
 

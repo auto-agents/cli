@@ -77,8 +77,11 @@ export default class ActionTool {
 		}
 
 		// call model with tool result
+
+		// ----- call completion ---------------------------------------
 		var r2 = await capi.completionFromMessages(this.tools, options)
 		var textRes = r2.content
+		// -------------------------------------------------------------
 
 		// call tool response handlers
 		if (toolResponseHandlers) {

@@ -3,8 +3,6 @@ import {
 	Platforms,
 	UP,
 	DOWN,
-	LEFT,
-	RIGHT,
 	PAGE_UP,
 	PAGE_DOWN,
 	END,
@@ -1588,7 +1586,7 @@ export const config = () => {
 
 					timeout: 60 * 60 * 1000,	// 60 min (ms) ?
 					maxRetries: 2,	// default
-					stream: false,
+					stream: true,
 					think: true
 				},
 				lmStudioApi: {

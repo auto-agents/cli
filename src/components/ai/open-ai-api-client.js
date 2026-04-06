@@ -47,10 +47,11 @@ export default class OpenAIApiClient extends AIApiClient {
 
 	async completionFromMessages(tools, options) {
 
+		// ------------ setup payload -------------------------------------------------
 		var props = {
 			model: this.config.model,
 			messages: this.history.messages,
-			verbosity: 'high',  // no effect in openai api
+			verbosity: 'high',  // no effect in openai api (consign for provider ollama)
 			tools: tools.getAvailableToolsSpecifications(),
 			temperature: this.config.temperature,
 			stream: this.config.stream,
@@ -61,15 +62,41 @@ export default class OpenAIApiClient extends AIApiClient {
 		}
 		if (this.config.props)
 			props = { ...props, ...this.config.props }
-
 		if (options.response_format) props.response_format = options.response_format
+		// ----------------------------------------------------------------------------
 
-		const r = await this.client.chat.completions.create(
+		var message = {}
+
+		// -------------- run non stream query ----------------------------------------
+		var r = await this.client.chat.completions.create(
 			props, {
 			path: this.config.paths.completion
 		})
+		// ----------------------------------------------------------------------------
 
-		const message = r.choices[0].message
+		// -------------- handle non stream response ----------------------------------
+		if (!this.config.stream) {
+			message = r.choices[0].message
+		}
+		// ----------------------------------------------------------------------------
+
+		// -------------- handle stream response --------------------------------------
+		if (this.config.stream) {
+			const stream = r
+			var content = ''
+			for await (const event of stream) {
+				// type event: event.object
+				const delta = event.choices[0].delta
+				console.log(delta)
+				if (delta.role)
+					message.role = delta.role
+				if (delta.content)
+					content += delta.content
+			}
+			message.content = content
+			console.warn(message)
+		}
+		// ----------------------------------------------------------------------------
 
 		if (this.ctx.servers.llm.common.enableDebugResponsesMessage)
 			console.log(message)
