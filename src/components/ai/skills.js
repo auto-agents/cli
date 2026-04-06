@@ -29,13 +29,20 @@ export default class Skills {
 		)
 	}
 
+	getSkill(name) {
+		return this.skills[name]
+	}
+
 	/**
 	 * gets the catalog prompt text
 	 */
 	toPromptText() {
 		const rows = []
 		for (const [name, skill] of Object.entries(this.skills)) {
-			rows.push(`- ${name} : ${skill.description} location: \`${skill.location}\``)
+			if (this.config.activateSkillsByPromptAndTool)
+				rows.push(`- ${name} : ${skill.description}`)
+			else
+				rows.push(`- ${name} : ${skill.description} location: \`${skill.location}\``)
 		}
 		return rows.join('\n') + '\n'
 	}

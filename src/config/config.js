@@ -71,6 +71,7 @@ export default function config(cli) {
 			systemPrompts: '../instruct/prompts/system',
 			skills: '../instruct/skills',
 			enableSkillsPrompt: '../instruct/prompts/enable-skills.md',
+			enableSkillsPromptAndTool: '../instruct/prompts/enable-skills-tool.md',
 			sessions: 'sessions',
 			components: 'components',
 			commands: 'commands',
@@ -1536,6 +1537,7 @@ export default function config(cli) {
 					enabledTools: [],	// all enabled if empty, all disabled if null, else explicit enableds
 
 					enabledSkills: [],	// all enabled if empty, all disabled if null, else explicit enableds
+					activateSkillsByPromptAndTool: true,		// false, do not rely on tool (prompt only)
 
 					tool_choice: "auto",	// auto (default) | any (ministral) | none | required (lm studio)
 					parallel_tool_calls: true,	// true (default) | false

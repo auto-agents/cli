@@ -64,7 +64,7 @@ export default class History {
 		this.messages = [
 			{
 				role: Role_System,
-				content: this.config.instructions
+				content: this.config.agent.instructions
 			}
 		]
 		return this

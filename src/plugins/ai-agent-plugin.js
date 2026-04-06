@@ -155,7 +155,9 @@ export default class AIAgentPlugin {
 	#prependSkillsPrompt() {
 		const path = join(
 			process.cwd(),
-			this.ctx.paths.enableSkillsPrompt
+			this.config.activateSkillsByPromptAndTool ?
+				this.ctx.paths.enableSkillsPromptAndTool
+				: this.ctx.paths.enableSkillsPrompt
 		)
 		const agent = this.config.agent
 		if (existsSync(path)) {

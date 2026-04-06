@@ -1,8 +1,8 @@
-import ToolResult from "../../../../../../shared/src/data/tool-result";
-import AITool from "../../../ai/ai-tool";
+import ToolResult from "../../../../../shared/src/data/tool-result";
+import AITool from "../../ai/ai-tool";
 import { readFileSync } from 'fs'
 
-export default class ReadFile extends AITool {
+export default class ActivateSkill extends AITool {
 
 	constructor(ctx, config) {
 		super(ctx, config)
@@ -10,22 +10,24 @@ export default class ReadFile extends AITool {
 
 	specification() {
 		return {
-			name: "read_file",
-			description: "read a local file",
+			name: "activate_skill",
+			description: "get the instructions of a skill",
 			parameters: {
 				type: "object",
 				properties: {
-					"file_path": {
+					"skill_name": {
 						"type": "string"
 					}
 				}
 			},
-			required: ["path"]
+			required: ["skill_name"]
 		}
 	}
 
 	async run(args) {
-		const tpath = args?.file_path
+		const skills = args.agent.plugin.skills
+		const skill = skills.getSkill(args.skill_name)
+		const tpath = skill.location
 		const data = readFileSync(tpath).toString()
 
 		return this.jsonPlainResult({
@@ -35,7 +37,7 @@ export default class ReadFile extends AITool {
 
 		return new ToolResult(null, [
 			{
-				filepath: tpath,
+				path: tpath,
 				content: data
 			}
 		])
