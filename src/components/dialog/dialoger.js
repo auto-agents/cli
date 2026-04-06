@@ -59,11 +59,6 @@ export default class Dialoger {
 	}
 
 	#initEvents() {
-		const e = this.ctx.components.event
-		// on echo system message
-		/*e.on(TaskAddAssistantMessageCommandEvent, async args => {
-			await this.addSystemMessage(args[0])
-		})*/
 	}
 
 	async addUserDialog(dialogContext, text, tool_calls, options, outputContext) {
@@ -71,11 +66,6 @@ export default class Dialoger {
 		var results = []
 
 		if (!dialogContext) throw new Error("dialog context is required")
-
-		/*dialogContext ||= new DialogContext(
-			outputContext,
-			this
-		)*/
 
 		// ----- USER -----------------------------------------------------------------------
 

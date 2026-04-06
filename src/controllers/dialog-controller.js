@@ -143,8 +143,7 @@ export default class DialogController {
 			)
 
 		if (!dialogContext) {
-			//console.log('default to TUI Agent')
-			// build a user to TUI dialog context
+			// build a default user to required agent dialog context
 			dialogContext = new DialogContext(
 				outputContext,
 				this.dialoger,
@@ -156,15 +155,12 @@ export default class DialogController {
 		}
 
 		if (options == null) options = {}
-
 		if (options.skipPrependNewLine === undefined)
 			options.skipPrependNewLine = true
 		if (!options.userVoice)
 			options.userVoice = getUserVoice(this.ctx)
 		if (!options.assistantVoice)
 			options.assistantVoice = getAgentVoice(this.ctx, agent.id)
-
-		//options.skipPrependNewLine ||= true
 
 		var r = await this.dialoger.addUserDialog(
 			dialogContext,
@@ -239,7 +235,7 @@ export default class DialogController {
 			this.#renderMarkdownDialog(this.output, dialogContext, null, text, ucol,
 				(name, t) => {
 					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-					t[0] = chalk.hex(this.ctx.theme.promptColor)(userDialPrfx) + ucol(t[0])
+					t[0] = chalk.hex(this.ctx.theme.promptColor)(userDialPrfx) + ' ' + ucol(t[0])
 				}
 			)
 		}
