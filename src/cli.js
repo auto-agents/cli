@@ -1,82 +1,72 @@
 #!/usr/bin/env node
-import meow from 'meow';
+
+/**
+ * CLI Entry Point
+ *
+ * This module initializes the Bun-based application for CLI argument
+ * parsing and Terminal-KIT / React Ink for terminal output. It sets up global error handling,
+ * launches the AppController, and enables raw terminal mode and mouse support.
+ */
 
 import AppController from './controllers/app-controller.js'
-import config, { ERROR_LOG_FILE } from './config/config.js'
-import { readFileSync } from 'node:fs';
-import { unescapeCodeString } from '../../shared/src/utils/text/text.js';
-import { join } from 'node:path/posix';
-import ReasoningXmlToolCallParser from './components/ai/response-processors/reasoning-xml-tool-call-parser.js';
+import {
+	config,
+	ERROR_LOG_FILE,
+	ANSI_RSTXTA,
+	ENABLE_RESET_TERMINAL,
+	ENABLE_MOUSE_SUPPORT,
+	ANSI_ENABLE_MOUSE_SUPPORT,
+	logErrorToFile
+} from './config/config.js'
 
-var term = require('terminal-kit').terminal
-//var realTerm = require('terminal-kit').realTerminal
-//term.fullscreen(false)
-//console.clear()
+import { Terminal } from 'terminal-kit';
+
+// setup terminal
+const term = new Terminal()
 term.clear()
-const CSI = '\x1b'
-const RSTXTA = CSI + "4m" + CSI + "0m"
-//console.log(RSTXTA)
+if (ENABLE_RESET_TERMINAL) {
+	console.log(ANSI_RSTXTA)
+}
 
 // enable raw + mouse support
-process.stdin.setRawMode?.(true)
+process.stdin.setRawMode(true)
+if (!process.stdin.isTTY) {
+	// tty not available. not supported. exit now
+	console.error('required TTY is missing')
+	process.exit(1)
+}
 process.stdin.resume()
-process.stdout.write("\x1b[?1002h\x1b[?1006h")
+
+if (ENABLE_MOUSE_SUPPORT)
+	process.stdout.write(ANSI_ENABLE_MOUSE_SUPPORT)
 
 const ignoreTkErrors = 'TerminalInfoProvider'
 
 // --- Global process-level error handling ---
 process.on('uncaughtException', (err) => {
 	try {
-		fs.appendFileSync(path.join(process.cwd(), ERROR_LOG_FILE), err)
+		logErrorToFile(ERROR_LOG_FILE, err)
 		if (err.message.includes(ignoreTkErrors)) return
-		//console.error('Uncaught Exception:', err);
-		//process.exit(1)
+		console.error('Uncaught Exception:', err);
 	} catch { }
 });
 
-process.on('unhandledRejection', (reason) => {
+process.on('unhandledRejection', (err) => {
 	try {
-		fs.appendFileSync(path.join(process.cwd(), ERROR_LOG_FILE), reason)
-		if (reason.includes(ignoreTkErrors)) return
-		//console.error('Unhandled Promise Rejection:', reason);
-		//process.exit(1)
+		logErrorToFile(ERROR_LOG_FILE, err)
+		if (err.includes(ignoreTkErrors)) return
+		console.error('Unhandled Promise Rejection:', err);
 	} catch { }
 });
-
-// TO BE DEFINED
-const cli = meow(
-	`
-		Usage
-		  $ bun run src/cli.js
-	`,
-	{
-		importMeta: import.meta,
-	},
-);
 
 // ----- setup app -----
 
-const ctx = config(cli)
+const ctx = config()
 term.windowTitle(ctx.app.name)
 
 // ---- launch app ----
-/*
-const text = readFileSync(
-	join(
-		process.cwd(),
-		'doc',
-		'xml-tool-call.json'
-	)
-).toString()
-const o = new ReasoningXmlToolCallParser(ctx)
-o.parse(text)
-//console.log(text)
-//console.log('')
-//console.log(unescapeCodeString(text))
-process.exit(0)
-*/
 
-const app = new AppController(ctx, cli)
+const app = new AppController(ctx)
 
 // app start from this point
 

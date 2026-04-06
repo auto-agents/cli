@@ -16,6 +16,8 @@ import {
 	TUIAgentId,
 	DefaultSessionId
 } from '../../../shared/src/config/consts.js'
+
+import { appendFileSync } from 'node:fs';
 import { join } from 'path'
 import os from "os";
 import {
@@ -25,6 +27,25 @@ import {
 } from '../components/ai/tools.js';
 
 export const ERROR_LOG_FILE = 'errors.log'
+export const ENABLE_RESET_TERMINAL = false
+export const CSI = '\x1b'
+export const ANSI_RSTXTA = CSI + "4m" + CSI + "0m"
+export const ENABLE_MOUSE_SUPPORT = true
+export const ANSI_ENABLE_MOUSE_SUPPORT = "\x1b[?1002h\x1b[?1006h"
+
+/**
+ * Log an error to the file system without crashing the application
+ * @param {string} filePath - The path where to log errors
+ * @param {*} err - The error or reason to log
+ * @returns {boolean} - true if logged successfully
+ */
+export const logErrorToFile = err => {
+	appendFileSync(
+		join(process.cwd(), ERROR_LOG_FILE),
+		`\n[${new Date().toISOString()}] ${String(err)}\n`
+	);
+	return true
+}
 
 const getPlatform = () => {
 	const osplatform = os.platform()
@@ -49,7 +70,7 @@ const setupEnvVars = ctx => {
 	}
 }
 
-export default function config(cli) {
+export const config = () => {
 
 	const ctx = {
 		d: [],
