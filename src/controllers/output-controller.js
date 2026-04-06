@@ -8,6 +8,11 @@ export default class OutputController {
 	outputContexts = {}
 	outputContextIdCounter = 0
 
+	// current x in source buffer
+	x = 0
+	// current y in source buffer
+	y = 0
+
 	constructor(
 		ctx,
 		source,
@@ -25,7 +30,9 @@ export default class OutputController {
 		const oc = new OutputContext(
 			this.ctx,
 			this,
-			this.margin)
+			this.margin,
+			this.x,
+			this.y)
 		oc.id = this.outputContextIdCounter
 		this.outputContexts[this.outputContextIdCounter] = oc
 		return oc
@@ -78,6 +85,9 @@ export default class OutputController {
 
 		//this.estimRowsCount += 2
 		this.estimRowsCount += t.length
+
+		this.x = 0
+		this.y = rowY1
 
 		this.updateView(skipViewUpdate)
 

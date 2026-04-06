@@ -112,28 +112,36 @@ export default class Dialoger {
 		// 3. eventually think (includes ai output response)
 
 		// AWAIT ...
-		// TODO: BAD TEST: maybe wrong agent
-		if (isTUIAIAgentAvailable(this.ctx)) {
-			aiResult = await this.fifoStack.addTask(
-				dialogContext.setCurrentTask(
-					task(
-						DialogerTasksTypes.userCompletionRequest,
-						'user dialog: request ai completion',
-						async task => {
-							// must not break await here (task await via addTask)
-							return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
-								// THE FIFO,
-								// AGENT
-								// TASK
-								dialogContext,
-								text,
-								tool_calls,
-								options)    // then...
-						}
-					)).task
-			)
-			results.push(aiResult)
-		}
+
+		aiResult = await this.fifoStack.addTask(
+			dialogContext.setCurrentTask(
+				task(
+					DialogerTasksTypes.userCompletionRequest,
+					'user dialog: request ai completion',
+					async task => {
+
+						// engage ai response output
+						options.skipPrependNewLine = false
+						await this.assistantEchoFun(
+							dialogContext,
+							'',
+							options
+						)
+
+						// must not break await here (task await via addTask)
+						return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
+							// THE FIFO,
+							// AGENT
+							// TASK
+							dialogContext,
+							text,
+							tool_calls,
+							options)    // then...
+					}
+				)).task
+		)
+		results.push(aiResult)
+
 
 		// THEN
 
