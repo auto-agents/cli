@@ -181,7 +181,7 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 			this.shetUpNow = true
 			await this.speech.shetUp(this.config.apiKey)
 		} catch (err) {
-			throw SpeakerError.fromErr('setUp fail', err)
+			throw SpeakerError.fromErr('shet up fail', err)
 		}
 	}
 
