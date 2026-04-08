@@ -2,6 +2,7 @@ import { Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
 import chalk from 'chalk'
+import { agentPartialResponseEvent, AgentPartialResponseEvent } from '../../../../shared/src/data/events.js'
 
 /**
  * OPEN AI standard api client
@@ -36,16 +37,18 @@ export default class OpenAIApiClient extends AIApiClient {
 		return r
 	}
 
-	async completion(query, tools, options, role = Role_User) {
+	async completion(query, tools, dialogContext, options, role = Role_User) {
 
 		const queryMessage = {
 			role: role, content: query
 		}
 		this.history.messages.push(queryMessage)
-		return await this.completionFromMessages(tools, options)
+		return await this.completionFromMessages(tools, dialogContext, options)
 	}
 
-	async completionFromMessages(tools, options) {
+	async completionFromMessages(tools, dialogContext, options) {
+
+		const e = this.ctx.components.event
 
 		// ------------ setup payload -------------------------------------------------
 		var props = {
@@ -88,13 +91,18 @@ export default class OpenAIApiClient extends AIApiClient {
 			for await (const event of stream) {
 				// type event: event.object
 				const type = event.object
+				var isPartialContent = false
+
 				if (dbg) console.log(event.object)
 				const delta = event.choices[0].delta
 				if (dbg) console.log(delta)
 				if (delta.role)
 					message.role = delta.role
-				if (delta.content)
+				if (delta.content) {
+					console.log('|' + delta.content + '|')
 					message.content += delta.content
+					isPartialContent = true
+				}
 				if (delta.tool_calls) {
 					for (var i = 0; i < delta.tool_calls.length; i++) {
 						if (!message.tool_calls) message.tool_calls = []
@@ -117,6 +125,14 @@ export default class OpenAIApiClient extends AIApiClient {
 						}
 					}
 				}
+				// partial message result available
+				if (isPartialContent)
+					e.emit(AgentPartialResponseEvent, agentPartialResponseEvent(
+						dialogContext,
+						event,
+						delta.content,
+						options
+					))
 			}
 			console.warn(message)
 		}

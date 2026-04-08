@@ -63,10 +63,37 @@ export default class OutputController {
 		if (y > o.rows.length - 1)
 			y = o.rows.length - 1
 		o.rows[y] = ' '.repeat(leftMargin) + str
-		//if (!skipViewUpdate)
-		//	this.ctx.components.event.emit(BoxOutputUpdatedEvent)
 		this.updateView(skipViewUpdate)
 		return this
+	}
+
+	appendToLine(y, str, skipViewUpdate = false) {
+		const rows = this.getSource().rows
+		if (!str || str.length == 0) return this.pos(rows.length - 1, rows.length - 1)
+		if (y < 0) y = 0
+		if (y < rows.length) {
+			const t = this.#splitText(str)
+			rows[y] += t[0]
+			for (var i = 1; i < t.length; i++) {
+				rows.splice(y + i, 0, t[i])
+			}
+			this.updateView(skipViewUpdate)
+			return this.pos(y, y + t.length - 1)
+		}
+		else
+			this.appendLine(str, 0, skipViewUpdate)
+	}
+
+	pos(y0, y1) {
+		return {
+			y0: y0,
+			y1: y1
+		}
+	}
+
+	#splitText(str) {
+		const t = str.split('\n')
+		return t
 	}
 
 	appendLine(str, leftMargin = 0, skipViewUpdate = false) {
@@ -81,7 +108,7 @@ export default class OutputController {
 		const rowY0 = rows.length
 		const t = str.split('\n')
 		t.forEach(s => rows.push(s))
-		const rowY1 = rows.length
+		const rowY1 = rows.length - 1
 
 		//this.estimRowsCount += 2
 		this.estimRowsCount += t.length
@@ -91,12 +118,7 @@ export default class OutputController {
 
 		this.updateView(skipViewUpdate)
 
-		return {
-			y0: rowY0,
-			y1: rowY1,
-			rowY0: rowY0,
-			rowY1: rowY1
-		}
+		return this.pos(rowY0, rowY1)
 	}
 
 	updateView(skipViewUpdate) {
@@ -104,7 +126,7 @@ export default class OutputController {
 			this.ctx.components.event.emit(this.updateEventName)
 		//if (!skipViewUpdate && this.updateRowCountEventName)
 		//	this.ctx.components.event.emit(this.updateRowCountEventName)
-		if (!skipViewUpdate)
+		if (!skipViewUpdate)	// /!\ double update not always necessary
 			this.delayUpdate()
 	}
 

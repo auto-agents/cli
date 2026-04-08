@@ -64,6 +64,8 @@ export default class Dialoger {
 	async addUserDialog(dialogContext, text, tool_calls, options, outputContext) {
 		options ||= {}
 		var results = []
+		const stream = dialogContext.agent?.plugin?.config?.stream
+		options = { ...options, partial: stream }
 
 		if (!dialogContext) throw new Error("dialog context is required")
 
@@ -125,7 +127,7 @@ export default class Dialoger {
 						await this.assistantEchoFun(
 							dialogContext,
 							'',
-							options
+							{ ...options, partial: false }
 						)
 
 						// must not break await here (task await via addTask)
@@ -159,12 +161,14 @@ export default class Dialoger {
 
 									// echo assistant response
 
-									options.skipPrependNewLine = false
-									await this.assistantEchoFun(
-										dialogContext,
-										aiResult.result?.content,
-										options
-									)
+									if (!stream) {
+										options.skipPrependNewLine = false
+										await this.assistantEchoFun(
+											dialogContext,
+											aiResult.result?.content,
+											options
+										)
+									}
 
 									// eventually speak
 

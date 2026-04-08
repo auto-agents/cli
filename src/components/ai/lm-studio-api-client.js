@@ -3,6 +3,7 @@ import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
 import { toJson } from '../../../../shared/src/utils/utils.js'
 
+// TODO: update for compatibility
 export default class LMStudioApiClient extends AIApiClient {
 
 	constructor(ctx, config, outputContext) {
