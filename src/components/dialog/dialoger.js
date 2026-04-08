@@ -1,6 +1,7 @@
 import {
 	AgentGetFocusSpeakEvent,
-	dialogEvent
+	dialogEvent,
+	SetStatusMessageEvent
 } from "../../../../shared/src/data/events"
 
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
@@ -64,6 +65,9 @@ export default class Dialoger {
 	async addUserDialog(dialogContext, text, tool_calls, options, outputContext) {
 		options ||= {}
 		var results = []
+		const stream = dialogContext.agent?.plugin?.config?.stream
+		options = { ...options, partial: stream }
+		const e = this.ctx.components.event
 
 		if (!dialogContext) throw new Error("dialog context is required")
 
@@ -112,28 +116,36 @@ export default class Dialoger {
 		// 3. eventually think (includes ai output response)
 
 		// AWAIT ...
-		// TODO: BAD TEST: maybe wrong agent
-		if (isTUIAIAgentAvailable(this.ctx)) {
-			aiResult = await this.fifoStack.addTask(
-				dialogContext.setCurrentTask(
-					task(
-						DialogerTasksTypes.userCompletionRequest,
-						'user dialog: request ai completion',
-						async task => {
-							// must not break await here (task await via addTask)
-							return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
-								// THE FIFO,
-								// AGENT
-								// TASK
-								dialogContext,
-								text,
-								tool_calls,
-								options)    // then...
-						}
-					)).task
-			)
-			results.push(aiResult)
-		}
+
+		aiResult = await this.fifoStack.addTask(
+			dialogContext.setCurrentTask(
+				task(
+					DialogerTasksTypes.userCompletionRequest,
+					'user dialog: request ai completion',
+					async task => {
+
+						// engage ai response output
+						options.skipPrependNewLine = false
+						await this.assistantEchoFun(
+							dialogContext,
+							'',
+							{ ...options, partial: false }
+						)
+
+						// must not break await here (task await via addTask)
+						return await this.thinkFun(     // --> can open sub dialogs: ADD TASK
+							// THE FIFO,
+							// AGENT
+							// TASK
+							dialogContext,
+							text,
+							tool_calls,
+							options)    // then...
+					}
+				)).task
+		)
+		results.push(aiResult)
+
 
 		// THEN
 
@@ -151,12 +163,14 @@ export default class Dialoger {
 
 									// echo assistant response
 
-									options.skipPrependNewLine = false
-									await this.assistantEchoFun(
-										dialogContext,
-										aiResult.result?.content,
-										options
-									)
+									if (!stream) {
+										options.skipPrependNewLine = false
+										await this.assistantEchoFun(
+											dialogContext,
+											aiResult.result?.content,
+											options
+										)
+									}
 
 									// eventually speak
 
@@ -172,6 +186,8 @@ export default class Dialoger {
 											voice: options.assistantVoice
 										})
 									}
+									else
+										e.emit(SetStatusMessageEvent)
 								}
 							)).task
 					))

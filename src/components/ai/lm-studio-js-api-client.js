@@ -4,6 +4,7 @@ import { Agent } from "@lmstudio/sdk";
 import AIApiClient from './ai-api-client.js'
 import { z } from "zod";
 
+// TODO: update for compatibility
 export default class LMStudioJSApiClient extends AIApiClient {
 
 	constructor(ctx, config, outputContext) {

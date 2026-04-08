@@ -263,9 +263,10 @@ export default class AIAgentPlugin {
 			for (var i = 0; i < this.queryPreProcessors; i++)
 				query = this.queryPreProcessors[i](query)
 
-			// call completion
-			r = await capi.completion(query, this.tools, options)
+			// ----- call completion -----------------------------
+			r = await capi.completion(query, this.tools, dialogContext, options)
 			r.content = r.content?.trim()
+			// ---------------------------------------------------
 		}
 		else {
 
@@ -307,7 +308,7 @@ export default class AIAgentPlugin {
 
 			const actionHandler = this.#getResponseProcessorActionHandler(action)
 
-			const r2 = await actionHandler.run(r.actions, r, capi, capi.history, options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER
+			const r2 = await actionHandler.run(r.actions, r, capi, capi.history, dialogContext, options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER
 
 			// agent text result: content
 			if (this.config.enableDebugResponseToolsUsage) console.log(content)

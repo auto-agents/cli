@@ -109,8 +109,7 @@ export default class SpinnerWait {
 
 		this.interval = setInterval(() => {
 			this.frame = (this.frame + 1) % this.framesCount
-			o.setLine(this.getText(this.frame),
-				this.position.y0)
+			o.setLine(this.position.y0, this.getText(this.frame))
 		},
 			this.frameDelay)
 
@@ -129,8 +128,9 @@ export default class SpinnerWait {
 		clearInterval(this.interval)
 		this.isRunning = false
 		this.output.setLine(
+			this.position.y0,
 			this.getFinalText(this.statusTexts.ok(this.endMessage)),
-			this.position.y0)
+		)
 		if (this.onEndedCallback)
 			this.onEndedCallback()
 		return this

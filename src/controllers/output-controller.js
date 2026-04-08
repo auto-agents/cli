@@ -8,6 +8,11 @@ export default class OutputController {
 	outputContexts = {}
 	outputContextIdCounter = 0
 
+	// current x in source buffer
+	x = 0
+	// current y in source buffer
+	y = 0
+
 	constructor(
 		ctx,
 		source,
@@ -25,7 +30,9 @@ export default class OutputController {
 		const oc = new OutputContext(
 			this.ctx,
 			this,
-			this.margin)
+			this.margin,
+			this.x,
+			this.y)
 		oc.id = this.outputContextIdCounter
 		this.outputContexts[this.outputContextIdCounter] = oc
 		return oc
@@ -49,17 +56,56 @@ export default class OutputController {
 		this.updateView(skipViewUpdate)
 	}
 
-	// TODO: make this compatible (coming from box controller)
-	setLine(str, y, leftMargin = 0, skipViewUpdate = false) {
-		if (!str) return
-		const o = this.getSource()
-		if (y > o.rows.length - 1)
-			y = o.rows.length - 1
-		o.rows[y] = ' '.repeat(leftMargin) + str
-		//if (!skipViewUpdate)
-		//	this.ctx.components.event.emit(BoxOutputUpdatedEvent)
-		this.updateView(skipViewUpdate)
-		return this
+	replaceLines(y0, y1, str, skipViewUpdate = false) {
+		const rows = this.getSource().rows
+		rows.splice(y0, y1 - y0 + 1)
+		rows.splice(y0, 0, '')
+		return this.setLine(y0, str, skipViewUpdate)
+	}
+
+	setLine(y, str, skipViewUpdate = false) {
+		const rows = this.getSource().rows
+		if (y < 0) y = 0
+		if (y < rows.length) {
+			const t = this.#splitText(str)
+			rows[y] = t[0]
+			for (var i = 1; i < t.length; i++) {
+				rows.splice(y + i, 0, t[i])
+			}
+			this.updateView(skipViewUpdate)
+			return this.pos(y, y + t.length - 1)
+		}
+		else
+			return this.appendLine(str, 0, skipViewUpdate)
+	}
+
+	appendToLine(y, str, skipViewUpdate = false) {
+		const rows = this.getSource().rows
+		if (!str || str.length == 0) return this.pos(rows.length - 1, rows.length - 1)
+		if (y < 0) y = 0
+		if (y < rows.length) {
+			const t = this.#splitText(str)
+			rows[y] += t[0]
+			for (var i = 1; i < t.length; i++) {
+				rows.splice(y + i, 0, t[i])
+			}
+			this.updateView(skipViewUpdate)
+			return this.pos(y, y + t.length - 1)
+		}
+		else
+			return this.appendLine(str, 0, skipViewUpdate)
+	}
+
+	pos(y0, y1) {
+		return {
+			y0: y0,
+			y1: y1
+		}
+	}
+
+	#splitText(str) {
+		const t = str.split('\n')
+		return t
 	}
 
 	appendLine(str, leftMargin = 0, skipViewUpdate = false) {
@@ -74,19 +120,17 @@ export default class OutputController {
 		const rowY0 = rows.length
 		const t = str.split('\n')
 		t.forEach(s => rows.push(s))
-		const rowY1 = rows.length
+		const rowY1 = rows.length - 1
 
 		//this.estimRowsCount += 2
 		this.estimRowsCount += t.length
 
+		this.x = 0
+		this.y = rowY1
+
 		this.updateView(skipViewUpdate)
 
-		return {
-			y0: rowY0,
-			y1: rowY1,
-			rowY0: rowY0,
-			rowY1: rowY1
-		}
+		return this.pos(rowY0, rowY1)
 	}
 
 	updateView(skipViewUpdate) {
@@ -94,7 +138,7 @@ export default class OutputController {
 			this.ctx.components.event.emit(this.updateEventName)
 		//if (!skipViewUpdate && this.updateRowCountEventName)
 		//	this.ctx.components.event.emit(this.updateRowCountEventName)
-		if (!skipViewUpdate)
+		if (!skipViewUpdate)	// /!\ double update not always necessary
 			this.delayUpdate()
 	}
 

@@ -15,13 +15,27 @@ export default class ActionTool {
 		this.queryPreProcessors = queryPreProcessors
 	}
 
+
+	/**
+	 * run a tool query
+	 * @param {Array} actions array of actions
+	 * @param {*} response last response (tool require)
+	 * @param {*} capi client api
+	 * @param {*} history history
+	 * @param {array} toolResponseHandlers tool response handlers
+	 * @param {DialogContext} dialogContext dialog context
+	 * @param {object} options options
+	 * @returns
+	 */
 	async run(
 		actions,
 		response,
 		capi,
 		history,
 		toolResponseHandlers,
-		options) {
+		dialogContext,
+		options
+	) {
 
 		// tool text query
 		// TODO: must operate on content, and use config
@@ -77,8 +91,11 @@ export default class ActionTool {
 		}
 
 		// call model with tool result
-		var r2 = await capi.completionFromMessages(this.tools, options)
+
+		// ----- call completion ---------------------------------------
+		var r2 = await capi.completionFromMessages(this.tools, dialogContext, options)
 		var textRes = r2.content
+		// -------------------------------------------------------------
 
 		// call tool response handlers
 		if (toolResponseHandlers) {

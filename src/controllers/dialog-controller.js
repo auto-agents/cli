@@ -3,6 +3,7 @@ import Status from '../../../shared/src/utils/status.js'
 import { StatusMessage, StatusEnum } from "../../../shared/src/data/status-message.js"
 import {
 	AgentGetFocusViewEvent,
+	AgentPartialResponseEvent,
 	LogErrorEvent,
 	SetStatusMessageEvent,
 	SpeakCommandEvent,
@@ -79,6 +80,8 @@ export default class DialogController {
 				const ev = args[0]
 				traceError(this.ctx, '⚙️ ' + ev.message)
 			})
+			.on(AgentPartialResponseEvent,
+				async args => { await this.#agentPartialResponseHandler(args[0]) })
 
 		// -----------------------------------------------------------------
 
@@ -219,7 +222,9 @@ export default class DialogController {
 		if (!this.output.isEmpty())
 			this.output.newLine(false)
 
+		// TODO: be a text printer sanitizer
 		text = replaceUnicodes(this.ctx, text)
+
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
 		const userDialPrfx = this.ctx.cli.dialog.userDialogPrefix
 			.replace('{toAgent}',
@@ -227,17 +232,18 @@ export default class DialogController {
 
 		if (!this.ctx.cli.dialog.enableUserPromptMarkdown)
 			// raw text
-			this.output.appendLine(
+			dialogContext.userOutputContext = this.output.appendLine(
 				chalk.hex(this.ctx.theme.promptColor)(userDialPrfx)
 				+ ' ' + ucol(text))
 		else {
 			// eventually markdown
-			this.#renderMarkdownDialog(this.output, dialogContext, null, text, ucol,
-				(name, t) => {
-					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-					t[0] = chalk.hex(this.ctx.theme.promptColor)(userDialPrfx) + ' ' + ucol(t[0])
-				}
-			)
+			dialogContext.userOutputContext =
+				this.#renderMarkdownDialog(this.output, dialogContext, null, text, ucol,
+					(name, str) => {
+						const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+						return chalk.hex(this.ctx.theme.promptColor)(userDialPrfx) + ' ' + ucol(str)
+					}
+				)
 		}
 	}
 
@@ -245,6 +251,15 @@ export default class DialogController {
 		if (!isAgentSpeakEnabled(this.ctx, agentId))
 			return
 		await getLoadedAgent(this.ctx, agentId).TTSPlugin.shetUp()
+	}
+
+	async #agentPartialResponseHandler(agentPartialResponseEventData) {
+		const d = agentPartialResponseEventData
+		this.echoSystem(
+			d.dialogContext,
+			d.content,
+			d.options
+		)
 	}
 
 	async echoSystem(
@@ -255,11 +270,14 @@ export default class DialogController {
 			secondary = false,
 			name = null,
 			voice = null,
-			color = null
+			color = null,
+			partial = false
 		}) {
 		const o = this.output
-		if (!skipPrependNewLine)
+
+		if (!skipPrependNewLine && !partial)
 			o.newLine(false)
+
 		color ||= this.ctx.theme.dialog.systemDialogColor
 		const scol = chalk.hex(color)
 
@@ -273,36 +291,45 @@ export default class DialogController {
 
 		// render response
 
-		const r = this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
-			(name, t) => {
-				const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-				t[0] = this.ctx.cli.dialog.systemDialogPrefix + n + ' ' + t[0]
-			}
-		)
+		const r =
+			dialogContext.systemOutputContext
+			= this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
+				(name, str) => {
+					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+					return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ') + str
+				}, partial
+			)
+		dialogContext.systemOutputContext = r
 
-		this.ctx.components.event.emit(SetStatusMessageEvent)
+		if (!partial)
+			this.ctx.components.event.emit(SetStatusMessageEvent)
 
 		return r
 	}
 
-	#renderMarkdownDialog(o, dialogContext, name, text, scol, setPrompt) {
-		const outp = this.responseTextFormater.getRendered(text)
-		const t = outp.trim().replaceAll('\t', '    ').split('\n')
+	#renderMarkdownDialog(o, dialogContext, name, text, scol, setPrompt, partial = false) {
+		//if (!text) return dialogContext.outputContext.lastPos()
+		//text = text.trim()
+		//if (text.length == 0) return dialogContext.outputContext.lastPos()
 
-		if (t.length > 0) {
-			// add role symbol
-			if (!name) name = dialogContext.agent?.chatName
+		const outp = this.responseTextFormater.getRendered(text, partial)
+		// TODO: be a in the text printer sanitizer (responseTextFormater)
+		var str = outp.trim().replaceAll('\t', '    ')
 
-			setPrompt(name, t)
-		}
+		// add role symbol
+		if (!name) name = dialogContext.agent?.chatName
+		str = setPrompt(name, str)
 
-		var r = null
-		t.forEach(l => {
-			const s = l.length == 0 ? ' ' : l
-			//return o.appendLine(scol(s))
-			r = o.appendLine(scol(s))
-		})
-		return r
+		var pos = null
+		if (partial)
+			pos = o.replaceLines(
+				dialogContext.systemOutputContext.y0,
+				dialogContext.systemOutputContext.y1,
+				str
+			)
+		else
+			pos = o.appendLine(scol(str))
+		return pos
 	}
 
 	async sleep(ms) { return new Promise((r) => setTimeout(r, ms)) }

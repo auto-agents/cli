@@ -2,6 +2,7 @@ import { Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
 import chalk from 'chalk'
+import { agentPartialResponseEvent, AgentPartialResponseEvent } from '../../../../shared/src/data/events.js'
 
 /**
  * OPEN AI standard api client
@@ -36,21 +37,24 @@ export default class OpenAIApiClient extends AIApiClient {
 		return r
 	}
 
-	async completion(query, tools, options, role = Role_User) {
+	async completion(query, tools, dialogContext, options, role = Role_User) {
 
 		const queryMessage = {
 			role: role, content: query
 		}
 		this.history.messages.push(queryMessage)
-		return await this.completionFromMessages(tools, options)
+		return await this.completionFromMessages(tools, dialogContext, options)
 	}
 
-	async completionFromMessages(tools, options) {
+	async completionFromMessages(tools, dialogContext, options) {
 
+		const e = this.ctx.components.event
+
+		// ------------ setup payload -------------------------------------------------
 		var props = {
 			model: this.config.model,
 			messages: this.history.messages,
-			verbosity: 'high',  // no effect in openai api
+			verbosity: 'high',  // no effect in openai api (consign for provider ollama)
 			tools: tools.getAvailableToolsSpecifications(),
 			temperature: this.config.temperature,
 			stream: this.config.stream,
@@ -61,15 +65,79 @@ export default class OpenAIApiClient extends AIApiClient {
 		}
 		if (this.config.props)
 			props = { ...props, ...this.config.props }
-
 		if (options.response_format) props.response_format = options.response_format
+		// ----------------------------------------------------------------------------
 
-		const r = await this.client.chat.completions.create(
+		var message = {}
+
+		// -------------- run non stream query ----------------------------------------
+		var r = await this.client.chat.completions.create(
 			props, {
 			path: this.config.paths.completion
 		})
+		// ----------------------------------------------------------------------------
 
-		const message = r.choices[0].message
+		// -------------- handle non stream response ----------------------------------
+		if (!this.config.stream) {
+			message = r.choices[0].message
+		}
+		// ----------------------------------------------------------------------------
+
+		// -------------- handle stream response --------------------------------------
+		if (this.config.stream) {
+			const stream = r
+			message.content = ''
+			const dbg = false
+			for await (const event of stream) {
+				// type event: event.object
+				const type = event.object
+				var isPartialContent = false
+
+				if (dbg) console.log(event.object)
+				const delta = event.choices[0].delta
+				if (dbg) console.log(delta)
+				if (delta.role)
+					message.role = delta.role
+				if (delta.content) {
+					//console.log('|' + delta.content + '|')
+					message.content += delta.content
+					isPartialContent = true
+				}
+				if (delta.tool_calls) {
+					for (var i = 0; i < delta.tool_calls.length; i++) {
+						if (!message.tool_calls) message.tool_calls = []
+						const toolCall = delta.tool_calls[i]
+						const index = toolCall.index
+						if (toolCall.type == 'function') {
+							if (dbg) console.log(delta.tool_calls[i].function)
+							if (!message.tool_calls[index])
+								message.tool_calls[index] = {
+									id: toolCall.id,
+									type: 'function',
+									function: {
+										name: toolCall.function.name,
+										arguments: toolCall.function.arguments
+									}
+								}
+							else
+								message.tool_calls[index].function.arguments +=
+									toolCall.function.arguments
+						}
+					}
+				}
+				// partial message result available
+				if (isPartialContent)
+					e.emit(AgentPartialResponseEvent, agentPartialResponseEvent(
+						dialogContext,
+						event,
+						delta.content,
+						message.content,
+						options
+					))
+			}
+			//console.warn(message)
+		}
+		// ----------------------------------------------------------------------------
 
 		if (this.ctx.servers.llm.common.enableDebugResponsesMessage)
 			console.log(message)

@@ -2,6 +2,7 @@ import AIApiClient from './ai-api-client.js'
 import { Role_Assistant, Role_User } from './roles.js'
 import { Ollama } from 'ollama'
 
+// TODO: update for compatibility
 export default class OllamaApiClient extends AIApiClient {
 
 	constructor(ctx, config, outputContext) {
