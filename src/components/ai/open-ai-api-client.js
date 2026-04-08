@@ -90,7 +90,7 @@ export default class OpenAIApiClient extends AIApiClient {
 			const dbg = false
 			for await (const event of stream) {
 				// type event: event.object
-				//console.log(event.choices[0])
+				//console.log(event)
 				const type = event.object
 				var isPartialContent = false
 
