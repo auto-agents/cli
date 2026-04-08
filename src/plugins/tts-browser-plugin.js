@@ -11,6 +11,8 @@ import { Mutex } from 'async-mutex';
 
 export default class TTSBrowserPlugin extends TTSPluginBase {
 
+	shetUpNow = false
+
 	constructor(ctx, config, outputContext, pluginSpec, overloadConfig = null) {
 		super(ctx, config, outputContext, pluginSpec, overloadConfig, 'TTS browser plugin')
 		this.pluginPath = join(process.cwd(),
@@ -132,7 +134,8 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 			text = super.runPreProcessors(text)
 			const t = this.getSplits(text)
 
-			for (var i = 0; i < t.length; i++) {
+			var i = 0;
+			while (i < t.length && !this.shetUpNow) {
 
 				const tx = t[i]
 				if (this.ctx.dialoger.sentenceSpliter.dumpSplits)
@@ -143,7 +146,10 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 					voice: voice,
 					apiKey: this.config.apiKey
 				})
+
+				i++
 			}
+			this.shetUpNow = false
 		} catch (err) {
 			throw SpeakerError.fromErr('speak fail', err)
 		}
@@ -172,6 +178,7 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 	async shetUp() {
 		this.#assertSpeakPluginImplAvailable()
 		try {
+			this.shetUpNow = true
 			await this.speech.shetUp(this.config.apiKey)
 		} catch (err) {
 			throw SpeakerError.fromErr('setUp fail', err)
