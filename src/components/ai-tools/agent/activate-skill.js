@@ -35,12 +35,5 @@ export default class ActivateSkill extends AITool {
 			filepath: tpath,
 			content: data
 		})
-
-		/*return new ToolResult(null, [
-			{
-				path: tpath,
-				content: data
-			}
-		])*/
 	}
 }
