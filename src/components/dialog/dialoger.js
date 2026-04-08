@@ -1,6 +1,7 @@
 import {
 	AgentGetFocusSpeakEvent,
-	dialogEvent
+	dialogEvent,
+	SetStatusMessageEvent
 } from "../../../../shared/src/data/events"
 
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
@@ -66,6 +67,7 @@ export default class Dialoger {
 		var results = []
 		const stream = dialogContext.agent?.plugin?.config?.stream
 		options = { ...options, partial: stream }
+		const e = this.ctx.components.event
 
 		if (!dialogContext) throw new Error("dialog context is required")
 
@@ -184,6 +186,8 @@ export default class Dialoger {
 											voice: options.assistantVoice
 										})
 									}
+									else
+										e.emit(SetStatusMessageEvent)
 								}
 							)).task
 					))

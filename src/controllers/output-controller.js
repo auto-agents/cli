@@ -56,15 +56,27 @@ export default class OutputController {
 		this.updateView(skipViewUpdate)
 	}
 
-	// TODO: make this compatible (coming from box controller)
-	setLine(str, y, leftMargin = 0, skipViewUpdate = false) {
-		if (!str) return
-		const o = this.getSource()
-		if (y > o.rows.length - 1)
-			y = o.rows.length - 1
-		o.rows[y] = ' '.repeat(leftMargin) + str
-		this.updateView(skipViewUpdate)
-		return this
+	replaceLines(y0, y1, str, skipViewUpdate = false) {
+		const rows = this.getSource().rows
+		rows.splice(y0, y1 - y0 + 1)
+		rows.splice(y0, 0, '')
+		return this.setLine(y0, str, skipViewUpdate)
+	}
+
+	setLine(y, str, skipViewUpdate = false) {
+		const rows = this.getSource().rows
+		if (y < 0) y = 0
+		if (y < rows.length) {
+			const t = this.#splitText(str)
+			rows[y] = t[0]
+			for (var i = 1; i < t.length; i++) {
+				rows.splice(y + i, 0, t[i])
+			}
+			this.updateView(skipViewUpdate)
+			return this.pos(y, y + t.length - 1)
+		}
+		else
+			return this.appendLine(str, 0, skipViewUpdate)
 	}
 
 	appendToLine(y, str, skipViewUpdate = false) {
@@ -81,7 +93,7 @@ export default class OutputController {
 			return this.pos(y, y + t.length - 1)
 		}
 		else
-			this.appendLine(str, 0, skipViewUpdate)
+			return this.appendLine(str, 0, skipViewUpdate)
 	}
 
 	pos(y0, y1) {

@@ -99,7 +99,7 @@ export default class OpenAIApiClient extends AIApiClient {
 				if (delta.role)
 					message.role = delta.role
 				if (delta.content) {
-					console.log('|' + delta.content + '|')
+					//console.log('|' + delta.content + '|')
 					message.content += delta.content
 					isPartialContent = true
 				}
@@ -131,10 +131,11 @@ export default class OpenAIApiClient extends AIApiClient {
 						dialogContext,
 						event,
 						delta.content,
+						message.content,
 						options
 					))
 			}
-			console.warn(message)
+			//console.warn(message)
 		}
 		// ----------------------------------------------------------------------------
 

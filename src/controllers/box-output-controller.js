@@ -20,12 +20,12 @@ export default class BoxOutputController {
 		this.ctx.components.event.emit(BoxOutputUpdatedEvent)
 	}
 
-	setLine(str, y, leftMargin = 0, skipViewUpdate = false) {
+	setLine(y, str, skipViewUpdate = false) {
 		if (!str) return
 		const o = this.getSource()
 		if (y > o.rows.length - 1)
 			y = o.rows.length - 1
-		o.rows[y] = ' '.repeat(leftMargin) + str
+		o.rows[y] = str
 		if (!skipViewUpdate)
 			this.ctx.components.event.emit(BoxOutputUpdatedEvent)
 		return this

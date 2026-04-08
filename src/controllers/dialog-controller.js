@@ -257,7 +257,7 @@ export default class DialogController {
 		const d = agentPartialResponseEventData
 		this.echoSystem(
 			d.dialogContext,
-			d.partialContent,
+			d.content,
 			d.options
 		)
 	}
@@ -295,13 +295,14 @@ export default class DialogController {
 			dialogContext.systemOutputContext
 			= this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
 				(name, str) => {
-					const n = !partial && name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-					return (!partial ? this.ctx.cli.dialog.systemDialogPrefix : '') + n + (!partial ? ' ' : '') + str
+					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+					return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ') + str
 				}, partial
 			)
 		dialogContext.systemOutputContext = r
 
-		this.ctx.components.event.emit(SetStatusMessageEvent)
+		if (!partial)
+			this.ctx.components.event.emit(SetStatusMessageEvent)
 
 		return r
 	}
@@ -321,7 +322,8 @@ export default class DialogController {
 
 		var pos = null
 		if (partial)
-			pos = o.appendToLine(
+			pos = o.replaceLines(
+				dialogContext.systemOutputContext.y0,
 				dialogContext.systemOutputContext.y1,
 				str
 			)
