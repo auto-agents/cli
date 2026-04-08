@@ -90,6 +90,7 @@ export default class OpenAIApiClient extends AIApiClient {
 			const dbg = false
 			for await (const event of stream) {
 				// type event: event.object
+				//console.log(event.choices[0])
 				const type = event.object
 				var isPartialContent = false
 
@@ -98,9 +99,10 @@ export default class OpenAIApiClient extends AIApiClient {
 				if (dbg) console.log(delta)
 				if (delta.role)
 					message.role = delta.role
-				if (delta.content) {
+				if (delta.content || event.choices[0].finish_reason == 'stop') {
 					//console.log('|' + delta.content + '|')
-					message.content += delta.content
+					if (delta.content)
+						message.content += delta.content
 					isPartialContent = true
 				}
 				if (delta.tool_calls) {
@@ -130,7 +132,7 @@ export default class OpenAIApiClient extends AIApiClient {
 					e.emit(AgentPartialResponseEvent, agentPartialResponseEvent(
 						dialogContext,
 						event,
-						delta.content,
+						delta.content || '',
 						message.content,
 						options
 					))

@@ -1,5 +1,6 @@
 import {
 	AgentGetFocusSpeakEvent,
+	AgentPartialResponseEvent,
 	dialogEvent,
 	SetStatusMessageEvent
 } from "../../../../shared/src/data/events"
@@ -60,6 +61,8 @@ export default class Dialoger {
 	}
 
 	#initEvents() {
+		const e = this.ctx.components.event
+		e.on(AgentPartialResponseEvent, async args => await this.#agentPartialResponseEventHandler(args[0]))
 	}
 
 	async addUserDialog(dialogContext, text, tool_calls, options, outputContext) {
@@ -174,7 +177,18 @@ export default class Dialoger {
 
 									// eventually speak
 
-									if (isAgentSpeakEnabled(this.ctx,
+									// TODO: not waited
+									if (stream && dialogContext.systemResponseContentAccumulator > 0) {
+										this.agentSpeakFocus(dialogContext, text)
+										await this.speakFun(
+											dialogContext,
+											aiText, {
+											...options,
+											voice: options.assistantVoice
+										})
+									}
+
+									if (!stream && isAgentSpeakEnabled(this.ctx,
 										dialogContext.agent.id
 									)) {
 
@@ -195,6 +209,63 @@ export default class Dialoger {
 
 		// release first await lock
 		return results
+	}
+
+	async #agentPartialResponseEventHandler(agentPartialResponseEvent) {
+		const r = agentPartialResponseEvent
+		//console.log(r)
+		const dc = r.dialogContext
+		if (!isAgentSpeakEnabled(this.ctx, dc.agent.id)) return
+
+		// handle progressive speak from partial content
+		const t = this.#getResponseContentSpeakAccumulator(dc, r)
+		if (t.length == 0) return
+
+		for (var i = 0; i < t.length; i++) {
+			const text = t[i]
+			this.agentSpeakFocus(dc, text)
+			//console.log('speak: ' + text)
+			await this.speakFun(
+				dc,
+				text, {
+				...dc.options,
+				voice: null
+			})
+		}
+	}
+
+	#flushResponseContentAccumalator(dialogContext, options) {
+
+	}
+
+	#getResponseContentSpeakAccumulator(dialogContext, agentPartialResponseEvent) {
+		const partialContent = agentPartialResponseEvent.partialContent
+		dialogContext.systemResponseContentAccumulator += partialContent
+		const str = dialogContext.systemResponseContentAccumulator
+
+		//console.log(agentPartialResponseEvent.event?.choices[0]?.finish_reason)
+
+		if (agentPartialResponseEvent.event?.choices[0]?.finish_reason == 'stop')
+			return [str]
+
+		if (!str.includes('\n') && !str.includes('.')) return []
+		//var t = str.split('.')
+		//t = t.map((x, i) => i < t.length - 1 ? x + '.' : x)
+		var t = [str]
+		var t2 = []
+		for (var i = 0; i < t.length; i++) {
+			var tt = t[i].split('\n')
+			tt = tt.map((x, i) => i < tt.length - 1 ? x + '\n' : x)
+			t2 = [...t2, ...tt]
+		}
+		t2 = t2.filter(x => x.endsWith('.') || x.endsWith('\n'))
+		const rest = t2.filter(x => !x.endsWith('.') && !x.endsWith('\n'))
+		dialogContext.systemResponseContentAccumulator = rest.join('')
+		return t2
+	}
+
+	#setResponseContentSpeakAccumulator(t, dialogContext) {
+
 	}
 
 	/**
