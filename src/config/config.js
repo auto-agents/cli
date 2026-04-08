@@ -894,7 +894,7 @@ export const config = () => {
 								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
 						},
 						config: {
-							preProcessors: ['line-end-italic-remover.js']
+							//preProcessors: ['line-end-italic-remover.js']
 						}
 					}
 				},
