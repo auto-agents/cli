@@ -1409,9 +1409,9 @@ export const config = () => {
 			},
 			openAIAgent: {
 				/*
-				* OpenAI chat plugin configuration
+				* OpenAI agent plugin configuration
 				*/
-				description: 'OpenAI chat using OpenAI API interface (HTTP transport)',
+				description: 'OpenAI agent using OpenAI API interface (HTTP transport)',
 				file: 'ai-agent-plugin.js',
 				category: 'AIAgent',
 
