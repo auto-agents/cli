@@ -10,6 +10,9 @@ export default class ResponseTextFormater {
 
 	getRendered(text) {
 		text = replaceUnicodes(this.ctx, text)
+		this.ctx.ui.decorators.replaceMarkdown.forEach(t => {
+			text = text.replaceAll(t[0], t[1])
+		});
 		const r = renderMarkdown(text)
 		return r
 	}

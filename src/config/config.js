@@ -136,6 +136,8 @@ export const config = () => {
 					['🌫', ' '],
 					['⚡', ' '],
 					['🏴‍☠️', ' ']
+				],
+				replaceMarkdown: [
 				]
 			},
 			mouseScrollStep: 4,

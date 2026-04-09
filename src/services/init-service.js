@@ -35,7 +35,11 @@ export default class InitService {
 					this.ctx.theme.console.stdoutColor
 					: this.ctx.theme.console.stderrColor
 			)
-			if (stream != 'stdout' && data.includes('Cannot update')) {
+			if (stream != 'stdout' &&
+				(data.includes('Cannot update')
+					||
+					data.includes('Could not find the language')
+				)) {
 				return	// skip this error
 			}
 
