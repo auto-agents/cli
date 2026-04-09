@@ -9,6 +9,8 @@ import { agentPartialResponseEvent, AgentPartialResponseEvent } from '../../../.
  */
 export default class OpenAIApiClient extends AIApiClient {
 
+	eventId = 0
+
 	constructor(ctx, config, outputContext) {
 		super(ctx, config, outputContext)
 	}
@@ -88,6 +90,7 @@ export default class OpenAIApiClient extends AIApiClient {
 			const stream = r
 			message.content = ''
 			const dbg = false
+			var chunkId = 0
 			for await (const event of stream) {
 				// type event: event.object
 				//console.log(event)
@@ -99,12 +102,14 @@ export default class OpenAIApiClient extends AIApiClient {
 				if (dbg) console.log(delta)
 				if (delta.role)
 					message.role = delta.role
-				if (delta.content || event.choices[0].finish_reason == 'stop') {
+				const isComplete = event.choices[0].finish_reason == 'stop'
+				if (delta.content || isComplete) {
 					//console.log('|' + delta.content + '|')
 					if (delta.content)
 						message.content += delta.content
 					isPartialContent = true
 				}
+				event.isComplete = isComplete
 				if (delta.tool_calls) {
 					for (var i = 0; i < delta.tool_calls.length; i++) {
 						if (!message.tool_calls) message.tool_calls = []
@@ -128,6 +133,9 @@ export default class OpenAIApiClient extends AIApiClient {
 					}
 				}
 				// partial message result available
+				event.chunkId = chunkId
+				event.id = this.eventId
+				chunkId++
 				if (isPartialContent)
 					e.emit(AgentPartialResponseEvent, agentPartialResponseEvent(
 						dialogContext,
@@ -137,6 +145,7 @@ export default class OpenAIApiClient extends AIApiClient {
 						options
 					))
 			}
+			this.eventId++
 			//console.warn(message)
 		}
 		// ----------------------------------------------------------------------------

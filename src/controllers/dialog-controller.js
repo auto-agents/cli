@@ -463,7 +463,11 @@ export default class DialogController {
 			voice = null,
 			waitForEnd = false,
 			interrupt = false,
-			speakerAgent = null
+			speakerAgent = null,
+			noAwait = null,
+			eventId = null,
+			chunkId = null,
+			splitId = null,
 		}) {
 
 		const agent = speakerAgent != null ? speakerAgent : dialogContext.agent
@@ -487,21 +491,24 @@ export default class DialogController {
 					'🔊 speaking',
 				))
 
-			if (!interrupt) await sp.waitIdle()
+			if (!interrupt && !noAwait) await sp.waitIdle()
 				.catch(err => {
 					e.emit(LogErrorEvent, errorEvent(this.From, err))
 				})
 
-			await sp.speak(text, voice)
-
-			/*.then(
-			console.log('CLI: START SPEAK')
-		)*/
-
-			if (waitForEnd) {
-				//await sp.waitSpeak()
-				//await sp.waitIdle()
+			const spOpts = {
+				noAwait: noAwait,
+				eventId: eventId,
+				chunkId: chunkId,
+				splitId: splitId
 			}
+
+			if (noAwait)
+				// stream partial content
+				sp.speak(text, voice, spOpts)
+			else
+				// no stream
+				await sp.speak(text, voice, spOpts)
 
 			e.emit(SetStatusMessageEvent)
 

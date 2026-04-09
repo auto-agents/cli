@@ -45,17 +45,17 @@ const ignoreTkErrors = 'TerminalInfoProvider'
 // --- Global process-level error handling ---
 process.on('uncaughtException', (err) => {
 	try {
-		logErrorToFile(ERROR_LOG_FILE, err)
+		logErrorToFile(err.stack)
 		if (err.message.includes(ignoreTkErrors)) return
-		console.error('Uncaught Exception:', err);
+		console.error('Uncaught Exception:', err.stack);
 	} catch { }
 });
 
 process.on('unhandledRejection', (err) => {
 	try {
-		logErrorToFile(ERROR_LOG_FILE, err)
-		if (err.includes(ignoreTkErrors)) return
-		console.error('Unhandled Promise Rejection:', err);
+		logErrorToFile(err.stack)
+		if (err.message.includes(ignoreTkErrors)) return
+		console.error('Unhandled Promise Rejection:', err.stack);
 	} catch { }
 });
 
