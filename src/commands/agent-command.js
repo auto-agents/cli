@@ -58,6 +58,19 @@ export default class AgentCommand extends Command {
 		const dialogController = this.ctx.components.dialog
 		switch (action) {
 
+			case 'mute':
+				if (!agent.speak) return
+				agent.speak.isMute = true
+				await dialogController.shetUp(agentId)
+				dumpLoadedAgent(this.ctx, agentId, o, 'mute')
+				break
+
+			case 'unmute':
+				if (!agent.speak) return
+				agent.speak.isMute = false
+				dumpLoadedAgent(this.ctx, agentId, o, 'unmute')
+				break
+
 			case 'su':
 			case 'shet-up':
 				await dialogController.shetUp(agentId)

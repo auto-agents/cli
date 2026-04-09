@@ -280,14 +280,14 @@ export const config = () => {
 										value: 'su',
 										description: 'alias for shet-up'
 									},
-									/*{
-										value: 'duo-on',
-										description: 'activate the agent chat dialog duo mode'
+									{
+										value: 'mute',
+										description: 'mute agent speak if enabled and unmuted'
 									},
 									{
-										value: 'duo-off',
-										description: 'stop the agent chat dialog duo mode'
-									},*/
+										value: 'unmute',
+										description: 'unmute agent speak if enabled & muted'
+									},
 									{
 										value: 'save',
 										description: 'save the dialog history into a file. eg: --action save --file myfile.txt'
@@ -620,6 +620,9 @@ export const config = () => {
 			global: {
 				config: {
 					prependOSDependentSystemInstructions: true
+				},
+				speak: {
+					isMute: false
 				}
 			},
 

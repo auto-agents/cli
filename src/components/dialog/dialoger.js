@@ -190,7 +190,7 @@ export default class Dialoger {
 
 									if (!stream && isAgentSpeakEnabled(this.ctx,
 										dialogContext.agent.id
-									)) {
+									) && !dialogContext.agent.speak?.isMute) {
 
 										this.agentSpeakFocus(dialogContext, text)
 										await this.speakFun(
@@ -215,7 +215,8 @@ export default class Dialoger {
 		const r = agentPartialResponseEvent
 
 		const dc = r.dialogContext
-		if (!isAgentSpeakEnabled(this.ctx, dc.agent.id)) return
+		if (!isAgentSpeakEnabled(this.ctx, dc.agent.id)
+			|| dc.agent.speak?.isMute) return
 
 		// handle progressive speak from partial content
 		const t = dc.systemResponseContentAccumulator
@@ -263,7 +264,8 @@ export default class Dialoger {
 			))
 
 		// 2. eventually speak
-		if (isAgentSpeakEnabled(this.ctx, dialogContext.agent.id)) {
+		if (isAgentSpeakEnabled(this.ctx, dialogContext.agent.id)
+			&& !dialogContext.agent.speak?.isMute) {
 			results.push(
 				await this.fifoStack.addTask(
 					task(
