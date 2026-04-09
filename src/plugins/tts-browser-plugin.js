@@ -149,15 +149,17 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 	async speak(text, voice = null, options = null) {
 		this.#assertSpeakPluginImplAvailable()
 		this.pre_speak()
-		this.waitStack.addTask(
-			task(
-				'speak',
-				`${this.name}: speak`,
-				async () => {
-					//console.log('** ' + options?.eventId + ',' + options?.chunkId + ',' + options?.splitId + ': ' + text)
-					await this.#speak(text, voice, options)
-				}
-			))
+		if (options?.noAwait)
+			this.waitStack.addTask(
+				task(
+					'speak',
+					`${this.name}: speak`,
+					async () => {
+						await this.#speak(text, voice, options)
+					}
+				))
+		else
+			await this.#speak(text, voice, options)
 	}
 
 	async #speak(text, voice = null, options = null) {
