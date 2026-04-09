@@ -70,9 +70,8 @@ export default class Skills {
 				}
 
 				if (!entry.isFile()) continue
-				if (!entry.name == 'SKILL.md') continue
-
-				await this.addSkill(full, oc2)
+				if (entry.name == 'SKILL.md')
+					await this.addSkill(full, oc2)
 			}
 		}
 
@@ -103,8 +102,8 @@ export default class Skills {
 
 				const problems = await validate(skillDir)
 				if (problems.length > 0) {
-					o.appendLine(this.status.error(margin + 'validations errors: ' + problems.join(',')))
-					return
+					o.appendLine(this.status.warning(margin + 'skill ' + skillName + ' validations errors: ' + problems.join(',')))
+					//return
 				}
 
 				const props = await readProperties(skillDir)
@@ -117,7 +116,7 @@ export default class Skills {
 		}
 		catch (err) {
 			o.newLine()
-			o.appendLine(this.status.error(margin + 'skill load error: ' + err))
+			o.appendLine(this.status.error(margin + 'skill ' + skillName + ' load error: ' + err))
 			return null
 		}
 

@@ -2,7 +2,9 @@
 	"name": "auto-agents-cli",
 	"version": "0.0.0",
 	"license": "GPL 3",
-	"bin": "dist/cli.js",
+	"bin": {
+		"auto-agents-cli": "dist/cli.js"
+	},
 	"type": "module",
 	"engines": {
 		"node": ">=16"
@@ -83,5 +85,20 @@
 		"presets": [
 			"@babel/preset-react"
 		]
-	}
+	},
+	"description": "<table> <tr> <td> <h1>Auto Agents</h1>",
+	"main": "index.js",
+	"directories": {
+		"doc": "doc"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/auto-agents/cli.git"
+	},
+	"keywords": [],
+	"author": "",
+	"bugs": {
+		"url": "https://github.com/auto-agents/cli/issues"
+	},
+	"homepage": "https://github.com/auto-agents/cli#readme"
 }

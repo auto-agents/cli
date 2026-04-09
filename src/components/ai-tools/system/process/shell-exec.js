@@ -32,7 +32,8 @@ export default class ShellExec extends AITool {
 		await exec(com,
 			{
 				shell: true,
-				timeout: this.ctx.cli.toolRunTimeout
+				timeout: this.ctx.cli.toolRunTimeout,
+				cwd: this.ctx.cli.currentPath
 			})
 			.then(({ stdout, stderr }) => {
 				res = stdout

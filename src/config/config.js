@@ -798,7 +798,7 @@ export const config = () => {
 				wiseAndMagician: {
 					profileName: 'wise and magician',
 					instructions: "You are a wise and magical woman with a lot of empathy. Your name is Nicole Umy",
-					_mergePropsFromPath: ['agents.profiles.ok']
+					_mergePropsFromPath: ['conversationalAgent']
 				},
 				frenchPresident: {
 					profileName: 'French President',

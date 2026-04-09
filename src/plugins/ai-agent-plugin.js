@@ -132,9 +132,11 @@ export default class AIAgentPlugin {
 			try {
 				await this.responseProcessors.loadProcessors(this.config.responseProcessors)
 				await this.tools.loadTools()
-				await this.skills.buildSkillsCatalog()
-				if (this.config.enabledSkills != null)
+
+				if (this.config.enabledSkills != null) {
+					await this.skills.buildSkillsCatalog()
 					this.#prependSkillsPrompt()
+				}
 				await utils.wait(this.ctx.ui.initFastWait)
 
 			} catch (err) {
