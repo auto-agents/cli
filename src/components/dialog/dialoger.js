@@ -213,7 +213,7 @@ export default class Dialoger {
 
 	async #agentPartialResponseEventHandler(agentPartialResponseEvent) {
 		const r = agentPartialResponseEvent
-		//console.log(r)
+
 		const dc = r.dialogContext
 		if (!isAgentSpeakEnabled(this.ctx, dc.agent.id)) return
 
@@ -224,11 +224,8 @@ export default class Dialoger {
 
 		for (var i = 0; i < t.length; i++) {
 			const text = t[i]
-			//this.agentSpeakFocus(dc, text)
 
-			//console.log(r.event.chunkId + ',' + i + ',' + r.event.id + ': ' + text)
-
-			this.speakFun(		// /!\ await leads to break events order
+			this.speakFun(		// /!\ await here leads to break events order
 				dc,
 				text, {
 				...dc.options,
