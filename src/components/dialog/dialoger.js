@@ -226,7 +226,7 @@ export default class Dialoger {
 			const text = t[i]
 			//this.agentSpeakFocus(dc, text)
 
-			//console.log(r.event.chunkIndex + ',' + i + ',' + r.event.id + ' speak: ' + text)
+			//console.log(r.event.chunkId + ',' + i + ',' + r.event.id + ': ' + text)
 
 			this.speakFun(		// /!\ await leads to break events order
 				dc,
