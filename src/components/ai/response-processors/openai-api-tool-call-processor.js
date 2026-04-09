@@ -46,11 +46,17 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 				)
 
 			const name = toolSpe.function?.name
-			var props =
-				(typeof toolSpe.function?.arguments == 'string')
-					? JSON.parse(toolSpe.function?.arguments)
-					: toolSpe.function?.arguments
-
+			var props = null
+			try {
+				var props =
+					(typeof toolSpe.function?.arguments == 'string')
+						? JSON.parse(toolSpe.function?.arguments)
+						: toolSpe.function?.arguments
+			} catch (parseArgsError) {
+				e.emit(ToolRunErrorDialogEvent, dialogEvent({
+					dialogContext: dialogContext, toolSpec: toolSpe, error: parseArgsError.message
+				}))
+			}
 			const tool = this.tools.getTool(name)
 
 			if (tool != null) {

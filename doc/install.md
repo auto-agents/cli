@@ -51,6 +51,7 @@ sudo cp ~/.local/kitty.app/share/applications/kitty.desktop ~/.local/share/
 sed -i "s|Icon=kitty|Icon=$(readlink -f ~)/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png|g" ~/.local/share/kitty*.desktop
 sed -i "s|Exec=kitty|Exec=$(readlink -f ~)/.local/kitty.app/bin/kitty|g" ~/.local/share/kitty*.desktop
 echo 'kitty.desktop' > ~/.config/xdg-terminals.list
+# run kitty in : ~/.local/kitty.app/bin
 
 # pacman
 sudo apt install pacman     # may not work on wsl ubuntu
