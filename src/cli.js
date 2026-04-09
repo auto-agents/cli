@@ -11,7 +11,6 @@
 import AppController from './controllers/app-controller.js'
 import {
 	config,
-	ERROR_LOG_FILE,
 	ANSI_RSTXTA,
 	ENABLE_RESET_TERMINAL,
 	ENABLE_MOUSE_SUPPORT,

@@ -222,7 +222,6 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 	}
 
 	async #clearTasks() {
-		await this.speakStack.clearTasks()
 		await this.waitStack.clearTasks()
 	}
 
