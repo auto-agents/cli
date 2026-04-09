@@ -8,16 +8,23 @@ import Server from '../../../shared/src/data/server.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
 import TTSPluginBase from '../../../plugins/src/TTS/tts-plugin-base.js';
 import { Mutex } from 'async-mutex';
+import { FifoStack, task } from '../../../shared/src/utils/fifo-stack.js';
 
 export default class TTSBrowserPlugin extends TTSPluginBase {
 
+	stackRunning = false
+	name = null
+	waitStackRunDelay = 50
 	shetUpNow = false
+	waitStack = null
 
 	constructor(ctx, config, outputContext, pluginSpec, overloadConfig = null) {
 		super(ctx, config, outputContext, pluginSpec, overloadConfig, 'TTS browser plugin')
 		this.pluginPath = join(process.cwd(),
 			ctx.paths.plugins, 'speech', 'src', 'speech-plugin.js')
 		this.mutex = new Mutex()
+		this.name = this.config.agent.TTSApiId
+		this.waitStack = new FifoStack(`${this.name} wait stack`, ctx, [], false)
 	}
 
 	async init() {
@@ -127,7 +134,33 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 
 	/* ---- TTS plugin interface impl ---- */
 
-	async speak(text, voice = null) {
+	pre_speak() {
+		if (!this.stackRunning) {
+			const runWaitStack = async () => {
+				await this.waitStack.processTaskes()
+			}
+			setTimeout(
+				runWaitStack,
+				this.waitStackRunDelay)
+			this.stackRunning = true
+		}
+	}
+
+	async speak(text, voice = null, options = null) {
+		this.#assertSpeakPluginImplAvailable()
+		this.pre_speak()
+		this.waitStack.addTask(
+			task(
+				'speak',
+				`${this.name}: speak`,
+				async () => {
+					//console.log('** ' + options?.eventId + ',' + options?.chunkId + ',' + options?.splitId + ': ' + text)
+					await this.#speak(text, voice, options)
+				}
+			))
+	}
+
+	async #speak(text, voice = null, options = null) {
 		this.#assertSpeakPluginImplAvailable()
 
 		try {
@@ -180,9 +213,15 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 		try {
 			this.shetUpNow = true
 			await this.speech.shetUp(this.config.apiKey)
+			await this.#clearTasks()
 		} catch (err) {
 			throw SpeakerError.fromErr('shet up fail', err)
 		}
+	}
+
+	async #clearTasks() {
+		await this.speakStack.clearTasks()
+		await this.waitStack.clearTasks()
 	}
 
 	getPreferredVoices(preferredVoices) {
