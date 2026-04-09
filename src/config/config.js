@@ -267,6 +267,37 @@ export const config = () => {
 					file: 'config-command.js'
 				},
 				{
+					names: ['session', 'se', 's'],
+					description: 'manage the sessions',
+					config: {
+						options: {
+							action: {
+								type: 'string',
+								required: true,
+								allowedValues: [
+									{
+										value: 'save',
+										description: 'save the session into another session (created or replaced) eg: --action save --to newSessionId'
+									}
+								]
+							},
+							id: {
+								type: "string",
+								short: 'i',
+								required: false,
+								description: `the session id, default is '${DefaultSessionId}'`
+							},
+							to: {
+								type: "string",
+								required: false,
+								description: `the target session id`
+							}
+						},
+						allowPositionals: true
+					},
+					file: 'session-command.js'
+				},
+				{
 					names: ['agent', 'ag', 'a'],
 					description: 'configure and control the agents (use agent id from --id agentId, default to agent "TUI"',
 					config: {
