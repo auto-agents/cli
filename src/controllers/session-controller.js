@@ -19,18 +19,25 @@ export default class SessionController {
 				async args => this.updateCommandHistory(args[0])
 			)
 
-			this.loadCommandHistory()
-
-			const p = sessionPath(this.ctx)
-			if (!existsSync(p))
-				mkdir(p, null, (err) => {
-					if (err) throw err;
-				})
+			this.load()
 
 		} catch (err) {
 			console.error(err)
 		}
 		return this
+	}
+
+	load(id) {
+		id ||= this.ctx.session.id
+		this.ctx.session.id = id
+
+		this.loadCommandHistory()
+
+		const p = sessionPath(this.ctx)
+		if (!existsSync(p))
+			mkdir(p, null, (err) => {
+				if (err) throw err;
+			})
 	}
 
 	setHistoryFilePath() {

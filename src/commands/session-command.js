@@ -25,6 +25,7 @@ export default class SessionCommand extends Command {
 	async run(args, com) {
 
 		const e = this.ctx.components.event
+		const sessionCtrl = this.ctx.components.session
 		const argAction = 'action'
 		const action = this.getPositionalArg(com, args, argAction, 0)
 		if (!this.checkParameter(com, argAction, action))
@@ -62,6 +63,21 @@ export default class SessionCommand extends Command {
 				o.appendLine(chalk.hex(this.ctx.theme.commands.titleColor)('Available sessions:'));
 				o.newLine();
 				(await listSessionIds()).forEach(x => o.appendLine(x))
+				break
+
+			case 'switch':
+				if (this.ctx.session.id == sessionId) {
+					o.newLine()
+					o.appendLine('ignore switch to current session: ' + sessionId)
+				} else {
+					if (!(await listSessionIds()).includes(sessionId)) {
+						this.emitCommandError('session not found: ' + sessionId)
+					} else {
+						o.newLine()
+						o.appendLine('switch to session: ' + sessionId)
+						sessionCtrl.load(sessionId)
+					}
+				}
 				break
 
 			case 'copy':

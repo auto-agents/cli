@@ -46,7 +46,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 				)
 
 			const name = toolSpe.function?.name
-			var props = null
+			var props = ''
 			try {
 				var props =
 					(typeof toolSpe.function?.arguments == 'string')

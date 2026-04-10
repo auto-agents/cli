@@ -1404,6 +1404,8 @@ export const config = () => {
 			keyboard: null,
 			// mouse controller
 			mouse: null,
+			// session controller
+			session: null,
 			// loaded plugins
 			plugin: {
 			}
