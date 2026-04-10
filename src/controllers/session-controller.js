@@ -1,7 +1,7 @@
 import { sessionDataFile, sessionPath } from "../../../shared/src/utils/utils"
 import { existsSync, mkdir, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { DialogUserPromptBegin, RunCommandEvent } from "../../../shared/src/data/events";
+import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentGetFocusViewEvent, AgentRemovedEvent, DialogUserPromptBegin, RunCommandEvent } from "../../../shared/src/data/events";
 import { appendFile } from "fs/promises";
 import Session from "../../../shared/src/data/session";
 
@@ -39,6 +39,9 @@ export default class SessionController {
 			)
 			.on(DialogUserPromptBegin,
 				async args => this.updatePromptCommandHistory(args[0]))
+			.on(AgentAddedEvent, () => this.updateAgentsState())
+			.on(AgentRemovedEvent, () => this.updateAgentsState())
+			.on(AgentGetFocusViewEvent, () => this.updateAgentsState())
 	}
 
 	#loadConfig() {
@@ -56,6 +59,16 @@ export default class SessionController {
 		else
 			this.session = await Session.load(this.ctx, id)
 	}
+
+	// ------- agents ----------
+
+	async updateAgentsState() {
+		this.session.agents = Object.getOwnPropertyNames(
+			this.ctx.components.agents.getAgents())
+		this.session.dialogCurrentTargetAgent = this.ctx.cli.dialogCurrentTargetAgent
+	}
+
+	// ------- history ---------
 
 	async updateCommandHistory(cmd) {
 		this.session.updateCommandHistory(
