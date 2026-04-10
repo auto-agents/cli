@@ -2,6 +2,7 @@ import {
 	AgentGetFocusSpeakEvent,
 	AgentPartialResponseEvent,
 	dialogEvent,
+	DialogUserPromptBegin,
 	SetStatusMessageEvent
 } from "../../../../shared/src/data/events"
 
@@ -85,6 +86,17 @@ export default class Dialoger {
 							DialogerTasksTypes.userDialogEcho,
 							'user dialog : echo',
 							async () => {
+
+								e.emit(DialogUserPromptBegin,
+									dialogEvent(
+										{
+											dialogContext: dialogContext,
+											dialoger: this,
+											text: text
+										}
+									)
+								)
+
 								await this.userEchoFun(
 									dialogContext, text, options)
 							}

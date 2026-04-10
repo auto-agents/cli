@@ -63,7 +63,7 @@ export default class AppController {
 	event = null
 	ramService = null
 	timeService = null
-	init = null
+	initSrv = null
 	output = null
 	inputController = null
 	commandController = null
@@ -78,9 +78,13 @@ export default class AppController {
 		const { title, subtitle } = this.#getTitle()
 		this.ctx.app.title = title
 		this.ctx.app.subtitle = subtitle
+	}
+
+	async init(ctx) {
 
 		this.event = ctx.components.event = new EventService(ctx)
-		this.session = ctx.components.session = new SessionController(ctx).init()
+		this.session = ctx.components.session = new SessionController(ctx)
+		await this.session.init()
 		this.output = ctx.components.output = new OutputController(ctx,
 			'this.ctx.cli.output',
 			OutputUpdatedEvent,
@@ -91,7 +95,7 @@ export default class AppController {
 		this.boxOutput = ctx.components.boxOutput = new BoxOutputController(ctx,
 			'this.ctx.cli.boxOutput')
 
-		this.init = ctx.components.init = new InitService(
+		this.initSrv = ctx.components.init = new InitService(
 			ctx,
 			this,
 			//this.boxOutput,
@@ -247,7 +251,7 @@ export default class AppController {
 	}
 
 	async run() {
-		await this.init.run()
+		await this.initSrv.run()
 	}
 
 	heartbeatSecond() {
@@ -374,6 +378,7 @@ export default class AppController {
 				this.event.emit(RunCommandEvent, inp.substring(1).trim())
 		}
 		else {
+
 			// run dialog
 			await this.dialog.addUserDialog(inp)
 		}

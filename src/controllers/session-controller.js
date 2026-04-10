@@ -1,13 +1,17 @@
-import { sessionPath } from "../../../shared/src/utils/utils"
-import { existsSync, mkdir, readFileSync } from 'fs';
+import { sessionDataFile, sessionPath } from "../../../shared/src/utils/utils"
+import { existsSync, mkdir, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { RunCommandEvent } from "../../../shared/src/data/events";
+import { DialogUserPromptBegin, RunCommandEvent } from "../../../shared/src/data/events";
 import { appendFile } from "fs/promises";
+import Session from "../../../shared/src/data/session";
 
 export default class SessionController {
 
 	// session data
 	session = null
+
+	// session ctrl config
+	config = null
 
 	commandHistory = []
 
@@ -15,56 +19,57 @@ export default class SessionController {
 		this.ctx = ctx
 	}
 
-	init() {
+	async init() {
 		try {
-			this.ctx.components.event.on(
-				RunCommandEvent,
-				async args => this.updateCommandHistory(args[0])
-			)
-
-			this.load()
+			this.#initEvents()
+			this.#loadConfig()
+			await this.get(this.config.activeSessionId)
 
 		} catch (err) {
-			console.error(err)
+			throw err
 		}
 		return this
 	}
 
-	load(id) {
-		id ||= this.ctx.session.id
-		this.ctx.session.id = id
+	#initEvents() {
+		this.ctx.components.event
+			.on(
+				RunCommandEvent,
+				async args => this.updateCommandHistory(args[0])
+			)
+			.on(DialogUserPromptBegin,
+				async args => this.updatePromptCommandHistory(args[0]))
+	}
 
-		this.loadCommandHistory()
+	#loadConfig() {
+		const p = join(
+			process.cwd(),
+			this.ctx.paths.sessionsConfig
+		)
+		this.config = JSON.parse(readFileSync(p).toString())
+	}
 
-		const p = sessionPath(this.ctx)
+	async get(id) {
+		const p = sessionPath(this.ctx, id)
 		if (!existsSync(p))
-			mkdir(p, null, (err) => {
-				if (err) throw err;
-			})
-	}
-
-	setHistoryFilePath() {
-		this.historyFile =
-			join(sessionPath(this.ctx),
-				this.ctx.paths.commandHistoryFilename)
-	}
-
-	loadCommandHistory() {
-		this.setHistoryFilePath()
-		if (!existsSync(this.historyFile)) return
-		const histo = readFileSync(this.historyFile).toString()
-		this.commandHistory = histo.split('\n')
+			this.session = await Session.new(this.ctx, id)
+		else
+			this.session = await Session.load(this.ctx, id)
 	}
 
 	async updateCommandHistory(cmd) {
-		this.setHistoryFilePath()
-		appendFile(
-			this.historyFile,
+		this.session.updateCommandHistory(
 			this.ctx.cli.commandPrefix + cmd + '\n'
-		)
+		)	// not awaited
+	}
+
+	async updatePromptCommandHistory(dialogEvent) {
+		this.session
+			.checkRootDataContext(dialogEvent)
+			.updateCommandHistory(dialogEvent.text + '\n')	// not awaited
 	}
 
 	getCommandHistory() {
-		return this.commandHistory
+		return this.session.commandHistory
 	}
 }

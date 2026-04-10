@@ -165,6 +165,8 @@ export default class DialogController {
 		if (!options.assistantVoice)
 			options.assistantVoice = getAgentVoice(this.ctx, agent.id)
 
+
+
 		var r = await this.dialoger.addUserDialog(
 			dialogContext,
 			text,

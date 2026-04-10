@@ -67,6 +67,8 @@ export default class History {
 				content: this.config.agent.instructions
 			}
 		]
+		if (this.config.saveChatHistory)
+			this.save()
 		return this
 	}
 

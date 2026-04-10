@@ -93,6 +93,8 @@ export const config = () => {
 			enableSkillsPrompt: '../instruct/prompts/enable-skills.md',
 			enableSkillsPromptAndTool: '../instruct/prompts/enable-skills-tool.md',
 			sessions: 'sessions',
+			sessionsConfig: 'sessions/config.json',
+			sessionDataFile: 'session.json',
 			components: 'components',
 			commands: 'commands',
 			aiComponents: 'ai',
