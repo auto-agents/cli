@@ -276,8 +276,20 @@ export const config = () => {
 								required: true,
 								allowedValues: [
 									{
-										value: 'save',
-										description: 'save the session into another session (created or replaced) eg: --action save --to newSessionId'
+										value: 'list',
+										description: 'list sessions'
+									},
+									{
+										value: 'copy',
+										description: 'copy the session into another session (created or replaced) eg: --action copy --to newSessionId'
+									},
+									{
+										value: 'switch',
+										description: 'switch to another session (existing) eg: --action switch --to sessionId'
+									},
+									{
+										value: 'delete',
+										description: 'delete a session. except if it is the current one. eg: --action delete --id sessionId'
 									}
 								]
 							},
@@ -1125,6 +1137,9 @@ export const config = () => {
 				loadedColor: '#00AA00',
 				unloadedColor: '#AA5500',
 				category: '#00AADD'
+			},
+			commands: {
+				titleColor: '#00FF00'
 			},
 			dialog: {
 				userDialogColor: '#4499FF',

@@ -327,7 +327,7 @@ export default class AgentCommand extends Command {
 				e.emit(CommandNotFoundEvent, {
 					...errorEvent(
 						this.From,
-						new Error(action)
+						new Error()
 					),
 					cmd: action
 				})
