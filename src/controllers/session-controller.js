@@ -6,6 +6,9 @@ import { appendFile } from "fs/promises";
 
 export default class SessionController {
 
+	// session data
+	session = null
+
 	commandHistory = []
 
 	constructor(ctx) {
