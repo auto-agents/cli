@@ -31,13 +31,12 @@ export default class AgentsController {
 				dumpLoadedAgent(this.ctx, agentId, this.output, 'unloaded')
 
 				delete this.agents[agentId]
-				this.viewAgentId = this.agents.length > 0
-					? this.agents[0] : null
+				const agentsIds = Object.getOwnPropertyNames(this.agents)
+				this.viewAgentId = agentsIds.length > 0
+					? agentsIds[0] : null
 
 				var agentInView = this.getAgentInView()
-				if (agentInView)
-					agentInView.agentId = agentInView.id
-
+				//if (agentInView)
 				e.emit(AgentRemovedEvent, {
 					agentId: agentId,
 					agentInView: agentInView

@@ -252,6 +252,8 @@ const Agents = ({ ctx }) => {
 					//console.log(agentArg)
 					//setupImgCliAgent(true)
 					//console.log(args[0])
+
+					setupImgCliAgent(agentArg.agentInView != null)
 					updateAgentView(agentArg.agentInView)
 				}, setupImgCliAgentDelay)
 			}
@@ -319,7 +321,7 @@ const Agents = ({ ctx }) => {
 
 	/* ----- plugin AIAgent unloaded ----- */
 
-	useEffect(() => {
+	/*useEffect(() => {
 		const listener = args => {
 
 			const md = args[0]
@@ -342,7 +344,7 @@ const Agents = ({ ctx }) => {
 				listener
 			)
 		}
-	}, [])
+	}, [])*/
 
 	return (
 		<Box flexDirection="column">

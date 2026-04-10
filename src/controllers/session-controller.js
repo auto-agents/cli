@@ -66,6 +66,7 @@ export default class SessionController {
 		this.session.agents = Object.getOwnPropertyNames(
 			this.ctx.components.agents.getAgents())
 		this.session.dialogCurrentTargetAgent = this.ctx.cli.dialogCurrentTargetAgent
+		this.session.save()
 	}
 
 	// ------- history ---------
