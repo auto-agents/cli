@@ -146,12 +146,15 @@ export default class InitService {
 
 	async #initAgents(outputContext) {
 		const lst = this.ctx.agents.list
+		const session = this.ctx.components.session.session
 
 		for (var i = 0; i < lst.length; i++) {
 			const agent = lst[i]
 			agent.index = i
 
-			if (agent.system || agent.enabled) {
+			if (
+				session.agents.includes(agent.id)
+				&& (agent.system || agent.enabled)) {
 
 				await this.ctx.components.agents.loadAgent(
 					new AIAgent(
