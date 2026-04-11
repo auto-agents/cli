@@ -66,7 +66,7 @@ term.windowTitle(ctx.app.name)
 // ---- launch app ----
 
 const app = new AppController(ctx)
-await app.init(ctx)
+await app.init()
 
 // app start from this point
 

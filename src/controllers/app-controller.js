@@ -80,8 +80,9 @@ export default class AppController {
 		this.ctx.app.subtitle = subtitle
 	}
 
-	async init(ctx) {
+	async init() {
 
+		const ctx = this.ctx
 		this.event = ctx.components.event = new EventService(ctx)
 		this.session = ctx.components.session = new SessionController(ctx)
 		await this.session.init()
