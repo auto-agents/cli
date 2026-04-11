@@ -299,7 +299,7 @@ export default class AIAgentPlugin {
 		if (hasToolsCalls && !hasContent) {
 
 			// process response. get tools calls in actions. original response unchanged
-			await this.responseProcessors.run(dialogContext, r)
+			await this.responseProcessors.run(dialogContext, r, options)
 
 			const action = r.actions[0]
 			// -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER : done via Dialoger
@@ -314,7 +314,13 @@ export default class AIAgentPlugin {
 
 			const actionHandler = this.#getResponseProcessorActionHandler(action)
 
-			const r2 = await actionHandler.run(r.actions, r, capi, capi.history, dialogContext, options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER
+			const r2 = await actionHandler.run(
+				r.actions,
+				r,
+				capi,
+				capi.history,
+				dialogContext,
+				options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER
 
 			// agent text result: content
 			if (this.config.enableDebugResponseToolsUsage) console.log(content)

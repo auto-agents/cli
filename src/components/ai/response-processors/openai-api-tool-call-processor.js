@@ -30,7 +30,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
 	}
 
-	async run(dialogContext, response) {
+	async run(dialogContext, response, options) {
 
 		if (!response.tool_calls || response.tool_calls.length == 0) return response
 		const e = this.ctx.components.event
@@ -42,7 +42,11 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 
 			if (this.config.enableDebugToolsUsage)
 				e.emit(ToolRequiredByModelDialogEvent,
-					dialogEvent({ dialogContext: dialogContext, toolSpec: toolSpe })
+					dialogEvent({
+						dialogContext: dialogContext,
+						toolSpec: toolSpe,
+						options: options
+					})
 				)
 
 			const name = toolSpe.function?.name
@@ -54,7 +58,10 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 						: toolSpe.function?.arguments
 			} catch (parseArgsError) {
 				e.emit(ToolRunErrorDialogEvent, dialogEvent({
-					dialogContext: dialogContext, toolSpec: toolSpe, error: parseArgsError.message
+					dialogContext: dialogContext,
+					toolSpec: toolSpe,
+					error: parseArgsError.message,
+					options: options
 				}))
 			}
 			const tool = this.tools.getTool(name)
@@ -71,14 +78,20 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 					props.agent = this.config.agent
 					r = await tool.run(props)
 					e.emit(ToolRunCompletedDialogEvent, dialogEvent({
-						dialogContext: dialogContext, toolSpec: toolSpe, result: r
+						dialogContext: dialogContext,
+						toolSpec: toolSpe,
+						result: r,
+						options: options
 					}))
 
 				} catch (toolError) {
 					r = new ToolResult(toolError.message)
 					error = true
 					e.emit(ToolRunErrorDialogEvent, dialogEvent({
-						dialogContext: dialogContext, toolSpec: toolSpe, error: toolError.message
+						dialogContext: dialogContext,
+						toolSpec: toolSpe,
+						error: toolError.message,
+						options: options
 					}))
 				}
 
@@ -102,8 +115,10 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 			} else {
 
 				e.emit(ToolUnknownDialogEvent, dialogEvent({
-					dialogContext: dialogContext, toolSpec: toolSpe, message:
-						'unknown tool required by the model: ' + name
+					dialogContext: dialogContext,
+					toolSpec: toolSpe,
+					error: 'unknown tool required by the model: ' + name,
+					options: options
 				}))
 
 				this.addAction(

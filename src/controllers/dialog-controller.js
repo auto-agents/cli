@@ -62,25 +62,29 @@ export default class DialogController {
 			)
 			.on(ToolRequiredByModelDialogEvent, args => {
 				const ev = args[0]
-				trace(this.ctx, '⚙️ tool required by model: '
+				const m = '⚙️ tool required by model: '
 					+ ev.toolSpec?.function?.name
 					+ ' '
-					+ ev.toolSpec?.function?.arguments)
+					+ ev.toolSpec?.function?.arguments
+				this.#toolDialogEventHandler(ev, m)
 			})
 			.on(ToolRunCompletedDialogEvent, args => {
 				const ev = args[0]
-				trace(this.ctx, '⚙️ tool run completed: '
-					+ ev.toolSpec?.function?.name)
+				const m = '⚙️ tool run completed: '
+					+ ev.toolSpec?.function?.name
+				this.#toolDialogEventHandler(ev, m)
 			})
 			.on(ToolRunErrorDialogEvent, args => {
 				const ev = args[0]
-				traceWarning(this.ctx, '⚙️ tool run error: '
-					+ ev.error)
+				const m = '⚙️ tool run error: ' + ev.error
+				this.#toolDialogEventHandler(ev, m)
 			})
 			.on(ToolUnknownDialogEvent, args => {
 				const ev = args[0]
-				traceError(this.ctx, '⚙️ ' + ev.message)
+				const m = '⚙️ ' + ev.message
+				this.#toolDialogEventHandler(ev, m)
 			})
+
 			.on(AgentPartialResponseEvent,
 				async args => { await this.#agentPartialResponseHandler(args[0]) })
 			.on(AgentPartialReasoningResponseEvent,
@@ -237,6 +241,8 @@ export default class DialogController {
 			.replace('{toAgent}',
 				chalk.hex(this.ctx.theme.promptToColor)(dialogContext.agent.id))
 
+		this.output.trimEnd()
+
 		if (!this.ctx.cli.dialog.enableUserPromptMarkdown)
 			// raw text
 			dialogContext.userOutputContext = this.output.appendLine(
@@ -380,6 +386,29 @@ export default class DialogController {
 			this.ctx.components.event.emit(SetStatusMessageEvent)
 
 		return r
+	}
+
+	async #toolDialogEventHandler(dialogEvent, message) {
+		var text = chalk.hex
+			(dialogEvent.error != null ? this.ctx.theme.errorColor
+				: this.ctx.theme.traceColor
+			)(message.trim())
+
+		text = this.responseTextFormater.getRendered(text)
+		const dc = dialogEvent.dialogContext
+		var pos = null
+		if (!dc.systemOutputContext) {
+			// begin agent output
+			pos = this.echoSystem(dc, text + '\n', dialogEvent.options)
+		} else {
+			// append
+			const y = dc.systemOutputContext.y1
+			pos = this.output.insertLineAt(y, text + '\n')
+		}
+		pos.y0 = pos.y1
+		pos.y1 = pos.y0
+		dc.systemOutputContext = pos
+		dc.reasoningContent = []
 	}
 
 	#renderMarkdownDialog(o, dialogContext, name, text, scol, setPrompt, partial = false) {

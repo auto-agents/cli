@@ -56,11 +56,37 @@ export default class OutputController {
 		this.updateView(skipViewUpdate)
 	}
 
+	trimEnd() {
+		const rows = this.getSource().rows
+		var j = rows.length - 1
+		while (j > 0 && rows[j].trim().length == 0)
+			j--
+		var n = rows.length - 1 - j
+		while (n > 1) {
+			rows.splice(rows.length - 1, 1)
+			n--
+		}
+	}
+
 	replaceLines(y0, y1, str, skipViewUpdate = false) {
 		const rows = this.getSource().rows
 		rows.splice(y0, y1 - y0 + 1)
 		rows.splice(y0, 0, '')
 		return this.setLine(y0, str, skipViewUpdate)
+	}
+
+	insertLineAt(y, str, skipViewUpdate = false) {
+		const rows = this.getSource().rows
+		if (y < rows.length) {
+			const t = this.#splitText(str)
+			for (var i = 0; i < t.length; i++) {
+				rows.splice(y + i, 0, t[i])
+			}
+			this.updateView(skipViewUpdate)
+			return this.pos(y, y + t.length - 1)
+		}
+
+		return this.appendLine(str, 0, skipViewUpdate)
 	}
 
 	setLine(y, str, skipViewUpdate = false) {
