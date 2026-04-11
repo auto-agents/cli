@@ -125,10 +125,26 @@ export default class AgentCommand extends Command {
 				agent.plugin.saveHistory(file, format)
 				break
 
+			case 'rm':
+				if (!targetAgentId) {
+					this.parameterMissing('targetAgentId')
+					return
+				}
+				const loadedAgents = agentsController.getAgents()
+
+				if (!loadedAgents[targetAgentId])
+					this.emitCommandError('agent not available: ' + targetAgentId)
+				else {
+					const agentPluginName = agentsController.getPluginStoreName(
+						loadedAgents[targetAgentId]
+					)
+					e.emit(RunCommandEvent, 'plug unload ' + agentPluginName)
+				}
+				break
+
 			case 'add':
 				const availableAgents = agentsController.getAvailableAgents()
 				const agentSpec = availableAgents[targetAgentId]
-				console.log(Object.getOwnPropertyNames(availableAgents))
 
 				if (!targetAgentId) {
 					this.parameterMissing('targetAgentId')
@@ -140,6 +156,7 @@ export default class AgentCommand extends Command {
 				else {
 					await agentsController.loadAgent(agentSpec, o.getOutputContext())
 					dumpLoadedAgent(this.ctx, targetAgentId, o, 'added')
+					e.emit(RunCommandEvent, 'agent switch -i ' + targetAgentId)
 				}
 				break
 

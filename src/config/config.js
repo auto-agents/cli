@@ -383,6 +383,10 @@ export const config = () => {
 									{
 										value: 'add',
 										description: 'add an agent from the config agent specified id: add <targetAgentId>'
+									},
+									{
+										value: 'rm',
+										description: 'remove a loaded agent: rm <targetAgentId>'
 									}
 								],
 								description: 'an action order for the dialog controller specified by --id'
