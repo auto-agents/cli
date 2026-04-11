@@ -120,7 +120,7 @@ export default class DialogController {
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
 
-		// auto target from input
+		// auto target from input (agentId:text)
 		var switchTarget = null
 		if (text != null)
 			for (const aId in this.ctx.components.agents.getAgents()) {
