@@ -295,12 +295,40 @@ export default class AppController {
 		// begin dialog
 		this.event.emit(AppStartedEvent)
 
+		// restore session last dialog target
+
+		if (this.ctx.cli.restoreDialogCurrentTargetAgent
+			!= this.ctx.cli.dialogCurrentTargetAgent)
+			this.ctx.cli.dialogCurrentTargetAgent =
+				this.ctx.cli.restoreDialogCurrentTargetAgent
+
+		// switch to current agent
+
+		const e = this.ctx.components.event
+		e.emit(RunCommandEvent, 'agent switch -i ' +
+			this.ctx.cli.dialogCurrentTargetAgent
+		)
+		const agent = this.ctx.components.agents.getAgent(TUIAgentId)
+		e.emit(AgentGetFocusViewEvent,
+			dialogEvent(
+				{
+					dialogContext: new DialogContext(
+						new OutputContext(
+							this.ctx,
+							this.ctx.components.output
+						),
+						this.ctx.components.dialog.dialoger,
+						agent
+					),
+					text: ''
+				}))
+
 		if (this.ctx.dialoger.enableWelcomeDialog) {
 
 			// welcom prompt
 
 			const username = this.ctx.components.sysInfo.username
-			const agent = getLoadedAgent(
+			const wagent = getLoadedAgent(
 				this.ctx,
 				this.ctx.cli.dialogCurrentTargetAgent)
 
@@ -309,8 +337,8 @@ export default class AppController {
 				new DialogContext(
 					new OutputContext(this.ctx, this.output),
 					this.dialog.dialoger,
-					agent,
-					agent,
+					wagent,
+					wagent,
 					null,	// no task yet
 					1		// round
 				),
@@ -318,25 +346,6 @@ export default class AppController {
 					.replace('%username%', chalk.bold(username))
 			)
 			this.output.newLine(true)
-		}
-		else {
-			// switch to default agent
-			const e = this.ctx.components.event
-			this.ctx.cli.dialogCurrentTargetAgent = TUIAgentId
-			const agent = this.ctx.components.agents.getAgent(TUIAgentId)
-			e.emit(AgentGetFocusViewEvent,
-				dialogEvent(
-					{
-						dialogContext: new DialogContext(
-							new OutputContext(
-								this.ctx,
-								this.ctx.components.output
-							),
-							this.ctx.components.dialog.dialoger,
-							agent
-						),
-						text: ''
-					}))
 		}
 	}
 
