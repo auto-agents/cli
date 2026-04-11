@@ -722,8 +722,8 @@ export const config = () => {
 					plugin: null,
 					// model config
 					config: {
-						model: 'ministral-3-8b-reasoning-2512',// has no think content
-						//model: 'qwen3-1.7b',
+						//model: 'ministral-3-8b-reasoning-2512',// has no think content
+						model: 'qwen3-1.7b',
 						//model: 'qwen/qwen3.5-9b',
 						temperature: 0.1,
 						props: {
@@ -736,7 +736,7 @@ export const config = () => {
 					TTS: {
 						// turn on/off any agent speak
 						enabled: true,
-						voiceProfile: 'TUI'
+						voiceProfile: 'coder'
 					},
 					system: true,
 				},
@@ -946,6 +946,15 @@ export const config = () => {
 							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
 						},
 						plugin: null
+					}
+				},
+				coder: {
+					TTSPluginName: 'browserTTS',
+					speak: {
+						enabled: true,
+						preferredVoices: {
+							edge: ['Microsoft AndrewMultilingual Online (Natural) - English (United States)']
+						}
 					}
 				},
 				kokoro: {
@@ -1160,6 +1169,7 @@ export const config = () => {
 			dialog: {
 				userDialogColor: '#4499FF',
 				systemDialogColor: '#BBBBBB',
+				systemReasoningDialogColor: '#BBBBBB',
 				assistantNameColor: '#FFFF00',
 				duoAssistantDialogColor: '#7abe8f',
 				agentReasoningContentColor: '#dfb361',

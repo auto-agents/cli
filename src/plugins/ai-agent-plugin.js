@@ -309,6 +309,9 @@ export default class AIAgentPlugin {
 			// ❌ action handler == MODEL TOOL CALL PROCESSOR ❌
 			// ❌ should be associated to model, not to action ❌
 
+			if (dialogContext.reasoningContent?.length > 0)
+				dialogContext.reasoningContent.push('')
+
 			const actionHandler = this.#getResponseProcessorActionHandler(action)
 
 			const r2 = await actionHandler.run(r.actions, r, capi, capi.history, dialogContext, options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER

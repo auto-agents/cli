@@ -2,7 +2,7 @@ import { Role_User } from './roles.js'
 import { OpenAI as OpenAiApi } from 'openai'
 import AIApiClient from './ai-api-client.js'
 import chalk from 'chalk'
-import { agentPartialResponseEvent, AgentPartialResponseEvent } from '../../../../shared/src/data/events.js'
+import { AgentPartialReasoningResponseEvent, agentPartialResponseEvent, AgentPartialResponseEvent } from '../../../../shared/src/data/events.js'
 
 /**
  * OPEN AI standard api client
@@ -89,13 +89,16 @@ export default class OpenAIApiClient extends AIApiClient {
 		if (this.config.stream) {
 			const stream = r
 			message.content = ''
+			message.reasoning_content = ''
 			const dbg = false
 			var chunkId = 0
+			var hasReasoningContent = false
 			for await (const event of stream) {
 				// type event: event.object
 				//console.log(event)
 				const type = event.object
 				var isPartialContent = false
+				var isPartialReasoningContent = false
 
 				if (dbg) console.log(event.object)
 				const delta = event.choices[0].delta
@@ -103,12 +106,21 @@ export default class OpenAIApiClient extends AIApiClient {
 				if (delta.role)
 					message.role = delta.role
 				const isComplete = event.choices[0].finish_reason == 'stop'
+
 				if (delta.content || isComplete) {
 					//console.log('|' + delta.content + '|')
 					if (delta.content)
 						message.content += delta.content
 					isPartialContent = true
 				}
+
+				if (delta.reasoning_content) {
+					if (delta.reasoning_content)
+						message.reasoning_content += delta.reasoning_content
+					isPartialReasoningContent = true
+					hasReasoningContent = true
+				}
+
 				event.isComplete = isComplete
 				if (delta.tool_calls) {
 					for (var i = 0; i < delta.tool_calls.length; i++) {
@@ -136,12 +148,26 @@ export default class OpenAIApiClient extends AIApiClient {
 				event.chunkId = chunkId
 				event.id = this.eventId
 				chunkId++
+
 				if (isPartialContent)
 					e.emit(AgentPartialResponseEvent, agentPartialResponseEvent(
 						dialogContext,
 						event,
 						delta.content || '',
 						message.content,
+						null,
+						message.reasoning_content,
+						options
+					))
+
+				if (isPartialReasoningContent)
+					e.emit(AgentPartialReasoningResponseEvent, agentPartialResponseEvent(
+						dialogContext,
+						event,
+						null,
+						null,
+						delta.reasoning_content || '',
+						message.reasoning_content,
 						options
 					))
 			}
@@ -153,7 +179,7 @@ export default class OpenAIApiClient extends AIApiClient {
 		if (this.ctx.servers.llm.common.enableDebugResponsesMessage)
 			console.log(message)
 
-		if (this.ctx.servers.llm.common.enableDumpReasoningContent
+		if (!this.config.stream && this.ctx.servers.llm.common.enableDumpReasoningContent
 			&& message.reasoning_content
 			&& message.reasoning_content.length > 0) {
 			const t = message.reasoning_content.split('. ')

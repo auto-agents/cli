@@ -3,6 +3,7 @@ import Status from '../../../shared/src/utils/status.js'
 import { StatusMessage, StatusEnum } from "../../../shared/src/data/status-message.js"
 import {
 	AgentGetFocusViewEvent,
+	AgentPartialReasoningResponseEvent,
 	AgentPartialResponseEvent,
 	LogErrorEvent,
 	SetStatusMessageEvent,
@@ -82,6 +83,8 @@ export default class DialogController {
 			})
 			.on(AgentPartialResponseEvent,
 				async args => { await this.#agentPartialResponseHandler(args[0]) })
+			.on(AgentPartialReasoningResponseEvent,
+				async args => { await this.#agentPartialReasoningResponseEventHandler(args[0]) })
 
 		// -----------------------------------------------------------------
 
@@ -201,6 +204,8 @@ export default class DialogController {
 						if (this.ctx.cli.enableDebugLoopTools)
 							console.log('-- DialgController: Loop Tools --')
 
+						if (dc.reasoningContent?.length > 0)
+							dc.reasoningContent.push('')
 						dc = dc.clone().nextRound()
 
 						// special user dialog that propagate tools without query
@@ -264,6 +269,68 @@ export default class DialogController {
 		)
 	}
 
+	async #agentPartialReasoningResponseEventHandler(agentPartialResponseEventData) {
+		const d = agentPartialResponseEventData
+		this.echoReasoningSystem(
+			d.dialogContext,
+			d.reasoningContent,
+			d.options
+		)
+	}
+
+	async echoReasoningSystem(
+		dialogContext,
+		text,
+		{
+			skipPrependNewLine = false,
+			secondary = false,
+			name = null,
+			voice = null,
+			color = null,
+			partial = false
+		}) {
+		const o = this.output
+
+		if (!skipPrependNewLine && !partial)
+			o.newLine(false)
+
+		color ||= this.ctx.theme.dialog.agentReasoningContentColor
+		const scol = chalk.hex(color)
+
+		const e = this.ctx.components.event
+		e.emit(AgentGetFocusViewEvent,
+			dialogEvent(
+				{
+					dialogContext: dialogContext,
+					text: ''
+				}))
+
+		// render response
+
+		if (dialogContext.reasoningContent.length == 0)
+			dialogContext.reasoningContent.push(text)
+		else
+			dialogContext.reasoningContent[dialogContext.reasoningContent.length - 1] = text
+
+		text = dialogContext.reasoningContent.join('\n\n')
+
+		const r =
+			dialogContext.systemOutputContext
+			= this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
+				(name, str) => {
+					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+					return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ')
+						+ chalk.hex(this.ctx.theme.dialog.agentReasoningContentColor)(str)
+				}, partial
+			)
+		dialogContext.systemOutputContext = r
+
+		if (!partial)
+			this.ctx.components.event.emit(SetStatusMessageEvent)
+
+		return r
+	}
+
 	async echoSystem(
 		dialogContext,
 		text,
@@ -293,12 +360,18 @@ export default class DialogController {
 
 		// render response
 
+		var previousText = dialogContext.reasoningContent?.length > 0 ?
+			(chalk.hex(this.ctx.theme.dialog.agentReasoningContentColor)
+				(this.responseTextFormater.getRendered(
+					dialogContext.reasoningContent.join('\n\n').trim(), false)) + '\n')
+			: ''
+
 		const r =
 			dialogContext.systemOutputContext
 			= this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
 				(name, str) => {
 					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-					return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ') + str
+					return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ') + previousText + str
 				}, partial
 			)
 		dialogContext.systemOutputContext = r

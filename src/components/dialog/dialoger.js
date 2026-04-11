@@ -1,5 +1,6 @@
 import {
 	AgentGetFocusSpeakEvent,
+	AgentPartialReasoningResponseEvent,
 	AgentPartialResponseEvent,
 	dialogEvent,
 	DialogUserPromptBegin,
@@ -63,7 +64,10 @@ export default class Dialoger {
 
 	#initEvents() {
 		const e = this.ctx.components.event
-		e.on(AgentPartialResponseEvent, async args => await this.#agentPartialResponseEventHandler(args[0]))
+		e.on(AgentPartialResponseEvent,
+			async args => await this.#agentPartialResponseEventHandler(args[0]))
+			.on(AgentPartialReasoningResponseEvent,
+				async args => await this.#agentPartialReasoningResponseEventHandler(args[0]))
 	}
 
 	async addUserDialog(dialogContext, text, tool_calls, options, outputContext) {
@@ -141,6 +145,7 @@ export default class Dialoger {
 
 						// engage ai response output
 						options.skipPrependNewLine = false
+
 						await this.assistantEchoFun(
 							dialogContext,
 							'',
@@ -249,6 +254,10 @@ export default class Dialoger {
 				voice: null	// means agent voice
 			})
 		}
+	}
+
+	async #agentPartialReasoningResponseEventHandler(agentPartialResponseEvent) {
+
 	}
 
 	/**
