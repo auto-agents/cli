@@ -31,7 +31,8 @@ export default class AgentCommand extends Command {
 
 		const targetAgentId = this.getPositionalArg(com, args, argAction, 1)
 
-		const requireAgentSpec = action != 'list'
+		const requireAgentSpec = action != 'list' && action != 'add' && action != 'rm'
+
 		const agentId = this.getValue(com, args, 'id')
 			|| this.ctx.cli.dialogCurrentTargetAgent
 		const agent = getLoadedAgent(this.ctx, agentId)
@@ -145,7 +146,6 @@ export default class AgentCommand extends Command {
 							.filter(x => x.id != targetAgentId)
 						if (t.length > 0) {
 							const newTargetId = t[0]
-							console.log('switch to: ' + newTargetId)
 							e.emit(RunCommandEvent, "agent switch -i " + newTargetId)
 						}
 					}

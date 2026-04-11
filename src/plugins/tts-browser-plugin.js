@@ -115,6 +115,7 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 			const stopSrv = async () => {
 				if (removeServer(this.ctx, this.server) == 0)
 					await this.speech.stopServer()
+				// TODO: component speech registration to be removed
 				this.ctx.components.plugin.speech = null
 			}
 
