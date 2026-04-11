@@ -1,5 +1,5 @@
 import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentRemovedEvent, PluginLoadedEvent, PluginUnloadedEvent } from "../../../shared/src/data/events"
+import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentRemovedEvent, PluginLoadedEvent, PluginUnloadedEvent, RunCommandEvent } from "../../../shared/src/data/events"
 import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
 import AIAgent from '../components/ai/ai-agent.js'
@@ -26,7 +26,14 @@ export default class AgentsController {
 		// TODO: check this
 		e.on(PluginUnloadedEvent, args => {
 			const agentId = args[0].plugin?.agentId
-			if (this.agents[agentId]) {
+			const agent = this.agents[agentId]
+			if (agent) {
+
+				// unload agent TTS plugin if any
+				if (agent.TTSPlugin)
+					e.emit(RunCommandEvent,
+						'plug unload ' + this.getTTSPluginStoreName(agent) + ' -q')
+
 				// agent unloaded
 				dumpLoadedAgent(this.ctx, agentId, this.output, 'unloaded')
 
@@ -35,8 +42,8 @@ export default class AgentsController {
 				this.viewAgentId = agentsIds.length > 0
 					? agentsIds[0] : null
 
+				// cleanup view
 				var agentInView = this.getAgentInView()
-				//if (agentInView)
 				e.emit(AgentRemovedEvent, {
 					agentId: agentId,
 					agentInView: agentInView

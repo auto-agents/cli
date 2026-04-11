@@ -160,6 +160,8 @@ export default class PluginCommand extends Command {
 		if (!this.checkParameter(com, argAction, action))
 			return
 
+		const quiet = this.getValue(com, args, 'quiet')
+
 		switch (action) {
 			case 'list':
 				await this.#listPlugins()
@@ -173,7 +175,8 @@ export default class PluginCommand extends Command {
 
 				const mc = await this.#getPluginController()
 				await mc.load(name, null, this.#getOutputContext(4), true)
-				this.#listPlugins()
+				if (!quiet)
+					this.#listPlugins()
 				break
 			}
 
@@ -185,7 +188,8 @@ export default class PluginCommand extends Command {
 
 				const mc = await this.#getPluginController()
 				await mc.unload(name, this.#getOutputContext(4), true)
-				this.#listPlugins()
+				if (!quiet)
+					this.#listPlugins()
 				break
 			}
 
@@ -198,7 +202,8 @@ export default class PluginCommand extends Command {
 				const mc = await this.#getPluginController()
 				await mc.unload(name, this.#getOutputContext(4))
 				await mc.load(name, this.#getOutputContext(4))
-				this.#listPlugins()
+				if (!quiet)
+					this.#listPlugins()
 				break
 			}
 

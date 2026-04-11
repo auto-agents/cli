@@ -138,12 +138,11 @@ export default class AgentCommand extends Command {
 					const agentPluginName = agentsController.getPluginStoreName(
 						loadedAgents[targetAgentId]
 					)
-					e.emit(RunCommandEvent, 'plug unload ' + agentPluginName)
+					e.emit(RunCommandEvent, 'plug unload ' + agentPluginName + ' -q')
 					if (targetAgentId == this.ctx.cli.dialogCurrentTargetAgent) {
 						const replaceAgents = agentsController.getAgents()
 						const t = Object.getOwnPropertyNames(replaceAgents)
 							.filter(x => x.id != targetAgentId)
-						console.log(t)
 						if (t.length > 0) {
 							const newTargetId = t[0]
 							console.log('switch to: ' + newTargetId)

@@ -473,6 +473,12 @@ export const config = () => {
 								type: 'string',
 								required: false,
 								description: 'the plugin name to be loaded or unloaded. required for actions load and unload'
+							},
+							quiet: {
+								type: 'boolean',
+								required: false,
+								short: 'q',
+								description: 'if set, do not dump the plugin list after operation'
 							}
 						},
 						allowPositionals: true
