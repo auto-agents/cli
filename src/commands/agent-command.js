@@ -29,6 +29,8 @@ export default class AgentCommand extends Command {
 		if (!this.checkParameter(com, argAction, action))
 			return
 
+		const targetAgentId = this.getPositionalArg(com, args, argAction, 1)
+
 		const requireAgentSpec = action != 'list'
 		const agentId = this.getValue(com, args, 'id')
 			|| this.ctx.cli.dialogCurrentTargetAgent
@@ -56,6 +58,8 @@ export default class AgentCommand extends Command {
 
 		// Execute the dialog action based on the action value
 		const dialogController = this.ctx.components.dialog
+		const agentsController = this.ctx.components.agents
+
 		switch (action) {
 
 			case 'mute':
@@ -119,6 +123,24 @@ export default class AgentCommand extends Command {
 				if (!this.checkParameter(com, argFormat, format))
 					return
 				agent.plugin.saveHistory(file, format)
+				break
+
+			case 'add':
+				const availableAgents = agentsController.getAvailableAgents()
+				const agentSpec = availableAgents[targetAgentId]
+				console.log(Object.getOwnPropertyNames(availableAgents))
+
+				if (!targetAgentId) {
+					this.parameterMissing('targetAgentId')
+					return
+				}
+
+				if (!agentSpec)
+					this.emitCommandError('agent not available: ' + targetAgentId)
+				else {
+					await agentsController.loadAgent(agentSpec, o.getOutputContext())
+					dumpLoadedAgent(this.ctx, targetAgentId, o, 'added')
+				}
 				break
 
 			case 'clear':

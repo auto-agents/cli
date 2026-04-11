@@ -63,7 +63,7 @@ export default class AgentsController {
 	}
 
 	/**
-	 * load an ai agent moule and it's plugins dependencies
+	 * load an ai agent plugin and it's dependencies
 	 * @param {AIAgent} agent
 	 * @param {OutputContext} outputContext
 	 * @returns true if success, false otherwise

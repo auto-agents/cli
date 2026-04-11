@@ -379,6 +379,10 @@ export const config = () => {
 									{
 										value: 'switch',
 										description: 'switch the user dialog target to an agent'
+									},
+									{
+										value: 'add',
+										description: 'add an agent from the config agent specified id: add <targetAgentId>'
 									}
 								],
 								description: 'an action order for the dialog controller specified by --id'
