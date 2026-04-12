@@ -298,6 +298,7 @@ export default class AppController {
 		// restore session last dialog target
 
 		if (this.ctx.cli.restoreDialogCurrentTargetAgent
+			&& this.ctx.cli.restoreDialogCurrentTargetAgent
 			!= this.ctx.cli.dialogCurrentTargetAgent)
 			this.ctx.cli.dialogCurrentTargetAgent =
 				this.ctx.cli.restoreDialogCurrentTargetAgent
@@ -305,23 +306,27 @@ export default class AppController {
 		// switch to current agent
 
 		const e = this.ctx.components.event
-		e.emit(RunCommandEvent, 'agent switch -i ' +
-			this.ctx.cli.dialogCurrentTargetAgent
-		)
-		const agent = this.ctx.components.agents.getAgent(TUIAgentId)
-		e.emit(AgentGetFocusViewEvent,
-			dialogEvent(
-				{
-					dialogContext: new DialogContext(
-						new OutputContext(
-							this.ctx,
-							this.ctx.components.output
+		if (this.ctx.cli.dialogCurrentTargetAgent) {
+			e.emit(RunCommandEvent, 'agent switch -i ' +
+				this.ctx.cli.dialogCurrentTargetAgent
+			)
+			const agent = this.ctx.components.agents.getAgent(
+				this.clx.cli.dialogCurrentTargetAgent
+			)
+			e.emit(AgentGetFocusViewEvent,
+				dialogEvent(
+					{
+						dialogContext: new DialogContext(
+							new OutputContext(
+								this.ctx,
+								this.ctx.components.output
+							),
+							this.ctx.components.dialog.dialoger,
+							agent
 						),
-						this.ctx.components.dialog.dialoger,
-						agent
-					),
-					text: ''
-				}))
+						text: ''
+					}))
+		}
 
 		if (this.ctx.dialoger.enableWelcomeDialog) {
 

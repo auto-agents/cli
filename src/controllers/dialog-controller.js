@@ -640,8 +640,10 @@ export default class DialogController {
 		query,
 		tool_calls,
 		options) {
-		if (!isTUIAIAgentAvailable(this.ctx))
+
+		if (!dialogContext.agent)
 			return
+
 		const e = this.ctx.components.event
 
 		//console.log('CLI: start chat')

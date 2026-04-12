@@ -60,6 +60,21 @@ export default class SessionController {
 			this.session = await Session.load(this.ctx, id)
 	}
 
+	// unload the current session
+	async unload() {
+		// unload all agents
+		await this.session.unloadAgents()
+	}
+
+	// load session with the given id
+	async load(id) {
+		// load session from file & load agents
+		this.session = await Session.load(this.ctx, id)
+		await this.session.loadAgents(
+			this.ctx.components.output.getOutputContext()
+		)
+	}
+
 	// ------- agents ----------
 
 	async updateAgentsState() {

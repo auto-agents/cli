@@ -145,27 +145,7 @@ export default class InitService {
 	}
 
 	async #initAgents(outputContext) {
-		const lst = this.ctx.agents.list
-		const session = this.ctx.components.session.session
-		const agentsIds = [...session.agents]
-		this.ctx.cli.restoreDialogCurrentTargetAgent = session.dialogCurrentTargetAgent
-
-		for (var i = 0; i < lst.length; i++) {
-			const agent = lst[i]
-			agent.index = i
-
-			if (
-				agentsIds.includes(agent.id)
-				&& (agent.system || agent.enabled)) {
-
-				await this.ctx.components.agents.loadAgent(
-					new AIAgent(
-						this.ctx,
-						agent),
-					outputContext
-				)
-			}
-		}
+		await this.ctx.components.session.session.loadAgents(outputContext)
 	}
 
 	#getOutputContext(margin = 0) {

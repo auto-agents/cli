@@ -75,7 +75,8 @@ export default class SessionCommand extends Command {
 					} else {
 						o.newLine()
 						o.appendLine('switch to session: ' + sessionId)
-						sessionCtrl.load(sessionId)
+						await sessionCtrl.unload(this.ctx.session.id)
+						await sessionCtrl.load(sessionId)
 					}
 				}
 				break
