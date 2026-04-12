@@ -209,15 +209,12 @@ export default class DialogController {
 						// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
 
 						if (this.ctx.cli.enableDebugLoopTools)
-							//console.log('-- DialgController: Loop Tools --')
 							e.emit(ToolLoopDialogEvent, dialogEvent({
 								dialogContext: dialogContext,
 								message: 'tools loop',
 								options: options
 							}))
 
-						/*if (dc.reasoningContent?.length > 0)
-							dc.reasoningContent.push('')*/
 						dc = dc ? dc.clone(DialogContext_Tool, true)
 							: dialogContext.clone(DialogContext_Tool, true)
 						dc.reasoningContent = []
