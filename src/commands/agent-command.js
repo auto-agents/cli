@@ -51,8 +51,12 @@ export default class AgentCommand extends Command {
 						dialogContext: new DialogContext(
 							new OutputContext(this.ctx, o),
 							this.ctx.components.dialog.dialoger,
-							agent
-						).withType(DialogContext_Switch),
+							agent,
+							null,
+							null,
+							null,
+							DialogContext_Switch
+						),
 						text: ''
 					}))
 			dumpLoadedAgent(this.ctx, agentId, o, 'set as user dialog target')

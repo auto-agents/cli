@@ -47,7 +47,7 @@ import MouseController from './mouse-controller.js';
 import DialogContext from '../../../shared/src/data/dialog-context.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
-import { TUIAgentId } from '../../../shared/src/config/consts.js';
+import { DialogContext_Assistant, DialogContext_ErrorSpeak, TUIAgentId } from '../../../shared/src/config/consts.js';
 import SessionController from './session-controller.js';
 
 export default class AppController {
@@ -163,7 +163,11 @@ export default class AppController {
 				new DialogContext(
 					this.output,
 					this.ctx.components.dialog.dialoger,
-					agent
+					agent,
+					null,
+					null,
+					null,
+					DialogContext_ErrorSpeak
 				),
 				this.From,
 				text,
@@ -329,7 +333,8 @@ export default class AppController {
 					wagent,
 					wagent,
 					null,	// no task yet
-					1		// round
+					1,		// round
+					DialogContext_Assistant
 				),
 				this.ctx.texts.dialog.hello
 					.replace('%username%', chalk.bold(username))

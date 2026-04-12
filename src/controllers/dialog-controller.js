@@ -22,6 +22,7 @@ import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailab
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 import { DialogerTasksTypes } from "../components/dialog/dialoger-tasks-types.js"
+import { DialogContext_Assistant, DialogContext_User } from "../../../shared/src/config/consts.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -112,11 +113,7 @@ export default class DialogController {
 			dialogContext.agent.id)
 
 		await this.dialoger.addSystemMessage(
-			new DialogContext(
-				this.output.getOutputContext(),
-				this.dialoger,
-				agent
-			),
+			dialogContext.clone(DialogContext_Assistant),
 			text,
 			{
 				skipPrependNewLine: true,
@@ -168,7 +165,8 @@ export default class DialogController {
 				agent,
 				null,	// from user
 				null,	// no task yet
-				1		// round
+				1,		// round
+				DialogContext_User
 			)
 		}
 

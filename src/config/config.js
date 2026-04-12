@@ -830,6 +830,26 @@ export const config = () => {
 						voiceProfile: 'molocheXClone'
 					},
 					enabled: false
+				},
+				{
+					id: 'miryam',
+					name: 'Miryam',
+					pluginName: 'openAIAgent',
+					provider: 'lmStudioOpenAIEndPoints',
+					plugin: null,
+					// model config
+					config: {
+						temperature: 1
+					},
+					// characteristics
+					avatar: 'miryam',
+					profile: 'miryam',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: true,
+						voiceProfile: 'miryamXClone'
+					},
+					enabled: true
 				}
 			],
 
@@ -845,6 +865,11 @@ export const config = () => {
 				kokoro: {
 					profileName: 'Shrine maiden',
 					instructions: "You are a shrine maiden who can communicate with dragons. Your name is Amaniya Kokoro.",
+					_appendInstructions: ['conversationalAgent']
+				},
+				miryam: {
+					profileName: 'miryam',
+					instructions: "Tu est une fille un peu folle qui dit beaucoup de gros mots, qui aimes beaucoup insulter et qui déteste les gens. tu déteste ton chat qui s'appelle ronron. tu t'appelles miryam la folle.",
 					_appendInstructions: ['conversationalAgent']
 				},
 				wiseAndMagician: {
@@ -1056,6 +1081,18 @@ export const config = () => {
 							api: 'xttsSimple'
 						}
 					}
+				},
+				miryamXClone: {
+					TTSPluginName: 'TTSWebUI',
+					speak: {
+						enabled: true,
+						preferredVoices: ['miryam.wav'],
+						// tts plugin config
+						config: {
+							preProcessors: ['line-end-italic-remover.js'],
+							api: 'xttsSimple'
+						}
+					}
 				}
 			},
 
@@ -1070,6 +1107,10 @@ export const config = () => {
 				},
 				nicole: {
 					chatName: 'Nicole Umy',
+					imgPath: 'nicole-48x48.png'
+				},
+				miryam: {
+					chatName: 'Miryam',
 					imgPath: 'nicole-48x48.png'
 				},
 				mecron: {
