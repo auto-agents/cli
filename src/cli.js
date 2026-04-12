@@ -15,10 +15,15 @@ import {
 	ENABLE_RESET_TERMINAL,
 	ENABLE_MOUSE_SUPPORT,
 	ANSI_ENABLE_MOUSE_SUPPORT,
-	logErrorToFile
+	ERROR_LOG_FILE,
+	APP_LOG_FILE
 } from './config/config.js'
 
+Logger.init(APP_LOG_FILE, ERROR_LOG_FILE)
+Logger.log('app start')
+
 import { Terminal } from 'terminal-kit';
+import Logger from '../../shared/src/components/sys/logger.js';
 
 // setup terminal
 const term = new Terminal()
@@ -44,7 +49,7 @@ const ignoreTkErrors = 'TerminalInfoProvider'
 // --- Global process-level error handling ---
 process.on('uncaughtException', (err) => {
 	try {
-		logErrorToFile(err.stack)
+		Logger.logError(err.stack)
 		if (err.message.includes(ignoreTkErrors)) return
 		console.error('Uncaught Exception:', err.stack);
 	} catch { }
@@ -52,7 +57,7 @@ process.on('uncaughtException', (err) => {
 
 process.on('unhandledRejection', (err) => {
 	try {
-		logErrorToFile(err.stack)
+		Logger.logError(err.stack)
 		if (err.message.includes(ignoreTkErrors)) return
 		console.error('Unhandled Promise Rejection:', err.stack);
 	} catch { }
@@ -71,3 +76,5 @@ await app.init()
 // app start from this point
 
 await app.run()
+
+Logger.log('app end')
