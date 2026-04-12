@@ -1,3 +1,5 @@
+import { DialogContext_Tool } from "../../../../../../shared/src/config/consts"
+import DialogContext from "../../../../../../shared/src/data/dialog-context"
 import { Role_Assistant, Role_Tool } from "../../roles"
 
 // ----------------------------------------------------
@@ -93,7 +95,10 @@ export default class ActionTool {
 		// call model with tool result
 
 		// ----- call completion ---------------------------------------
-		var r2 = await capi.completionFromMessages(this.tools, dialogContext, options)
+		var r2 = await capi.completionFromMessages(
+			this.tools,
+			dialogContext.clone(DialogContext_Tool),
+			options)
 		var textRes = r2.content
 		// -------------------------------------------------------------
 
