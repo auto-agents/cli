@@ -109,8 +109,8 @@ export default class InputController {
 		}
 
 		const histo = this.getCmdHistory()
-		histo.push(cmd)
-		this.cmdHistoryIndex = histo.length - 1
+		//histo.push(cmd)	// done by session
+		this.cmdHistoryIndex = histo.length
 		this.cmdExecCount++
 
 		if (this.cmdExecCount == 1)

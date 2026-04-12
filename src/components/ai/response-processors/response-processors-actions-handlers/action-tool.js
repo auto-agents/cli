@@ -44,6 +44,8 @@ export default class ActionTool {
 		//for (var i = 0; i < this.queryPreProcessors; i++)
 		//    action.arg = this.queryPreProcessors(action.arg)
 
+		const dc = dialogContext.clone(DialogContext_Tool, 1)
+
 		for (var i = 0; i < actions.length; i++) {
 			const action = actions[i]
 
@@ -55,6 +57,7 @@ export default class ActionTool {
 				// send file
 				// way 1 : /v1/file
 				// way 2 : base64 content
+				// TODO: finalize
 				action.result.files.forEach(file => {
 
 					console.log('send file: ' + file.path)
@@ -89,7 +92,7 @@ export default class ActionTool {
 					content: action.result.content,
 					tool_call_id: action.toolCallId
 				}
-			history.add(toolQueryMessage)
+			history.add(dc, toolQueryMessage)
 		}
 
 		// call model with tool result
@@ -97,7 +100,7 @@ export default class ActionTool {
 		// ----- call completion ---------------------------------------
 		var r2 = await capi.completionFromMessages(
 			this.tools,
-			dialogContext.clone(DialogContext_Tool),
+			dc,
 			options)
 		var textRes = r2.content
 		// -------------------------------------------------------------

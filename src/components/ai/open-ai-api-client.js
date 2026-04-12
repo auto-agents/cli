@@ -44,7 +44,9 @@ export default class OpenAIApiClient extends AIApiClient {
 		const queryMessage = {
 			role: role, content: query
 		}
-		this.history.messages.push(queryMessage)
+
+		this.history.add(dialogContext, queryMessage)
+
 		return await this.completionFromMessages(tools, dialogContext, options)
 	}
 
@@ -200,7 +202,7 @@ export default class OpenAIApiClient extends AIApiClient {
 			});
 		}
 
-		this.history.add(message)
+		this.history.add(dialogContext, message)
 
 		return {
 			response: r,

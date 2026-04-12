@@ -2,10 +2,13 @@ import { Role_Assistant, Role_System } from "./roles"
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { join } from 'path'
 import { sessionPath, toJson } from '../../../../shared/src/utils/utils.js'
+import Logger from "../../../../shared/src/components/sys/logger.js"
+import { stripVTControlCharacters } from "util"
 
 export default class History {
 
 	messages = null
+	LogMessTrunc = 40
 
 	constructor(ctx, config, messages = null) {
 		this.ctx = ctx
@@ -72,21 +75,40 @@ export default class History {
 		return this
 	}
 
-	add(message) {
+	add(dialogContext, message) {
 		this.messages.push(message)
+		this.#linkMessage(dialogContext, message)
 		if (this.config.saveChatHistory)
 			this.save()
 	}
 
-	addMessage(role, content) {
-		this.messages.push(
-			{
-				role: role,
-				content: content
-			}
-		)
+	/*addMessage(dialogContext, role, content) {
+		const message = {
+			role: role,
+			content: content
+		}
+		this.messages.push(message)
+		this.#linkMessage(dialogContext, message)
 		if (this.config.saveChatHistory)
 			this.save()
+	}*/
+
+	#linkMessage(dialogContext, message) {
+		dialogContext.addMessage(message)
+		const sp = dialogContext.getMargin(1)
+		Logger.log(sp + '└── ' + this.#messageToDesc(message))
+	}
+
+	#messageToDesc(message) {
+		var r = message.content
+		if (!r) r = ''
+		if (message.tool_calls && message.tool_calls.length > 0)
+			r += JSON.stringify(message.tool_calls)
+		r = stripVTControlCharacters(r)
+		const ro = '[' + ((message.role + ']').padEnd(10)) + ': '
+		if (r.length > this.LogMessTrunc)
+			r = r.substring(0, this.LogMessTrunc) + '...'
+		return ro + r
 	}
 
 	// TODO: check if not used
@@ -107,7 +129,7 @@ export default class History {
 	}
 
 	// TODO: check if not used
-	buildFlipedRoles() {
+	/*buildFlipedRoles() {
 		// invert content of 'user' and 'system' messages. returns a new history
 		const h = new History(this.config.instructions)
 		for (var i = 1; i < this.messages.length - 1; i++) {
@@ -118,7 +140,7 @@ export default class History {
 			h.addMessage(m1.role, m0.content)
 		}
 		return h
-	}
+	}*/
 
 	// TODO: remove if not used
 	static createFromJson(json) {

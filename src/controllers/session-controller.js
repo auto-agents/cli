@@ -86,16 +86,17 @@ export default class SessionController {
 
 	// ------- history ---------
 
+
 	async updateCommandHistory(cmd) {
 		this.session.updateCommandHistory(
-			this.ctx.cli.commandPrefix + cmd + '\n'
+			this.ctx.cli.commandPrefix + cmd
 		)	// not awaited
 	}
 
 	async updatePromptCommandHistory(dialogEvent) {
 		this.session
 			.checkRootDataContext(dialogEvent)
-			.updateCommandHistory(dialogEvent.text + '\n')	// not awaited
+			.updateCommandHistory(dialogEvent.text)	// not awaited
 	}
 
 	getCommandHistory() {
