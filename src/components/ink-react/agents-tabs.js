@@ -12,9 +12,6 @@ const AgentsTabs = ({ ctx }) => {
 
 	const setupImgCliAgentDelay = 250
 	const e = ctx.components.event
-	const [agentsTabs, setAgentsTabs] = useState([])
-
-	/* ----- AgentAddedEvent ----- */
 
 	const getAgentsTabs = () => {
 		const tn = Object.getOwnPropertyNames(ctx.components.agents.agents)
@@ -29,6 +26,9 @@ const AgentsTabs = ({ ctx }) => {
 		return t
 	}
 
+	const [agentsTabs, setAgentsTabs] = useState(getAgentsTabs)
+
+	/* ----- AgentAddedEvent ----- */
 	useEffect(() => {
 		const listener = args => {
 			const agentArg = args[0]

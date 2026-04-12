@@ -313,7 +313,7 @@ export default class AppController {
 			const agent = this.ctx.components.agents.getAgent(
 				this.clx.cli.dialogCurrentTargetAgent
 			)
-			e.emit(AgentGetFocusViewEvent,
+			/*e.emit(AgentGetFocusViewEvent,
 				dialogEvent(
 					{
 						dialogContext: new DialogContext(
@@ -325,7 +325,7 @@ export default class AppController {
 							agent
 						),
 						text: ''
-					}))
+					}))*/
 		}
 
 		if (this.ctx.dialoger.enableWelcomeDialog) {
