@@ -13,6 +13,7 @@ import path from 'path'
 import fs from 'fs'
 import { renderComponent } from '../utils/ink-react-utils.js'
 import OutputContext from '../../../shared/src/data/output-context.js'
+import { DialogContext_Switch } from '../../../shared/src/config/consts.js'
 
 export default class AgentCommand extends Command {
 
@@ -51,7 +52,7 @@ export default class AgentCommand extends Command {
 							new OutputContext(this.ctx, o),
 							this.ctx.components.dialog.dialoger,
 							agent
-						),
+						).withType(DialogContext_Switch),
 						text: ''
 					}))
 			dumpLoadedAgent(this.ctx, agentId, o, 'set as user dialog target')

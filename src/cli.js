@@ -20,6 +20,7 @@ import {
 } from './config/config.js'
 
 Logger.init(APP_LOG_FILE, ERROR_LOG_FILE)
+Logger.clear()
 Logger.log('app start')
 
 import { Terminal } from 'terminal-kit';

@@ -204,7 +204,6 @@ export default class DialogController {
 				//console.log(lastResponse)
 
 				if (lastResponse != null) {
-					dc ||= dialogContext.clone()
 
 					if (dialogContext.agent.plugin.hasToolsCalls(lastResponse)) {
 
@@ -222,7 +221,8 @@ export default class DialogController {
 						/*if (dc.reasoningContent?.length > 0)
 							dc.reasoningContent.push('')*/
 						dc.reasoningContent = []
-						dc = dc.clone().nextRound()
+						dc = (dc ? dc.clone()
+							: dialogContext.clone()).nextRound()
 
 						// special user dialog that propagate tools without query
 

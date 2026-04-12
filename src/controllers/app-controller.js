@@ -310,22 +310,6 @@ export default class AppController {
 			e.emit(RunCommandEvent, 'agent switch -i ' +
 				this.ctx.cli.dialogCurrentTargetAgent
 			)
-			const agent = this.ctx.components.agents.getAgent(
-				this.clx.cli.dialogCurrentTargetAgent
-			)
-			/*e.emit(AgentGetFocusViewEvent,
-				dialogEvent(
-					{
-						dialogContext: new DialogContext(
-							new OutputContext(
-								this.ctx,
-								this.ctx.components.output
-							),
-							this.ctx.components.dialog.dialoger,
-							agent
-						),
-						text: ''
-					}))*/
 		}
 
 		if (this.ctx.dialoger.enableWelcomeDialog) {
