@@ -166,7 +166,6 @@ export default class Dialoger {
 		)
 		results.push(aiResult)
 
-
 		// THEN
 
 		if (aiResult && aiResult?.result) {

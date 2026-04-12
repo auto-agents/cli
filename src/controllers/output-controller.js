@@ -70,6 +70,9 @@ export default class OutputController {
 
 	replaceLines(y0, y1, str, skipViewUpdate = false) {
 		const rows = this.getSource().rows
+		if (y0 >= rows.length)
+			return this.appendLine(str, 0, skipViewUpdate)
+
 		rows.splice(y0, y1 - y0 + 1)
 		rows.splice(y0, 0, '')
 		return this.setLine(y0, str, skipViewUpdate)

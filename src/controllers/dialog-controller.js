@@ -406,7 +406,7 @@ export default class DialogController {
 				: this.ctx.theme.traceColor
 			)(message.trim())
 
-		text = this.responseTextFormater.getRendered(text)
+		text = this.responseTextFormater.getRendered(text).trim()
 		const dc = dialogEvent.dialogContext
 		var pos = null
 		if (!dc.systemOutputContext) {
@@ -415,9 +415,10 @@ export default class DialogController {
 		} else {
 			// append
 			const y = dc.systemOutputContext.y1
-			pos = this.output.insertLineAt(y, text + '\n')
+			pos = this.output.insertLineAt(y + 1, text + '\n')
 		}
-		pos.y0 = pos.y1
+		const k = pos.y1 - pos.y0
+		pos.y0 = pos.y1 + 1
 		pos.y1 = pos.y0
 		dc.systemOutputContext = pos
 		dc.reasoningContent = []
