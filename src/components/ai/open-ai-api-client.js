@@ -84,6 +84,7 @@ export default class OpenAIApiClient extends AIApiClient {
 			message = r.choices[0].message
 		}
 		// ----------------------------------------------------------------------------
+		var u = r.usage
 
 		// -------------- handle stream response --------------------------------------
 		if (this.config.stream) {
@@ -108,7 +109,6 @@ export default class OpenAIApiClient extends AIApiClient {
 				const isComplete = event.choices[0].finish_reason == 'stop'
 
 				if (delta.content || isComplete) {
-					//console.log('|' + delta.content + '|')
 					if (delta.content)
 						message.content += delta.content
 					isPartialContent = true
@@ -149,7 +149,7 @@ export default class OpenAIApiClient extends AIApiClient {
 				event.id = this.eventId
 				chunkId++
 
-				if (isPartialContent)
+				if (isPartialContent && !isPartialReasoningContent)
 					e.emit(AgentPartialResponseEvent, agentPartialResponseEvent(
 						dialogContext,
 						event,
@@ -199,8 +199,6 @@ export default class OpenAIApiClient extends AIApiClient {
 				}
 			});
 		}
-
-		const u = r.usage
 
 		this.history.add(message)
 

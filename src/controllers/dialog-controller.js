@@ -8,6 +8,7 @@ import {
 	LogErrorEvent,
 	SetStatusMessageEvent,
 	SpeakCommandEvent,
+	ToolLoopDialogEvent,
 	ToolRequiredByModelDialogEvent,
 	ToolRunCompletedDialogEvent,
 	ToolRunErrorDialogEvent,
@@ -84,6 +85,11 @@ export default class DialogController {
 				const m = '⚙️ ' + ev.message
 				this.#toolDialogEventHandler(ev, m)
 			})
+			.on(ToolLoopDialogEvent, args => {
+				const ev = args[0]
+				const m = '⚙️ ' + ev.message
+				this.#toolDialogEventHandler(ev, m)
+			})
 
 			.on(AgentPartialResponseEvent,
 				async args => { await this.#agentPartialResponseHandler(args[0]) })
@@ -126,6 +132,8 @@ export default class DialogController {
 	 * @param {String} text
 	 */
 	async addUserDialog(text, dialogContext, tools, options, outputContext) {
+
+		const e = this.ctx.components.event
 
 		// auto target from input (agentId:text)
 		var switchTarget = null
@@ -172,8 +180,6 @@ export default class DialogController {
 		if (!options.assistantVoice)
 			options.assistantVoice = getAgentVoice(this.ctx, agent.id)
 
-
-
 		var r = await this.dialoger.addUserDialog(
 			dialogContext,
 			text,
@@ -206,10 +212,16 @@ export default class DialogController {
 						// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
 
 						if (this.ctx.cli.enableDebugLoopTools)
-							console.log('-- DialgController: Loop Tools --')
+							//console.log('-- DialgController: Loop Tools --')
+							e.emit(ToolLoopDialogEvent, dialogEvent({
+								dialogContext: dialogContext,
+								message: 'tools loop',
+								options: options
+							}))
 
-						if (dc.reasoningContent?.length > 0)
-							dc.reasoningContent.push('')
+						/*if (dc.reasoningContent?.length > 0)
+							dc.reasoningContent.push('')*/
+						dc.reasoningContent = []
 						dc = dc.clone().nextRound()
 
 						// special user dialog that propagate tools without query
