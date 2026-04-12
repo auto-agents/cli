@@ -76,5 +76,3 @@ await app.init()
 // app start from this point
 
 await app.run()
-
-Logger.log('app end')
