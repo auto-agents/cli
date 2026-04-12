@@ -2,7 +2,7 @@ import ActionController from "../controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../../../shared/src/utils/status.js'
-import utils, { getLoadedAgentDump, setEnvVars } from '../../../shared/src/utils/utils.js'
+import utils, { getLoadedAgentDump } from '../../../shared/src/utils/utils.js'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
@@ -12,6 +12,7 @@ import { join } from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
 import chalk from "chalk"
 import Skills from "../components/ai/skills.js";
+import Vars from "../../../shared/src/data/vars.js";
 
 /**
  * AI AGENT Plugin
@@ -164,7 +165,8 @@ export default class AIAgentPlugin {
 		)
 		const agent = this.config.agent
 		if (existsSync(path)) {
-			var prompt = setEnvVars(this.ctx, readFileSync(path).toString())
+			var prompt = new Vars(this.ctx)
+				.replaceVars(readFileSync(path).toString())
 			prompt += '\n' + this.skills.toPromptText()
 			if (agent.instructions)
 				agent.instructions = prompt + '\n' + agent.instructions

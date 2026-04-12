@@ -1,7 +1,7 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { AgentGetFocusViewEvent, CommandNotFoundEvent, dialogEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, setEnvVars, toJson } from '../../../shared/src/utils/utils.js'
+import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, toJson } from '../../../shared/src/utils/utils.js'
 import DialogContext from '../../../shared/src/data/dialog-context.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
@@ -14,6 +14,7 @@ import fs from 'fs'
 import { renderComponent } from '../utils/ink-react-utils.js'
 import OutputContext from '../../../shared/src/data/output-context.js'
 import { DialogContext_Switch } from '../../../shared/src/config/consts.js'
+import Vars from '../../../shared/src/data/vars.js'
 
 export default class AgentCommand extends Command {
 
@@ -293,8 +294,9 @@ export default class AgentCommand extends Command {
 				const texts = []
 				paths.forEach(fp => {
 					texts.push(
-						setEnvVars(this.ctx,
-							fs.readFileSync(fp).toString()))
+						this.ctx.components.session.session.vars
+							.replaceVars(
+								fs.readFileSync(fp).toString()))
 				})
 				const text = texts.join('\n')
 

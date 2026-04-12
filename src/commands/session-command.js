@@ -1,19 +1,11 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
-import { AgentGetFocusViewEvent, CommandNotFoundEvent, dialogEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, sessionPath, setEnvVars, toJson } from '../../../shared/src/utils/utils.js'
-import DialogContext from '../../../shared/src/data/dialog-context.js'
+import { CommandNotFoundEvent, errorEvent } from '../../../shared/src/data/events.js'
+import { sessionPath } from '../../../shared/src/utils/utils.js'
 import chalk from 'chalk'
-import { Table } from 'console-table-printer';
-import { openSelectorProps } from '../components/ink-react/list-selector.js'
-import SyntaxHighlight from 'ink-syntax-highlight'
-import highlight from 'cli-highlight'
-import { box } from '../../../shared/src/utils/decorators.js'
 import { join } from 'path'
 import { cp, readdir, rm } from 'fs/promises'
 import { existsSync } from 'fs'
-import { renderComponent } from '../utils/ink-react-utils.js'
-import OutputContext from '../../../shared/src/data/output-context.js'
 
 export default class SessionCommand extends Command {
 

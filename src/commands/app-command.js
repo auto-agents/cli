@@ -1,6 +1,6 @@
 import Command from '../../../shared/src/commands/command.js'
 import SyntaxHighlight from 'ink-syntax-highlight';
-import { mdTextBlock, toJson } from '../../../shared/src/utils/utils.js';
+import { evalValue, mdTextBlock, toJson } from '../../../shared/src/utils/utils.js';
 import * as highlight from "cli-highlight"
 import { box } from '../../../shared/src/utils/decorators.js';
 import { renderComponent } from '../utils/ink-react-utils.js';
@@ -34,12 +34,6 @@ export default class AppCommand extends Command {
 			cur = cur[key]
 		}
 		cur[parts[parts.length - 1]] = value
-	}
-
-	#evalValue(expr) {
-		var x
-		eval('x=' + expr)
-		return x
 	}
 
 	run(args, com) {
@@ -117,7 +111,7 @@ export default class AppCommand extends Command {
 					return
 
 				try {
-					const value = this.#evalValue(valueExpr)
+					const value = evalValue(valueExpr)
 					this.#setByPath(this.ctx, path, value)
 					output.newLine()
 					output.appendLine(path + ' set to: ' + value)

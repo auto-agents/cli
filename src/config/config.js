@@ -539,6 +539,56 @@ export const config = () => {
 					file: 'app-command.js'
 				},
 				{
+					names: ['var'],
+					description: 'access to session & cli environment variables',
+					config: {
+						options: {
+							action: {
+								type: 'string',
+								required: true,
+								allowedValues: [
+									{
+										value: 'get',
+										description: 'get a value of the session & cli env variables having the given key'
+									},
+									{
+										value: 'set',
+										description: 'set a value of the session & cli env variables the given key and the given value. the value is given as a javascript expression that will be evaluated'
+									},
+									{
+										value: 'del',
+										description: 'delete a value of the session & cli env variables having the given key'
+									},
+									{
+										value: 'list',
+										description: 'list keys of the session & cli env variables'
+									}
+								],
+								description: 'an action order for the var command'
+							},
+							key: {
+								type: 'string',
+								required: true,
+								description: 'the key of the variable for the actions get and set'
+							},
+							value: {
+								type: 'string',
+								required: false,
+								description: 'the value as a javasccript expression for the set action'
+							},
+							file: {
+								type: 'string',
+								description: 'indicates to set value from a file content',
+								required: false,
+								default: 'json',
+								short: 'f'
+							}
+						},
+						allowPositionals: true
+					},
+					file: 'var-command.js'
+				},
+				{
 					names: ['help', 'h'],
 					description: 'provide informations about the cli tool, contexts, commands and RAG db',
 					config: {

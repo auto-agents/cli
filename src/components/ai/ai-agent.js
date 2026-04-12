@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "fs"
 import { join } from "path"
 import { ConfigAppendInstructions, ConfigMergeProps, ConfigMergePropsFromPath } from "../../../../shared/src/config/consts"
-import { setEnvVars } from "../../../../shared/src/utils/utils"
+import Vars from "../../../../shared/src/data/vars"
 
 export default class AIAgent {
 
@@ -44,7 +44,8 @@ export default class AIAgent {
 			this.ctx.shell.platform + '.md'
 		)
 		if (existsSync(path)) {
-			const prompt = setEnvVars(this.ctx, readFileSync(path).toString())
+			const prompt = new Vars(this.ctx)
+				.replaceVars(readFileSync(path).toString())
 			if (this.instructions)
 				this.instructions = prompt + '\n' + this.instructions
 			else
