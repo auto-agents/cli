@@ -51,8 +51,8 @@ export default class VarCommand extends Command {
 				o.newLine()
 				o.appendLine(
 					typeof value == 'Object' ?
-						toJson(value)
-						: renderMarkdown(value))
+						toJson(value).trim()
+						: renderMarkdown(value).trim())
 				break
 
 			case 'set':
