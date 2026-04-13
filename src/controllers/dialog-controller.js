@@ -410,11 +410,11 @@ export default class DialogController {
 		var pos = null
 		if (!dc.systemOutputContext) {
 			// begin agent output
-			pos = this.echoSystem(dc, text + '\n', dialogEvent.options)
+			pos = this.echoSystem(dc, text /*+ '\n'*/, dialogEvent.options)
 		} else {
 			// append
 			const y = dc.systemOutputContext.y1
-			pos = this.output.insertLineAt(y + 1, text + '\n')
+			pos = this.output.insertLineAt(y + 1, text /*+ '\n'*/)
 		}
 		const k = pos.y1 - pos.y0
 		pos.y0 = pos.y1 + 1
