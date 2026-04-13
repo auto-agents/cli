@@ -110,7 +110,7 @@ export default class InitService {
 	}
 
 	async #initEnded() {
-		this.ctx.cli.initLog = this.output.getText()
+		this.ctx.cli.log.init = this.output.getText()
 		this.redirectConsole()
 		this.hatActionController.uiFunc.stop()
 		this.output.newLine()

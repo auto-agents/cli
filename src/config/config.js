@@ -24,9 +24,6 @@ import {
 	Tool_Output_Format_Json
 } from '../components/ai/tools.js';
 
-export const ERROR_LOG_FILE = 'errors.log'
-export const APP_LOG_FILE = 'app.log'
-
 export const ENABLE_RESET_TERMINAL = false
 export const CSI = '\x1b'
 export const ANSI_RSTXTA = CSI + "4m" + CSI + "0m"
@@ -697,7 +694,12 @@ export const config = () => {
 			enableDebugLoopTools: true,
 			dialogCurrentTargetAgent: TUIAgentId,
 			toolRunTimeout: 10000,
-			initLog: null,
+			log: {
+				enableErrorLog: true,
+				enableAppLog: true,
+				// init log
+				init: null
+			},
 			// TODO: not used by now
 			pluginImports: [
 				// add a ref when new plugins are added

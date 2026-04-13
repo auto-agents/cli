@@ -14,13 +14,11 @@ import {
 	ANSI_RSTXTA,
 	ENABLE_RESET_TERMINAL,
 	ENABLE_MOUSE_SUPPORT,
-	ANSI_ENABLE_MOUSE_SUPPORT,
-	ERROR_LOG_FILE,
-	APP_LOG_FILE
+	ANSI_ENABLE_MOUSE_SUPPORT
 } from './config/config.js'
 
-Logger.init(APP_LOG_FILE, ERROR_LOG_FILE)
-Logger.clear()
+const ctx = config()
+Logger.init(ctx, ctx.paths.logFilePath, ctx.paths.errorLogFilePath)
 Logger.log('app start')
 
 import { Terminal } from 'terminal-kit';
@@ -45,6 +43,8 @@ process.stdin.resume()
 if (ENABLE_MOUSE_SUPPORT)
 	process.stdout.write(ANSI_ENABLE_MOUSE_SUPPORT)
 
+// ----- launch app -----
+
 const ignoreTkErrors = 'TerminalInfoProvider'
 
 // --- Global process-level error handling ---
@@ -52,7 +52,7 @@ process.on('uncaughtException', (err) => {
 	try {
 		Logger.logError(err.stack)
 		if (err.message.includes(ignoreTkErrors)) return
-		console.error('Uncaught Exception:', err.stack);
+		console.error(ctx?.theme.errorTextPrefix + 'Uncaught Exception:', err.stack);
 	} catch { }
 });
 
@@ -60,17 +60,11 @@ process.on('unhandledRejection', (err) => {
 	try {
 		Logger.logError(err.stack)
 		if (err.message.includes(ignoreTkErrors)) return
-		console.error('Unhandled Promise Rejection:', err.stack);
+		console.error(ctx?.theme.errorTextPrefix + 'Unhandled Promise Rejection:', err.stack);
 	} catch { }
 });
 
-// ----- setup app -----
-
-const ctx = config()
 term.windowTitle(ctx.app.name)
-
-// ---- launch app ----
-
 const app = new AppController(ctx)
 await app.init()
 

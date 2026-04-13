@@ -49,6 +49,7 @@ import OutputContext from '../../../shared/src/data/output-context.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
 import { DialogContext_Assistant, DialogContext_ErrorSpeak, TUIAgentId } from '../../../shared/src/config/consts.js';
 import SessionController from './session-controller.js';
+import Logger from '../../../shared/src/components/sys/logger.js';
 
 export default class AppController {
 
@@ -273,20 +274,26 @@ export default class AppController {
 	error(message, stack) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(this.status.error(this.ctx.theme.errorTextPrefix + message))
+		var str = this.ctx.theme.errorTextPrefix + message
+		o.appendLine(this.status.error(str))
 		if (stack && this.ctx.cli.dumpStackTraces) {
 			var i = stack.indexOf('    ')
 			if (i > -1) {
 				stack = stack.substring(i)
 			}
-			o.appendLine(this.status.warning('\n' + stack))
+			const ststr = '\n' + stack
+			str += ststr
+			o.appendLine(this.status.warning(ststr))
 		}
+		Logger.logError(str)
 	}
 
 	warning(message) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(this.status.warning(this.ctx.theme.warningTextPrefix + message))
+		const str = this.ctx.theme.warningTextPrefix + message
+		o.appendLine(this.status.warning(str))
+		Logger.logWarning(str)
 	}
 
 	async appInitialized() {
