@@ -40,7 +40,6 @@ export default class ShellExec extends AITool {
 			})
 			.catch(err => {
 				error = err.message
-				//throw (error)
 			})
 
 		if (!res || res.length == 0)
