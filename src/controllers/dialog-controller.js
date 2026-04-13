@@ -424,9 +424,6 @@ export default class DialogController {
 	}
 
 	#renderMarkdownDialog(o, dialogContext, name, text, scol, setPrompt, partial = false) {
-		//if (!text) return dialogContext.outputContext.lastPos()
-		//text = text.trim()
-		//if (text.length == 0) return dialogContext.outputContext.lastPos()
 
 		const outp = this.responseTextFormater.getRendered(text, partial)
 		// TODO: be a in the text printer sanitizer (responseTextFormater)
