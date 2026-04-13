@@ -1258,6 +1258,9 @@ export const config = () => {
 			},
 			warningColor: '#FF7700',
 			errorColor: '#FF0000',
+			toolTextPrefix: '⚙️ ',
+			errorTextPrefix: '💥 ',
+			warningTextPrefix: '⚠️ ',
 			traceColor: '#9ad1ceff',
 			console: {
 				stderrColor: '#FF0000',

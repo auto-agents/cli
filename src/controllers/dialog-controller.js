@@ -57,6 +57,10 @@ export default class DialogController {
 
 		// -----------------------------------------------------------------
 
+		const toolPfx = this.ctx.theme.toolTextPrefix
+		const warnPfx = this.ctx.theme.warningTextPrefix
+		const errPfx = this.ctx.theme.errorTextPrefix
+
 		this.ctx.components.event
 
 			.on(SpeakCommandEvent,
@@ -64,7 +68,7 @@ export default class DialogController {
 			)
 			.on(ToolRequiredByModelDialogEvent, args => {
 				const ev = args[0]
-				const m = '⚙️ tool required by model: '
+				const m = toolPfx + 'tool required by model: '
 					+ ev.toolSpec?.function?.name
 					+ ' '
 					+ ev.toolSpec?.function?.arguments
@@ -72,23 +76,23 @@ export default class DialogController {
 			})
 			.on(ToolRunCompletedDialogEvent, args => {
 				const ev = args[0]
-				const m = '⚙️ tool run completed: '
+				const m = toolPfx + 'tool run completed: '
 					+ ev.toolSpec?.function?.name
 				this.#toolDialogEventHandler(ev, m)
 			})
 			.on(ToolRunErrorDialogEvent, args => {
 				const ev = args[0]
-				const m = '⚙️ tool run error: ' + ev.error
+				const m = errPfx + toolPfx + 'tool run error: ' + ev.error
 				this.#toolDialogEventHandler(ev, m)
 			})
 			.on(ToolUnknownDialogEvent, args => {
 				const ev = args[0]
-				const m = '⚙️ ' + ev.message
+				const m = warnPfx + toolPfx + '' + ev.message
 				this.#toolDialogEventHandler(ev, m)
 			})
 			.on(ToolLoopDialogEvent, args => {
 				const ev = args[0]
-				const m = '⚙️ ' + ev.message
+				const m = toolPfx + '' + ev.message
 				this.#toolDialogEventHandler(ev, m)
 			})
 

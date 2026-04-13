@@ -273,7 +273,7 @@ export default class AppController {
 	error(message, stack) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(this.status.error('💥 ' + message))
+		o.appendLine(this.status.error(this.ctx.theme.errorTextPrefix + message))
 		if (stack && this.ctx.cli.dumpStackTraces) {
 			var i = stack.indexOf('    ')
 			if (i > -1) {
@@ -286,7 +286,7 @@ export default class AppController {
 	warning(message) {
 		const o = this.output
 		o.newLine()
-		o.appendLine(this.status.warning('⚠️ ' + message))
+		o.appendLine(this.status.warning(this.ctx.theme.warningTextPrefix + message))
 	}
 
 	async appInitialized() {

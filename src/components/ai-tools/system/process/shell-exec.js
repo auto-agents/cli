@@ -31,7 +31,7 @@ export default class ShellExec extends AITool {
 		var res = null
 		await exec(com,
 			{
-				shell: true,
+				shell: false,
 				timeout: this.ctx.cli.toolRunTimeout,
 				cwd: this.ctx.cli.currentPath
 			})
@@ -40,14 +40,16 @@ export default class ShellExec extends AITool {
 			})
 			.catch(err => {
 				error = err.message
-				console.error(err.message)
+				//throw (error)
 			})
 
 		if (!res || res.length == 0)
 			res = "command has been executed successfully"
 		if (error)
 			res = error
-
-		return this.textResult(res)
+		const r = this.textResult(res)
+		if (error)
+			r.setError(res)
+		return r
 	}
 }
