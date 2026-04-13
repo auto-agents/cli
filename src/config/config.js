@@ -707,6 +707,7 @@ export const config = () => {
 
 				// plugins to be imported and instanciated are listed here
 				'API/hugging-face',
+				'WEB/puppeteer-browser',
 
 				// plugins to be imported as internal, thus not instanciated are listed here
 				'TTS/tts-webui'
@@ -1888,6 +1889,13 @@ export const config = () => {
 					[Platforms.mac]: "open -a \"Google Chrome\" \"{url}\""
 				},
 				defaultUrl: "www.google.com"
+			},
+			browserChrome: {
+				path: {
+					[Platforms.windows]: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+					[Platforms.linux]: null,
+					[Platforms.mac]: null
+				}
 			},
 			playSound: {
 				[Platforms.windows]: "cmd /c start \"\" \"C:\\Program Files (x86)\\VideoLAN\\VLC\\vlc.exe\" -I dummy --dummy-quiet \"{filePath}\" vlc://quit"
