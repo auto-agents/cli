@@ -1,4 +1,5 @@
 import AITool from '../../../ai/ai-tool';
+import Logger from './../../../../../../shared/src/components/sys/logger';
 
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
@@ -37,9 +38,11 @@ export default class ShellExec extends AITool {
 			})
 			.then(({ stdout, stderr }) => {
 				res = stdout
+				Logger.log('res=' + res)
 			})
 			.catch(err => {
 				error = err.message
+				Logger.log('error=' + error)
 			})
 
 		if (!res || res.length == 0)

@@ -23,6 +23,7 @@ import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 import { DialogerTasksTypes } from "../components/dialog/dialoger-tasks-types.js"
 import { DialogContext_Assistant, DialogContext_Tool, DialogContext_User } from "../../../shared/src/config/consts.js"
+import Logger from "../../../shared/src/components/sys/logger.js"
 
 /**
  * controls a dialog with or without ai and speech
@@ -84,11 +85,13 @@ export default class DialogController {
 				const ev = args[0]
 				const m = errPfx + toolPfx + 'tool run error: ' + ev.error
 				this.#toolDialogEventHandler(ev, m)
+				Logger.logError(m)
 			})
 			.on(ToolUnknownDialogEvent, args => {
 				const ev = args[0]
 				const m = warnPfx + toolPfx + '' + ev.message
 				this.#toolDialogEventHandler(ev, m)
+				Logger.logError(m)
 			})
 			.on(ToolLoopDialogEvent, args => {
 				const ev = args[0]

@@ -50,7 +50,8 @@ const setupEnvVars = ctx => {
 	const curPath = process.cwd()
 	ctx.env = {
 		TMP_DIR: join(curPath, ctx.paths.tmp),
-		BASE_DIR: curPath
+		BASE_DIR: curPath,
+		SHELL_ROOT_PASSWD: 'franc'
 	}
 }
 
@@ -1750,7 +1751,7 @@ export const config = () => {
 
 					toolTextQueryPattern: "write a sentence that responds to the user who is asking: '{query}' from the following informations:\n{data}",
 
-					timeout: 60 * 60 * 1000,	// 60 min (ms) ?
+					timeout: 60 * 60 * 1000 * 10,	// 60 min (ms) ?
 					maxRetries: 2,	// default
 					stream: true,
 					think: true

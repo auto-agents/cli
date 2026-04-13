@@ -1,3 +1,4 @@
+import Logger from "../../../../../shared/src/components/sys/logger";
 import {
 	dialogEvent,
 	ToolRequiredByModelDialogEvent,
@@ -60,7 +61,8 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 				e.emit(ToolRunErrorDialogEvent, dialogEvent({
 					dialogContext: dialogContext,
 					toolSpec: toolSpe,
-					error: parseArgsError.message,
+					error: parseArgsError.stack ||
+						parseArgsError.message,
 					options: options
 				}))
 			}
@@ -101,7 +103,7 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 					e.emit(ToolRunErrorDialogEvent, dialogEvent({
 						dialogContext: dialogContext,
 						toolSpec: toolSpe,
-						error: toolError.message,
+						error: toolError.stack || toolError.message,
 						options: options
 					}))
 				}
