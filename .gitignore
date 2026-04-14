@@ -4,3 +4,4 @@ tmp
 errors.log
 app.log
 core_errors.log
+output.log

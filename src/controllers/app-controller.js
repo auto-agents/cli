@@ -300,6 +300,18 @@ export default class AppController {
 
 		this.isInitialized = true
 
+		// start outputlog
+		if (this.ctx.cli.log.enableOutputLog)
+			this.outLogIntervalId = setInterval(
+				() => {
+					Logger.clearOutputLog()
+					Logger.logOutput(
+						this.ctx.components.output
+							.getSource().rows.join('\n')
+					)
+				}, this.ctx.cli.log.outLogInterval
+			)
+
 		// init plugins gauges
 		this.#setupPluginsGauges()
 

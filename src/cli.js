@@ -18,7 +18,11 @@ import {
 } from './config/config.js'
 
 const ctx = config()
-Logger.init(ctx, ctx.paths.logFilePath, ctx.paths.errorLogFilePath)
+Logger.init(
+	ctx,
+	ctx.paths.logFilePath,
+	ctx.paths.errorLogFilePath,
+	ctx.paths.outputLogFilePath)
 Logger.log('app start')
 
 import { Terminal } from 'terminal-kit';

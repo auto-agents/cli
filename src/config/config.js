@@ -95,6 +95,7 @@ export const config = () => {
 			tmp: 'tmp',
 			logFilePath: 'app.log',
 			errorLogFilePath: 'errors.log',
+			outputLogFilePath: 'output.log',
 			tempsToClean: [],
 			speakPreProcessors: join(
 				'../plugins/src/TTS/speak-pre-processors'
@@ -698,6 +699,8 @@ export const config = () => {
 			log: {
 				enableErrorLog: true,
 				enableAppLog: true,
+				enableOutputLog: true,
+				outLogInterval: 4000,
 				// init log
 				init: null
 			},

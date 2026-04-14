@@ -4,7 +4,7 @@ import path, { join, dirname, basename } from 'path';
 import chalk from "chalk"
 import Status from '../../../shared/src/utils/status.js'
 import OutputContext from "../../../shared/src/data/output-context.js";
-import { isAppInitialized, resolvePath } from "../../../shared/src/utils/utils.js";
+import { isAppInitialized, resolvePath, toJson } from "../../../shared/src/utils/utils.js";
 import { PluginLoadedEvent, PluginUnloadedEvent } from "../../../shared/src/data/events.js";
 import AIAgent from "../components/ai/ai-agent.js";
 
@@ -113,7 +113,8 @@ export default class PluginController {
 		}
 		catch (err) {
 			o.newLine()
-			o.appendLine(this.status.error(margin + 'plugin load error: ' + err))
+			o.appendLine(this.status.error(margin + 'plugin load error: ' +
+				(err.message || err)))
 			o.appendLine(this.status.warning(margin + 'plugin will be disabled'))
 			return null
 		}
