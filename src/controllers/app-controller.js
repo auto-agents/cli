@@ -274,7 +274,7 @@ export default class AppController {
 	error(message, stack) {
 		const o = this.output
 		o.newLine()
-		var str = this.ctx.theme.errorTextPrefix + message
+		var str = message
 		o.appendLine(this.status.error(str))
 		if (stack && this.ctx.cli.dumpStackTraces) {
 			var i = stack.indexOf('    ')
@@ -291,7 +291,7 @@ export default class AppController {
 	warning(message) {
 		const o = this.output
 		o.newLine()
-		const str = this.ctx.theme.warningTextPrefix + message
+		const str = message
 		o.appendLine(this.status.warning(str))
 		Logger.logWarning(str)
 	}
