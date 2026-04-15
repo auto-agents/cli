@@ -13,7 +13,8 @@ import {
 } from "../../../shared/src/data/events"
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
-import { resolvePath } from "../../../shared/src/utils/utils";
+import { getSessionVars, resolvePath } from "../../../shared/src/utils/utils";
+import { EnvVar_LastCommandResult, EnvVar_LastError } from "../../../shared/src/config/consts";
 
 export default class CommandController {
 
@@ -128,9 +129,18 @@ export default class CommandController {
 			return
 		}
 
+		const vars = getSessionVars(this.ctx)
+
 		try {
-			await instance.run(parsedArgs, comd)	// add tryc 'command run error'
+			const res = await instance.run(parsedArgs, comd)
+			vars.set(EnvVar_LastCommandResult, res)
+			vars.set(EnvVar_LastError, null)
+
 		} catch (err) {
+
+			vars.set(EnvVar_LastCommandResult, null)
+			vars.set(EnvVar_LastError, err)
+
 			e.emit(CommandRunErrorEvent, {
 				...errorEvent(this.From, err),
 				cmd: com,

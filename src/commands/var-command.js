@@ -33,6 +33,8 @@ export default class VarCommand extends Command {
 
 		const o = this.ctx.components.output
 
+		var cr = null
+
 		// Execute the dialog action based on the action value
 		switch (action) {
 
@@ -49,10 +51,10 @@ export default class VarCommand extends Command {
 					return
 				}
 				o.newLine()
-				o.appendLine(
-					typeof value == 'Object' ?
-						toJson(value).trim()
-						: renderMarkdown(value).trim())
+				cr = typeof value == 'object' ?
+					toJson(value).trim()
+					: renderMarkdown(value).trim()
+				o.appendLine(cr)
 				break
 
 			case 'set':
@@ -70,6 +72,7 @@ export default class VarCommand extends Command {
 
 				o.newLine()
 				o.appendLine('context variable setted')
+				cr = val
 				break
 
 			case 'del':
@@ -84,6 +87,7 @@ export default class VarCommand extends Command {
 				for (const [key, value] of Object.entries(lst)) {
 					o.appendLine(key)
 				}
+				cr = Object.entries(lst).join('\n')
 				break
 
 			default:
@@ -95,5 +99,7 @@ export default class VarCommand extends Command {
 					cmd: action
 				})
 		}
+
+		return cr
 	}
 }
