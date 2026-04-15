@@ -67,7 +67,7 @@ export default class PluginController {
 			const path = resolvePath(
 				this.pluginsPath,
 				plugin.file)
-			//const path = join(this.pluginsPath, plugin.file)
+
 			if (!existsSync(path)) {
 				o.newLine()
 				o.appendLine(this.status.error(margin + 'plugin file not found: ' + path))
