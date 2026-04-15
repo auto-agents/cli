@@ -14,7 +14,7 @@ import {
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
 import { getSessionVars, resolvePath } from "../../../shared/src/utils/utils";
-import { EnvVar_LastCommandResult, EnvVar_LastError } from "../../../shared/src/config/consts";
+import { EnvVar_LastCommand, EnvVar_LastCommandResult, EnvVar_LastError } from "../../../shared/src/config/consts";
 
 export default class CommandController {
 
@@ -130,11 +130,12 @@ export default class CommandController {
 		}
 
 		const vars = getSessionVars(this.ctx)
-
+		vars.set(EnvVar_LastCommand, arg)
 		try {
-			const res = await instance.run(parsedArgs, comd)
+			const res = await instance.run(parsedArgs, comd, arg)
 			vars.set(EnvVar_LastCommandResult, res)
 			vars.set(EnvVar_LastError, null)
+			return res
 
 		} catch (err) {
 

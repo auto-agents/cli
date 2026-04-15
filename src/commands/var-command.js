@@ -1,7 +1,7 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { CommandNotFoundEvent, errorEvent } from '../../../shared/src/data/events.js'
-import { evalValue, toJson } from '../../../shared/src/utils/utils.js'
+import { evalValue, mdBlockJson, toJson } from '../../../shared/src/utils/utils.js'
 import { readFileSync } from 'fs'
 import { renderMarkdown } from 'cli-html';
 
@@ -52,7 +52,7 @@ export default class VarCommand extends Command {
 				}
 				o.newLine()
 				cr = typeof value == 'object' ?
-					toJson(value).trim()
+					renderMarkdown(mdBlockJson(toJson(value))).trim()
 					: renderMarkdown(value).trim()
 				o.appendLine(cr)
 				break
@@ -84,10 +84,12 @@ export default class VarCommand extends Command {
 			case 'list':
 				const lst = session.vars.list()
 				o.newLine()
+				const t = []
 				for (const [key, value] of Object.entries(lst)) {
 					o.appendLine(key)
+					t.push(key)
 				}
-				cr = Object.entries(lst).join('\n')
+				cr = t.join('\n')
 				break
 
 			default:
