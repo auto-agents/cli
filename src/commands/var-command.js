@@ -89,7 +89,7 @@ export default class VarCommand extends Command {
 					o.appendLine(key)
 					t.push(key)
 				}
-				cr = t.join('\n')
+				cr = t
 				break
 
 			default:
