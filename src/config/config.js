@@ -721,7 +721,8 @@ export const config = () => {
 			input: {
 				value: '',
 				cursor: 0
-			}
+			},
+			onExiting: []
 		},
 		agents: {
 
