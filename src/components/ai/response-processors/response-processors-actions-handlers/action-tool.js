@@ -17,7 +17,6 @@ export default class ActionTool {
 		this.queryPreProcessors = queryPreProcessors
 	}
 
-
 	/**
 	 * run a tool query
 	 * @param {Array} actions array of actions
