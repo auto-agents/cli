@@ -577,7 +577,7 @@ export const config = () => {
 							},
 							file: {
 								type: 'string',
-								description: 'indicates to set value from a file content',
+								description: 'indicates to set value from a file content, or save variable content to a file',
 								required: false,
 								default: 'json',
 								short: 'f'

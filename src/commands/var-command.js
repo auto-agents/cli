@@ -2,8 +2,9 @@ import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { CommandNotFoundEvent, errorEvent } from '../../../shared/src/data/events.js'
 import { evalValue, mdBlockJson, toJson } from '../../../shared/src/utils/utils.js'
-import { readFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import { renderMarkdown } from 'cli-html';
+import { join } from 'path'
 
 export default class VarCommand extends Command {
 
@@ -50,11 +51,22 @@ export default class VarCommand extends Command {
 					o.appendLine('undefined')
 					return
 				}
+				// dump on screen
 				o.newLine()
-				cr = typeof value == 'object' ?
-					renderMarkdown(mdBlockJson(toJson(value))).trim()
-					: renderMarkdown(value).trim()
-				o.appendLine(cr)
+				if (file) {
+					// dump to file
+					cr = typeof value == 'object' ?
+						toJson(value).trim()
+						: renderMarkdown(value).trim()
+					writeFileSync(file, cr)
+					o.appendLine(`variable ${key} saved to: ${file}`)
+				} else {
+					// dump on screen
+					cr = typeof value == 'object' ?
+						renderMarkdown(mdBlockJson(toJson(value))).trim()
+						: renderMarkdown(value).trim()
+					o.appendLine(cr)
+				}
 				break
 
 			case 'set':
