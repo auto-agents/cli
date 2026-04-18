@@ -1,12 +1,13 @@
 import { existsSync, readFileSync } from "fs";
 import { readdir } from 'fs/promises'
-import path, { join, dirname, basename } from 'path';
+import path, { join, basename } from 'path';
 import chalk from "chalk"
 import Status from '../../../shared/src/utils/status.js'
 import OutputContext from "../../../shared/src/data/output-context.js";
 import { isAppInitialized, resolvePath, toJson } from "../../../shared/src/utils/utils.js";
 import { PluginLoadedEvent, PluginUnloadedEvent } from "../../../shared/src/data/events.js";
 import AIAgent from "../components/ai/ai-agent.js";
+import Tools from "../components/ai/tools.js";
 
 export default class PluginController {
 
@@ -279,6 +280,7 @@ export default class PluginController {
 		const m = '    '
 
 		// import plugins
+
 		var { added, rejected, errors } = await this.importPluginImpl(config, pluginPath)
 
 		o.appendLine(margin + m + `- plugins added: ${added.length} plugins rejected: ${rejected.length}`)
@@ -290,6 +292,7 @@ export default class PluginController {
 		})
 
 		// import commands
+
 		var { added, rejected, errors } = await this.importPluginCommands(config, pluginPath)
 
 		o.appendLine(margin + m + `- commands added: ${added.length} commands rejected: ${rejected.length}`)
@@ -298,6 +301,49 @@ export default class PluginController {
 		added.forEach(com => {
 			this.ctx.cli.commands.push(com)
 		})
+
+		// import tools
+
+		var { added, rejected, errors } = await this.importTools(config, pluginPath)
+
+		o.appendLine(margin + m + `- tools added: ${added.length} tools rejected: ${rejected.length}`)
+		if (errors.length > 0)
+			o.appendLine(this.status.error(margin + m + m + errors.join(',')))
+		added.forEach(com => {
+
+		})
+	}
+
+	async importTools(config, pluginFolder) {
+		const added = []
+		const rejected = []
+		const errors = []
+		if (!config.tools) return { added: [], rejected: [], errors: [] }
+		const reject = (obj, reason) => {
+			rejected.push(obj)
+			errors.push(reason)
+		}
+		const toolPath = join(pluginFolder,
+			this.ctx.paths.pluginExportToolsFolderName)
+
+		config.tools.forEach(toolRef => {
+			const file = toolRef.file
+			const name = Tools.fileNameToToolName(file)
+			if (Tools.getToolFromRegistry(name)) {
+				reject(file, `a tool with the name ${name} already exists`)
+			}
+			else {
+				const tp = join(toolPath, file)
+				if (existsSync(tp)) {
+					added.push(file)
+					this.ctx.cli.importTools.push(tp)
+				}
+				else
+					reject(file, 'tool file not found: ' + tp)
+			}
+		})
+
+		return { added: added, rejected: rejected, errors: errors }
 	}
 
 	async importPluginImpl(config, pluginFolder) {

@@ -69,6 +69,7 @@ export const config = () => {
 			pluginsExportsFolderName: 'exports',
 			pluginExportCommandsFolderName: 'commands',
 			pluginExportPluginFolderName: 'plugin',
+			pluginExportToolsFolderName: 'tools',
 			cliPlugins: 'plugins',
 			configFileName: 'config.js',
 			prompts: '../instruct/prompts',
@@ -720,7 +721,9 @@ export const config = () => {
 				value: '',
 				cursor: 0
 			},
-			onExiting: []
+			onExiting: [],
+			// any plugin car import a tool by buting it's filepath in this array
+			importTools: []
 		},
 		agents: {
 

@@ -3,14 +3,21 @@ import Status from "../../../../shared/src/utils/status"
 import { isAppInitialized } from "../../../../shared/src/utils/utils"
 import { existsSync } from "fs";
 import { readdir } from 'fs/promises'
-import { join } from 'path';
+import { basename, join } from 'path';
 import { pathToFileURL } from 'url'
 import OutputContext from "../../../../shared/src/data/output-context";
 
 export default class Tools {
 
+	static registryLoaded = false
+	// registory of available tools at cli level
+	static registry = {}
+	static filesRegistry = []
+
+	static status = null
+
+	// tools enabled at agent level
 	tools = {}
-	ts = []
 
 	/**
 	 * build the tools manager
@@ -21,7 +28,7 @@ export default class Tools {
 	constructor(ctx, config, outputContext) {
 		this.ctx = ctx
 		this.config = config
-		this.status = new Status(ctx)
+		Tools.status = new Status(ctx)
 		this.outputContext = outputContext
 		this.toolsPath = join(process.cwd(),
 			this.ctx.paths.src,
@@ -29,8 +36,10 @@ export default class Tools {
 			this.ctx.paths.aiTools)
 	}
 
-	// TODO: filter loaded tools by agent plugin config
-	// TODO: then update usage of tools array (remove)
+	static fileNameToToolName(filename) {
+		return filename.toLowerCase().replace('.js', '').replaceAll('-', '_')
+	}
+
 	async load(filepath, file, outputContext) {
 		const oc = outputContext || this.outputContext
 		const o = oc.output
@@ -40,7 +49,7 @@ export default class Tools {
 		try {
 			if (!existsSync(filepath)) {
 				o.newLine()
-				o.appendLine(this.status.error(margin + 'tool file not found: ' + filepath))
+				o.appendLine(Tools.status.error(margin + 'tool file not found: ' + filepath))
 				return null
 			}
 
@@ -48,26 +57,45 @@ export default class Tools {
 			if (file.startsWith('-')) return
 
 			const mod = await import(pathToFileURL(filepath).href)
-			m = new mod.default(this.ctx, this.config, this.outputContext)
+			m = new mod.default(this.ctx, this.config, oc)
 			if (m.init) await m.init()
 
-			const name = file.toLowerCase().replace('.js', '').replaceAll('-', '_')
-			this.tools[name] = m
-
-			this.ts.push(file)
+			const name = Tools.fileNameToToolName(file)
+			Tools.registry[name] = m
+			Tools.filesRegistry.push(file)
 
 			if (isAppInitialized(this.ctx))
 				this.ctx.components.event.emit(ResponseProcessorLoadedEvent)
 		}
 		catch (err) {
 			o.newLine()
-			o.appendLine(this.status.error(margin + 'tool load error: ' + err))
+			o.appendLine(Tools.status.error(margin + 'tool load error: ' + err))
 			return null
 		}
 		return m
 	}
 
-	async loadTools() {
+	assignTools(config) {
+		for (const [key, value] of Object.entries(Tools.registry)) {
+			const enabled =
+				// null : no tool
+				config.enabledTools != null &&
+				// empty : any tool
+				(config.enabledTools.length == 0
+					// explicitely enabled
+					|| config.enabledTools.includes(key))
+			if (enabled)
+				this.tools[key] = value
+		}
+	}
+
+	async loadTools(config) {
+
+		if (Tools.registryLoaded) {
+			this.assignTools(config)
+			return
+		}
+		Tools.registryLoaded = true
 
 		const oc = this.outputContext
 		const o = oc.output
@@ -93,9 +121,17 @@ export default class Tools {
 				await this.load(full, entry.name, oc2)
 			}
 		}
-
 		await walk(this.toolsPath)
-		o.appendLine(margin + 'tools loaded: ' + this.ts.length /*this.ts.join(',')*/)
+
+		// add imported Tools
+		const timps = this.ctx.cli.importTools
+		for (var i = 0; i < timps.length; i++) {
+			const file = timps[i]
+			await this.load(file, basename(file), oc2)
+		}
+
+		this.assignTools(config)
+		o.appendLine(margin + 'tools loaded: ' + Tools.filesRegistry.length)
 	}
 
 	getSpecifications() {
@@ -130,6 +166,10 @@ export default class Tools {
 
 	getTool(name) {
 		return this.tools[name]
+	}
+
+	static getToolFromRegistry(name) {
+		return Tools.registry[name]
 	}
 
 	getAllTools() {

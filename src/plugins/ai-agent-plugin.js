@@ -132,7 +132,7 @@ export default class AIAgentPlugin {
 		const initApi = async () => {
 			try {
 				await this.responseProcessors.loadProcessors(this.config.responseProcessors)
-				await this.tools.loadTools()
+				await this.tools.loadTools(this.config)
 
 				if (this.config.enabledSkills != null) {
 					await this.skills.buildSkillsCatalog()
