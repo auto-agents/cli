@@ -40,7 +40,7 @@ export default class CommandController {
 				...errorEvent(this.From, parseError),
 				args: arg
 			})
-			return
+			return new Error(CommandParseErrorEvent)
 		}
 		const com = parsed[0]
 		const args = parsed.slice(1)
@@ -54,7 +54,7 @@ export default class CommandController {
 				args: arg,
 				cmd: com
 			})
-			return
+			return new Error(CommandNotFoundEvent)
 		}
 		const comd = tcom[0]
 
@@ -62,12 +62,6 @@ export default class CommandController {
 		const comArgs = comd.config?.options
 		const comArgsNames = comArgs ? Object.getOwnPropertyNames(comArgs) : []
 		const withOptions = comArgs && comArgsNames.length > 0
-
-		// too much args
-		/*if (args.length > 0 && !withOptions) {
-			e.emit(CommandArgsCountErrorEvent, comd)
-			return
-		}*/
 
 		var parsedArgs = null
 
@@ -90,7 +84,7 @@ export default class CommandController {
 					cmd: com,
 					args: arg
 				})
-				return
+				return err
 			}
 		}
 
@@ -126,7 +120,7 @@ export default class CommandController {
 				cmd: com,
 				cn: cn
 			})
-			return
+			return err
 		}
 
 		const vars = getSessionVars(this.ctx)
@@ -145,7 +139,7 @@ export default class CommandController {
 				cmd: com,
 				cn: cn
 			})
-			return
+			return err
 		}
 	}
 }
