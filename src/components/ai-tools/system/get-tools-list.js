@@ -1,4 +1,4 @@
-import AITool from "../../ai/ai-tool";
+import AITool from '../../../../../shared/src/components/ai-tools/ai-tool';
 
 export default class GetToolsList extends AITool {
 

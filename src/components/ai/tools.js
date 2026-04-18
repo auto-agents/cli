@@ -7,10 +7,6 @@ import { join } from 'path';
 import { pathToFileURL } from 'url'
 import OutputContext from "../../../../shared/src/data/output-context";
 
-export const Tool_Output_Format_Json = 'Tool_Output_Format_Json'
-export const Tool_Output_Format_JsonMD = 'Tool_Output_Format_JsonMD'
-export const Tool_Output_Format_PlainText = 'Tool_Output_Format_PlainText'
-
 export default class Tools {
 
 	tools = {}

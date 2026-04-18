@@ -1,5 +1,5 @@
+import AITool from "../../../../../../shared/src/components/ai-tools/ai-tool";
 import { unescapeCodeString } from "../../../../../../shared/src/utils/text/text";
-import AITool from "../../../ai/ai-tool";
 import { writeFileSync } from 'fs'
 
 export default class WriteFile extends AITool {

@@ -1,5 +1,5 @@
+import AITool from '../../../../../shared/src/components/ai-tools/ai-tool';
 import { getTmpFile } from '../../../../../shared/src/utils/utils';
-import AITool from '../../ai/ai-tool';
 import { writeFileSync } from 'fs'
 
 const htmlparser2 = require('htmlparser2');

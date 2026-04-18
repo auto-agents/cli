@@ -1,5 +1,5 @@
+import AITool from '../../../../../../shared/src/components/ai-tools/ai-tool';
 import { Platforms } from '../../../../../../shared/src/config/consts';
-import AITool from '../../../ai/ai-tool';
 
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);

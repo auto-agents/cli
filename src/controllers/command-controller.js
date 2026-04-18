@@ -136,9 +136,7 @@ export default class CommandController {
 			vars.set(EnvVar_LastCommandResult, res)
 			vars.set(EnvVar_LastError, null)
 			return res
-
 		} catch (err) {
-
 			vars.set(EnvVar_LastCommandResult, null)
 			vars.set(EnvVar_LastError, err)
 
