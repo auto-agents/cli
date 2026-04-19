@@ -1563,7 +1563,10 @@ export const config = () => {
 						},
 						edge: {
 							runCommand: {
-								[Platforms.windows]: "cmd /c start \"\" msedge \"{url}\"",
+								// standard launch (windows visible)
+								[Platforms.windows + '_1_']: "cmd /c start \"\" msedge \"{url}\"",
+								// auto-hide method with script (requires Install-Module -Name PoshFunctions -AllowClobber)
+								[Platforms.windows]: "cmd /c start \"\" powershell.exe -Command \"../plugins/speech/src/scripts/launch-edge.ps1 \\\"{url}\\\"",
 								[Platforms.linux]: "microsoft-edge \"{url}\"",
 								[Platforms.mac]: "open -a \"Microsoft Edge\" \"{url}\""
 							},
