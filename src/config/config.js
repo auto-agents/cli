@@ -698,7 +698,7 @@ export const config = () => {
 			log: {
 				enableErrorLog: true,
 				enableAppLog: true,
-				enableOutputLog: true,
+				enableOutputLog: false,
 				outLogInterval: 4000,
 				// init log
 				init: null
