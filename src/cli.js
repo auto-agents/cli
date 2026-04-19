@@ -16,6 +16,8 @@ import {
 	ENABLE_MOUSE_SUPPORT,
 	ANSI_ENABLE_MOUSE_SUPPORT
 } from './config/config.js'
+import { Terminal } from 'terminal-kit';
+import Logger from '../../shared/src/components/sys/logger.js';
 
 const ctx = config()
 Logger.init(
@@ -24,9 +26,6 @@ Logger.init(
 	ctx.paths.errorLogFilePath,
 	ctx.paths.outputLogFilePath)
 Logger.log('app start')
-
-import { Terminal } from 'terminal-kit';
-import Logger from '../../shared/src/components/sys/logger.js';
 
 // setup terminal
 const term = new Terminal()

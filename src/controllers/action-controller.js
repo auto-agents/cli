@@ -1,3 +1,5 @@
+import Logger from "../../../shared/src/components/sys/logger"
+
 export default class ActionController {
 
 	constructor(ctx, output, actionFunc, uiFunc, onEnded, onError) {
@@ -22,6 +24,7 @@ export default class ActionController {
 			if (this.autoStopUI) this.uiFunc.stop()
 		} catch (err) {
 			console.error(err)
+			Logger.logError(err)
 		}
 		if (this.onEnded) this.onEnded(this.output)
 		if (this.next) await this.next.run(this.output)
