@@ -19,7 +19,7 @@ import {
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import Dialoger from "../components/dialog/dialoger.js"
 import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
-import DialogContext from "../../../shared/src/data/dialog-context.js"
+import DialogContext, { FROM_CLI, FROM_USER, TO_CLI } from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 import { DialogerTasksTypes } from "../components/dialog/dialoger-tasks-types.js"
 import { DialogContext_Assistant, DialogContext_Tool, DialogContext_User } from "../../../shared/src/config/consts.js"
@@ -170,7 +170,7 @@ export default class DialogController {
 				outputContext,
 				this.dialoger,
 				agent,
-				null,	// from user
+				FROM_USER,	// from user
 				null,	// no task yet
 				1,		// round
 				DialogContext_User
@@ -223,7 +223,12 @@ export default class DialogController {
 							}))
 
 						dc = dc ? dc.clone(DialogContext_Tool, true)
-							: dialogContext.clone(DialogContext_Tool, true)
+							: dialogContext.clone(DialogContext_Tool, true,
+								dialogContext.to,
+								dialogContext.from,
+								dialogContext.agent,
+								TO_CLI
+							)
 						dc.reasoningContent = []
 
 						// special user dialog that propagate tools without query

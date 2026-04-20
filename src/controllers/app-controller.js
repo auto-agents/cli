@@ -44,7 +44,7 @@ import { getErrorVoice, getLoadedAgent, getTUIAgent, isAppInitialized, isSpeakEr
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
 import MouseController from './mouse-controller.js';
-import DialogContext from '../../../shared/src/data/dialog-context.js';
+import DialogContext, { FROM_CLI, TO_USER } from '../../../shared/src/data/dialog-context.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
 import { DialogContext_Assistant, DialogContext_ErrorSpeak, TUIAgentId } from '../../../shared/src/config/consts.js';
@@ -165,7 +165,7 @@ export default class AppController {
 					this.output,
 					this.ctx.components.dialog.dialoger,
 					agent,
-					null,
+					FROM_CLI,
 					null,
 					null,
 					DialogContext_ErrorSpeak
@@ -335,7 +335,9 @@ export default class AppController {
 			)
 		}
 
-		if (this.ctx.dialoger.enableWelcomeDialog) {
+		if (this.ctx.dialoger.enableWelcomeDialog
+			&& this.ctx.cli.dialogCurrentTargetAgent
+		) {
 
 			// welcom prompt
 
@@ -349,7 +351,7 @@ export default class AppController {
 				new DialogContext(
 					new OutputContext(this.ctx, this.output),
 					this.dialog.dialoger,
-					wagent,
+					TO_USER,
 					wagent,
 					null,	// no task yet
 					1,		// round

@@ -1,5 +1,5 @@
 import { DialogContext_Tool } from "../../../../../../shared/src/config/consts"
-import DialogContext from "../../../../../../shared/src/data/dialog-context"
+import DialogContext, { FROM_CLI } from "../../../../../../shared/src/data/dialog-context"
 import { Role_Assistant, Role_Tool } from "../../roles"
 
 // ----------------------------------------------------
@@ -43,7 +43,7 @@ export default class ActionTool {
 		//for (var i = 0; i < this.queryPreProcessors; i++)
 		//    action.arg = this.queryPreProcessors(action.arg)
 
-		const dc = dialogContext.clone(DialogContext_Tool, 1)
+		const dc = dialogContext.clone(DialogContext_Tool, 1, FROM_CLI)
 
 		for (var i = 0; i < actions.length; i++) {
 			const action = actions[i]

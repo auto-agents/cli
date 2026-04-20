@@ -2,7 +2,7 @@ import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { AgentGetFocusViewEvent, CommandNotFoundEvent, dialogEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
 import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, toJson } from '../../../shared/src/utils/utils.js'
-import DialogContext from '../../../shared/src/data/dialog-context.js'
+import DialogContext, { FROM_CLI } from '../../../shared/src/data/dialog-context.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { openSelectorProps } from '../components/ink-react/list-selector.js'
@@ -53,7 +53,7 @@ export default class AgentCommand extends Command {
 							new OutputContext(this.ctx, o),
 							this.ctx.components.dialog.dialoger,
 							agent,
-							null,
+							FROM_CLI,
 							null,
 							null,
 							DialogContext_Switch
