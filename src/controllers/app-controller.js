@@ -44,10 +44,10 @@ import { getErrorVoice, getLoadedAgent, getTUIAgent, isAppInitialized, isSpeakEr
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
 import MouseController from './mouse-controller.js';
-import DialogContext, { FROM_CLI, TO_USER } from '../../../shared/src/data/dialog-context.js';
+import DialogContext from '../../../shared/src/data/dialog-context.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
-import { DialogContext_Assistant, DialogContext_ErrorSpeak, TUIAgentId } from '../../../shared/src/config/consts.js';
+import { DialogContext_Assistant, DialogContext_ErrorSpeak, FROM_CLI, TUIAgentId } from '../../../shared/src/config/consts.js';
 import SessionController from './session-controller.js';
 import Logger from '../../../shared/src/components/sys/logger.js';
 

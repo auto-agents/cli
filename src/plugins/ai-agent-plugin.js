@@ -13,6 +13,7 @@ import DialogContext from "../../../shared/src/data/dialog-context.js";
 import chalk from "chalk"
 import Skills from "../components/ai/skills.js";
 import Vars from "../../../shared/src/data/vars.js";
+import { DialogContext_Tool, FROM_CLI } from "../../../shared/src/config/consts.js";
 
 /**
  * AI AGENT Plugin
@@ -316,18 +317,23 @@ export default class AIAgentPlugin {
 
 			const actionHandler = this.#getResponseProcessorActionHandler(action)
 
+			const dc = dialogContext.clone(DialogContext_Tool, 1, FROM_CLI)
+
 			const r2 = await actionHandler.run(
 				r.actions,
 				r,
 				capi,
 				capi.history,
-				dialogContext,
+				//dialogContext,
+				dc,
 				options)              // -------> THIS MAY ENGAGE A LOOP REGARDING DIALOG CONTROLLER
 
 			// agent text result: content
 			if (this.config.enableDebugResponseToolsUsage) console.log(content)
 
-			e.emit(AgentResponseEvent, agentResponseEvent(dialogContext, r2))
+			e.emit(AgentResponseEvent, agentResponseEvent(/*dialogContext*/dc, r2))
+
+			r2.newDialogContext = dc
 
 			return r2
 		}

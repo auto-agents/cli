@@ -19,10 +19,10 @@ import {
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import Dialoger from "../components/dialog/dialoger.js"
 import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
-import DialogContext, { FROM_CLI, FROM_USER, TO_CLI } from "../../../shared/src/data/dialog-context.js"
+import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 import { DialogerTasksTypes } from "../components/dialog/dialoger-tasks-types.js"
-import { DialogContext_Assistant, DialogContext_Tool, DialogContext_User } from "../../../shared/src/config/consts.js"
+import { DialogContext_Assistant, DialogContext_Tool, DialogContext_Tool_Loop, DialogContext_User, FROM_CLI, FROM_USER } from "../../../shared/src/config/consts.js"
 import Logger from "../../../shared/src/components/sys/logger.js"
 
 /**
@@ -212,6 +212,10 @@ export default class DialogController {
 
 					if (dialogContext.agent.plugin.hasToolsCalls(lastResponse)) {
 
+						// a new dialog context may has been constructed
+						if (lastCompletionTask.result?.newDialogContext)
+							dialogContext = lastCompletionTask.result?.newDialogContext
+
 						// a task must be performed at the end
 						// A NEW SEQUENCE QUERY/RESPONSE MUST BE ENGAGED
 
@@ -222,13 +226,8 @@ export default class DialogController {
 								options: options
 							}))
 
-						dc = dc ? dc.clone(DialogContext_Tool, true)
-							: dialogContext.clone(DialogContext_Tool, true,
-								dialogContext.to,
-								dialogContext.from,
-								dialogContext.agent,
-								TO_CLI
-							)
+						dc = dc ? dc.clone(DialogContext_Tool_Loop, false, FROM_CLI)
+							: dialogContext.clone(DialogContext_Tool_Loop, true, FROM_CLI)
 						dc.reasoningContent = []
 
 						// special user dialog that propagate tools without query

@@ -2,7 +2,7 @@ import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { AgentGetFocusViewEvent, CommandNotFoundEvent, dialogEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
 import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, toJson } from '../../../shared/src/utils/utils.js'
-import DialogContext, { FROM_CLI } from '../../../shared/src/data/dialog-context.js'
+import DialogContext from '../../../shared/src/data/dialog-context.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { openSelectorProps } from '../components/ink-react/list-selector.js'
@@ -13,7 +13,7 @@ import path from 'path'
 import fs from 'fs'
 import { renderComponent } from '../utils/ink-react-utils.js'
 import OutputContext from '../../../shared/src/data/output-context.js'
-import { DialogContext_Switch } from '../../../shared/src/config/consts.js'
+import { DialogContext_Switch, FROM_CLI } from '../../../shared/src/config/consts.js'
 import Vars from '../../../shared/src/data/vars.js'
 
 export default class AgentCommand extends Command {
