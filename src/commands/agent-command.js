@@ -1,7 +1,7 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { AgentGetFocusViewEvent, CommandNotFoundEvent, dialogEvent, errorEvent, ListSelectorOpenCommandEvent, RunCommandEvent } from '../../../shared/src/data/events.js'
-import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, toJson } from '../../../shared/src/utils/utils.js'
+import { dumpLoadedAgent, getLoadedAgent, getLoadedAgentDump, getSession, toJson } from '../../../shared/src/utils/utils.js'
 import DialogContext from '../../../shared/src/data/dialog-context.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
@@ -46,18 +46,23 @@ export default class AgentCommand extends Command {
 
 		const opSwitch = () => {
 			this.ctx.cli.dialogCurrentTargetAgent = agentId
+
+			const dc = new DialogContext(
+				new OutputContext(this.ctx, o),
+				this.ctx.components.dialog.dialoger,
+				agent,
+				FROM_CLI,
+				null,
+				null,
+				DialogContext_Switch
+			)
+			getSession(this.ctx)
+				.addChildDialogContext(dc)
+
 			e.emit(AgentGetFocusViewEvent,
 				dialogEvent(
 					{
-						dialogContext: new DialogContext(
-							new OutputContext(this.ctx, o),
-							this.ctx.components.dialog.dialoger,
-							agent,
-							FROM_CLI,
-							null,
-							null,
-							DialogContext_Switch
-						),
+						dialogContext: dc,
 						text: ''
 					}))
 			dumpLoadedAgent(this.ctx, agentId, o, 'set as user dialog target')

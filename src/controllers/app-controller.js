@@ -40,7 +40,15 @@ import RenderController from './render-controller.js';
 import OutputController from './output-controller.js';
 import Status from '../../../shared/src/utils/status.js'
 import KeyboardController from './keyboard-controller.js';
-import { getErrorVoice, getLoadedAgent, getTUIAgent, isAppInitialized, isSpeakErrorsEnabled, isSpeechAvailable } from '../../../shared/src/utils/utils.js';
+import {
+	getErrorVoice,
+	getLoadedAgent,
+	getSession,
+	getTUIAgent,
+	isAppInitialized,
+	isSpeakErrorsEnabled,
+	isSpeechAvailable
+} from '../../../shared/src/utils/utils.js';
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
 import MouseController from './mouse-controller.js';
@@ -158,18 +166,22 @@ export default class AppController {
 	async speakError(text) {
 		const agent = getTUIAgent(this.ctx)
 
+		const dc = new DialogContext(
+			this.output,
+			this.ctx.components.dialog.dialoger,
+			agent,
+			FROM_CLI,
+			null,
+			null,
+			DialogContext_ErrorSpeak
+		)
+		getSession(this.ctx)
+			.addChildDialogContext(cd)
+
 		this.ctx.components.event.emit(
 			SpeakCommandEvent,
 			speakEvent(
-				new DialogContext(
-					this.output,
-					this.ctx.components.dialog.dialoger,
-					agent,
-					FROM_CLI,
-					null,
-					null,
-					DialogContext_ErrorSpeak
-				),
+				dc,
 				this.From,
 				text,
 				getErrorVoice(this.ctx)
@@ -347,16 +359,21 @@ export default class AppController {
 				this.ctx.cli.dialogCurrentTargetAgent)
 
 			this.output.newLine()
+
+			const dc = new DialogContext(
+				new OutputContext(this.ctx, this.output),
+				this.dialog.dialoger,
+				TO_USER,
+				wagent,
+				null,	// no task yet
+				1,		// round
+				DialogContext_Assistant
+			)
+			getSession(this.ctx)
+				.addChildDialogContext(dc)
+
 			await this.dialog.addAssistantMessage(
-				new DialogContext(
-					new OutputContext(this.ctx, this.output),
-					this.dialog.dialoger,
-					TO_USER,
-					wagent,
-					null,	// no task yet
-					1,		// round
-					DialogContext_Assistant
-				),
+				dc,
 				this.ctx.texts.dialog.hello
 					.replace('%username%', chalk.bold(username))
 			)

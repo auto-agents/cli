@@ -18,7 +18,7 @@ import {
 } from "../../../shared/src/data/events.js"
 import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import Dialoger from "../components/dialog/dialoger.js"
-import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled } from "../../../shared/src/utils/utils.js"
+import { isSpeechAvailable, trace, traceWarning, traceError, isTUIAIAgentAvailable, getTUIAgent, getSystemVoice, getUserVoice, getAgentSpecification, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled, getSession } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
 import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 import { DialogerTasksTypes } from "../components/dialog/dialoger-tasks-types.js"
@@ -166,6 +166,7 @@ export default class DialogController {
 
 		if (!dialogContext) {
 			// build a default user to required agent dialog context
+			// this is the first session message
 			dialogContext = new DialogContext(
 				outputContext,
 				this.dialoger,
@@ -175,6 +176,8 @@ export default class DialogController {
 				1,		// round
 				DialogContext_User
 			)
+			getSession(this.ctx)
+				.addChildDialogContext(dialogContext)
 		}
 
 		if (options == null) options = {}
