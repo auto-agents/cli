@@ -176,7 +176,7 @@ export default class AppController {
 			DialogContext_ErrorSpeak
 		)
 		getSession(this.ctx)
-			.addChildDialogContext(cd)
+			.addChildDialogContext(dc)
 
 		this.ctx.components.event.emit(
 			SpeakCommandEvent,

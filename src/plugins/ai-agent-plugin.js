@@ -318,6 +318,7 @@ export default class AIAgentPlugin {
 			const actionHandler = this.#getResponseProcessorActionHandler(action)
 
 			const dc = dialogContext.clone(DialogContext_Tool, 1, FROM_CLI)
+			dialogContext.addChildDialogContext(dc)
 
 			const r2 = await actionHandler.run(
 				r.actions,

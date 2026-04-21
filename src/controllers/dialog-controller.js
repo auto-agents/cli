@@ -120,7 +120,9 @@ export default class DialogController {
 			dialogContext.agent.id)
 
 		await this.dialoger.addSystemMessage(
-			dialogContext.clone(DialogContext_Assistant),
+			getSession(this.ctx)
+				.addChildDialogContext(
+					dialogContext.clone(DialogContext_Assistant)),
 			text,
 			{
 				skipPrependNewLine: true,
@@ -229,8 +231,13 @@ export default class DialogController {
 								options: options
 							}))
 
-						dc = dc ? dc.clone(DialogContext_Tool_Loop, false, FROM_CLI)
-							: dialogContext.clone(DialogContext_Tool_Loop, true, FROM_CLI)
+						if (dc) {
+							dc = dc.clone(DialogContext_Tool_Loop, false, FROM_CLI)
+						}
+						else {
+							dc = dialogContext.clone(DialogContext_Tool_Loop, true, FROM_CLI)
+						}
+						dialogContext.addChildDialogContext(dc)
 						dc.reasoningContent = []
 
 						// special user dialog that propagate tools without query
