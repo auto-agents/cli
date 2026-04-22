@@ -19,7 +19,7 @@ export default class PrintCommand extends Command {
 		}
 	}
 
-	async run(args, com) {
+	async run(args, com, _, dialogContext) {
 		const e = this.ctx.components.event
 		const output = this.ctx.components.output
 
@@ -79,7 +79,8 @@ export default class PrintCommand extends Command {
 			}
 			// For other file types, use the cat command
 			else {
-				this.ctx.components.event.emit(RunCommandEvent, 'cat ' + arg)
+				this.ctx.components.event.emit(
+					RunCommandEvent, 'cat ' + arg, dialogContext)
 			}
 
 		} catch (error) {

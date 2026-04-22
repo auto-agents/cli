@@ -74,11 +74,15 @@ export default class OpenAIApiToolCallProcessor extends ResponseProcessor {
 				var error = false
 
 				try {
-					// run the tool
+
+					// ----- run the tool -----
+
 					if (props == null) props = {}
-					// add the agent as parameter
-					props.agent = this.config.agent
-					r = await tool.run(props)
+
+					// add the dialog context as parameter
+					r = await tool.run(props, dialogContext)
+
+					// -------------------------
 
 					if (r?.error) {
 						error = true

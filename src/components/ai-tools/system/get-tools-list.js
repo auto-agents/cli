@@ -13,8 +13,8 @@ export default class GetToolsList extends AITool {
 		}
 	}
 
-	async run(args) {
-		const tools = args.agent.plugin.tools
+	async run(args, dialogContext) {
+		const tools = dialogContext.agent.plugin.tools
 		if (!tools) return
 		const t = tools.getAvailableToolsSpecifications()
 		const lst = []

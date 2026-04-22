@@ -23,8 +23,8 @@ export default class ActivateSkill extends AITool {
 		}
 	}
 
-	async run(args) {
-		const skills = args.agent.plugin.skills
+	async run(args, dialogContext) {
+		const skills = dialogContext.agent.plugin.skills
 		const skill = skills.getSkill(args.skill_name)
 		if (skill == null) throw new Error('the skill `' + args.skill_name + '` doesn\'t exists')
 		const tpath = skill.location

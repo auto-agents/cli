@@ -13,7 +13,7 @@ import {
 } from "../../../shared/src/data/events"
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
-import { getSessionVars, resolvePath } from "../../../shared/src/utils/utils";
+import { getRootDialogContext, getSessionVars, resolvePath } from "../../../shared/src/utils/utils";
 import { EnvVar_LastCommand, EnvVar_LastCommandResult, EnvVar_LastError } from "../../../shared/src/config/consts";
 
 export default class CommandController {
@@ -27,7 +27,9 @@ export default class CommandController {
 			.on(RunCommandEvent, async args => this.runCommand(...args))
 	}
 
-	async runCommand(arg) {
+	async runCommand(arg, dialogContext) {
+
+		dialogContext ||= getRootDialogContext(this.ctx)
 
 		// extract com args if any
 		const e = this.ctx.components.event
@@ -126,10 +128,17 @@ export default class CommandController {
 		const vars = getSessionVars(this.ctx)
 		vars.set(EnvVar_LastCommand, arg)
 		try {
-			const res = await instance.run(parsedArgs, comd, arg)
+
+			// ---- run the command -----
+
+			const res = await instance.run(parsedArgs, comd, arg, dialogContext)
+
 			vars.set(EnvVar_LastCommandResult, res)
 			vars.set(EnvVar_LastError, null)
 			return res
+
+			// --------------------------
+
 		} catch (err) {
 			vars.set(EnvVar_LastCommandResult, null)
 			vars.set(EnvVar_LastError, err)
