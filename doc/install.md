@@ -1,4 +1,4 @@
-# install auto agents
+# install notes
 
 ## Linux
 

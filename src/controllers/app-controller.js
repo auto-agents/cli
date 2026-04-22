@@ -248,8 +248,8 @@ export default class AppController {
 
 	#getTitle() {
 		const r = {
-			title: cfonts.render('  Auto Agents  ', {
-				font: 'shade',
+			title: cfonts.render('Bulbing Bots', {
+				font: 'block',
 				/*align: 'center',*/
 				gradient: '#660000,red,yellow',
 				transitionGradient: true,

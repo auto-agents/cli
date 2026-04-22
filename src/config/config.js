@@ -58,7 +58,7 @@ export const config = () => {
 	const ctx = {
 		d: [],
 		app: {
-			name: 'Auto Agents',
+			name: 'Bulbing Bots',
 			title: null,
 			subtitle: null
 		},
