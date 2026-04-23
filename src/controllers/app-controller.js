@@ -249,11 +249,12 @@ export default class AppController {
 	#getTitle() {
 		const r = {
 			title: cfonts.render('Bulbing Bots', {
-				font: 'block',
+				font: 'chrome',
 				/*align: 'center',*/
 				gradient: '#660000,red,yellow',
+				colors: ['#FF0000', '#777777'],
 				transitionGradient: true,
-				space: false
+				space: true
 			}),
 			subtitle: cfonts.render('Terminal UI v1.0 Feb 2026', {
 				font: 'console',
@@ -264,7 +265,7 @@ export default class AppController {
 				space: false
 			})
 		}
-		r.title.string = r.title.string.trim()
+		//r.title.string = r.title.string.trim()
 		return r
 	}
 

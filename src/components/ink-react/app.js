@@ -271,13 +271,11 @@ export default function App({ ctx }) {
 
 					<Box flexGrow={1} flexDirection="column" alignItems="center">
 
-						<Box padding={0} margin={0} marginTop={1}>
-							<Text wrap="truncate-start">
-								{ctx.app.title.string}
-							</Text>
+						<Box padding={0} margin={0} marginTop={0}>
+							<Text wrap="truncate-start">{ctx.app.title.string}</Text>
 						</Box>
 
-						<Box padding={0} margin={0} marginBottom={1}>
+						<Box padding={0} margin={0} marginBottom={2}>
 							<Text wrap="truncate">
 								{ctx.app.subtitle.string}
 							</Text>
