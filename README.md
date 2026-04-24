@@ -1,25 +1,23 @@
 <table>
 <tr>
 <td>
-<h1>Auto Agents</h1>
+<h1>Bulbing Bots</h1>
 
-*&gt; software agents & agents workflows orchestrator.*
-
-***Made by AI for AI. Includes AI Agent***
+LLM&nbsp;Agents&nbsp;Framework&nbsp;and&nbsp;tool
 
 ---
 
-**This repository contains the CLI tool**
+**CLI & TUI tool**
 </td>
 <td>
-<img src="assets/agent-5.jfif" alt="Auto Agents" width="800/px">
+<img src="assets/agent-5.jfif" alt="Bulbing Bots" width="800/px">
 </td>
 </tr>
 </table>
 
 ---
 
-The **CLI tool** makes it possible to interact with the `Auto Agents` functionnalities
+The **CLI tool** makes it possible to interact with the `Bulbing Bots` functionnalities
 
 - provides a rich user UX CLI powered by:
   - **[Node.Js](https://nodejs.org/)** cross-platform JavaScript runtime environment
@@ -39,9 +37,9 @@ The **CLI tool** makes it possible to interact with the `Auto Agents` functionna
   - **[console-table-printer](https://console-table.netlify.app/docs)** Print colorful Tables on Console, directly from JSON string
   - **[fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser#readme)** Validate XML, Parse XML to JS Object, or Build XML from JS Object without C/C++ based libraries and no callback.
 
-*notice: this tool has been initially hand coded, than evolved using AI*5
 
 - AI contexts and prompts are specified in:
+
   - [doc/command-implementation.md](doc/command-implementation.md)
   - [tasks/dev-cli.md](tasks/dev-cli.md)
   - [tasks/dev-various.md](tasks/dev-various.md)

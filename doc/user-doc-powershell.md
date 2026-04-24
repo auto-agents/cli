@@ -1,4 +1,4 @@
-# Auto Agents CLI - User Doc - PowerShell
+# Bulbing Bots CLI - User Doc - PowerShell
 
 suggests install for the shell
 

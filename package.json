@@ -85,7 +85,7 @@
 			"@babel/preset-react"
 		]
 	},
-	"description": "<table> <tr> <td> <h1>Auto Agents</h1>",
+	"description": "<table> <tr> <td> <h1>Bulbing Bots</h1>",
 	"main": "index.js",
 	"directories": {
 		"doc": "doc"
