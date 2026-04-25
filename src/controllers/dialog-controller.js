@@ -238,7 +238,7 @@ export default class DialogController {
 							dc = dialogContext.clone(DialogContext_Tool_Loop, true, FROM_CLI)
 						}
 						dialogContext.addChildDialogContext(dc)
-						dc.reasoningContent = []
+						dc.reasoningContent = ''
 
 						// special user dialog that propagate tools without query
 
@@ -296,18 +296,22 @@ export default class DialogController {
 
 	async #agentPartialResponseHandler(agentPartialResponseEventData) {
 		const d = agentPartialResponseEventData
+		d.options.firstChunk = d.event.chunkId == 0
+		d.options.isComplete = d.event.isComplete
 		this.echoSystem(
 			d.dialogContext,
-			d.content,
+			d.partialContent,	// not the cumul
 			d.options
 		)
 	}
 
 	async #agentPartialReasoningResponseEventHandler(agentPartialResponseEventData) {
 		const d = agentPartialResponseEventData
+		d.options.firstChunk = d.event.chunkId == 0
+		d.options.isComplete = d.event.isComplete
 		this.echoReasoningSystem(
 			d.dialogContext,
-			d.reasoningContent,
+			d.partialReasoningContent,	// not the cumul
 			d.options
 		)
 	}
@@ -321,7 +325,9 @@ export default class DialogController {
 			name = null,
 			voice = null,
 			color = null,
-			partial = false
+			partial = false,
+			firstChunk = false,
+			isComplete = false
 		}) {
 		const o = this.output
 
@@ -340,22 +346,20 @@ export default class DialogController {
 				}))
 
 		// render response
+		// reasoning content
 
-		if (dialogContext.reasoningContent.length == 0)
-			dialogContext.reasoningContent.push(text)
-		else
-			dialogContext.reasoningContent[dialogContext.reasoningContent.length - 1] = text
-
-		text = dialogContext.reasoningContent.join('\n\n')
+		dialogContext.reasoningContent += text
 
 		const r =
 			dialogContext.systemOutputContext
 			= this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
 				(name, str) => {
-					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-					return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ')
-						+ chalk.hex(this.ctx.theme.dialog.agentReasoningContentColor)(str)
-				}, partial
+					if (!partial || firstChunk) {
+						const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+						return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ')
+							+ scol(str)
+					} else return scol(str)
+				}, partial, firstChunk, isComplete
 			)
 		dialogContext.systemOutputContext = r
 
@@ -374,7 +378,9 @@ export default class DialogController {
 			name = null,
 			voice = null,
 			color = null,
-			partial = false
+			partial = false,
+			firstChunk = false,
+			isComplete = false
 		}) {
 		const o = this.output
 
@@ -393,20 +399,21 @@ export default class DialogController {
 				}))
 
 		// render response
+		// assistant text
 
-		var previousText = dialogContext.reasoningContent?.length > 0 ?
-			(chalk.hex(this.ctx.theme.dialog.agentReasoningContentColor)
-				(this.responseTextFormater.getRendered(
-					dialogContext.reasoningContent.join('\n\n').trim(), false)) + '\n')
-			: ''
+		var previousText = ''
 
 		const r =
 			dialogContext.systemOutputContext
 			= this.#renderMarkdownDialog(o, dialogContext, name, text, scol,
-				(name, str) => {
-					const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
-					return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ') + previousText + str
-				}, partial
+				(name, str, partial, firstChunk) => {
+					if (!partial || firstChunk) {
+						const n = name != null ? (' ' + chalk.hex(this.ctx.theme.dialog.assistantNameColor)('(' + name + ')')) : ''
+						return (this.ctx.cli.dialog.systemDialogPrefix) + n + (' ') + previousText + scol(str)
+					}
+					else
+						return scol(str)
+				}, partial, firstChunk, isComplete
 			)
 		dialogContext.systemOutputContext = r
 
@@ -437,26 +444,81 @@ export default class DialogController {
 		pos.y0 = pos.y1 + 1
 		pos.y1 = pos.y0
 		dc.systemOutputContext = pos
-		dc.reasoningContent = []
+		dc.reasoningContent = ''
 	}
 
-	#renderMarkdownDialog(o, dialogContext, name, text, scol, setPrompt, partial = false) {
+	#renderMarkdownDialog(o, dialogContext, name, text, scol, setPrompt,
+		partial = false,
+		firstChunk = false,
+		isComplete = false) {
 
-		const outp = this.responseTextFormater.getRendered(text, partial)
+		var outp = partial ?
+			this.responseTextFormater.getCleaned(text)
+			: this.responseTextFormater.getRendered(text)
 		// TODO: be a in the text printer sanitizer (responseTextFormater)
-		var str = outp.trim().replaceAll('\t', '    ')
+		var str = (!partial ? outp.trim() : outp).replaceAll('\t', '    ')
+		var pos = null
+
+		if (partial && !firstChunk) {
+			dialogContext.addPartialMessageCompletion(outp)
+			var smc = dialogContext.systemMessageCompletion
+			const i = smc.lastIndexOf('\n')
+			if (i > 0 || isComplete) {
+				var preText = isComplete ? smc : smc.substring(0, i + 1)
+				str = isComplete ? '' : smc.substring(i + 1)
+				dialogContext.setPartialMessageCompletion(str)
+
+				var endWithNCnt = 0
+				var j = preText.length - 1
+				while (preText[j] == '\n') {
+					j--
+					endWithNCnt++
+				}
+				preText = this.responseTextFormater.getRendered(preText)
+				j = preText.length - 1
+				var endWithNCnt2 = 0
+				while (preText[j] == '\n') {
+					j--
+					endWithNCnt2++
+				}
+				const missingN = endWithNCnt - endWithNCnt2
+				if (missingN > 0)
+					preText += '\n'.repeat(missingN)
+				if (missingN < 0)
+					preText = preText.substring(0, preText.length + missingN)
+				preText = scol(preText)
+
+				pos = o.replaceLines(
+					dialogContext.systemOutputContext.y0,
+					dialogContext.systemOutputContext.y1,
+					preText
+				)
+				pos.y0 = pos.y1	// next append y1
+
+				dialogContext.systemOutputContext = pos
+			}
+		}
 
 		// add role symbol
 		if (!name) name = dialogContext.agent?.chatName
-		str = setPrompt(name, str)
+		str = setPrompt(name, str, partial, firstChunk)
 
-		var pos = null
-		if (partial)
-			pos = o.replaceLines(
-				dialogContext.systemOutputContext.y0,
-				dialogContext.systemOutputContext.y1,
-				str
-			)
+
+		if (partial) {
+			if (firstChunk) {
+				pos = o.replaceLines(
+					dialogContext.systemOutputContext.y0,
+					dialogContext.systemOutputContext.y1,
+					str
+				)
+				dialogContext.addPartialMessageCompletion(str)
+			}
+			else
+				pos = o.appendToLine(
+					dialogContext.systemOutputContext.y1,
+					str
+				)
+		}
 		else
 			pos = o.appendLine(scol(str))
 		return pos
