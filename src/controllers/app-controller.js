@@ -167,6 +167,7 @@ export default class AppController {
 		const agent = getTUIAgent(this.ctx)
 
 		const dc = new DialogContext(
+			this.ctx,
 			this.output,
 			this.ctx.components.dialog.dialoger,
 			agent,
@@ -362,6 +363,7 @@ export default class AppController {
 			this.output.newLine()
 
 			const dc = new DialogContext(
+				this.ctx,
 				new OutputContext(this.ctx, this.output),
 				this.dialog.dialoger,
 				TO_USER,

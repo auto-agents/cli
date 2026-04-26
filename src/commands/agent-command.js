@@ -48,6 +48,7 @@ export default class AgentCommand extends Command {
 			this.ctx.cli.dialogCurrentTargetAgent = agentId
 
 			const dc = new DialogContext(
+				this.ctx,
 				new OutputContext(this.ctx, o),
 				this.ctx.components.dialog.dialoger,
 				agent,

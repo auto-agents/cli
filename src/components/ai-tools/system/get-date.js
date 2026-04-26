@@ -81,7 +81,7 @@ export default class GetDate extends AITool {
 					unit: 'day of the month'
 				},
 				month: {
-					value: adjustedDate.getMonth(),
+					value: adjustedDate.getMonth() + 1,
 					unit: 'month'
 				},
 				year: {
@@ -90,7 +90,7 @@ export default class GetDate extends AITool {
 				},
 				timezone: {
 					value: timezone,
-					unit: 'timzone'
+					unit: 'timezone'
 				}
 			}
 			return this.jsonResult(obj)

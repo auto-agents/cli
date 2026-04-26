@@ -13,6 +13,7 @@ import {
 	ToolRunCompletedDialogEvent,
 	ToolRunErrorDialogEvent,
 	ToolUnknownDialogEvent,
+	CommandOutputEvent,
 	dialogEvent,
 	errorEvent
 } from "../../../shared/src/data/events.js"
@@ -104,6 +105,10 @@ export default class DialogController {
 			.on(AgentPartialReasoningResponseEvent,
 				async args => { await this.#agentPartialReasoningResponseEventHandler(args[0]) })
 
+			.on(CommandOutputEvent,
+				async args => { await this.#commandOutputEventHandler(args[0]) }
+			)
+
 		// -----------------------------------------------------------------
 
 		this.dialoger.run()
@@ -170,6 +175,7 @@ export default class DialogController {
 			// build a default user to required agent dialog context
 			// this is the first session message
 			dialogContext = new DialogContext(
+				this.ctx,
 				outputContext,
 				this.dialoger,
 				agent,
@@ -316,6 +322,25 @@ export default class DialogController {
 		)
 	}
 
+	async #commandOutputEventHandler(dialogEvent) {
+		const dc = dialogEvent.dialogContext
+		const text = dialogEvent.message
+		var pos = null
+		if (!dc.systemOutputContext) {
+			// add at end
+			pos = this.output.appendLine(text)
+		} else {
+			// append
+			const y = dc.systemOutputContext.y1
+			pos = this.output.insertLineAt(y + 1, text)
+		}
+		pos.y0 = pos.y1 + 1
+		pos.y1 = pos.y0
+		// move system output (if any) after
+		if (dc.systemOutputContext)
+			dc.systemOutputContext = pos
+	}
+
 	async echoReasoningSystem(
 		dialogContext,
 		text,
@@ -440,7 +465,6 @@ export default class DialogController {
 			const y = dc.systemOutputContext.y1
 			pos = this.output.insertLineAt(y + 1, text /*+ '\n'*/)
 		}
-		const k = pos.y1 - pos.y0
 		pos.y0 = pos.y1 + 1
 		pos.y1 = pos.y0
 		dc.systemOutputContext = pos
