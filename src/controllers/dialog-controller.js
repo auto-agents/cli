@@ -462,8 +462,15 @@ export default class DialogController {
 		if (partial && !firstChunk) {
 			dialogContext.addPartialMessageCompletion(outp)
 			var smc = dialogContext.systemMessageCompletion
-			const i = smc.lastIndexOf('\n')
-			if (i > 0 || isComplete) {
+
+			var i = smc.lastIndexOf('\n')
+			const prv = (i - 1) >= 0 ? smc[i - 1] : null
+			const nxt = (i + 1) < smc.length ? smc[i + 1] : null
+			var validSep = prv != '|'		// array case
+			var i3 = smc.lastIndexOf('')
+
+			if ((i > 0 && validSep)
+				|| isComplete) {
 				var preText = isComplete ? smc : smc.substring(0, i + 1)
 				str = isComplete ? '' : smc.substring(i + 1)
 				dialogContext.setPartialMessageCompletion(str)
@@ -489,12 +496,12 @@ export default class DialogController {
 				preText = scol(preText)
 
 				pos = o.replaceLines(
-					dialogContext.systemOutputContext.y0,
+					dialogContext.systemOutputContextStart.y0,
 					dialogContext.systemOutputContext.y1,
 					preText
 				)
 				pos.y0 = pos.y1	// next append y1
-
+				dialogContext.systemOutputContextStart.y0 = pos.y1
 				dialogContext.systemOutputContext = pos
 			}
 		}
@@ -512,6 +519,7 @@ export default class DialogController {
 					str
 				)
 				dialogContext.addPartialMessageCompletion(str)
+				dialogContext.systemOutputContextStart = { ...pos }
 			}
 			else
 				pos = o.appendToLine(
