@@ -69,6 +69,38 @@ export default class AgentsController {
 		return agent.TTSPluginName + '_' + agent.id
 	}
 
+	async loadAgentAIPlugin(agent, outputContext, initPlugin = true) {
+		const initSrv = this.ctx.components.init
+		const pluginCtrl = initSrv.pluginController
+		const pluginStoreName = this.getPluginStoreName(agent)
+		agent.plugin = await pluginCtrl.load(
+			agent.pluginName,
+			pluginStoreName,
+			outputContext,	// no output context
+			false,
+			agent,
+			initPlugin
+		)
+		agent.plugin.agentId = agent.id
+	}
+
+	async loadAgentTTSPlugin(agent, outputContext, initPlugin = true) {
+		if (!agent.TTS.enabled || !agent.TTSPluginName) return
+
+		const initSrv = this.ctx.components.init
+		const pluginCtrl = initSrv.pluginController
+		const TTSPluginStoreName = this.getTTSPluginStoreName(agent)
+
+		agent.TTSPlugin = await pluginCtrl.load(
+			agent.TTSPluginName,
+			TTSPluginStoreName,
+			outputContext,
+			false,
+			agent,
+			initPlugin
+		)
+	}
+
 	/**
 	 * load an ai agent plugin and it's dependencies
 	 * @param {AIAgent} agent
@@ -83,18 +115,10 @@ export default class AgentsController {
 				throw new Error(`an agent with the same id: '${agent.id}' is already loaded`)
 
 			const initSrv = this.ctx.components.init
-			const pluginCtrl = initSrv.pluginController
 			const pluginStoreName = this.getPluginStoreName(agent)
 
 			// load agent AI plugin
-			agent.plugin = await pluginCtrl.load(
-				agent.pluginName,
-				pluginStoreName,
-				outputContext,
-				false,
-				agent
-			)
-			agent.plugin.agentId = agent.id
+			await this.loadAgentAIPlugin(agent, outputContext)
 			this.agents[agent.id] = agent
 
 			this.viewAgentId = agent.id
@@ -108,15 +132,7 @@ export default class AgentsController {
 
 			// load agent TTS plugin if any enabled
 			if (agent.TTS.enabled && agent.TTSPluginName) {
-				const TTSPluginStoreName = this.getTTSPluginStoreName(agent)
-
-				agent.TTSPlugin = await pluginCtrl.load(
-					agent.TTSPluginName,
-					TTSPluginStoreName,
-					outputContext,
-					false,
-					agent
-				)
+				await this.loadAgentTTSPlugin(agent, outputContext)
 			}
 			return true
 		}
@@ -140,7 +156,7 @@ export default class AgentsController {
 	 * get available (resp. unloaded) agents
 	 *@returns object of key,AIAgent partially initialized
 	 */
-	getAvailableAgents() {
+	async getAvailableAgents() {
 		const lst = this.ctx.agents.list
 		const agents = {}
 		for (var i = 0; i < lst.length; i++) {
@@ -149,6 +165,14 @@ export default class AgentsController {
 				const agent = new AIAgent(
 					this.ctx,
 					agentSpec)
+				await this.loadAgentAIPlugin(
+					agent,
+					this.ctx.outputContext,
+					false)
+				await this.loadAgentTTSPlugin(
+					agent,
+					this.ctx.outputContext,
+					false)
 				agents[agent.id] = agent
 			}
 		}

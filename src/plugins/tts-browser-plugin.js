@@ -25,6 +25,9 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 		this.mutex = new Mutex()
 		this.name = this.config.agent.TTSApiId
 		this.waitStack = new FifoStack(`${this.name} wait stack`, ctx, [], false)
+		if (!this.config.agent.speak.config)
+			this.config.agent.speak.config = {}
+		this.config.agent.speak.config.api = this.config.browser
 	}
 
 	async init() {
@@ -45,10 +48,6 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 			catch (err) {
 				throw err
 			}
-
-			if (!this.config.agent.speak.config)
-				this.config.agent.speak.config = {}
-			this.config.agent.speak.config.api = this.config.browser
 
 			// register a new server
 			this.server = new Server(

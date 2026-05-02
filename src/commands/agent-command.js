@@ -241,19 +241,16 @@ export default class AgentCommand extends Command {
 				o.newLine()
 				const lst = {
 					...this.ctx.components.agents.getAgents(),
-					...this.ctx.components.agents.getAvailableAgents()
+					...await this.ctx.components.agents.getAvailableAgents()
 				}
 				const at = new Table({
 					columns: [
 						{ name: 'id', alignment: 'left' },
 						{ name: 'profile', alignment: 'left' },
 						{ name: 'agent / api', alignment: 'left' },
-						//{ name: 'api', alignment: 'left' },
 						{ name: 'provider / server', alignment: 'left' },
-						//{ name: 'server', alignment: 'left' },
 						{ name: 'model', alignment: 'left' },
 						{ name: 'TTS plugin / api', alignment: 'left' },
-						//{ name: 'TTS api', alignment: 'left' },
 						{ name: 'loaded', alignment: 'left' }
 					]
 				})
@@ -265,9 +262,10 @@ export default class AgentCommand extends Command {
 						profile: this.ctx.agents.profiles[a?.profile]?.profileName,
 						['agent / api']: a.pluginName,
 						//api: a.plugin?.specification.apiName,
-						['provider / server']: a?.plugin?.config?.provider,
+						['provider / server']: a?.provider,
 						//server: ,
-						model: a?.plugin?.api?.config?.model,
+						model: a?.plugin?.config?.model,
+						//model: a?.plugin?.api?.config?.model,
 						['TTS plugin / api']: a?.TTSPluginName,
 						//['TTS api']: a?.speak?.config?.api,
 						loaded: a.plugin ? '✔' : '✖'

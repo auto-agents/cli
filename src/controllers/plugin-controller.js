@@ -37,7 +37,9 @@ export default class PluginController {
 		pluginStoreName = null,
 		outputContext,
 		userAction = false,
-		agent) {
+		agent,
+		initPlugin = true
+	) {
 
 		pluginStoreName ||= pluginName
 		const oc = outputContext || this.outputContext
@@ -94,9 +96,11 @@ export default class PluginController {
 			const m = new mod.default(this.ctx, pluginConfig, oc, { ...plugin }, overloadConfig)
 			m.pluginName = pluginStoreName
 
-			await m.init()
-			this.plugins[pluginStoreName] = m
-			this.ctx.components.plugin[pluginStoreName] = m
+			if (initPlugin) {
+				await m.init()
+				this.plugins[pluginStoreName] = m
+				this.ctx.components.plugin[pluginStoreName] = m
+			}
 
 			// keep a relation ref. between the plugin and the agent
 			if (agent) m.agentId = agent.id
@@ -106,10 +110,11 @@ export default class PluginController {
 			// make plugin not internal
 			m.specification.internal = false
 
-			this.ctx.components.event.emit(PluginLoadedEvent, {
-				pluginName: pluginName,
-				plugin: m
-			})
+			if (initPlugin)
+				this.ctx.components.event.emit(PluginLoadedEvent, {
+					pluginName: pluginName,
+					plugin: m
+				})
 			return m
 		}
 		catch (err) {
