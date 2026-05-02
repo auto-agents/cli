@@ -261,13 +261,9 @@ export default class AgentCommand extends Command {
 						id: id,
 						profile: this.ctx.agents.profiles[a?.profile]?.profileName,
 						['agent / api']: a.pluginName,
-						//api: a.plugin?.specification.apiName,
 						['provider / server']: a?.provider,
-						//server: ,
 						model: a?.plugin?.config?.model,
-						//model: a?.plugin?.api?.config?.model,
 						['TTS plugin / api']: a?.TTSPluginName,
-						//['TTS api']: a?.speak?.config?.api,
 						loaded: a.plugin ? '✔' : '✖'
 					})
 					at.addRow({
@@ -275,7 +271,6 @@ export default class AgentCommand extends Command {
 						['agent / api']: a.plugin?.specification.apiName,
 						['provider / server']: a?.plugin?.config?.baseURL
 							.replace('{port}', a?.plugin?.config?.port),
-						//server: '',
 						model: '',
 						['TTS plugin / api']: a?.speak?.config?.api,
 						loaded: ''
