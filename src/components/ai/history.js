@@ -75,6 +75,14 @@ export default class History {
 		return this
 	}
 
+	getMessagesForCompletion() {
+		return this.messages.map(m => {
+			const o = new Object({ ...m })
+			delete o.reasoning_content
+			return o
+		})
+	}
+
 	add(dialogContext, message) {
 		this.messages.push(message)
 		this.#linkMessage(dialogContext, message)

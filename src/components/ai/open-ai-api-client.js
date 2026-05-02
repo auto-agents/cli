@@ -57,7 +57,7 @@ export default class OpenAIApiClient extends AIApiClient {
 		// ------------ setup payload -------------------------------------------------
 		var props = {
 			model: this.config.model,
-			messages: this.history.messages,
+			messages: this.history.getMessagesForCompletion(),
 			verbosity: 'high',  // no effect in openai api (consign for provider ollama)
 			tools: tools.getAvailableToolsSpecifications(),
 			temperature: this.config.temperature,
