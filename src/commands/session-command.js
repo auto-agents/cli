@@ -54,7 +54,11 @@ export default class SessionCommand extends Command {
 				o.newLine();
 				o.appendLine(chalk.hex(this.ctx.theme.commands.titleColor)('Available sessions:'));
 				o.newLine();
-				(await listSessionIds()).forEach(x => o.appendLine(x))
+				(await listSessionIds()).forEach(x => {
+					if (x == this.ctx.session.id)
+						x = chalk.hex(this.ctx.theme.table.highlightRow)(x)
+					o.appendLine(x)
+				})
 				break
 
 			case 'switch':

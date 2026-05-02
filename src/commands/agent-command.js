@@ -165,7 +165,7 @@ export default class AgentCommand extends Command {
 				break
 
 			case 'add':
-				const availableAgents = agentsController.getAvailableAgents()
+				const availableAgents = await agentsController.getAvailableAgents()
 				const agentSpec = availableAgents[targetAgentId]
 
 				if (!targetAgentId) {
