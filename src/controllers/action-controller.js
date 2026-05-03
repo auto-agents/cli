@@ -29,4 +29,8 @@ export default class ActionController {
 		}
 		if (this.autoStopUI) this.uiFunc.stop()
 	}
+
+	stopUI() {
+		this.uiFunc.stop()
+	}
 }

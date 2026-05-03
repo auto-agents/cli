@@ -108,7 +108,7 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 				process.once('uncaughtException',
 					err => {
 						console.error('browser TTS plugin server failed to start')
-						runSrvAction.uiFunc.stop()
+						runSrvAction.stopUI()
 					})
 
 				await runSrvAction.run()
