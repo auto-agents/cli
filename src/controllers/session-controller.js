@@ -100,6 +100,28 @@ export default class SessionController {
 		return lst
 	}
 
+	static async listSessionAgents(ctx, sessionId) {
+		const lst = []
+		const pt = join(
+			process.cwd(),
+			ctx.paths.sessions,
+			sessionId
+		)
+		if (!existsSync(pt))
+			throw new Error('session id not found: ' + sessionId)
+
+		var entries = await readdir(
+			pt, { withFileTypes: true })
+
+		for (const entry of entries) {
+			if (entry.isDirectory()) {
+				// agent id
+				lst.push(entry.name)
+			}
+		}
+		return lst
+	}
+
 	// ------- agents ----------
 
 	async updateAgentsState() {

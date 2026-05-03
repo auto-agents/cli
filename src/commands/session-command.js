@@ -58,7 +58,11 @@ export default class SessionCommand extends Command {
 				const ids = await SessionController.listSessionIds(this.ctx)
 
 				for (var i = 0; i < ids.length; i++) {
-					sessions.push(await Session.loadFromFile(this.ctx, ids[i]))
+					const sessionById = await Session.loadFromFile(this.ctx, ids[i])
+					sessions.push(sessionById)
+					sessionById.sessionAgentsId =
+						await SessionController.listSessionAgents(
+							this.ctx, ids[i])
 				};
 
 				sessions.forEach(se => {
@@ -70,7 +74,9 @@ export default class SessionCommand extends Command {
 					al.addRow({
 						id: fx(se.id),
 						description: fx(se.description || ''),
-						agents: se.agents?.length,
+						agents: se.agents?.length
+							+ ' / '
+							+ (se.sessionAgentsId?.length || '?'),
 						documents: '',
 						contexts: '',
 						['time start/up']: ''
