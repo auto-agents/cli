@@ -3,7 +3,7 @@ import { existsSync } from "fs";
 import { join } from 'path';
 import ActionController from "../controllers/action-controller.js";
 import SpinnerService from "../services/spinner-service.js";
-import utils, { addServer, removeServer } from '../../../shared/src/utils/utils.js'
+import utils, { addServer, getServer, removeServer } from '../../../shared/src/utils/utils.js'
 import Server from '../../../shared/src/data/server.js';
 import SpeakerError from '../../../shared/src/data/speaker-error.js';
 import TTSPluginBase from '../../../plugins/src/TTS/tts-plugin-base.js';
@@ -68,6 +68,9 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 					try {
 						const errLaunch = await this.speech.launchServer()
 						ok &= errLaunch == null
+						const srv = getServer(this.ctx, this.server)
+						srv.speechServer = this.speech.server
+
 						await utils.wait(this.ctx.ui.initFastWait)
 
 					} catch (err) {
@@ -126,8 +129,15 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 			const margin = ' '.repeat(oc.margin + oc.marginBase)
 
 			const stopSrv = async () => {
-				if (removeServer(this.ctx, this.server) == 0)
-					await this.speech.stopServer()
+
+				await this.mutex.runExclusive(async () => {
+					const srv = getServer(this.ctx, this.server)
+					if (removeServer(this.ctx, this.server) == 0) {
+						this.speech.server = srv.speechServer
+						await this.speech.stopServer()
+					}
+				})
+
 				// TODO: component speech registration to be removed
 				this.ctx.components.plugin.speech = null
 			}
