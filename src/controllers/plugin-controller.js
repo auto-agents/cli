@@ -105,6 +105,7 @@ export default class PluginController {
 			// keep a relation ref. between the plugin and the agent
 			if (agent) m.agentId = agent.id
 
+			m.specification.isInitialized = initPlugin
 			m.specification.isLoaded = true
 			m.specification.enabled = true
 			// make plugin not internal

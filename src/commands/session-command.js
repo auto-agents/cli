@@ -4,11 +4,9 @@ import { CommandNotFoundEvent, errorEvent, SessionUnLoadedEvent } from '../../..
 import { getSession, sessionPath } from '../../../shared/src/utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
-import { join } from 'path'
-import { cp, readdir, rm } from 'fs/promises'
+import { cp, rm } from 'fs/promises'
 import { existsSync } from 'fs'
 import Session from '../../../shared/src/data/session.js'
-import SessionController from './../controllers/session-controller';
 
 export default class SessionCommand extends Command {
 
@@ -56,19 +54,18 @@ export default class SessionCommand extends Command {
 
 				const sessions = [];
 
-				const ids = await SessionController.listSessionIds(this.ctx)
+				const ids = await sessionCtrl.listSessionIds()
 
 				for (var i = 0; i < ids.length; i++) {
 					const sessionById = await Session.loadFromFile(this.ctx, ids[i])
 					sessions.push(sessionById)
 					sessionById.sessionAgentsId =
-						await SessionController.listSessionAgents(
-							this.ctx, ids[i])
+						await sessionCtrl.listSessionAgents(ids[i])
 				};
 
 				sessions.forEach(se => {
 
-					const fx = (se.id == this.ctx.session.id) ?
+					const fx = (se.id == getSession(this.ctx).id) ?
 						t => chalk.hex(this.ctx.theme.table.highlightRow)(t)
 						: t => t
 
@@ -89,11 +86,13 @@ export default class SessionCommand extends Command {
 				break
 
 			case 'switch':
+
 				if (this.ctx.session.id == sessionId) {
 					o.newLine()
 					o.appendLine('ignore switch to current session: ' + sessionId)
 				} else {
-					if (!(await SessionController.listSessionIds(this.ctx)).includes(sessionId)) {
+					if (!(await sessionCtrl.listSessionIds(this.ctx))
+						.includes(sessionId)) {
 						this.emitCommandError('session not found: ' + sessionId)
 					} else {
 						o.newLine()

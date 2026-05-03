@@ -100,12 +100,12 @@ export default class SessionController {
 		this.ctx.session.id = id
 	}
 
-	static async listSessionIds(ctx) {
+	async listSessionIds() {
 		const lst = []
 		const entries = await readdir(
 			join(
 				process.cwd(),
-				ctx.paths.sessions,
+				this.ctx.paths.sessions,
 			)
 			, { withFileTypes: true })
 		for (const entry of entries) {
@@ -116,11 +116,11 @@ export default class SessionController {
 		return lst
 	}
 
-	static async listSessionAgents(ctx, sessionId) {
+	async listSessionAgents(sessionId) {
 		const lst = []
 		const pt = join(
 			process.cwd(),
-			ctx.paths.sessions,
+			this.ctx.paths.sessions,
 			sessionId
 		)
 		if (!existsSync(pt))

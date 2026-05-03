@@ -1255,6 +1255,10 @@ export const config = () => {
 				unloadedColor: '#AA5500',
 				category: '#00AADD'
 			},
+			session: {
+				loadedColor: '#97f397',
+				unloadedColor: '#f0b274',
+			},
 			commands: {
 				titleColor: '#00FF00'
 			},

@@ -238,10 +238,19 @@ export default class AgentCommand extends Command {
 
 			case 'list':
 
+				// loaded agents
+				const agentsLst = this.ctx.components.agents.getAgents()
+				// available agents & not loaded
+				const availableAgentsLst = await this.ctx.components.agents.getAvailableAgents()
+				// in session idle
+				const sessionAgentsLst = await this.ctx.components.session.listSessionAgents(
+					getSession(this.ctx).id
+				)
+
 				o.newLine()
 				const lst = {
-					...this.ctx.components.agents.getAgents(),
-					...await this.ctx.components.agents.getAvailableAgents()
+					...agentsLst,
+					...availableAgentsLst
 				}
 				const at = new Table({
 					columns: [
@@ -257,22 +266,34 @@ export default class AgentCommand extends Command {
 
 				for (var id in lst) {
 					const a = lst[id]
+					const ld = agentsLst[id]
+					const idl = sessionAgentsLst.includes(id)
+
+					const initialized = a.plugin?.specification?.isInitialized
+					var f = x => x
+					if (idl) f = x => chalk.hex(this.ctx.theme.session.unloadedColor)(x)
+					if (ld) f = x => chalk.hex(this.ctx.theme.session.loadedColor)(x)
+
+					const col3 = 'agent / api'
+					const col4 = 'provider / server'
+					const col6 = 'TTS plugin / api'
+
 					at.addRow({
-						id: id,
-						profile: this.ctx.agents.profiles[a?.profile]?.profileName,
-						['agent / api']: a.pluginName,
-						['provider / server']: a?.provider,
-						model: a?.plugin?.config?.model,
-						['TTS plugin / api']: a?.TTSPluginName,
-						loaded: a.plugin ? '✔' : '✖'
+						id: f(id),
+						profile: f(this.ctx.agents.profiles[a?.profile]?.profileName),
+						[col3]: f(a.pluginName),
+						[col4]: f(a?.provider),
+						model: f(a?.plugin?.config?.model),
+						[col6]: f(a?.TTSPluginName),
+						loaded: initialized ? '✔' : '✖'
 					})
 					at.addRow({
 						id: '',
-						['agent / api']: a.plugin?.specification.apiName,
-						['provider / server']: a?.plugin?.config?.baseURL
+						[col3]: f(a.plugin?.specification.apiName),
+						[col4]: f(a?.plugin?.config?.baseURL)
 							.replace('{port}', a?.plugin?.config?.port),
 						model: '',
-						['TTS plugin / api']: a?.speak?.config?.api,
+						[col6]: f(a?.speak?.config?.api),
 						loaded: ''
 					})
 				}
