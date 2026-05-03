@@ -47,9 +47,9 @@ export default class SessionCommand extends Command {
 					columns: [
 						{ name: 'id', alignment: 'left' },
 						{ name: 'description', alignment: 'left' },
-						{ name: col3, alignment: 'left' },
-						{ name: 'documents', alignment: 'left' },
-						{ name: 'contexts', alignment: 'left' },
+						{ name: col3, alignment: 'center' },
+						{ name: 'documents', alignment: 'center' },
+						{ name: 'contexts', alignment: 'center' },
 						{ name: 'time start/up', alignment: 'left' }
 					]
 				});
