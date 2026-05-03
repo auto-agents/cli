@@ -1,7 +1,7 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
 import { CommandNotFoundEvent, errorEvent, SessionUnLoadedEvent } from '../../../shared/src/data/events.js'
-import { sessionPath } from '../../../shared/src/utils/utils.js'
+import { getSession, sessionPath } from '../../../shared/src/utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { join } from 'path'
@@ -103,6 +103,8 @@ export default class SessionCommand extends Command {
 							// load new session on previous session unloaded event
 							await sessionCtrl.load(sessionId)
 						})
+
+						await getSession(this.ctx)?.save(true)
 
 						await sessionCtrl.unload(this.ctx.session.id)
 					}
