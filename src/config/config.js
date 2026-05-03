@@ -723,7 +723,9 @@ export const config = () => {
 			},
 			onExiting: [],
 			// any plugin car import a tool by buting it's filepath in this array
-			importTools: []
+			importTools: [],
+			// general spin wait roundtrip delay
+			fastSpinWaitDelay: 150
 		},
 		agents: {
 

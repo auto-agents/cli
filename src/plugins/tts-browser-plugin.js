@@ -89,10 +89,17 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 							async () => {
 								await this.openBrowser()
 							},
-							this.spinner.newSpinner(margin2 + `- opening ${this.desc} Web SPA`, cliSpinners.sand)
+							this.spinner.newSpinner(margin2 + `- opening ${this.desc} Web SPA`, cliSpinners.sand),
+							async () => {
+
+							},
+							async () => {
+								ok = false
+							}
 						)
 						await runOpenBrowser.run()
 					},
+					async () => { },
 					async () => {
 						ok = false
 					}

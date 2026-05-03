@@ -66,10 +66,24 @@ export default class SessionController {
 	async unload() {
 		// unload all agents
 		await this.session.unloadAgents()
+
 		// keep this.ctx.session.id & this.session as a fallback (not null)
-		this.ctx.components.event.emit(
-			SessionUnLoadedEvent,
-			this.session
+		const f = () => {
+			this.ctx.components.event.emit(
+				SessionUnLoadedEvent,
+				this.session
+			)
+		}
+		var tmrUnload
+		const getTmrUnload = () => tmrUnload
+		tmrUnload = setInterval(
+			() => {
+				const n = this.ctx.components.agents.getAgentsCount()
+				if (n == 0) {
+					clearInterval(getTmrUnload())
+					f()
+				}
+			}, this.ctx.cli.fastSpinWaitDelay
 		)
 	}
 

@@ -146,11 +146,19 @@ export default class AgentsController {
 	}
 
 	/**
-	 * get loaded AgentsTab
+	 * get loaded Agents
 	 * @returns object of key,AIAgent fully initialized
 	 */
 	getAgents() {
 		return this.agents
+	}
+
+	/**
+	 * get loaded AgentsTab
+	 * @returns object of key,AIAgent fully initialized
+	 */
+	getAgentsCount() {
+		return Object.getOwnPropertyNames(this.agents).length
 	}
 
 	/**
