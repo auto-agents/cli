@@ -67,7 +67,7 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 				const runSrv = async () => {
 					try {
 
-						await this.speech.launchServer()
+						const launched = await this.speech.launchServer()
 						await utils.wait(this.ctx.ui.initFastWait)
 
 					} catch (err) {

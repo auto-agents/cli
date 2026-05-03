@@ -1002,7 +1002,7 @@ export const config = () => {
 					speak: {
 						enabled: true,
 						preferredVoices: {
-							edge: ['Microsoft SeraphinaMultilingual Online (Natural) - German (Germany)']
+							edge: ['Microsoft Seraphina Mehrsprachig Online (Natural) - German (Germany)']
 						},
 						plugin: null,
 						config: {
@@ -1012,14 +1012,14 @@ export const config = () => {
 					repeatUserQuery: {
 						enabled: false,
 						preferredVoices: {
-							edge: ['Microsoft WilliamMultilingual Online (Natural) - English (Australia)']
+							edge: ['Microsoft William Multilingual Online (Natural) - English (Australia)']
 						},
 						plugin: null
 					},
 					speakErrors: {
 						enabled: true,
 						preferredVoices: {
-							edge: ['Microsoft BrianMultilingual Online (Natural) - English (United States)']
+							edge: ['Microsoft Brian Multilingual Online (Natural) - English (United States)']
 						},
 						plugin: null
 					}
@@ -1029,7 +1029,7 @@ export const config = () => {
 					speak: {
 						enabled: true,
 						preferredVoices: {
-							edge: ['Microsoft AndrewMultilingual Online (Natural) - English (United States)']
+							edge: ['Microsoft Andrew Multilingual Online (Natural) - English (United States)']
 						}
 					}
 				},
@@ -1040,8 +1040,8 @@ export const config = () => {
 						preferredVoices: {
 							edge: [
 								'Microsoft Denise Online (Natural) - French (France)',
-								'Microsoft VivienneMultilingual Online (Natural) - French (France)',
-								'Microsoft ThalitaMultilingual Online (Natural) - Portuguese (Brazil)']
+								'Microsoft Vivienne Multilingual Online (Natural) - French (France)',
+								'Microsoft Thalita Multilingual Online (Natural) - Portuguese (Brazil)']
 						},
 						config: {
 							//preProcessors: ['line-end-italic-remover.js']
