@@ -42,11 +42,12 @@ export default class SessionCommand extends Command {
 				o.appendLine(chalk.hex(this.ctx.theme.commands.titleColor)('Available sessions:'));
 				o.newLine();
 
+				const col3 = 'agents run/idle'
 				const al = new Table({
 					columns: [
 						{ name: 'id', alignment: 'left' },
 						{ name: 'description', alignment: 'left' },
-						{ name: 'agents', alignment: 'left' },
+						{ name: col3, alignment: 'left' },
 						{ name: 'documents', alignment: 'left' },
 						{ name: 'contexts', alignment: 'left' },
 						{ name: 'time start/up', alignment: 'left' }
@@ -74,7 +75,7 @@ export default class SessionCommand extends Command {
 					al.addRow({
 						id: fx(se.id),
 						description: fx(se.description || ''),
-						agents: se.agents?.length
+						[col3]: se.agents?.length
 							+ ' / '
 							+ (se.sessionAgentsId?.length || '?'),
 						documents: '',
