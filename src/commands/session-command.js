@@ -8,6 +8,7 @@ import { join } from 'path'
 import { cp, readdir, rm } from 'fs/promises'
 import { existsSync } from 'fs'
 import Session from '../../../shared/src/data/session.js'
+import SessionController from './../controllers/session-controller';
 
 export default class SessionCommand extends Command {
 
@@ -33,22 +34,6 @@ export default class SessionCommand extends Command {
 		//this.emitCommandError('session not found: ' + sessionId)
 		const o = this.ctx.components.output
 
-		const listSessionIds = async () => {
-			const lst = []
-			const entries = await readdir(
-				join(
-					process.cwd(),
-					this.ctx.paths.sessions,
-				)
-				, { withFileTypes: true })
-			for (const entry of entries) {
-				if (entry.isDirectory()) {
-					lst.push(entry.name)
-				}
-			}
-			return lst
-		}
-
 		// Execute the dialog action based on the action value
 		switch (action) {
 
@@ -70,7 +55,7 @@ export default class SessionCommand extends Command {
 
 				const sessions = [];
 
-				const ids = await listSessionIds()
+				const ids = await SessionController.listSessionIds(this.ctx)
 
 				for (var i = 0; i < ids.length; i++) {
 					sessions.push(await Session.loadFromFile(this.ctx, ids[i]))
@@ -101,7 +86,7 @@ export default class SessionCommand extends Command {
 					o.newLine()
 					o.appendLine('ignore switch to current session: ' + sessionId)
 				} else {
-					if (!(await listSessionIds()).includes(sessionId)) {
+					if (!(await SessionController.listSessionIds(this.ctx)).includes(sessionId)) {
 						this.emitCommandError('session not found: ' + sessionId)
 					} else {
 						o.newLine()

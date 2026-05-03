@@ -2,7 +2,7 @@ import { sessionDataFile, sessionPath } from "../../../shared/src/utils/utils"
 import { existsSync, mkdir, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentGetFocusViewEvent, AgentRemovedEvent, DialogUserPromptBegin, RunCommandEvent, SessionUnLoadedEvent } from "../../../shared/src/data/events";
-import { appendFile } from "fs/promises";
+import { appendFile, readdir } from "fs/promises";
 import Session from "../../../shared/src/data/session";
 
 export default class SessionController {
@@ -44,6 +44,8 @@ export default class SessionController {
 			.on(AgentGetFocusViewEvent, () => this.updateAgentsState())
 	}
 
+	// ------ load/unload & create session ------
+
 	#loadConfig() {
 		const p = join(
 			process.cwd(),
@@ -80,6 +82,22 @@ export default class SessionController {
 		)
 		// update session id
 		this.ctx.session.id = id
+	}
+
+	static async listSessionIds(ctx) {
+		const lst = []
+		const entries = await readdir(
+			join(
+				process.cwd(),
+				ctx.paths.sessions,
+			)
+			, { withFileTypes: true })
+		for (const entry of entries) {
+			if (entry.isDirectory()) {
+				lst.push(entry.name)
+			}
+		}
+		return lst
 	}
 
 	// ------- agents ----------
