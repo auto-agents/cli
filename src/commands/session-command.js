@@ -29,7 +29,6 @@ export default class SessionCommand extends Command {
 		const ArgTo = 'to'
 		const toId = this.getValue(com, args, ArgTo)
 
-		//this.emitCommandError('session not found: ' + sessionId)
 		const o = this.ctx.components.output
 
 		// Execute the dialog action based on the action value
