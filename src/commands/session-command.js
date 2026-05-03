@@ -71,9 +71,9 @@ export default class SessionCommand extends Command {
 					al.addRow({
 						id: fx(se.id),
 						description: fx(se.description || ''),
-						[col3]: Math.max(se.agents?.length || 0, se.unloadedAgents?.length || 0)
+						[col3]: fx(Math.max(se.agents?.length || 0, se.unloadedAgents?.length || 0)
 							+ ' / '
-							+ (se.sessionAgentsId?.length || '?'),
+							+ (se.sessionAgentsId?.length || '?')),
 						documents: '',
 						contexts: '',
 						['time start/up']: ''
