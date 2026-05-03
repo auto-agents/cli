@@ -11,7 +11,7 @@ import {
 	AgentGetFocusSpeakEvent,
 	AgentGetFocusViewEvent
 } from '../../../../shared/src/data/events.js';
-import Image from "ink-picture";
+import Image, { TerminalInfoProvider } from "ink-picture";
 import path from 'path'
 import { TUIAgentId } from '../../../../shared/src/config/consts.js'
 import AgentsTabs from './agents-tabs.js';
@@ -357,13 +357,15 @@ const Agents = ({ ctx }) => {
 
 			{agentProps.agent != null && agentViewState.visible &&
 				<Box height={agentViewState.height}>
-					<Image
-						width={agentViewState.width}
-						height={agentViewState.height}
-						src={agentProps.img}
-						alt="agent avatar"
-						protocol="halfBlock"
-					/>
+					<TerminalInfoProvider>
+						<Image
+							width={agentViewState.width}
+							height={agentViewState.height}
+							src={agentProps.img}
+							alt="agent avatar"
+							protocol="halfBlock"
+						/>
+					</TerminalInfoProvider>
 				</Box>
 			}
 

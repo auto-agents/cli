@@ -51,6 +51,7 @@ if (ENABLE_MOUSE_SUPPORT)
 const ignoreTkErrors = 'TerminalInfoProvider'
 
 // --- Global process-level error handling ---
+
 process.on('uncaughtException', (err) => {
 	try {
 		Logger.logError(err.stack)

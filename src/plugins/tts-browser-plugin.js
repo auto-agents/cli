@@ -66,8 +66,8 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 
 				const runSrv = async () => {
 					try {
-
-						const launched = await this.speech.launchServer()
+						const errLaunch = await this.speech.launchServer()
+						ok &= errLaunch == null
 						await utils.wait(this.ctx.ui.initFastWait)
 
 					} catch (err) {
@@ -104,6 +104,13 @@ export default class TTSBrowserPlugin extends TTSPluginBase {
 						ok = false
 					}
 				)
+
+				process.once('uncaughtException',
+					err => {
+						console.error('browser TTS plugin server failed to start')
+						runSrvAction.uiFunc.stop()
+					})
+
 				await runSrvAction.run()
 			}
 			return ok
