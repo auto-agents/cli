@@ -20,8 +20,9 @@ export default class ExitCommand extends Command {
 			const func = exitFuncs[i]
 			await func()
 		};
-		o.appendLine('saving session')
 		const session = getSession(this.ctx)
+		o.appendLine('saving session: ' + session.id)
+
 		await session.save(true)
 		await session.saveCommandHistory()
 		o.appendLine('done ✔️')

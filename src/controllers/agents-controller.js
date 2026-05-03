@@ -38,6 +38,7 @@ export default class AgentsController {
 				dumpLoadedAgent(this.ctx, agentId, this.output, 'unloaded')
 
 				delete this.agents[agentId]
+
 				const agentsIds = Object.getOwnPropertyNames(this.agents)
 				this.viewAgentId = agentsIds.length > 0
 					? agentsIds[0] : null
@@ -154,7 +155,7 @@ export default class AgentsController {
 
 	/**
 	 * get available (resp. unloaded) agents
-	 *@returns object of key,AIAgent partially initialized
+	 * @returns object of key,AIAgent partially initialized
 	 */
 	async getAvailableAgents() {
 		const lst = this.ctx.agents.list

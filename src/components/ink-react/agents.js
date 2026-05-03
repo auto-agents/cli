@@ -379,10 +379,13 @@ const Agents = ({ ctx }) => {
 					{ /* dialog stats */}
 
 					<Box minHeight={1} height={1} backgroundColor={ctx.theme.agents.dialStats.backgroundColor} >
-						<Text color="white">prompt tokens: {dialStats.promptTokens} | total: {dialStats.totalPromptTokens}</Text>
+						<Text color="white">input tokens: {dialStats.promptTokens}</Text>
 					</Box>
 					<Box minHeight={1} height={1} backgroundColor={ctx.theme.agents.dialStats.backgroundColor} >
 						<Text color="white">predicted tokens: {dialStats.predictedTokens} | total: {dialStats.totalPredictedTokens}</Text>
+					</Box>
+					<Box minHeight={1} height={1} backgroundColor={ctx.theme.agents.dialStats.backgroundColor} >
+						<Text color="white">reasoning tokens: {dialStats.reasoningTokens} | total: {dialStats.totalReasoningTokens}</Text>
 					</Box>
 
 					{ /* agent log */}

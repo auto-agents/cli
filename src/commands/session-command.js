@@ -1,11 +1,13 @@
 import Command from '../../../shared/src/commands/command.js'
 import Status from '../../../shared/src/utils/status.js'
-import { CommandNotFoundEvent, errorEvent } from '../../../shared/src/data/events.js'
+import { CommandNotFoundEvent, errorEvent, SessionUnLoadedEvent } from '../../../shared/src/data/events.js'
 import { sessionPath } from '../../../shared/src/utils/utils.js'
 import chalk from 'chalk'
+import { Table } from 'console-table-printer';
 import { join } from 'path'
 import { cp, readdir, rm } from 'fs/promises'
 import { existsSync } from 'fs'
+import Session from '../../../shared/src/data/session.js'
 
 export default class SessionCommand extends Command {
 
@@ -54,11 +56,44 @@ export default class SessionCommand extends Command {
 				o.newLine();
 				o.appendLine(chalk.hex(this.ctx.theme.commands.titleColor)('Available sessions:'));
 				o.newLine();
-				(await listSessionIds()).forEach(x => {
-					if (x == this.ctx.session.id)
-						x = chalk.hex(this.ctx.theme.table.highlightRow)(x)
-					o.appendLine(x)
+
+				const al = new Table({
+					columns: [
+						{ name: 'id', alignment: 'left' },
+						{ name: 'description', alignment: 'left' },
+						{ name: 'agents', alignment: 'left' },
+						{ name: 'documents', alignment: 'left' },
+						{ name: 'contexts', alignment: 'left' },
+						{ name: 'time start/up', alignment: 'left' }
+					]
+				});
+
+				const sessions = [];
+
+				const ids = await listSessionIds()
+
+				for (var i = 0; i < ids.length; i++) {
+					sessions.push(await Session.loadFromFile(this.ctx, ids[i]))
+				};
+
+				sessions.forEach(se => {
+
+					const fx = (se.id == this.ctx.session.id) ?
+						t => chalk.hex(this.ctx.theme.table.highlightRow)(t)
+						: t => t
+
+					al.addRow({
+						id: fx(se.id),
+						description: fx(se.description || ''),
+						agents: se.agents?.length,
+						documents: '',
+						contexts: '',
+						['time start/up']: ''
+					})
+
 				})
+				o.appendLine(al.render())
+
 				break
 
 			case 'switch':
@@ -70,9 +105,18 @@ export default class SessionCommand extends Command {
 						this.emitCommandError('session not found: ' + sessionId)
 					} else {
 						o.newLine()
-						o.appendLine('switch to session: ' + sessionId)
+
+						const hdlr = async args => {
+							o.appendLine('session switched to id: ' + sessionId)
+							// load new session on previous ession on unloaded event
+							await sessionCtrl.load(sessionId)
+						}
+						e.on(SessionUnLoadedEvent, args => {
+							e.off(SessionUnLoadedEvent, hdlr)
+							hdlr(args)
+						})
+
 						await sessionCtrl.unload(this.ctx.session.id)
-						await sessionCtrl.load(sessionId)
 					}
 				}
 				break

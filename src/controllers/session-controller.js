@@ -1,7 +1,7 @@
 import { sessionDataFile, sessionPath } from "../../../shared/src/utils/utils"
 import { existsSync, mkdir, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentGetFocusViewEvent, AgentRemovedEvent, DialogUserPromptBegin, RunCommandEvent } from "../../../shared/src/data/events";
+import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentGetFocusViewEvent, AgentRemovedEvent, DialogUserPromptBegin, RunCommandEvent, SessionUnLoadedEvent } from "../../../shared/src/data/events";
 import { appendFile } from "fs/promises";
 import Session from "../../../shared/src/data/session";
 
@@ -64,6 +64,11 @@ export default class SessionController {
 	async unload() {
 		// unload all agents
 		await this.session.unloadAgents()
+		// keep this.ctx.session.id & this.session as a fallback (not null)
+		this.ctx.components.event.emit(
+			SessionUnLoadedEvent,
+			this.session
+		)
 	}
 
 	// load session with the given id
@@ -73,6 +78,8 @@ export default class SessionController {
 		await this.session.loadAgents(
 			this.ctx.components.output.getOutputContext()
 		)
+		// update session id
+		this.ctx.session.id = id
 	}
 
 	// ------- agents ----------
