@@ -39,6 +39,13 @@ export default class EventService {
 		return this
 	}
 
+	once(eventName, listener) {
+		try {
+			this.eventEmitter.once(eventName, listener)
+		} catch { }
+		return this
+	}
+
 	off(eventName, listener) {
 		try {
 			this.eventEmitter.off(eventName, listener)

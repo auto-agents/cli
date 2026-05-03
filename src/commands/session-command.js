@@ -97,14 +97,10 @@ export default class SessionCommand extends Command {
 					} else {
 						o.newLine()
 
-						const hdlr = async args => {
+						e.once(SessionUnLoadedEvent, async args => {
 							o.appendLine('session switched to id: ' + sessionId)
 							// load new session on previous session unloaded event
 							await sessionCtrl.load(sessionId)
-						}
-						e.on(SessionUnLoadedEvent, args => {
-							e.off(SessionUnLoadedEvent, hdlr)
-							hdlr(args)
 						})
 
 						await sessionCtrl.unload(this.ctx.session.id)
