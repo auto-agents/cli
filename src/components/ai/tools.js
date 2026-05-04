@@ -31,8 +31,10 @@ export default class Tools {
 		Tools.status = new Status(ctx)
 		this.outputContext = outputContext
 		this.toolsPath = join(process.cwd(),
+			this.ctx.paths.shared,
 			this.ctx.paths.src,
 			this.ctx.paths.components,
+			this.ctx.paths.aiComponents,
 			this.ctx.paths.aiTools)
 	}
 
@@ -117,6 +119,7 @@ export default class Tools {
 
 				if (!entry.isFile()) continue
 				if (!entry.name.toLowerCase().endsWith('.js')) continue
+				if (entry.name == 'ai-tool.js') continue
 
 				await this.load(full, entry.name, oc2)
 			}

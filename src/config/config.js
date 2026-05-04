@@ -65,6 +65,7 @@ export const config = () => {
 		paths: {
 			agents: '../agents',
 			plugins: '../plugins',
+			shared: '../shared',
 			importPlugins: '../plugins/src',
 			pluginsExportsFolderName: 'exports',
 			pluginExportCommandsFolderName: 'commands',
@@ -83,7 +84,7 @@ export const config = () => {
 			components: 'components',
 			commands: 'commands',
 			aiComponents: 'ai',
-			aiTools: 'ai-tools',
+			aiTools: 'tools',
 			responseProcessors: 'response-processors',
 			responseProcessorsActionsHandlers: 'response-processors-actions-handlers',
 			src: 'src',
