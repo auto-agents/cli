@@ -5,13 +5,13 @@ import Status from '../../../shared/src/utils/status.js'
 import utils, { getLoadedAgentDump } from '../../../shared/src/utils/utils.js'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
-import Tools from "../components/ai/tools.js";
+import Tools from "../../../shared/src/components/ai/tools.js";
 import { Role_Assistant } from "../../../shared/src/data/ai/roles.js";
 import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
 import { join } from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";
 import chalk from "chalk"
-import Skills from "../components/ai/skills.js";
+import Skills from "../../../shared/src/components/ai/skills.js";
 import Vars from "../../../shared/src/data/vars.js";
 import { DialogContext_Tool, FROM_CLI } from "../../../shared/src/config/consts.js";
 
