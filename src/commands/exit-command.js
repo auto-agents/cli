@@ -12,7 +12,7 @@ export default class ExitCommand extends Command {
 	async run(args, com) {
 		const o = this.ctx.components.output
 		o.newLine()
-		o.appendLine('signal exiting & call exiting functions...')
+		o.appendLine('signaling exit & calling exit functions...')
 		this.ctx.components.event
 			.emit(AppExitingEvent)
 		const exitFuncs = this.ctx.cli.onExiting
