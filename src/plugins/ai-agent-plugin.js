@@ -17,7 +17,7 @@ import { DialogContext_Tool, FROM_CLI } from "../../../shared/src/config/consts.
 
 /**
  * AI AGENT Plugin
- * common llm interface for any api / provider
+ * common llm driver for any api / provider
  */
 export default class AIAgentPlugin {
 
