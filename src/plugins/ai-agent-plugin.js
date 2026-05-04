@@ -1,4 +1,4 @@
-import ActionController from "../controllers/action-controller.js"
+import ActionController from "../../../shared/src/controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
 import Status from '../../../shared/src/utils/status.js'

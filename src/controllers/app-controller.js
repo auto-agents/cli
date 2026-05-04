@@ -37,7 +37,7 @@ import InputController from './input-controller.js';
 import CommandController from './command-controller.js';
 import DialogController from './dialog-controller.js';
 import RenderController from './render-controller.js';
-import OutputController from './output-controller.js';
+import OutputController from '../../../shared/src/controllers/output-controller.js';
 import Status from '../../../shared/src/utils/status.js'
 import KeyboardController from './keyboard-controller.js';
 import {

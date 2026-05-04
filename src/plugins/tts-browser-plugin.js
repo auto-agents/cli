@@ -1,7 +1,7 @@
 import cliSpinners from 'cli-spinners';
 import { existsSync } from "fs";
 import { join } from 'path';
-import ActionController from "../controllers/action-controller.js";
+import ActionController from "../../../shared/src/controllers/action-controller.js";
 import SpinnerService from "../services/spinner-service.js";
 import utils, { addServer, getServer, removeServer } from '../../../shared/src/utils/utils.js'
 import Server from '../../../shared/src/data/server.js';

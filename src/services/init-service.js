@@ -1,9 +1,9 @@
 import chalk from 'chalk'
 import patchConsole from 'patch-console';
-import ActionController from '../controllers/action-controller.js'
+import ActionController from '../../../shared/src/controllers/action-controller.js'
 import cliSpinners from 'cli-spinners';
 import SpinnerService from './spinner-service.js';
-import ActionSequenceController from '../controllers/action-sequence-controller.js';
+import ActionSequenceController from '../../../shared/src/controllers/action-sequence-controller.js';
 import { AppInitializedEvent, SetStatusMessageEvent } from '../../../shared/src/data/events.js';
 import SysInfoService from './sys-info-service.js';
 import PluginController from '../controllers/plugin-controller.js';
