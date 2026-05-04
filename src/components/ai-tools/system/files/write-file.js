@@ -1,4 +1,4 @@
-import AITool from "../../../../../../shared/src/components/ai-tools/ai-tool";
+import AITool from "../../../../../../shared/src/components/ai/tools/ai-tool";
 import { unescapeCodeString } from "../../../../../../shared/src/utils/text/text";
 import { writeFileSync } from 'fs'
 

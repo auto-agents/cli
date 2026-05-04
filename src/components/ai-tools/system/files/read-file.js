@@ -1,4 +1,4 @@
-import AITool from "../../../../../../shared/src/components/ai-tools/ai-tool";
+import AITool from "../../../../../../shared/src/components/ai/tools/ai-tool";
 import ToolResult from "../../../../../../shared/src/data/tool-result";
 import { readFileSync } from 'fs'
 

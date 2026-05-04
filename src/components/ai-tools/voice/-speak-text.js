@@ -1,4 +1,4 @@
-import AITool from '../../../../../shared/src/components/ai-tools/ai-tool';
+import AITool from '../../../../../shared/src/components/ai/tools/ai-tool';
 import { isSpeechAvailable } from '../../../../../shared/src/utils/utils';
 
 export default class SpeakText extends AITool {

@@ -1,5 +1,5 @@
 import { networkInterfaces } from "os";
-import AITool from "../../../../../shared/src/components/ai-tools/ai-tool";
+import AITool from "../../../../../shared/src/components/ai/tools/ai-tool";
 
 export default class IpAddress extends AITool {
 

@@ -1,6 +1,6 @@
 import { readdirSync, statSync } from 'fs'
 import path from 'path'
-import AITool from '../../../../../../shared/src/components/ai-tools/ai-tool'
+import AITool from '../../../../../../shared/src/components/ai/tools/ai-tool'
 
 export default class GetFiles extends AITool {
 

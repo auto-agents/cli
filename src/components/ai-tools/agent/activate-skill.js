@@ -1,4 +1,4 @@
-import AITool from "../../../../../shared/src/components/ai-tools/ai-tool";
+import AITool from "../../../../../shared/src/components/ai/tools/ai-tool";
 import { readFileSync } from 'fs'
 
 export default class ActivateSkill extends AITool {

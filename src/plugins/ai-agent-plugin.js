@@ -6,7 +6,7 @@ import utils, { getLoadedAgentDump } from '../../../shared/src/utils/utils.js'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import ResponseProcessors from "../components/ai/response-processors.js";
 import Tools from "../components/ai/tools.js";
-import { Role_Assistant } from "../components/ai/roles.js";
+import { Role_Assistant } from "../../../shared/src/data/ai/roles.js";
 import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
 import { join } from "path";
 import DialogContext from "../../../shared/src/data/dialog-context.js";

@@ -1,4 +1,4 @@
-import AITool from '../../../../../../shared/src/components/ai-tools/ai-tool';
+import AITool from '../../../../../../shared/src/components/ai/tools/ai-tool';
 import { Platforms } from '../../../../../../shared/src/config/consts';
 
 const util = require('node:util');

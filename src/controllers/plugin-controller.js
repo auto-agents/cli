@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "fs";
+import { existsSync } from "fs";
 import { readdir } from 'fs/promises'
 import path, { join, basename } from 'path';
 import chalk from "chalk"

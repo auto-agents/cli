@@ -1598,7 +1598,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'OpenAI',
-				apiClientFilepath: "../components/ai/open-ai-api-client.js",
+				apiClientFilepath: "../../../shared/src/components/ai/clients/open-ai-api-client.js",
 				apiClientConfig: "ctx.servers.llm.openAIApi",
 
 				internal: true,
@@ -1639,7 +1639,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'Ollama',
-				apiClientFilepath: "../components/ai/ollama-api-client.js",
+				apiClientFilepath: "../../../shared/src/components/ai/clients/ollama-api-client.js",
 				apiClientConfig: "ctx.servers.llm.ollamaMCPBridgeAI",
 
 				enabled: false,
@@ -1662,7 +1662,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'LMStudio',
-				apiClientFilepath: "../components/ai/lm-studio-api-client.js",
+				apiClientFilepath: "../../../shared/src/components/ai/clients/lm-studio-api-client.js",
 				apiClientConfig: "ctx.servers.llm.lmStudioApi",
 
 				enabled: false,
@@ -1687,7 +1687,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'LMStudioJS',
-				apiClientFilepath: "../components/ai/lm-studio-js-api-client.js",
+				apiClientFilepath: "../../../shared/src/components/ai/clients/lm-studio-js-api-client.js",
 				apiClientConfig: "ctx.servers.llm.lmStudioJSApi",
 
 				enabled: false,
@@ -1711,7 +1711,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'AnythingLLM',
-				apiClientFilepath: "../components/ai/open-ai-api-client.js",
+				apiClientFilepath: "../../../shared/src/components/ai/clients/open-ai-api-client.js",
 				apiClientConfig: "ctx.servers.llm.anythingLLMDesktop",
 
 				enabled: false,

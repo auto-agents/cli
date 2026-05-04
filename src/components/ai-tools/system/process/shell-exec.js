@@ -1,4 +1,4 @@
-import AITool from '../../../../../../shared/src/components/ai-tools/ai-tool';
+import AITool from '../../../../../../shared/src/components/ai/tools/ai-tool';
 import Logger from './../../../../../../shared/src/components/sys/logger';
 
 const util = require('node:util');

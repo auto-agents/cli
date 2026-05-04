@@ -1,4 +1,4 @@
-import AITool from "../../../../../shared/src/components/ai-tools/ai-tool";
+import AITool from "../../../../../shared/src/components/ai/tools/ai-tool";
 import { Tool_Output_Format_PlainText } from "../../../../../shared/src/config/consts";
 
 export default class GetTime extends AITool {
