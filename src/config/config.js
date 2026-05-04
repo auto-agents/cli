@@ -13,12 +13,9 @@ import {
 	SHIFT_DOWN,
 	TUIAgentId,
 	DefaultSessionId,
-	Tool_Output_Format_JsonMD,
-	Tool_Output_Format_PlainText,
 	Tool_Output_Format_Json
 } from '../../../shared/src/config/consts.js'
 
-import { appendFileSync } from 'node:fs';
 import { join } from 'path'
 import os from "os";
 
