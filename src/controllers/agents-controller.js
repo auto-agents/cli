@@ -1,10 +1,8 @@
-import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentRemovedEvent, PluginLoadedEvent, PluginUnloadedEvent, RunCommandEvent } from "../../../shared/src/data/events"
+import { AgentAddedEvent, AgentRemovedEvent, PluginUnloadedEvent, RunCommandEvent } from "../../../shared/src/data/events"
 import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
 import Status from '../../../shared/src/utils/status.js'
-import AIAgent from '../components/ai/ai-agent.js'
 import OutputContext from '../../../shared/src/data/output-context.js'
-import AgentsTab from './../components/ink-react/agents-tab';
+import AIAgent from "../../../shared/src/data/ai/ai-agent.js"
 
 export default class AgentsController {
 

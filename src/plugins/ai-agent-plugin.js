@@ -4,7 +4,7 @@ import cliSpinners from 'cli-spinners';
 import Status from '../../../shared/src/utils/status.js'
 import utils, { getLoadedAgentDump } from '../../../shared/src/utils/utils.js'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import ResponseProcessors from "../components/ai/response-processors.js";
+import ResponseProcessors from "../../../shared/src/components/ai/responses/response-processors.js";
 import Tools from "../../../shared/src/components/ai/tools.js";
 import { Role_Assistant } from "../../../shared/src/data/ai/roles.js";
 import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
@@ -228,6 +228,7 @@ export default class AIAgentPlugin {
 		const file = n.replaceAll('_', '-').toLowerCase() + '.js'
 		const fpath = join(
 			process.cwd(),
+			this.ctx.paths.shared,
 			this.ctx.paths.src,
 			this.ctx.paths.components,
 			this.ctx.paths.aiComponents,

@@ -6,7 +6,7 @@ import Status from '../../../shared/src/utils/status.js'
 import OutputContext from "../../../shared/src/data/output-context.js";
 import { isAppInitialized, resolvePath, toJson } from "../../../shared/src/utils/utils.js";
 import { PluginLoadedEvent, PluginUnloadedEvent } from "../../../shared/src/data/events.js";
-import AIAgent from "../components/ai/ai-agent.js";
+import AIAgent from "../../../shared/src/data/ai/ai-agent.js";
 import Tools from "../../../shared/src/components/ai/tools.js";
 
 export default class PluginController {

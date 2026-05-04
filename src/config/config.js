@@ -85,7 +85,7 @@ export const config = () => {
 			commands: 'commands',
 			aiComponents: 'ai',
 			aiTools: 'tools',
-			responseProcessors: 'response-processors',
+			responseProcessors: 'responses/response-processors',
 			responseProcessorsActionsHandlers: 'response-processors-actions-handlers',
 			src: 'src',
 			config: 'config',

@@ -17,7 +17,6 @@ import {
 	dialogEvent,
 	errorEvent
 } from "../../../shared/src/data/events.js"
-import ResponseTextFormater from '../components/ai/response-text-formater.js'
 import Dialoger from "../components/dialog/dialoger.js"
 import { getUserVoice, getAgentVoice, getLoadedAgent, isAgentSpeakEnabled, getSession } from "../../../shared/src/utils/utils.js"
 import DialogContext from "../../../shared/src/data/dialog-context.js"
@@ -25,6 +24,7 @@ import { replaceUnicodes } from "../../../shared/src/utils/decorators.js"
 import { DialogerTasksTypes } from "../../../shared/src/data/dialoger-tasks-types.js"
 import { DialogContext_Assistant, DialogContext_Tool_Loop, DialogContext_User, FROM_CLI, FROM_USER } from "../../../shared/src/config/consts.js"
 import Logger from "../../../shared/src/components/sys/logger.js"
+import ResponseTextFormater from "../../../shared/src/components/ai/responses/response-text-formater.js"
 
 /**
  * controls a dialog with or without ai and speech

@@ -8,10 +8,8 @@ import { AppInitializedEvent, SetStatusMessageEvent } from '../../../shared/src/
 import SysInfoService from './sys-info-service.js';
 import PluginController from '../controllers/plugin-controller.js';
 import OutputContext from '../../../shared/src/data/output-context.js';
-import utils, { getAgentSpecification } from '../../../shared/src/utils/utils.js';
+import utils from '../../../shared/src/utils/utils.js';
 import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
-import { TUIAgentId } from '../../../shared/src/config/consts.js'
-import AIAgent from '../components/ai/ai-agent.js';
 
 export default class InitService {
 
