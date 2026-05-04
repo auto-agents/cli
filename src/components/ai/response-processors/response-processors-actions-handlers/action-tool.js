@@ -1,6 +1,6 @@
 import { DialogContext_Tool, FROM_CLI } from "../../../../../../shared/src/config/consts"
+import { Role_Tool } from "../../../../../../shared/src/data/ai/roles"
 import DialogContext from "../../../../../../shared/src/data/dialog-context"
-import { Role_Assistant, Role_Tool } from "../../roles"
 
 // ----------------------------------------------------
 // ⚠️⚠️ should be a per model tool call processor ⚠️⚠️
