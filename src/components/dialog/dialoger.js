@@ -10,7 +10,7 @@ import {
 import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
 import { getLoadedAgent, isAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
 import { TUIAgentId } from "../../../../shared/src/config/consts"
-import { DialogerTasksTypes } from "./dialoger-tasks-types"
+import { DialogerTasksTypes } from "../../../../shared/src/data/dialoger-tasks-types"
 
 /*
  the dialoger handle dialog behaviors
