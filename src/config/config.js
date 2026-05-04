@@ -97,9 +97,7 @@ export const config = () => {
 			errorLogFilePath: 'errors.log',
 			outputLogFilePath: 'output.log',
 			tempsToClean: [],
-			speakPreProcessors: join(
-				'../plugins/src/TTS/speak-pre-processors'
-			)
+			speakPreProcessors: '../plugins/src/TTS/speak-pre-processors'
 		},
 		session: {
 			id: DefaultSessionId
