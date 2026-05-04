@@ -4,7 +4,8 @@ import { CommandNotFoundEvent, errorEvent } from '../../../shared/src/data/event
 import { evalValue, mdBlockJson, toJson } from '../../../shared/src/utils/utils.js'
 import { readFileSync, writeFileSync } from 'fs'
 import { renderMarkdown } from 'cli-html';
-import { join } from 'path'
+import { VAR_SCOPE_CLI, VAR_SCOPE_ENV, VAR_SCOPE_USER } from '../../../shared/src/data/vars.js'
+import chalk from 'chalk'
 
 export default class VarCommand extends Command {
 
@@ -40,31 +41,40 @@ export default class VarCommand extends Command {
 		switch (action) {
 
 			case 'get':
-				const value = session.vars.get(key)
-				if (value == null) {
+				const vr = session.vars.get(key)
+				if (!vr) {
+					this.emitCommandError('var not found: ' + key)
+					return
+				}
+
+				if (vr.value == null) {
 					o.newLine()
 					o.appendLine('null')
 					return
 				}
-				if (value === undefined) {
+				if (vr.value === undefined) {
 					o.newLine()
 					o.appendLine('undefined')
 					return
 				}
-				// dump on screen
+
+				// dump
+
 				o.newLine()
 				if (file) {
 					// dump to file
-					cr = typeof value == 'object' ?
-						toJson(value).trim()
-						: renderMarkdown(value).trim()
+					cr = typeof vr.value == 'object' ?
+						toJson(vr.value).trim()
+						: renderMarkdown(vr.value).trim()
 					writeFileSync(file, cr)
 					o.appendLine(`variable ${key} saved to: ${file}`)
 				} else {
 					// dump on screen
-					cr = typeof value == 'object' ?
-						renderMarkdown(mdBlockJson(toJson(value))).trim()
-						: renderMarkdown(value).trim()
+					cr = typeof vr.value == 'object' ?
+						renderMarkdown(mdBlockJson(toJson(vr.value))).trim()
+						: (typeof vr.value == 'string'
+							? renderMarkdown(vr.value).trim()
+							: String(vr.value))
 					o.appendLine(cr)
 				}
 				break
@@ -80,7 +90,11 @@ export default class VarCommand extends Command {
 					val = session.vars.replaceVars(
 						readFileSync(file).toString())
 				} else val = evalValue(valueExpr)
-				session.vars.set(key, val)
+
+				const vre = session.vars.get(key)
+
+				// set var (keep same scope)
+				session.vars.set(key, val, !vre ? VAR_SCOPE_USER : vre.scope)
 
 				o.newLine()
 				o.appendLine('context variable setted')
@@ -95,12 +109,33 @@ export default class VarCommand extends Command {
 
 			case 'list':
 				const lst = session.vars.list()
-				o.newLine()
 				const t = []
-				for (const [key, value] of Object.entries(lst)) {
-					o.appendLine(key)
+				const venv = []
+				const vcli = []
+				const vusr = []
+				for (const [key, vr] of Object.entries(lst)) {
 					t.push(key)
+					if (vr.scope == VAR_SCOPE_ENV) venv.push(vr)
+					else {
+						if (vr.scope == VAR_SCOPE_CLI) vcli.push(vr)
+						else vusr.push(vr)
+					}
 				}
+
+				const disp = (title, set) => {
+					o.newLine()
+					o.appendLine(chalk.underline(chalk.hex(this.ctx.theme.commands.titleColor)(title)))
+					o.newLine()
+					set.forEach(vr => {
+						o.appendLine(vr.name)
+					})
+
+				}
+
+				disp('env vars:', venv)
+				disp('cli vars:', vcli)
+				disp('user vars:', vusr)
+
 				cr = t
 				break
 

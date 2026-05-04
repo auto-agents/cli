@@ -51,6 +51,10 @@ const setupEnvVars = ctx => {
 		BASE_DIR: curPath,
 		SHELL_ROOT_PASSWD: 'franc'
 	}
+	// add system & loaded env vars
+	for (const [key, value] of Object.entries(process.env)) {
+		ctx.env[key] = value
+	}
 }
 
 export const config = () => {
@@ -575,9 +579,8 @@ export const config = () => {
 							},
 							file: {
 								type: 'string',
-								description: 'indicates to set value from a file content, or save variable content to a file',
+								description: 'indicates to set value from a file content, or to save variable content to a file',
 								required: false,
-								default: 'json',
 								short: 'f'
 							}
 						},
@@ -758,7 +761,7 @@ export const config = () => {
 					profile: 'tuiAssistant',
 					TTS: {
 						// turn on/off any agent speak
-						enabled: true,
+						enabled: false,
 						voiceProfile: 'TUI'
 					},
 					system: true,
@@ -1605,18 +1608,8 @@ export const config = () => {
 				isLoaded: false,
 
 				config: {
-					//model: "qwen3-0.6b",
-					//model: 'qwen3-1.7b',
-					//model: "google/gemma-3-1b",
-					//model: 'google/gemma-2-9b',
 					model: "mistralai/ministral-3-3b",
-					//model: 'qwen3-4b-toolcalling-codex',		// ???
-					//model: 'gpt2-finetuned-recipes-cooking_v2-i1',
-					//model: 'claude-3.7-sonnet-reasoning-gemma3-12b',
-
 					instructions: "You are a coding assistant. You can use the following tools to help code and use system tools and applications.",
-					//instructions1: 'You are a coding assistant.',
-					//instructions0: 'répond en langue française',
 
 					// ministralai settings
 					enableGemmaStyleToolCallParsing: false,		// TODO: globalize ?
@@ -1669,10 +1662,7 @@ export const config = () => {
 				internal: true,
 
 				config: {
-					//model: 'google/gemma-2-9b',
 					model: "mistralai/ministral-3-3b",
-					//model: 'qwen3-1.7b',
-					//model: 'qwen3-0.6b',
 					temperature: 0,
 					instructions: 'You are a coding assistant.',
 				}
@@ -1694,8 +1684,6 @@ export const config = () => {
 				internal: true,
 
 				config: {
-					//model: "google/gemma-3-1b",
-					//model: 'qwen3-0.6b',
 					model: 'google/gemma-2-9b',
 					temperature: 0.7,
 					instructions: 'You are a coding assistant.',
@@ -1718,10 +1706,6 @@ export const config = () => {
 				internal: true,
 
 				config: {
-					//model: 'google/gemma-2-9b',
-					//model: "mistralai/ministral-3-3b",
-					//model: 'qwen3-1.7b',
-					//model: 'qwen3-0.6b',
 					temperature: 0,
 					instructions: 'You are a coding assistant.',
 				}
@@ -1813,6 +1797,14 @@ export const config = () => {
 				// models providers (servers end points)
 
 				providers: {
+					openRouterAIApiEndPoints: {
+						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
+						port: 1234,
+						baseURL: 'http://localhost:{port}/api/v1',
+						paths: {
+							completion: '/chat'
+						}
+					},
 					lmStudioApiEndPoints: {
 						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
 						port: 1234,

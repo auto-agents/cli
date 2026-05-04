@@ -4,17 +4,16 @@ import {
 	CommandPluginLoadErrorEvent,
 	CommandFileNotFoundEvent,
 	CommandNotFoundEvent,
-	CommandArgsCountErrorEvent,
 	RunCommandEvent,
 	CommandParseErrorEvent,
-	LogErrorEvent,
 	errorEvent,
 	CommandRunErrorEvent
 } from "../../../shared/src/data/events"
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
 import { getRootDialogContext, getSessionVars, resolvePath } from "../../../shared/src/utils/utils";
-import { EnvVar_LastCommand, EnvVar_LastCommandResult, EnvVar_LastError } from "../../../shared/src/config/consts";
+import { VarCli_LastCommand, VarCli_LastCommandResult, VarCli_LastError } from "../../../shared/src/config/consts";
+import { VAR_SCOPE_CLI } from "../../../shared/src/data/vars";
 
 export default class CommandController {
 
@@ -71,7 +70,6 @@ export default class CommandController {
 		if (withOptions) {
 
 			const optNames = Object.getOwnPropertyNames(comd.config.options)
-			const maxArgsCount = optNames.length
 
 			try {
 				const o = {
@@ -126,22 +124,22 @@ export default class CommandController {
 		}
 
 		const vars = getSessionVars(this.ctx)
-		vars.set(EnvVar_LastCommand, arg)
+		vars.set(VarCli_LastCommand, arg, VAR_SCOPE_CLI)
 		try {
 
 			// ---- run the command -----
 
 			const res = await instance.run(parsedArgs, comd, arg, dialogContext)
 
-			vars.set(EnvVar_LastCommandResult, res)
-			vars.set(EnvVar_LastError, null)
+			vars.set(VarCli_LastCommandResult, res, VAR_SCOPE_CLI)
+			vars.set(VarCli_LastError, null, VAR_SCOPE_CLI)
 			return res
 
 			// --------------------------
 
 		} catch (err) {
-			vars.set(EnvVar_LastCommandResult, null)
-			vars.set(EnvVar_LastError, err)
+			vars.set(VarCli_LastCommandResult, null, VAR_SCOPE_CLI)
+			vars.set(VarCli_LastError, err, VAR_SCOPE_CLI)
 
 			e.emit(CommandRunErrorEvent, {
 				...errorEvent(this.From, err),
