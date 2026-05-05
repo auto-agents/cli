@@ -758,7 +758,7 @@ export const config = () => {
 					profile: 'tuiAssistant',
 					TTS: {
 						// turn on/off any agent speak
-						enabled: false,
+						enabled: true,
 						voiceProfile: 'TUI'
 					},
 					system: true,
