@@ -758,7 +758,7 @@ export const config = () => {
 					profile: 'tuiAssistant',
 					TTS: {
 						// turn on/off any agent speak
-						enabled: false,
+						enabled: true,
 						voiceProfile: 'TUI'
 					},
 					system: true,
@@ -787,8 +787,53 @@ export const config = () => {
 						// turn on/off any agent speak
 						enabled: true,
 						voiceProfile: 'coder'
+					}
+				},
+				{
+					// specification
+					id: 'orcoder',
+					name: 'ORCoder',
+					pluginName: 'openAIAgent',
+					provider: 'openRouterAIOpenAIApiEndPoints',
+					// model config
+					config: {
+						model: '',	// TODO: setup model
+						temperature: 0.1,
+						props: {
+							reasoning: "high"
+						}
 					},
-					system: true,
+					// characteristics
+					avatar: 'coder',
+					profile: 'codingAssistant',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: true,
+						voiceProfile: 'coder'
+					}
+				},
+				{
+					// specification
+					id: 'nvcoder',
+					name: 'NVCoder',
+					pluginName: 'openAIAgent',
+					provider: 'nvidiaApiOpenAIEndPoints',
+					// model config
+					config: {
+						model: '',	// TODO: setup model
+						temperature: 0.1,
+						props: {
+							reasoning: "high"
+						}
+					},
+					// characteristics
+					avatar: 'coder',
+					profile: 'codingAssistant',
+					TTS: {
+						// turn on/off any agent speak
+						enabled: true,
+						voiceProfile: 'coder'
+					}
 				},
 				{
 					id: 'kokoro',
@@ -1737,7 +1782,7 @@ export const config = () => {
 					restoreSessionAgentHistoryOnStartup: true,
 
 					enableGemmaStyleToolCallParsing: true,
-					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only : add a per model config
+					appendTextAtEndOfQuery: "", //" /no_think",	// qwen only - TODO: add a per model config
 					responseProcessors: [
 						'reasoning-xml-tool-call-parser.js',
 						'openai-api-tool-call-processor.js',
@@ -1794,16 +1839,24 @@ export const config = () => {
 				// models providers (servers end points)
 
 				providers: {
-					openRouterAIApiEndPoints: {
-						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
+					nvidiaApiOpenAIEndPoints: {
+						apiKey: '${NVIDIA_API_KEY}',
 						port: 1234,
-						baseURL: 'http://localhost:{port}/api/v1',
+						baseURL: 'https:// ... :{port}/api/v1',
+						paths: {
+							completion: '/chat'
+						}
+					},
+					openRouterAIOpenAIApiEndPoints: {
+						apiKey: '${OPEN_ROUTER_AI_API_KEY}',
+						port: 1234,
+						baseURL: 'https:// ... :{port}/api/v1',
 						paths: {
 							completion: '/chat'
 						}
 					},
 					lmStudioApiEndPoints: {
-						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
+						apiKey: '${LM_STUDIO_API_KEY}',
 						port: 1234,
 						baseURL: 'http://localhost:{port}/api/v1',
 						paths: {
@@ -1819,7 +1872,7 @@ export const config = () => {
 						}
 					},
 					lmStudioOpenAIEndPoints: {
-						apiKey: 'sk-lm-H33k4N3P:qz42COMyLn520X5BVNL1',
+						apiKey: '${LM_STUDIO_API_KEY}',
 						port: 1234,
 						baseURL: 'http://localhost:{port}/v1/',
 						paths: {
@@ -1866,7 +1919,7 @@ export const config = () => {
 						// &q=<query>>&kl=<lang-iso-2>
 						endPoint: 'https://serpapi.com/search?engine=duckduckgo',
 						// put SERP_API_KEY in .env
-						api_key: process.env.SERP_API_KEY
+						apiKey: '${SERP_API_KEY}'
 					}
 				}
 			},
