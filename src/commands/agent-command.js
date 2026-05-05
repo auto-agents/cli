@@ -290,8 +290,8 @@ export default class AgentCommand extends Command {
 					at.addRow({
 						id: '',
 						[col3]: f(a.plugin?.specification.apiName),
-						[col4]: f(a?.plugin?.config?.baseURL)
-							.replace('{port}', a?.plugin?.config?.port),
+						[col4]: f(a?.plugin?.config?.baseURL
+							?.replace('{port}', a?.plugin?.config?.port)),
 						model: '',
 						[col6]: f(a?.speak?.config?.api),
 						loaded: ''

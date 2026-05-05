@@ -36,29 +36,59 @@ export default class AIAgentPlugin {
 	]
 
 	static buildConfig(ctx, config, pluginSpec, overloadConfig) {
+
 		const apiClientConfig =
 		{
 			...eval(pluginSpec.apiClientConfig),
 		}
 
 		var conf = { ...config }
+
+		// merge
+		// 	1. common api client (ctx.servers.llm.common)
+		// 	2. api client (eg. ctx.servers.llm.openAIApi)
+		// 	3. plugin config (eg. openAIAgent)
+
 		conf = {
 			...ctx.servers.llm.common,
 			...apiClientConfig,
 			...conf
 		}
+
+		// 4. api client provider config (eg. lmStudioOpenAIEndPoints)
+
 		conf = {
 			...conf,
 			...ctx.servers.llm.providers[conf.provider]
 		}
+
+		// overload with agent confs
+
 		if (overloadConfig) {
 			// final config overload (optional)
+			// by convention overloadConfig is:
+			// { agent: agent, instructions: instructions }
+
 			conf = {
 				...conf,
-				// by convention is the agent
-				...overloadConfig
+				// integrate 'agent' property
+				...overloadConfig,
+				// overload with instructions
+				...{ instructions: overloadConfig.agent.instructions }
 			}
-			if (overloadConfig?.agent?.config) {
+
+			// overload with agent provider config if any
+
+			if (overloadConfig.agent.provider) {
+				conf = {
+					...conf,
+					...ctx.servers.llm.providers[overloadConfig.agent.provider]
+				}
+			}
+
+			// overload with agent config prop if any
+
+			if (overloadConfig.agent.config) {
 				conf = {
 					...conf,
 					...overloadConfig.agent.config
