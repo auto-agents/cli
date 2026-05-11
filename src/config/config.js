@@ -94,9 +94,9 @@ export const config = () => {
 			chatHistoryFilename: 'chat.json',
 			commandHistoryFilename: 'commands-history.txt',
 			tmp: 'tmp',
-			logFilePath: 'app.log',
-			errorLogFilePath: 'errors.log',
-			outputLogFilePath: 'output.log',
+			logFilePath: 'logs/app.log',
+			errorLogFilePath: 'logs/errors.log',
+			outputLogFilePath: 'logs/output.log',
 			tempsToClean: [],
 			speakPreProcessors: '../plugins/src/TTS/speak-pre-processors'
 		},
