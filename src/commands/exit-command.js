@@ -1,6 +1,7 @@
 import Command from '../../../core/src/commands/command.js'
 import { AppExitingEvent } from '../../../core/src/data/events.js'
 import { getSession } from '../../../core/src/utils/utils.js'
+import Logger from './../../../core/src/components/sys/logger';
 
 export default class ExitCommand extends Command {
 
@@ -26,6 +27,7 @@ export default class ExitCommand extends Command {
 		await session.save(true)
 		await session.saveCommandHistory()
 		o.appendLine('done ✔️')
+		Logger.log('app exited')
 		process.exit()
 	}
 }
