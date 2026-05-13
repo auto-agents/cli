@@ -193,7 +193,7 @@ export default class DialogController {
 			options.skipPrependNewLine = true
 		if (!options.userVoice)
 			options.userVoice = getUserVoice(this.ctx)
-		if (!options.assistantVoice)
+		if (!options.assistantVoice && agent)
 			options.assistantVoice = getAgentVoice(this.ctx, agent.id)
 
 		var r = await this.dialoger.addUserDialog(
@@ -273,7 +273,9 @@ export default class DialogController {
 		const ucol = chalk.hex(this.ctx.theme.dialog.userDialogColor)
 		const userDialPrfx = this.ctx.cli.dialog.userDialogPrefix
 			.replace('{toAgent}',
-				chalk.hex(this.ctx.theme.promptToColor)(dialogContext.agent.id))
+				dialogContext.agent ?
+					(chalk.hex(this.ctx.theme.promptToColor)(dialogContext.agent.id))
+					: '')
 
 		this.output.trimEnd()
 
