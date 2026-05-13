@@ -92,12 +92,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/auto-agents/cli.git"
+		"url": "git+https://github.com/bulbing-bots/cli.git"
 	},
 	"keywords": [],
 	"author": "",
 	"bugs": {
-		"url": "https://github.com/auto-agents/cli/issues"
+		"url": "https://github.com/bulbing-bots/cli/issues"
 	},
-	"homepage": "https://github.com/auto-agents/cli#readme"
+	"homepage": "https://github.com/bulbing-bots/cli#readme"
 }

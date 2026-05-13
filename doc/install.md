@@ -92,9 +92,9 @@ mkdir auto-agents
 cd auto-agents
 
 ## cli/tui
-git clone https://github.com/auto-agents/cli.git
+git clone https://github.com/bulbing-bots/cli.git
 ## plugins
-git clone https://github.com/auto-agents/plugins.git
+git clone https://github.com/bulbing-bots/plugins.git
 
 # setup
 cd cli
