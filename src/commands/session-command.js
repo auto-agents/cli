@@ -1,12 +1,12 @@
-import Command from '../../../shared/src/commands/command.js'
-import Status from '../../../shared/src/utils/status.js'
-import { CommandNotFoundEvent, errorEvent, SessionUnLoadedEvent } from '../../../shared/src/data/events.js'
-import { getSession, sessionPath } from '../../../shared/src/utils/utils.js'
+import Command from '../../../core/src/commands/command.js'
+import Status from '../../../core/src/utils/status.js'
+import { CommandNotFoundEvent, errorEvent, SessionUnLoadedEvent } from '../../../core/src/data/events.js'
+import { getSession, sessionPath } from '../../../core/src/utils/utils.js'
 import chalk from 'chalk'
 import { Table } from 'console-table-printer';
 import { cp, rm } from 'fs/promises'
 import { existsSync } from 'fs'
-import Session from '../../../shared/src/data/session.js'
+import Session from '../../../core/src/data/session.js'
 
 export default class SessionCommand extends Command {
 

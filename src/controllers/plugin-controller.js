@@ -2,12 +2,12 @@ import { existsSync } from "fs";
 import { readdir } from 'fs/promises'
 import path, { join, basename } from 'path';
 import chalk from "chalk"
-import Status from '../../../shared/src/utils/status.js'
-import OutputContext from "../../../shared/src/data/output-context.js";
-import { isAppInitialized, resolvePath, toJson } from "../../../shared/src/utils/utils.js";
-import { PluginLoadedEvent, PluginUnloadedEvent } from "../../../shared/src/data/events.js";
-import AIAgent from "../../../shared/src/data/ai/ai-agent.js";
-import Tools from "../../../shared/src/components/ai/tools.js";
+import Status from '../../../core/src/utils/status.js'
+import OutputContext from "../../../core/src/data/output-context.js";
+import { isAppInitialized, resolvePath, toJson } from "../../../core/src/utils/utils.js";
+import { PluginLoadedEvent, PluginUnloadedEvent } from "../../../core/src/data/events.js";
+import AIAgent from "../../../core/src/data/ai/ai-agent.js";
+import Tools from "../../../core/src/components/ai/tools.js";
 
 export default class PluginController {
 

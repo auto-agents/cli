@@ -1,9 +1,9 @@
-import { sessionDataFile, sessionPath } from "../../../shared/src/utils/utils"
+import { sessionDataFile, sessionPath } from "../../../core/src/utils/utils"
 import { existsSync, mkdir, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentGetFocusViewEvent, AgentRemovedEvent, DialogUserPromptBegin, RunCommandEvent, SessionUnLoadedEvent } from "../../../shared/src/data/events";
+import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentGetFocusViewEvent, AgentRemovedEvent, DialogUserPromptBegin, RunCommandEvent, SessionUnLoadedEvent } from "../../../core/src/data/events";
 import { appendFile, readdir } from "fs/promises";
-import Session from "../../../shared/src/data/session";
+import Session from "../../../core/src/data/session";
 
 export default class SessionController {
 

@@ -5,7 +5,7 @@ import {
 	AgentGetFocusSpeakEvent,
 	AgentGetFocusViewEvent,
 	AgentRemovedEvent
-} from '../../../../shared/src/data/events.js';
+} from '../../../../core/src/data/events.js';
 import AgentsTab from './agents-tab.js';
 
 const AgentsTabs = ({ ctx }) => {

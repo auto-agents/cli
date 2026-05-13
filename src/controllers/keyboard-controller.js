@@ -6,10 +6,10 @@ import {
 	KeyboardCaptureRequestEvent,
 	RunCommandEvent,
 	UIFreezeStatedChangedEvent
-} from "../../../shared/src/data/events"
+} from "../../../core/src/data/events"
 import {
 	ESC
-} from '../../../shared/src/config/consts.js'
+} from '../../../core/src/config/consts.js'
 
 export default class KeyboardController {
 

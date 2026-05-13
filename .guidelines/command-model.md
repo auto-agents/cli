@@ -46,7 +46,7 @@ where:
     - `required` : a boolean indicating if the argument is required
     - `allowedValues` : the possibles values of the option if it is a of type `string`. must be omitted if the option value is not constrained
     - `description` : a description of the argument in human language
-     
+
 - the file property is a string that define the path of the command file, relative to the commands implementations folder: `cli/commands`
 
 for example, the command that terminate the `CLI tool` is described as below:
@@ -73,10 +73,10 @@ for example, the command `exit` is implemented in the file `exit-command.js` and
 
 ```js
 run(
-{ 
+{
     values: {
         arg1: value1, ...
-    }, 
+    },
     positionals: [ positionnal1, ...]
 },
 com
@@ -126,7 +126,7 @@ for example, the command `cd` that is implemented in the file `cd-command.js` ha
 }
 ```
 ```js
-import { CommandArgsCountErrorEvent } from "../../../shared/src/data/events"
+import { CommandArgsCountErrorEvent } from "../../../core/src/data/events"
 
 export default class CdCommand {
 
@@ -136,9 +136,9 @@ export default class CdCommand {
 
 	run(args,com) {
         const pathArg = 'path'
-        const path = 
+        const path =
         // path is maybe given by its argument name: cat --path path
-        ((args?.values && args?.values[pathArg]) ? args.values[pathArg] : null) 
+        ((args?.values && args?.values[pathArg]) ? args.values[pathArg] : null)
         // or as a positional not named argument: cat path
         || ((args?.positionals && args?.positionals.length>0) ? args.positionals[0] : null)
 

@@ -9,9 +9,9 @@ import {
 	KeyboardCaptureRequestEvent,
 	CommandKeyboardCaptureReleaseEvent,
 	KeyboardInputEvent
-} from "../../../shared/src/data/events"
-import { ESC } from '../../../shared/src/config/consts.js'
-import Status from '../../../shared/src/utils/status.js'
+} from "../../../core/src/data/events"
+import { ESC } from '../../../core/src/config/consts.js'
+import Status from '../../../core/src/utils/status.js'
 
 export default class InputController {
 

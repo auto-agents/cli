@@ -1,14 +1,14 @@
 import cliSpinners from 'cli-spinners';
 import { existsSync } from "fs";
 import { join } from 'path';
-import ActionController from "../../../shared/src/controllers/action-controller.js";
+import ActionController from "../../../core/src/controllers/action-controller.js";
 import SpinnerService from "../services/spinner-service.js";
-import utils, { addServer, getServer, removeServer } from '../../../shared/src/utils/utils.js'
-import Server from '../../../shared/src/data/server.js';
-import SpeakerError from '../../../shared/src/data/speaker-error.js';
+import utils, { addServer, getServer, removeServer } from '../../../core/src/utils/utils.js'
+import Server from '../../../core/src/data/server.js';
+import SpeakerError from '../../../core/src/data/speaker-error.js';
 import TTSPluginBase from '../../../plugins/src/TTS/tts-plugin-base.js';
 import { Mutex } from 'async-mutex';
-import { FifoStack, task } from '../../../shared/src/utils/fifo-stack.js';
+import { FifoStack, task } from '../../../core/src/utils/fifo-stack.js';
 
 export default class TTSBrowserPlugin extends TTSPluginBase {
 

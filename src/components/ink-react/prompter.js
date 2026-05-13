@@ -11,8 +11,8 @@ import {
 	KeyboardInputEvent,
 	InputToStartEvent,
 	InputToEndEvent
-} from '../../../../shared/src/data/events';
-import { BACKSPACE, ESC, LEFT, RIGHT, SUPR } from '../../../../shared/src/config/consts.js';
+} from '../../../../core/src/data/events';
+import { BACKSPACE, ESC, LEFT, RIGHT, SUPR } from '../../../../core/src/config/consts.js';
 
 const Prompter = ({ ctx }) => {
 

@@ -1,11 +1,11 @@
 import { existsSync, readFileSync } from 'fs'
 import SyntaxHighlight from 'ink-syntax-highlight';
-import Status from '../../../shared/src/utils/status.js';
+import Status from '../../../core/src/utils/status.js';
 import * as highlight from "cli-highlight"
-import { box } from '../../../shared/src/utils/decorators.js';
-import { resolvePath } from '../../../shared/src/utils/utils.js';
-import { CommandRunErrorEvent, errorEvent } from '../../../shared/src/data/events.js';
-import Command from '../../../shared/src/commands/command.js';
+import { box } from '../../../core/src/utils/decorators.js';
+import { resolvePath } from '../../../core/src/utils/utils.js';
+import { CommandRunErrorEvent, errorEvent } from '../../../core/src/data/events.js';
+import Command from '../../../core/src/commands/command.js';
 import { renderComponent } from '../utils/ink-react-utils.js';
 
 export default class CatCommand extends Command {

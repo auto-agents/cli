@@ -17,7 +17,7 @@ import {
 	ANSI_ENABLE_MOUSE_SUPPORT
 } from './config/config.js'
 import { Terminal } from 'terminal-kit';
-import Logger from '../../shared/src/components/sys/logger.js';
+import Logger from '../../core/src/components/sys/logger.js';
 
 const ctx = config()
 Logger.init(

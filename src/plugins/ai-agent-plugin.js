@@ -1,19 +1,19 @@
-import ActionController from "../../../shared/src/controllers/action-controller.js"
+import ActionController from "../../../core/src/controllers/action-controller.js"
 import SpinnerService from "../services/spinner-service.js";
 import cliSpinners from 'cli-spinners';
-import Status from '../../../shared/src/utils/status.js'
-import utils, { getLoadedAgentDump } from '../../../shared/src/utils/utils.js'
+import Status from '../../../core/src/utils/status.js'
+import utils, { getLoadedAgentDump } from '../../../core/src/utils/utils.js'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
-import ResponseProcessors from "../../../shared/src/components/ai/responses/response-processors.js";
-import Tools from "../../../shared/src/components/ai/tools.js";
-import { Role_Assistant } from "../../../shared/src/data/ai/roles.js";
-import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../shared/src/data/events.js";
+import ResponseProcessors from "../../../core/src/components/ai/responses/response-processors.js";
+import Tools from "../../../core/src/components/ai/tools.js";
+import { Role_Assistant } from "../../../core/src/data/ai/roles.js";
+import { agentResponseEvent, AgentResponseEvent, CommandRunErrorEvent, errorEvent } from "../../../core/src/data/events.js";
 import { join } from "path";
-import DialogContext from "../../../shared/src/data/dialog-context.js";
+import DialogContext from "../../../core/src/data/dialog-context.js";
 import chalk from "chalk"
-import Skills from "../../../shared/src/components/ai/skills.js";
-import Vars from "../../../shared/src/data/vars.js";
-import { DialogContext_Tool, FROM_CLI } from "../../../shared/src/config/consts.js";
+import Skills from "../../../core/src/components/ai/skills.js";
+import Vars from "../../../core/src/data/vars.js";
+import { DialogContext_Tool, FROM_CLI } from "../../../core/src/config/consts.js";
 
 /**
  * AI AGENT Plugin
@@ -258,7 +258,7 @@ export default class AIAgentPlugin {
 		const file = n.replaceAll('_', '-').toLowerCase() + '.js'
 		const fpath = join(
 			process.cwd(),
-			this.ctx.paths.shared,
+			this.ctx.paths.core,
 			this.ctx.paths.src,
 			this.ctx.paths.components,
 			this.ctx.paths.aiComponents,

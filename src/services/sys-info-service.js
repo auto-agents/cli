@@ -1,7 +1,7 @@
 import os from "os";
-import DataTransforms from '../../../shared/src/utils/data-transforms';
+import DataTransforms from '../../../core/src/utils/data-transforms';
 import nodeDiskInfo from 'node-disk-info'
-import Status from '../../../shared/src/utils/status.js'
+import Status from '../../../core/src/utils/status.js'
 
 export default class SysInfoService {
 

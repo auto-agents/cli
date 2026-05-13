@@ -1,4 +1,4 @@
-import Command from '../../../shared/src/commands/command.js'
+import Command from '../../../core/src/commands/command.js'
 
 export default class SysinfoCommand extends Command {
 

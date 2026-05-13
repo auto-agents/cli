@@ -7,8 +7,8 @@ import {
 	KeyboardCaptureRequestEvent,
 	LayoutResizedEvent,
 	MouseActionEvent
-} from '../../../../shared/src/data/events';
-import { Mouse_Button_Wheel_Down, Mouse_Button_Wheel_Up } from '../../../../shared/src/config/consts';
+} from '../../../../core/src/data/events';
+import { Mouse_Button_Wheel_Down, Mouse_Button_Wheel_Up } from '../../../../core/src/config/consts';
 
 const reducer = (state, action) => {
 	var r = null

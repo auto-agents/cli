@@ -5,12 +5,12 @@ import {
 	dialogEvent,
 	DialogUserPromptBegin,
 	SetStatusMessageEvent
-} from "../../../../shared/src/data/events"
+} from "../../../../core/src/data/events"
 
-import { FifoStack, task } from "../../../../shared/src/utils/fifo-stack"
-import { getLoadedAgent, isAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../shared/src/utils/utils"
-import { TUIAgentId } from "../../../../shared/src/config/consts"
-import { DialogerTasksTypes } from "../../../../shared/src/data/dialoger-tasks-types"
+import { FifoStack, task } from "../../../../core/src/utils/fifo-stack"
+import { getLoadedAgent, isAgentSpeakEnabled, isTUIAIAgentAvailable, isUserSpeakEchoAvailable } from "../../../../core/src/utils/utils"
+import { TUIAgentId } from "../../../../core/src/config/consts"
+import { DialogerTasksTypes } from "../../../../core/src/data/dialoger-tasks-types"
 
 /*
  the dialoger handle dialog behaviors

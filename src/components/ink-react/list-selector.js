@@ -6,7 +6,7 @@ import {
 	KeyboardCaptureRequestEvent,
 	LayoutResizedEvent,
 	ListSelectorOpenCommandEvent
-} from '../../../../shared/src/data/events.js';
+} from '../../../../core/src/data/events.js';
 import SelectInput from 'ink-select-input';
 import ListItem from './list-item.js';
 import ListItemIndicator from './list-item-indicator.js';

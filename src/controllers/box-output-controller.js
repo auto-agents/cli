@@ -2,7 +2,7 @@ import chalk from 'chalk'
 
 import {
 	BoxOutputUpdatedEvent
-} from '../../../shared/src/data/events.js'
+} from '../../../core/src/data/events.js'
 
 export default class BoxOutputController {
 

@@ -1,8 +1,8 @@
-import Command from '../../../shared/src/commands/command.js'
+import Command from '../../../core/src/commands/command.js'
 import SyntaxHighlight from 'ink-syntax-highlight';
-import { evalValue, mdTextBlock, toJson } from '../../../shared/src/utils/utils.js';
+import { evalValue, mdTextBlock, toJson } from '../../../core/src/utils/utils.js';
 import * as highlight from "cli-highlight"
-import { box } from '../../../shared/src/utils/decorators.js';
+import { box } from '../../../core/src/utils/decorators.js';
 import { renderComponent } from '../utils/ink-react-utils.js';
 import chalk from 'chalk'
 

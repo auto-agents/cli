@@ -14,7 +14,7 @@ import {
 	TUIAgentId,
 	DefaultSessionId,
 	Tool_Output_Format_Json
-} from '../../../shared/src/config/consts.js'
+} from '../../../core/src/config/consts.js'
 
 import { join } from 'path'
 import os from "os";
@@ -66,7 +66,7 @@ export const config = () => {
 		paths: {
 			agents: '../agents',
 			plugins: '../plugins',
-			shared: '../shared',
+			core: '../core',
 			importPlugins: '../plugins/src',
 			pluginsExportsFolderName: 'exports',
 			pluginExportCommandsFolderName: 'commands',
@@ -1642,7 +1642,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'OpenAI',
-				apiClientFilepath: "../../../shared/src/components/ai/clients/open-ai-api-client.js",
+				apiClientFilepath: "../../../core/src/components/ai/clients/open-ai-api-client.js",
 				apiClientConfig: "ctx.servers.llm.openAIApi",
 
 				internal: true,
@@ -1673,7 +1673,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'Ollama',
-				apiClientFilepath: "../../../shared/src/components/ai/clients/ollama-api-client.js",
+				apiClientFilepath: "../../../core/src/components/ai/clients/ollama-api-client.js",
 				apiClientConfig: "ctx.servers.llm.ollamaMCPBridgeAI",
 
 				enabled: false,
@@ -1696,7 +1696,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'LMStudio',
-				apiClientFilepath: "../../../shared/src/components/ai/clients/lm-studio-api-client.js",
+				apiClientFilepath: "../../../core/src/components/ai/clients/lm-studio-api-client.js",
 				apiClientConfig: "ctx.servers.llm.lmStudioApi",
 
 				enabled: false,
@@ -1718,7 +1718,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'LMStudioJS',
-				apiClientFilepath: "../../../shared/src/components/ai/clients/lm-studio-js-api-client.js",
+				apiClientFilepath: "../../../core/src/components/ai/clients/lm-studio-js-api-client.js",
 				apiClientConfig: "ctx.servers.llm.lmStudioJSApi",
 
 				enabled: false,
@@ -1740,7 +1740,7 @@ export const config = () => {
 				category: 'AIAgent',
 
 				apiName: 'AnythingLLM',
-				apiClientFilepath: "../../../shared/src/components/ai/clients/open-ai-api-client.js",
+				apiClientFilepath: "../../../core/src/components/ai/clients/open-ai-api-client.js",
 				apiClientConfig: "ctx.servers.llm.anythingLLMDesktop",
 
 				enabled: false,

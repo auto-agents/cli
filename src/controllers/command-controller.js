@@ -8,12 +8,12 @@ import {
 	CommandParseErrorEvent,
 	errorEvent,
 	CommandRunErrorEvent
-} from "../../../shared/src/data/events"
+} from "../../../core/src/data/events"
 import { split } from 'shellwords'
 import { parseArgs } from 'node:util'
-import { getRootDialogContext, getSessionVars, resolvePath } from "../../../shared/src/utils/utils";
-import { VarCli_LastCommand, VarCli_LastCommandResult, VarCli_LastError } from "../../../shared/src/config/consts";
-import { VAR_SCOPE_CLI } from "../../../shared/src/data/vars";
+import { getRootDialogContext, getSessionVars, resolvePath } from "../../../core/src/utils/utils";
+import { VarCli_LastCommand, VarCli_LastCommandResult, VarCli_LastError } from "../../../core/src/config/consts";
+import { VAR_SCOPE_CLI } from "../../../core/src/data/vars";
 
 export default class CommandController {
 

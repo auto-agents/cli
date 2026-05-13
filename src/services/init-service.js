@@ -1,15 +1,15 @@
 import chalk from 'chalk'
 import patchConsole from 'patch-console';
-import ActionController from '../../../shared/src/controllers/action-controller.js'
+import ActionController from '../../../core/src/controllers/action-controller.js'
 import cliSpinners from 'cli-spinners';
 import SpinnerService from './spinner-service.js';
-import ActionSequenceController from '../../../shared/src/controllers/action-sequence-controller.js';
-import { AppInitializedEvent, SetStatusMessageEvent } from '../../../shared/src/data/events.js';
+import ActionSequenceController from '../../../core/src/controllers/action-sequence-controller.js';
+import { AppInitializedEvent, SetStatusMessageEvent } from '../../../core/src/data/events.js';
 import SysInfoService from './sys-info-service.js';
 import PluginController from '../controllers/plugin-controller.js';
-import OutputContext from '../../../shared/src/data/output-context.js';
-import utils from '../../../shared/src/utils/utils.js';
-import { StatusEnum, StatusMessage } from '../../../shared/src/data/status-message.js';
+import OutputContext from '../../../core/src/data/output-context.js';
+import utils from '../../../core/src/utils/utils.js';
+import { StatusEnum, StatusMessage } from '../../../core/src/data/status-message.js';
 
 export default class InitService {
 

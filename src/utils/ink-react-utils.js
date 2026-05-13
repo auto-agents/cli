@@ -1,6 +1,6 @@
 import { render } from 'ink';
 import ansiEscapes from 'ansi-escapes';
-import { getTmpFile } from '../../../shared/src/utils/utils';
+import { getTmpFile } from '../../../core/src/utils/utils';
 import { createWriteStream, readFileSync } from 'fs'
 
 export const renderComponent = (

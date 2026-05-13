@@ -1,11 +1,11 @@
 import { existsSync, readdirSync, statSync } from 'fs'
 import path, { basename, dirname } from 'path'
 import chalk from 'chalk'
-import Status from '../../../shared/src/utils/status.js'
-import { resolvePath } from '../../../shared/src/utils/utils.js'
+import Status from '../../../core/src/utils/status.js'
+import { resolvePath } from '../../../core/src/utils/utils.js'
 import wildcard from 'wildcard'
-import { CommandRunErrorEvent, errorEvent } from '../../../shared/src/data/events.js'
-import Command from '../../../shared/src/commands/command.js'
+import { CommandRunErrorEvent, errorEvent } from '../../../core/src/data/events.js'
+import Command from '../../../core/src/commands/command.js'
 
 export default class LsCommand extends Command {
 

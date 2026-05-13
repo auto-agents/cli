@@ -1,6 +1,6 @@
 import os from "os";
-import DataTransforms from '../../../shared/src/utils/data-transforms.js';
-import { GaugeSourceUpdatedEvent } from "../../../shared/src/data/events.js";
+import DataTransforms from '../../../core/src/utils/data-transforms.js';
+import { GaugeSourceUpdatedEvent } from "../../../core/src/data/events.js";
 
 export default class RamService {
 

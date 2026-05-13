@@ -8,9 +8,9 @@ import {
     Mouse_Button_Right,
     Mouse_Button_Wheel_Down,
     Mouse_Button_Wheel_Up
-} from "../../../shared/src/config/consts"
+} from "../../../core/src/config/consts"
 
-import { MouseActionEvent, mouseEvent } from "../../../shared/src/data/events"
+import { MouseActionEvent, mouseEvent } from "../../../core/src/data/events"
 
 export default class MouseController {
 

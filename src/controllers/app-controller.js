@@ -29,7 +29,7 @@ import {
 	LayoutResizedEvent,
 	AgentGetFocusViewEvent,
 	dialogEvent
-} from '../../../shared/src/data/events.js'
+} from '../../../core/src/data/events.js'
 import EventService from '../services/event-service.js';
 import BoxOutputController from './box-output-controller.js';
 import InitService from '../services/init-service.js';
@@ -37,8 +37,8 @@ import InputController from './input-controller.js';
 import CommandController from './command-controller.js';
 import DialogController from './dialog-controller.js';
 import RenderController from './render-controller.js';
-import OutputController from '../../../shared/src/controllers/output-controller.js';
-import Status from '../../../shared/src/utils/status.js'
+import OutputController from '../../../core/src/controllers/output-controller.js';
+import Status from '../../../core/src/utils/status.js'
 import KeyboardController from './keyboard-controller.js';
 import {
 	getErrorVoice,
@@ -48,16 +48,16 @@ import {
 	isAppInitialized,
 	isSpeakErrorsEnabled,
 	isSpeechAvailable
-} from '../../../shared/src/utils/utils.js';
+} from '../../../core/src/utils/utils.js';
 import AgentsController from './agents-controller.js';
 import chalk from 'chalk';
 import MouseController from './mouse-controller.js';
-import DialogContext from '../../../shared/src/data/dialog-context.js';
-import OutputContext from '../../../shared/src/data/output-context.js';
-import SpeakerError from '../../../shared/src/data/speaker-error.js';
-import { DialogContext_Assistant, DialogContext_ErrorSpeak, FROM_CLI, TUIAgentId } from '../../../shared/src/config/consts.js';
+import DialogContext from '../../../core/src/data/dialog-context.js';
+import OutputContext from '../../../core/src/data/output-context.js';
+import SpeakerError from '../../../core/src/data/speaker-error.js';
+import { DialogContext_Assistant, DialogContext_ErrorSpeak, FROM_CLI, TUIAgentId } from '../../../core/src/config/consts.js';
 import SessionController from './session-controller.js';
-import Logger from '../../../shared/src/components/sys/logger.js';
+import Logger from '../../../core/src/components/sys/logger.js';
 
 export default class AppController {
 

@@ -1,10 +1,10 @@
-import Command from '../../../shared/src/commands/command.js'
-import Status from '../../../shared/src/utils/status.js'
-import { CommandNotFoundEvent, errorEvent } from '../../../shared/src/data/events.js'
-import { evalValue, mdBlockJson, toJson } from '../../../shared/src/utils/utils.js'
+import Command from '../../../core/src/commands/command.js'
+import Status from '../../../core/src/utils/status.js'
+import { CommandNotFoundEvent, errorEvent } from '../../../core/src/data/events.js'
+import { evalValue, mdBlockJson, toJson } from '../../../core/src/utils/utils.js'
 import { readFileSync, writeFileSync } from 'fs'
 import { renderMarkdown } from 'cli-html';
-import { VAR_SCOPE_CLI, VAR_SCOPE_ENV, VAR_SCOPE_USER } from '../../../shared/src/data/vars.js'
+import { VAR_SCOPE_CLI, VAR_SCOPE_ENV, VAR_SCOPE_USER } from '../../../core/src/data/vars.js'
 import chalk from 'chalk'
 
 export default class VarCommand extends Command {

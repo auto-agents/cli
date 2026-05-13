@@ -1,8 +1,8 @@
 import { spawn } from 'child_process'
-import Status from '../../../shared/src/utils/status.js';
-import { resolvePath } from '../../../shared/src/utils/utils.js';
-import { CommandRunErrorEvent, errorEvent } from '../../../shared/src/data/events.js';
-import Command from '../../../shared/src/commands/command.js';
+import Status from '../../../core/src/utils/status.js';
+import { resolvePath } from '../../../core/src/utils/utils.js';
+import { CommandRunErrorEvent, errorEvent } from '../../../core/src/data/events.js';
+import Command from '../../../core/src/commands/command.js';
 
 export default class EditCommand extends Command {
 

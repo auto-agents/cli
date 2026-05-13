@@ -1,6 +1,6 @@
-import Command from '../../../shared/src/commands/command.js'
+import Command from '../../../core/src/commands/command.js'
 import chalk from 'chalk'
-import OutputContext from '../../../shared/src/data/output-context.js'
+import OutputContext from '../../../core/src/data/output-context.js'
 import { readdir } from 'fs/promises'
 import { join } from 'path';
 

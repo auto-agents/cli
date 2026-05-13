@@ -10,10 +10,10 @@ import {
 	AgentRemovedEvent,
 	AgentGetFocusSpeakEvent,
 	AgentGetFocusViewEvent
-} from '../../../../shared/src/data/events.js';
+} from '../../../../core/src/data/events.js';
 import Image, { TerminalInfoProvider } from "ink-picture";
 import path from 'path'
-import { TUIAgentId } from '../../../../shared/src/config/consts.js'
+import { TUIAgentId } from '../../../../core/src/config/consts.js'
 import AgentsTabs from './agents-tabs.js';
 
 const Agents = ({ ctx }) => {

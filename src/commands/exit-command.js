@@ -1,6 +1,6 @@
-import Command from '../../../shared/src/commands/command.js'
-import { AppExitingEvent } from '../../../shared/src/data/events.js'
-import { getSession } from '../../../shared/src/utils/utils.js'
+import Command from '../../../core/src/commands/command.js'
+import { AppExitingEvent } from '../../../core/src/data/events.js'
+import { getSession } from '../../../core/src/utils/utils.js'
 
 export default class ExitCommand extends Command {
 

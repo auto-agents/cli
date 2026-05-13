@@ -1,8 +1,8 @@
-import { AgentAddedEvent, AgentRemovedEvent, PluginUnloadedEvent, RunCommandEvent } from "../../../shared/src/data/events"
-import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../shared/src/utils/utils"
-import Status from '../../../shared/src/utils/status.js'
-import OutputContext from '../../../shared/src/data/output-context.js'
-import AIAgent from "../../../shared/src/data/ai/ai-agent.js"
+import { AgentAddedEvent, AgentRemovedEvent, PluginUnloadedEvent, RunCommandEvent } from "../../../core/src/data/events"
+import { dumpLoadedAgent, getAgentSpecification, getLoadedAgent } from "../../../core/src/utils/utils"
+import Status from '../../../core/src/utils/status.js'
+import OutputContext from '../../../core/src/data/output-context.js'
+import AIAgent from "../../../core/src/data/ai/ai-agent.js"
 
 export default class AgentsController {
 
