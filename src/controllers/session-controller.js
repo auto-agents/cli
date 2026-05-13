@@ -4,6 +4,7 @@ import { join } from 'path';
 import { AgentAddedEvent, AgentGetFocusSpeakEvent, AgentGetFocusViewEvent, AgentRemovedEvent, DialogUserPromptBegin, RunCommandEvent, SessionUnLoadedEvent } from "../../../core/src/data/events";
 import { appendFile, readdir } from "fs/promises";
 import Session from "../../../core/src/data/session";
+import Logger from "../../../core/src/components/sys/logger";
 
 export default class SessionController {
 
@@ -55,16 +56,22 @@ export default class SessionController {
 	}
 
 	async get(id) {
+		Logger.log('activating session: ' + id)
 		const p = sessionPath(this.ctx, id)
-		if (!existsSync(p))
+		if (!existsSync(p)) {
 			this.session = await Session.new(this.ctx, id)
-		else
+			Logger.log('session created')
+		}
+		else {
 			this.session = await Session.load(this.ctx, id)
+			Logger.log('session loaded')
+		}
 	}
 
 	// unload the current session
 	async unload() {
 
+		Logger.log('unloading session: ' + this.session.id)
 		// unload all agents
 		await this.session.unloadAgents()
 
@@ -74,6 +81,7 @@ export default class SessionController {
 				SessionUnLoadedEvent,
 				this.session
 			)
+			Logger.log('session unloaded')
 		}
 		var tmrUnload
 		const getTmrUnload = () => tmrUnload
